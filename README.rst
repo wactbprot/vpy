@@ -28,3 +28,11 @@ run script with file
 .. code-block:: shell
 
     > python se3_fm_eval.py --file test_doc/fm_doc.json
+
+run script with database
+========================
+
+
+.. code-block:: shell
+
+    > python se3_fm_eval.py --id 'doc-id'
