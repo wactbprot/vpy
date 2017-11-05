@@ -1,5 +1,5 @@
 import unittest
-from document import Document
+from .document import Document
 
 class TestDU(unittest.TestCase):
 

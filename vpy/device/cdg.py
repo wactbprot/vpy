@@ -1,7 +1,7 @@
 import numpy as np
-from log import log
-from device.device import Device
 from scipy.interpolate import interp1d
+from ..log import log
+from ..device.device import Device
 
 class Cdg(Device):
 

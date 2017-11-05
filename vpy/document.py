@@ -1,7 +1,7 @@
 import numpy as np
-from log import log
 import sys
 import copy
+from .log import log
 
 
 class Document(object):

@@ -1,9 +1,9 @@
-from log import log
 import sys
-from vpy_io import Io
-from analysis import Analysis
-from standard.frs5 import Frs5
-from standard.se3  import Se3
+from vpy.vpy_io import Io
+from vpy.analysis import Analysis
+from vpy.standard.frs5 import Frs5
+from vpy.standard.se3  import Se3
+from vpy.log import log
 
 if __name__ == "__main__":
 

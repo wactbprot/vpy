@@ -1,7 +1,7 @@
-from log import log
 import numpy as np
-from document import Document
-from constants import Constants
+from ..log import log
+from ..document import Document
+from ..constants import Constants
 
 
 class Device(Document):

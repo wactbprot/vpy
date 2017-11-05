@@ -1,8 +1,8 @@
 import copy
-from log import log
-from document import Document
-from constants import Constants
-from calibration_devices import  CalibrationObject
+from ..log import log
+from ..document import Document
+from ..constants import Constants
+from ..calibration_devices import  CalibrationObject
 
 class Standard(Document):
     """Standard Class. Needs access to Constants, CalibrationObjects

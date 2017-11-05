@@ -1,7 +1,7 @@
 import sys
-from log import log
-from document import Document
 import numpy as np
+from .log import log
+from .document import Document
 
 class Values(Document):
     """Values class implements special methodes for

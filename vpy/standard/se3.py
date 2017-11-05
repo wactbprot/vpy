@@ -1,16 +1,16 @@
 import copy
 import numpy as np
 
-from document import Document
-from device.dmm_system_switch import DmmSystemSwitch
-from device.cdg import InfCdg
-from log import log
-from constants import Constants
-from calibration_devices import  CalibrationObject
-from values import Temperature, Pressure, Time, AuxSe3
-from standard.standard import Standard
-from standard.group_normal import GroupNormal
-from device.cdg  import Cdg
+from ..document import Document
+from ..device.dmm_system_switch import DmmSystemSwitch
+from ..device.cdg import InfCdg
+from ..log import log
+from ..constants import Constants
+from ..calibration_devices import  CalibrationObject
+from ..values import Temperature, Pressure, Time, AuxSe3
+from ..standard.standard import Standard
+from ..standard.group_normal import GroupNormal
+from ..device.cdg  import Cdg
 
 class Se3(Standard):
     """Configuration and methodes of static expansion system Se3.

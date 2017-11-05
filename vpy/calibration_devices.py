@@ -1,6 +1,6 @@
 import sys
-from log import log
-from document import Document
+from .log import log
+from .document import Document
 
 class CalibrationObject(Document):
     """CalibrationObjects

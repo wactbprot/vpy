@@ -1,8 +1,8 @@
 import sys
 import copy
-from log import log
 import numpy as np
-from constants import Constants
+from ..log import log
+from ..constants import Constants
 
 
 class GroupNormal(object):

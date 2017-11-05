@@ -1,7 +1,6 @@
 import numpy as np
-from log import log
-
-from device.device import Device
+from .device import Device
+from ..log import log
 
 class Srg(Device):
     """ SRG

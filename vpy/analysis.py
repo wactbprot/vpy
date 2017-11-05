@@ -1,8 +1,8 @@
 import datetime
 import copy
 import numpy as np
-from log import log
-from document import Document
+from .log import log
+from .document import Document
 
 class Analysis(Document):
     """Holds a deep copy of original document. Container for storing

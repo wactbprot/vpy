@@ -20,3 +20,11 @@ docu gen
     > cd docs
     > sphinx-apidoc -f -o source/ ../../vpy
     > make html
+
+run script with file
+====================
+
+
+.. code-block:: shell
+
+    > python se3_fm_eval.py --file test_doc/fm_doc.json

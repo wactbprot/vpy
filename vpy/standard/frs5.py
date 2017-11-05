@@ -1,13 +1,13 @@
 import copy
 import numpy as np
 
-from log import log
-from document import Document
-from standard.standard import Standard
-from device.srg import Srg
-from constants import Constants
-from calibration_devices import  CalibrationObject
-from values import Temperature, Pressure, Time, AuxFrs5
+from ..log import log
+from ..document import Document
+from ..standard.standard import Standard
+from ..device.srg import Srg
+from ..constants import Constants
+from ..calibration_devices import  CalibrationObject
+from ..values import Temperature, Pressure, Time, AuxFrs5
 
 
 class Frs5(Standard):

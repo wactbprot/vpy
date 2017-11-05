@@ -1,6 +1,6 @@
 import numpy as np
-from device.device import Device
-from log import log
+from ..device.device import Device
+from ..log import log
 
 class DmmSystemSwitch(Device):
 

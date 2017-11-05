@@ -3,7 +3,7 @@ import sys
 import os
 import json
 import couchdb
-from log import log
+from .log import log
 
 class Io(object):
     """docstring for Io."""
