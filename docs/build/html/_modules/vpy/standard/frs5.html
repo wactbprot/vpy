@@ -1,0 +1,209 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vpy.standard.frs5 &#8212; vpy 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../modules.html">vpy 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for vpy.standard.frs5</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..log</span> <span class="k">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">..document</span> <span class="k">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">..standard.standard</span> <span class="k">import</span> <span class="n">Standard</span>
+<span class="kn">from</span> <span class="nn">..device.srg</span> <span class="k">import</span> <span class="n">Srg</span>
+<span class="kn">from</span> <span class="nn">..constants</span> <span class="k">import</span> <span class="n">Constants</span>
+<span class="kn">from</span> <span class="nn">..calibration_devices</span> <span class="k">import</span>  <span class="n">CalibrationObject</span>
+<span class="kn">from</span> <span class="nn">..values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">AuxFrs5</span>
+
+
+<div class="viewcode-block" id="Frs5"><a class="viewcode-back" href="../../../vpy.standard.html#vpy.standard.frs5.Frs5">[docs]</a><span class="k">class</span> <span class="nc">Frs5</span><span class="p">(</span><span class="n">Standard</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Configuration and methodes of large area piston gauge FRS5.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">log</span> <span class="o">=</span> <span class="n">log</span><span class="p">()</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Document class ini&quot;</span><span class="p">)</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;FRS5&quot;</span>
+    <span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;mbar&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orgdoc</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">orgdoc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">orgdoc</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span> <span class="o">=</span> <span class="n">Temperature</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span> <span class="o">=</span> <span class="n">Pressure</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span>  <span class="o">=</span> <span class="n">AuxFrs5</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+
+        <span class="n">resdev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;FRS55_4019&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span> <span class="o">=</span> <span class="n">Srg</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">resdev</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Frs5.get_name"><a class="viewcode-back" href="../../../vpy.standard.html#vpy.standard.frs5.Frs5.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+<div class="viewcode-block" id="Frs5.pressure_res"><a class="viewcode-back" href="../../../vpy.standard.html#vpy.standard.frs5.Frs5.pressure_res">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_res</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the residual Pressure from</span>
+<span class="sd">        SRG-DCR values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">tem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">gas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_gas</span><span class="p">()</span>
+        <span class="n">mt</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_frs5_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+
+        <span class="n">off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_obj_by_time</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="s2">&quot;offset_mt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;frs_res_off&quot;</span><span class="p">,</span> <span class="s2">&quot;DCR&quot;</span><span class="p">)</span>
+        <span class="n">res_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span><span class="o">.</span><span class="n">pressure</span><span class="p">(</span><span class="n">off</span><span class="p">,</span> <span class="n">tem</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">gas</span><span class="p">)</span>
+
+        <span class="n">ind</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;frs_res_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;DCR&quot;</span><span class="p">)</span>
+        <span class="n">res_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span><span class="o">.</span><span class="n">pressure</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">tem</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">gas</span><span class="p">)</span>
+
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res_off&quot;</span><span class="p">,</span> <span class="n">res_off</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res_ind&quot;</span><span class="p">,</span> <span class="n">res_ind</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res&quot;</span><span class="p">,</span> <span class="n">res_ind</span> <span class="o">-</span> <span class="n">res_off</span> <span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Frs5.temperature"><a class="viewcode-back" href="../../../vpy.standard.html#vpy.standard.frs5.Frs5.temperature">[docs]</a>    <span class="k">def</span> <span class="nf">temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="n">tem</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Temperature&#39;</span><span class="p">,</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="n">tem</span> <span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Frs5.pressure_cal"><a class="viewcode-back" href="../../../vpy.standard.html#vpy.standard.frs5.Frs5.pressure_cal">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the FRS5 calibration pressure from</span>
+<span class="sd">        lb indication. The equation is:</span>
+
+<span class="sd">        :math:`p=\\frac{r}{r_{cal}} m_{cal}\\frac{g}{A_{eff}}\\frac{1}{corr_{rho}corr_{tem}}`</span>
+
+<span class="sd">        with</span>
+
+<span class="sd">        :math:`corr_{rho} = 1 - \\frac{\\rho_{gas}}{\\rho_{piston}}`</span>
+
+<span class="sd">        and</span>
+
+<span class="sd">        :math:`corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">A_eff</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;A_eff&quot;</span><span class="p">,</span> <span class="s2">&quot;m^2&quot;</span><span class="p">)</span>
+        <span class="n">g</span>        <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;g_frs&quot;</span><span class="p">,</span> <span class="s2">&quot;m/s^2&quot;</span><span class="p">)</span>
+        <span class="n">r_cal</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;R_cal&quot;</span><span class="p">,</span> <span class="s2">&quot;lb&quot;</span><span class="p">)</span>
+        <span class="n">m_cal</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;m_cal&quot;</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+        <span class="n">rho_frs</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;rho_frs&quot;</span><span class="p">,</span> <span class="s2">&quot;kg/m^3&quot;</span><span class="p">)</span>
+        <span class="n">rho_gas</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;rho_gas&quot;</span><span class="p">,</span> <span class="s2">&quot;kg/m^3&quot;</span><span class="p">)</span>
+        <span class="n">ab</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;alpha_beta_frs&quot;</span><span class="p">,</span> <span class="s2">&quot;1/C&quot;</span><span class="p">)</span>
+        <span class="n">conv</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;Pa&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+
+        <span class="n">tem</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">mt</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_frs5_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+
+        <span class="n">r_zc0</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_val_by_time</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="s2">&quot;offset_mt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;frs_zc0_p&quot;</span><span class="p">,</span> <span class="s2">&quot;lb&quot;</span><span class="p">)</span>
+        <span class="n">r_zc</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;frs_zc_p&quot;</span><span class="p">,</span> <span class="s2">&quot;lb&quot;</span><span class="p">)</span>
+        <span class="n">r_ind</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;frs_p&quot;</span><span class="p">,</span> <span class="s2">&quot;lb&quot;</span><span class="p">)</span>
+        <span class="n">N</span>        <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_ind</span><span class="p">)</span>
+        <span class="c1"># correction buoyancy</span>
+        <span class="n">corr_rho</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">rho_gas</span> <span class="o">/</span> <span class="n">rho_frs</span><span class="p">)</span>
+        <span class="n">corr_rho</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">corr_rho</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;buoyancy_frs5&quot;</span><span class="p">,</span> <span class="n">corr_rho</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+
+        <span class="c1"># correction temperature</span>
+        <span class="n">tem</span>      <span class="o">=</span>  <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">corr_tem</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">ab</span> <span class="o">*</span> <span class="p">(</span><span class="n">tem</span> <span class="o">-</span> <span class="mf">20.0</span><span class="p">))</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature_frs5&quot;</span><span class="p">,</span> <span class="n">corr_tem</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+
+        <span class="c1"># conversion lb to Pa</span>
+        <span class="n">f</span>        <span class="o">=</span> <span class="n">m_cal</span><span class="o">/</span><span class="n">r_cal</span> <span class="o">*</span> <span class="n">g</span><span class="o">/</span><span class="p">(</span><span class="n">A_eff</span> <span class="o">*</span> <span class="n">corr_rho</span> <span class="o">*</span> <span class="n">corr_tem</span><span class="p">)</span> <span class="c1"># Pa</span>
+        <span class="c1"># offset</span>
+        <span class="n">r_0</span>      <span class="o">=</span> <span class="n">r_zc</span> <span class="o">-</span> <span class="n">r_zc0</span>
+        <span class="n">p_0</span>      <span class="o">=</span> <span class="n">r_0</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">conv</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_off&quot;</span><span class="p">,</span> <span class="n">p_0</span> <span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+
+        <span class="c1"># indication</span>
+        <span class="n">r</span>        <span class="o">=</span> <span class="n">r_ind</span> <span class="o">-</span> <span class="n">r_0</span>
+        <span class="n">p</span>        <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">conv</span>
+        <span class="n">p_res</span>    <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;frs5_res&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">p_corr</span>    <span class="o">=</span> <span class="n">p</span>  <span class="o">+</span> <span class="n">p_res</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="n">p_corr</span> <span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../modules.html">vpy 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, wactbprot.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>

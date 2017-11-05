@@ -1,0 +1,156 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>vpy.device.srg &#8212; vpy 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
+<!--[if lte IE 6]>
+<link rel="stylesheet" href="../../../_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
+<![endif]-->
+
+  </head>
+  <body>
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../modules.html">vpy 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for vpy.device.srg</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">.device</span> <span class="k">import</span> <span class="n">Device</span>
+<span class="kn">from</span> <span class="nn">..log</span> <span class="k">import</span> <span class="n">log</span>
+
+<div class="viewcode-block" id="Srg"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.srg.Srg">[docs]</a><span class="k">class</span> <span class="nc">Srg</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; SRG</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">log</span> <span class="o">=</span> <span class="n">log</span><span class="p">()</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+    <span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Document class ini&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Srg.get_name"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.srg.Srg.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Srg.dcr_conversion"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.srg.Srg.dcr_conversion">[docs]</a>    <span class="k">def</span> <span class="nf">dcr_conversion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">gas</span><span class="o">=</span><span class="s2">&quot;N2&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculates the conversion constant :math:`K` between DCR and</span>
+<span class="sd">        unit by means of</span>
+
+<span class="sd">        :math:`K = \\sqrt{ \\frac{ 8 R T }{ \\pi M}} \\pi d \\rho /20`</span>
+
+<span class="sd">        :param unit: unit unit</span>
+<span class="sd">        :type unit: str</span>
+<span class="sd">        :param gas: gas gas</span>
+<span class="sd">        :type gas: str</span>
+<span class="sd">        :return: conversion factor between DCR and unit</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;rho&quot;</span><span class="p">,</span><span class="s2">&quot;kg/m3&quot;</span><span class="p">)</span>
+        <span class="n">sgm</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;sigma_eff_&quot;</span> <span class="o">+</span> <span class="n">gas</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="n">d</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span>
+
+        <span class="n">R</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Const</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;Pa m^3/mol/K&quot;</span><span class="p">)</span>
+        <span class="n">T</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Const</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;referenceTemperature&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">M</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Const</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;molWeight_&quot;</span> <span class="o">+</span> <span class="n">gas</span><span class="p">,</span> <span class="s2">&quot;kg/mol&quot;</span><span class="p">)</span>
+
+        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Const</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;Pa&quot;</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="n">T</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">M</span><span class="p">))</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">d</span><span class="o">*</span><span class="n">rho</span><span class="o">/</span><span class="mi">20</span><span class="o">*</span><span class="n">conv</span><span class="o">/</span><span class="n">sgm</span></div>
+
+<div class="viewcode-block" id="Srg.pressure"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.srg.Srg.pressure">[docs]</a>    <span class="k">def</span> <span class="nf">pressure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">gas</span><span class="o">=</span> <span class="s2">&quot;N2&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the presssure by means of dcr_conversion.</span>
+<span class="sd">        Returns the pressure in the given unit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Const</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;referenceTemperature&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;K&quot;</span><span class="p">:</span>
+            <span class="n">t_srg</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+            <span class="n">conv_t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Const</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">],</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+            <span class="n">t_srg</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">conv_t</span>
+
+        <span class="n">corr_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">t_srg</span><span class="o">/</span><span class="n">t_ref</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;DCR&quot;</span><span class="p">:</span>
+            <span class="n">conv_p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dcr_conversion</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">gas</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">P</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">conv_p</span> <span class="o">*</span> <span class="n">corr_t</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../modules.html">vpy 0.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, wactbprot.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+    </div>
+  </body>
+</html>
