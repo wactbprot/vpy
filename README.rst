@@ -6,8 +6,17 @@ Classes and methods for vaclab measurement analysis.
 virtual env
 ===========
 
-``> python3 -m venv /path/to/vpy``
+.. code-block:: shell
 
-``> cd /path/to/vpy``
+    > python3 -m venv /path/to/vpy
+    > cd /path/to/vpy
+    > source bin/activate
 
-``> source bin/activate``
+docu gen
+========
+
+.. code-block:: shell
+
+    > cd docs
+    > sphinx-apidoc -f -o source/ ../../vpy
+    > make html
