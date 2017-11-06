@@ -20,11 +20,16 @@ class Io(object):
         parser = argparse.ArgumentParser()
         ## --id
         parser.add_argument("--id", type = str, nargs = 1,
-        help = "id of the document to analyse")
+                            help = "id of the document to analyse")
 
         ## --file
         parser.add_argument("--file", type = str, nargs = 1,
-        help = "file containing document to analyse")
+                            help = "file containing document to analyse")
+
+        parser.add_argument('-s', action='store_true'
+                            , help='save the results of calculation'
+                            , default=False)
+
         self.args = parser.parse_args()
 
         ## open and parse config file
@@ -35,6 +40,14 @@ class Io(object):
         srv     = couchdb.Server(self.config['db']['url'])
         self.db = srv[self.config['db']['name']]
 
+        # save doc
+
+        if self.args.s:
+            self.log.info("Will save results")
+            self.save = True
+        else:
+            self.log.info("Will not save results")
+            self.save = False
 
     def load_doc(self):
         """Loads the document to analyse from the source
@@ -69,20 +82,22 @@ class Io(object):
         * *--id*: back do databes
         * *--file*: new.<filename>
         """
+        if self.save:
+            if self.args.id:
+                self.log.info("try writing doc to database")
+                doc = self.set_doc_db(doc)
 
-        if self.args.id:
-            self.log.info("try writing doc to database")
-            doc = self.set_doc_db(doc)
+            if self.args.file:
+                path_file_name  = self.args.file[0]
+                path, file_name = os.path.split(path_file_name)
+                new_file_name   = "{}/new.{}".format(path, file_name)
 
-        if self.args.file:
-            path_file_name  = self.args.file[0]
-            path, file_name = os.path.split(path_file_name)
-            new_file_name   = "{}/new.{}".format(path, file_name)
-
-            self.log.info("""try writing doc to
+                self.log.info("""try writing doc to
                             new filename: {}""".format(new_file_name))
-            with open(new_file_name, 'w') as f:
-                json.dump(doc, f, indent=4, ensure_ascii=False)
+                with open(new_file_name, 'w') as f:
+                    json.dump(doc, f, indent=4, ensure_ascii=False)
+        else:
+            self.log.info("Result is not saved (use -s param)")
 
 
     def get_doc_db(self, docid):

@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 from vpy.vpy_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.frs5 import Frs5
@@ -20,6 +21,7 @@ if __name__ == "__main__":
         frs5.temperature(res)
         frs5.pressure_res(res)
         frs5.pressure_cal(res)
+        frs5.uncertainty(res)
 
         se3.temperature_before(res)
         se3.temperature_after(res)
