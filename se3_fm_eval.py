@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 from vpy.vpy_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.frs5 import Frs5
@@ -39,5 +40,6 @@ if __name__ == "__main__":
 
         res.store("Correction", "temperature_expansion", cor_tem, "1")
         res.store("Expansion", "m", f_m, "1")
-
-        io.save_doc(res.build_doc())
+        print(f_m)
+        print(np.std(f_m)/np.mean(f_m)/np.sqrt(len(f_m)))
+        #io.save_doc(res.build_doc())
