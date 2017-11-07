@@ -45,6 +45,9 @@ class Time(Values):
 
 class AuxValues(Document):
 
+    log = log().getLogger(__name__)
+    log.info("Document class ini")
+
     def __init__(self, doc):
         if 'Calibration' in doc:
             dc = doc['Calibration']
@@ -126,11 +129,19 @@ class AuxValues(Document):
 class AuxSe3(AuxValues):
     """AuxValues for FRS5 Standard
     """
+
+    log = log().getLogger(__name__)
+    log.info("Document class ini")
+
     def __init__(self, doc):
         super().__init__(doc)
 
 class AuxFrs5(AuxValues):
     """AuxValues for FRS5 Standard
     """
+
+    log = log().getLogger(__name__)
+    log.info("Document class ini")
+
     def __init__(self, doc):
         super().__init__(doc)

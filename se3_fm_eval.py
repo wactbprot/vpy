@@ -41,5 +41,6 @@ if __name__ == "__main__":
 
         res.store("Correction", "temperature_expansion", cor_tem, "1")
         res.store("Expansion", "m", f_m, "1")
-
+        print(f_m)
+        print(np.std(f_m)/np.mean(f_m)/np.sqrt(len(f_m)))
         io.save_doc(res.build_doc())
