@@ -122,7 +122,7 @@ class Se3(Standard):
 
         *channel 3004 to 3013*
         """
-        chs = list(range(3004, 3013))
+        chs     = list(range(3004, 3013))
         tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
         conv    = self.Cons.get_conv("C", "K")
@@ -138,6 +138,6 @@ class Se3(Standard):
 
         tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv = self.Cons.get_conv("C", "K")
+        conv    = self.Cons.get_conv("C", "K")
 
         return np.mean(tem_arr + cor_arr + conv, axis=0)

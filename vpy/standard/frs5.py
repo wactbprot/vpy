@@ -24,21 +24,34 @@ class Frs5(Standard):
         super().__init__(orgdoc, self.name)
 
         doc = copy.deepcopy(orgdoc)
-
+        # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Time = Time(doc)
         self.Aux  = AuxFrs5(doc)
 
+        # constants of standard
+        self.A_eff    = self.get_value("A_eff", "m^2")
+        self.g        = self.get_value("g_frs", "m/s^2")
+        self.r_cal    = self.get_value("R_cal", "lb")
+        self.m_cal    = self.get_value("m_cal", "kg")
+        self.rho_frs  = self.get_value("rho_frs", "kg/m^3")
+        self.rho_gas  = self.get_value("rho_gas", "kg/m^3")
+        self.ab       = self.get_value("alpha_beta_frs", "1/C")
+
         resdev = self.Cobj.get_by_name("FRS55_4019")
         self.ResDev = Srg(doc, resdev)
 
     def get_name(self):
+        """Returns the name of the standard
+        :returns: name of standard
+        :rtype: str
+        """
         return self.name
 
     def uncertainty(self, res):
         """Calculates the total uncertainty.
-        sympy derives the sensitivity coefficients
+        sympy derives the sensitivity coefficients.
 
         * p_frs      ... abs. pressure of the piston gauge [p]=Pa
         * r_ind      ... reading [r_ind] = lb
@@ -77,9 +90,11 @@ class Frs5(Standard):
         r_cal_0    = sym.Symbol('r_cal_0')
         ab         = sym.Symbol('ab')
         tem        = sym.Symbol('tem')
-        rho_piston = sym.Symbol('rho_piston')
-        rho_gas    = sym.Symbol('rho_piston')
-        p_frs = sym.S((r_ind+u_b+u_sys)/(r_cal-r_cal_0)*m_cal*g/A/(1-rho_gas/rho_piston)/(1.0+ab*(tem-20.0)))
+        rho_frs    = sym.Symbol('rho_frs')
+        rho_gas    = sym.Symbol('rho_gas')
+
+        p_frs = sym.S((r_ind+u_b+u_sys)/(r_cal-r_cal_0)
+                      *m_cal*g/A/(1-rho_gas/rho_frs)/(1.0+ab*(tem-20.0)))
 
         s_r_ind      = sym.diff(p_frs, r_ind)
         s_u_b        = sym.diff(p_frs, u_b)
@@ -92,7 +107,7 @@ class Frs5(Standard):
         s_ab         = sym.diff(p_frs, ab)
         s_tem        = sym.diff(p_frs, tem)
         s_rho_gas    = sym.diff(p_frs, rho_gas)
-        s_rho_piston = sym.diff(p_frs, rho_piston)
+        s_rho_frs    = sym.diff(p_frs, rho_frs)
 
 
     def pressure_res(self, res):
@@ -132,35 +147,27 @@ class Frs5(Standard):
 
         :math:`corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)`
         """
-
-        A_eff    = self.get_value("A_eff", "m^2")
-        g        = self.get_value("g_frs", "m/s^2")
-        r_cal    = self.get_value("R_cal", "lb")
-        m_cal    = self.get_value("m_cal", "kg")
-        rho_frs  = self.get_value("rho_frs", "kg/m^3")
-        rho_gas  = self.get_value("rho_gas", "kg/m^3")
-        ab       = self.get_value("alpha_beta_frs", "1/C")
         conv     = self.Cons.get_conv("Pa", "mbar")
-
         tem      = self.Temp.get_value("frs5", "C")
         mt       = self.Time.get_value("amt_frs5_ind", "ms")
-
         r_zc0    = self.Aux.get_val_by_time(mt, "offset_mt", "ms", "frs_zc0_p", "lb")
         r_zc     = self.Pres.get_value("frs_zc_p", "lb")
         r_ind    = self.Pres.get_value("frs_p", "lb")
+
         N        = len(r_ind)
+
         # correction buoyancy
-        corr_rho = (1.0 - rho_gas / rho_frs)
+        corr_rho = (1.0 - self.rho_gas / self.rho_frs)
         corr_rho = np.full(N, corr_rho)
         res.store("Correction", "buoyancy_frs5", corr_rho, "1")
 
         # correction temperature
         tem      =  res.pick("Temperature", "frs5", "C")
-        corr_tem = (1.0 + ab * (tem - 20.0))
+        corr_tem = (1.0 + self.ab * (tem - 20.0))
         res.store("Correction", "temperature_frs5", corr_tem, "1")
 
         # conversion lb to Pa
-        f        = m_cal/r_cal * g/(A_eff * corr_rho * corr_tem) # Pa
+        f        = self.m_cal/self.r_cal * self.g/(self.A_eff * corr_rho * corr_tem) # Pa
         # offset
         r_0      = r_zc - r_zc0
         p_0      = r_0 * f * conv
