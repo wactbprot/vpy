@@ -44,70 +44,99 @@ class Frs5(Standard):
 
     def get_name(self):
         """Returns the name of the standard
+
         :returns: name of standard
         :rtype: str
         """
         return self.name
 
+    def get_gas(self):
+        """Returns the name of the calibration gas stored in *AuxValues*
+
+        .. todo::
+
+                implementation of aux.gas needed
+
+        """
+
+        self.log.warn("Default gas N2 used")
+        return "N2"
+
     def uncertainty(self, res):
         """Calculates the total uncertainty.
         sympy derives the sensitivity coefficients.
 
-        * p_frs      ... abs. pressure of the piston gauge [p]=Pa
-        * r_ind      ... reading [r_ind] = lb
-        * u_b        ... standard uncertainty of the balance [u_b] = lb (4.4e-6+5e-6*R)
-        * u_sys      ... sys. uncertanty of the balance [u_sys]=lb (1e-5*R)
-        * r_0        ... zero reading [r_0] = lb
-        * f          ... conversion factor lb-->g [f] = g/lb
-        * A          ... effective area [A]= m^2
-        * p_res      ... residual pressure [p.res]=Pa
-        * m_cal      ... calibration mass piece [m.cal]=kg
-        * rho_gas    ... density gas
-        * rho_piston ... density piston
-        * g          ... accelaration [g]=m/s^2
-        * r_cal      ... indication at m_cal [r_cal]=g
-        * r_cal_0    ...  indication at zero [r_cal_0]=g
-        * ab         ... temperatur coeff. [k]=1/K
-        * t          ... temperature of balance [t]=C
+        * ``p_frs``    ... abs. pressure of the piston gauge [p]=Pa
+        * ``r``        ... reading [r] = lb
+        * ``u_b``      ... standard uncertainty of the balance [u_b] = lb (4.4e-6+5e-6*R)
+        * ``u_sys``    ... sys. uncertanty of the balance [u_sys]=lb (1e-5*R)
+        * ``r_0``      ... zero reading [r_0] = lb
+        * ``A``        ... effective area [A]= m^2
+        * ``p_res``    ... residual pressure [p.res]=Pa
+        * ``m_cal``    ... calibration mass piece [m.cal]=kg
+        * ``rho_gas``  ... density gas
+        * ``rho_frs``  ... density frs piston
+        * ``g``        ... accelaration [g]=m/s^2
+        * ``r_cal``    ... indication at m_cal [r_cal]=g
+        * ``r_cal_0``  ...  indication at zero [r_cal_0]=g
+        * ``ab``       ... temperatur coeff. [k]=1/K
+        * ``t``        ... temperature of balance [t]=C
 
         model equation:
 
-        :math:`p=\\frac{r_{ind}-r_0+u_b+u_{sys}}{r_{cal}-r_{cal 0}} m_{cal}\\frac{g}{A_{eff}}\\frac{1}{corr_{rho}corr_{tem}}`
+        .. math::
 
-        
+            p=\\frac{r_{ind}-r_0+u_b+u_{sys}}{r_{cal}-r_{cal 0}}\\
+             m_{cal}\\frac{g}{A_{eff}}\\frac{1}{corr_{rho}corr_{tem}}
 
         """
-        r_ind      = sym.Symbol('r_ind')
-        u_b        = sym.Symbol('u_b')
-        u_sys      = sym.Symbol('u_sys')
+        r          = sym.Symbol('r')
+        ub         = sym.Symbol('ub')
+        usys       = sym.Symbol('usys')
         r_0        = sym.Symbol('r_0')
-        f          = sym.Symbol('f')
         A          = sym.Symbol('A')
         p_res      = sym.Symbol('p_res')
         m_cal      = sym.Symbol('m_cal')
         g          = sym.Symbol('g')
         r_cal      = sym.Symbol('r_cal')
-        r_cal_0    = sym.Symbol('r_cal_0')
+        r_cal0    = sym.Symbol('r_cal0')
         ab         = sym.Symbol('ab')
         tem        = sym.Symbol('tem')
         rho_frs    = sym.Symbol('rho_frs')
         rho_gas    = sym.Symbol('rho_gas')
 
-        p_frs = sym.S((r_ind+u_b+u_sys)/(r_cal-r_cal_0)
-                      *m_cal*g/A/(1-rho_gas/rho_frs)/(1.0+ab*(tem-20.0)))
+        p_frs = sym.S((r+ub+usys)/(r_cal-r_cal0)
+                      *m_cal*g/A/(1-rho_gas/rho_frs)/(1.0+ab*(tem-20.0))) + p_res
 
-        s_r_ind      = sym.diff(p_frs, r_ind)
-        s_u_b        = sym.diff(p_frs, u_b)
-        s_u_sys      = sym.diff(p_frs, u_sys)
+        s_r          = sym.diff(p_frs, r)
+        s_ub         = sym.diff(p_frs, ub)
+        s_usys       = sym.diff(p_frs, usys)
         s_r_cal      = sym.diff(p_frs, r_cal)
-        s_r_cal_0    = sym.diff(p_frs, r_cal_0)
+        s_r_cal0     = sym.diff(p_frs, r_cal0)
         s_m_cal      = sym.diff(p_frs, m_cal)
         s_g          = sym.diff(p_frs, g)
         s_A          = sym.diff(p_frs, A)
-        s_ab         = sym.diff(p_frs, ab)
+        s_tem        = sym.diff(p_frs, tem)
         s_tem        = sym.diff(p_frs, tem)
         s_rho_gas    = sym.diff(p_frs, rho_gas)
         s_rho_frs    = sym.diff(p_frs, rho_frs)
+
+        u_r       = self.get_expression("u_r", "lb")
+        u_A       = self.get_expression("u_A", "m^2")
+        u_r_0     = self.get_expression("u_r_0", "lb")
+        u_ub      = self.get_expression("u_ub", "lb")
+        u_usys    = self.get_expression("u_usys", "lb")
+        u_r_cal   = self.get_expression("u_r_cal", "lb")
+        u_r_cal0  = self.get_expression("u_r_cal0", "lb")
+        u_m_cal   = self.get_expression("u_m_cal", "kg")
+        u_rho_frs = self.get_expression("u_rho_frs", "kg/m^3")
+
+        # relative uncertainties
+        u_g      = self.get_expression("u_g", "1") * self.g
+
+        # gas dependend
+        gas = self.get_gas()
+        u_rho_gas  = self.get_expression("u_rho_frs", "kg/m^3")
 
 
     def pressure_res(self, res):
@@ -137,15 +166,22 @@ class Frs5(Standard):
         """Calculates the FRS5 calibration pressure from
         lb indication. The equation is:
 
-        :math:`p=\\frac{r}{r_{cal}} m_{cal}\\frac{g}{A_{eff}}\\frac{1}{corr_{rho}corr_{tem}}`
+        .. math::
+
+            p=\\frac{r}{r_{cal}} m_{cal}\\frac{g}{A_{eff}}\\
+                \\frac{1}{corr_{rho}corr_{tem}} + p_{res}
 
         with
 
-        :math:`corr_{rho} = 1 - \\frac{\\rho_{gas}}{\\rho_{piston}}`
+        .. math::
+
+                corr_{rho} = 1 - \\frac{\\rho_{gas}}{\\rho_{piston}}
 
         and
 
-        :math:`corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)`
+        .. math::
+
+                corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)
         """
         conv     = self.Cons.get_conv("Pa", "mbar")
         tem      = self.Temp.get_value("frs5", "C")

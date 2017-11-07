@@ -1,6 +1,7 @@
-import numpy as np
 import sys
 import copy
+import numpy as np
+import sympy as sym
 from .log import log
 
 
@@ -93,8 +94,34 @@ class Document(object):
 
         return obj
 
+    def get_expression(self, val, unit, o=False):
+        """Gets an dict by means of get_object(),
+        compares o.Unit with unit and returns
+        sym.sympyfied Expression.
+        """
+        if o:
+            obj = o
+        else:
+            obj = self.get_object("Type", val)
+
+            ret = None
+            if obj:
+                if 'Unit' in  obj:
+                    if 'Expression' in obj:
+                        ret = sym.sympify(obj['Expression'])
+                    if 'Value' in obj:
+                        ret =  sym.sympify(obj['Value'])
+
+                else:
+                    ret = "Unit is " + obj["Unit"] + " not " + unit
+            else:
+                self.log.error("not found")
+                ret = "not found"
+
+            return ret
+
     def get_value(self, val, unit, o=False):
-        """gets Object by means of get_object,
+        """Gets an dict by means of get_object(),
         compares o.Unit with unit and returns
         numpy typed values.
         """
@@ -105,19 +132,21 @@ class Document(object):
 
         ret = None
         if obj:
-            if 'Value' in obj and 'Unit' in obj:
-                if obj["Unit"] == unit:
-                    if isinstance(obj['Value'], str):
-                        ret = np.float64(obj['Value'])
+            if 'Unit' in  obj:
+                if 'Value' in obj:
+                    if obj["Unit"] == unit:
+                        if isinstance(obj['Value'], str):
+                            ret = np.float64(obj['Value'])
 
-                    if isinstance(obj['Value'], list):
-                        ret = np.array(obj['Value'], dtype="f")
+                        if isinstance(obj['Value'], list):
+                            ret = np.array(obj['Value'], dtype="f")
 
-                    if isinstance(obj['Value'], float):
-                        ret = np.array([obj['Value']], dtype="f")
+                        if isinstance(obj['Value'], float):
+                            ret = np.array([obj['Value']], dtype="f")
 
-                    if isinstance(obj['Value'], int):
-                        ret = np.array([obj['Value']], dtype="f")
+                        if isinstance(obj['Value'], int):
+                            ret = np.array([obj['Value']], dtype="f")
+
                 else:
                     ret = "Unit is " + obj["Unit"] + " not " + unit
         else:

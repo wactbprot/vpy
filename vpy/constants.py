@@ -4,16 +4,20 @@ from .document import Document
 
 
 class Constants(Document):
+    """Initialisation of Constant class.
 
+    .. todo::
+        * impl. def get_mol_weight(gas)
+        * impl. def get_visc(gas)
+
+    :param doc: doc constants to search and extract
+    :type doc: dict
+    """
     log = log().getLogger(__name__)
     log.info("Document class ini")
 
     def __init__(self, doc):
-        """Initialisation of Constant class.
 
-        :param doc: doc constants to search and extract
-        :type doc: dict
-        """
 
         if 'Calibration' in doc:
             dc = doc['Calibration']
