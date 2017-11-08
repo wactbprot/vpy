@@ -63,7 +63,7 @@ class AuxValues(Document):
         else:
             self.log.warn("Use default gas N2")
             return "N2"
-
+    
     def get_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
         """
         ..todo:: write a better description
@@ -130,6 +130,7 @@ class AuxSe3(AuxValues):
 
     def __init__(self, doc):
         super().__init__(doc)
+
 
 class AuxFrs5(AuxValues):
     """AuxValues for FRS5 Standard
