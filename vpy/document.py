@@ -1,13 +1,15 @@
 import numpy as np
 import sys
 import copy
-from .log import log
-
+from .vpy_io import Io
 
 class Document(object):
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
+
 
     def __init__(self, doc):
         """Initialisation of Document class.

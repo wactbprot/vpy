@@ -1,10 +1,9 @@
 import copy
 import numpy as np
-
+from ..vpy_io import Io
 from ..document import Document
 from ..device.dmm_system_switch import DmmSystemSwitch
 from ..device.cdg import InfCdg
-from ..log import log
 from ..constants import Constants
 from ..calibration_devices import  CalibrationObject
 from ..values import Temperature, Pressure, Time, AuxSe3
@@ -15,10 +14,13 @@ from ..device.cdg  import Cdg
 class Se3(Standard):
     """Configuration and methodes of static expansion system Se3.
     """
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
     name = "SE3"
     unit = "mbar"
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, orgdoc):
 

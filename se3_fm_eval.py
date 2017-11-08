@@ -4,12 +4,12 @@ from vpy.vpy_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.frs5 import Frs5
 from vpy.standard.se3  import Se3
-from vpy.log import log
+
 
 if __name__ == "__main__":
 
-    log = log().getLogger(__name__)
     io = Io()
+    log = io.log(__name__)
     log.info("start logging")
 
     doc = io.load_doc()

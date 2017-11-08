@@ -1,15 +1,17 @@
 import datetime
 import copy
 import numpy as np
-from .log import log
+from .vpy_io import Io
 from .document import Document
 
 class Analysis(Document):
     """Holds a deep copy of original document. Container for storing
     Results of analysis.
     """
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, orgdoc):
         doc = copy.deepcopy(orgdoc)

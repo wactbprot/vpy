@@ -1,11 +1,13 @@
 import numpy as np
 from ..device.device import Device
-from ..log import log
+from ..vpy_io import Io
 
 class DmmSystemSwitch(Device):
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
+
 
 
     def __init__(self, doc, dev):

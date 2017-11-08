@@ -1,22 +1,21 @@
+import logging
+import logging.config
+import coloredlogs
 import argparse
 import sys
 import os
 import json
 import couchdb
-from .log import log
 
 class Io(object):
     """docstring for Io."""
-
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
-
     def __init__(self):
         """
         Parses the command line argumets.
         Gets the configuration out of the file: *config.json*.
         Provides database
         """
+        self.logger = self.log(__name__)
         parser = argparse.ArgumentParser()
         ## --id
         parser.add_argument("--id", type = str, nargs = 1,
@@ -43,10 +42,10 @@ class Io(object):
         # save doc
 
         if self.args.s:
-            self.log.info("Will save results")
+            self.logger.info("Will save results")
             self.save = True
         else:
-            self.log.info("Will not save results")
+            self.logger.info("Will not save results")
             self.save = False
 
     def load_doc(self):
@@ -56,23 +55,23 @@ class Io(object):
         doc = None
 
         if self.args.id:
-            self.log.info("""try to get document {}
+            self.logger.info("""try to get document {}
                           from database""".format(self.args.id))
             docid = self.args.id[0]
             doc   = self.get_doc_db(docid)
 
         if self.args.file:
-            self.log.info("""try to get document {}
+            self.logger.info("""try to get document {}
                           from file""".format(self.args.file))
             with open(self.args.file[0]) as json_doc_file:
                 doc = json.load(json_doc_file)
 
         if doc:
-            self.log.info("got doc, will return")
+            self.logger.info("got doc, will return")
             return doc
         else:
             err_msg = "document not found"
-            self.log.error(err_msg)
+            self.logger.error(err_msg)
             sys.exit(err_msg)
 
     def save_doc(self, doc):
@@ -84,7 +83,7 @@ class Io(object):
         """
         if self.save:
             if self.args.id:
-                self.log.info("try writing doc to database")
+                self.logger.info("try writing doc to database")
                 doc = self.set_doc_db(doc)
 
             if self.args.file:
@@ -92,12 +91,12 @@ class Io(object):
                 path, file_name = os.path.split(path_file_name)
                 new_file_name   = "{}/new.{}".format(path, file_name)
 
-                self.log.info("""try writing doc to
+                self.logger.info("""try writing doc to
                             new filename: {}""".format(new_file_name))
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
         else:
-            self.log.warn("Result is not saved (use -s param)")
+            self.logger.warn("Result is not saved (use -s param)")
 
 
     def get_doc_db(self, docid):
@@ -112,14 +111,14 @@ class Io(object):
             if "error" in doc:
                 err_msg = """database returns
                           with error: {}""".format(doc['error'])
-                self.log.error(err_msg)
+                self.logger.error(err_msg)
                 sys.exit(err_msg)
             else:
-                self.log.info("""got document from database """)
+                self.logger.info("""got document from database """)
         else:
             err_msg = """document with id {}
                       not found""".format(docid)
-            self.log.error(err_msg)
+            self.logger.error(err_msg)
             sys.exit(err_msg)
 
         return doc
@@ -130,3 +129,45 @@ class Io(object):
         :type doc: dict
         """
         res = self.db.save(doc)
+
+
+    def log(self, name):
+        """
+        Based on http://docs.python.org/howto/logging.html#configuring-logging
+        """
+
+        logging.config.dictConfig({
+            'version': 1,
+            'formatters': {
+                'default': {'format': '%(asctime)s - %(name)s -[%(filename)s:%(lineno)s - %(funcName)10s() ] - %(levelname)s - %(message)s',
+                 'datefmt': '%Y-%m-%d %H:%M:%S'}
+            },
+            'handlers': {
+                'console': {
+                    'level': 'DEBUG',
+                    'class': 'logging.StreamHandler',
+                    'formatter': 'default',
+                    'stream': 'ext://sys.stdout'
+                },
+                #'file': {
+                #    'level': 'DEBUG',
+                #    'class': 'logging.handlers.RotatingFileHandler',
+                #    'formatter': 'default',
+                #    'filename': log_path,
+                #    'maxBytes': 1024,
+                #    'backupCount': 3
+                #}
+            },
+            'loggers': {
+                'default': {
+                    'level': 'DEBUG',
+                    'handlers': ['console',
+                                #'file',
+                                ]
+                }
+            },
+            'disable_existing_loggers': False
+        })
+        coloredlogs.install()
+
+        return logging.getLogger('default')

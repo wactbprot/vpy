@@ -2,7 +2,7 @@ import copy
 import numpy as np
 import sympy as sym
 
-from ..log import log
+from ..vpy_io import Io
 from ..document import Document
 from ..standard.standard import Standard
 from ..device.srg import Srg
@@ -14,8 +14,10 @@ from ..values import Temperature, Pressure, Time, AuxFrs5
 class Frs5(Standard):
     """Configuration and methodes of large area piston gauge FRS5.
     """
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     name = "FRS5"
     unit = "mbar"
