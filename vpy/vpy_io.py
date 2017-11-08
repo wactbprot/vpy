@@ -25,6 +25,13 @@ class Io(object):
         parser.add_argument("--file", type = str, nargs = 1,
                             help = "file containing document to analyse")
 
+        ## --log
+        parser.add_argument("--log", type = str, nargs = 1,
+                            help = """kind of logging:
+                                      p ... production,
+                                      d ... debug
+                                      o .. off""")
+
         parser.add_argument('-s', action='store_true'
                             , help='save the results of calculation'
                             , default=False)
@@ -135,12 +142,11 @@ class Io(object):
         """
         Based on http://docs.python.org/howto/logging.html#configuring-logging
         """
-
+        fstr = '%(asctime)s - %(name)s -[%(filename)s:%(lineno)s - %(funcName)10s()] - %(levelname)s - %(message)s',
         logging.config.dictConfig({
             'version': 1,
             'formatters': {
-                'default': {'format': '%(asctime)s - %(name)s -[%(filename)s:%(lineno)s - %(funcName)10s() ] - %(levelname)s - %(message)s',
-                 'datefmt': '%Y-%m-%d %H:%M:%S'}
+                'default': {'format': fstr, 'datefmt': '%Y-%m-%d %H:%M:%S'}
             },
             'handlers': {
                 'console': {
@@ -149,20 +155,25 @@ class Io(object):
                     'formatter': 'default',
                     'stream': 'ext://sys.stdout'
                 },
-                #'file': {
-                #    'level': 'DEBUG',
-                #    'class': 'logging.handlers.RotatingFileHandler',
-                #    'formatter': 'default',
-                #    'filename': log_path,
-                #    'maxBytes': 1024,
-                #    'backupCount': 3
-                #}
+                'file': {
+                    'level': 'DEBUG',
+                    'class': 'logging.handlers.RotatingFileHandler',
+                    'formatter': 'default',
+                    'filename': 'production.log',
+                    'maxBytes': 1024,
+                    'backupCount': 3
+                }
             },
             'loggers': {
                 'default': {
                     'level': 'DEBUG',
                     'handlers': ['console',
-                                #'file',
+                                ]
+                },
+                'production': {
+                    'level': 'INFO',
+                    'handlers': ['console',
+                                 'file',
                                 ]
                 }
             },
