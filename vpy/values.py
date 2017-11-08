@@ -63,7 +63,7 @@ class AuxValues(Document):
         else:
             self.log.warn("Use default gas N2")
             return "N2"
-    
+
     def get_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
         """
         ..todo:: write a better description
@@ -121,7 +121,7 @@ class AuxValues(Document):
 
     def get_obj_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
         val = self.get_by_time(meastime, auxtime, timeunit, auxval, valunit)
-        return {"Type":auxval, "Value":  val, "Unit":valunit}
+        return {"Type": auxval, "Value":  val, "Unit":valunit}
 
 
 class AuxSe3(AuxValues):

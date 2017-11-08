@@ -54,9 +54,21 @@ class Se3(Standard):
         return self.name
 
     def get_gas(self):
-        """Returns the name of the calibration gas stored in *AuxValues*
+        """Returns the name of the calibration gas.
+
+        .. todo::
+
+                get gas from todo if nothing found in AuxValues
+
+        :returns: gas (N2, He etc.)
+        :rtype: str
         """
-        return self.Aux.get_gas()
+        gas = self.Aux.get_gas()
+        if gas is not None
+            return gas
+
+
+
 
     def pressure_nd(self, res):
         """Stores the differential pressure of the zero indicator:
