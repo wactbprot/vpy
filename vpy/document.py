@@ -1,14 +1,16 @@
 import sys
 import copy
+
+from .vpy_io import Io
 import numpy as np
 import sympy as sym
-from .log import log
-
-
 class Document(object):
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
+
 
     def __init__(self, doc):
         """Initialisation of Document class.

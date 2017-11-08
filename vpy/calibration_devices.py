@@ -1,12 +1,14 @@
 import sys
-from .log import log
 from .document import Document
+from .vpy_io import Io
 
 class CalibrationObject(Document):
     """CalibrationObjects
     """
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, doc):
         if 'Calibration' in doc:

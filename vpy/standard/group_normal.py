@@ -1,14 +1,16 @@
 import sys
 import copy
 import numpy as np
-from ..log import log
+from ..vpy_io import Io
 from ..constants import Constants
 
 
 class GroupNormal(object):
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
     unit = "mbar"
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, doc, devs):
 

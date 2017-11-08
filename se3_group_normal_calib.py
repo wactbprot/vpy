@@ -23,9 +23,6 @@ from values import  Pressure
 from vpy_io import Io
 
 if __name__ == "__main__":
-
-    coloredlogs.install()
-
     io = Io()
     ## --id cal-2017-frs5|dkm_ppc4-ik-4050_0001
     doc = io.load_doc()

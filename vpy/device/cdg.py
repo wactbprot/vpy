@@ -1,12 +1,14 @@
 import numpy as np
 from scipy.interpolate import interp1d
-from ..log import log
 from ..device.device import Device
+from ..vpy_io import Io
 
 class Cdg(Device):
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     unit              = "mbar"
     usable_decades    = 3

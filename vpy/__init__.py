@@ -3,7 +3,6 @@ from . import calibration_devices
 from . import analysis
 from . import device
 from . import document
-from . import log
 from . import standard
 from . import values
 from . import vpy_io

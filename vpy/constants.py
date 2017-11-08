@@ -1,21 +1,22 @@
 import sys
-from .log import log
 from .document import Document
-
+from .vpy_io import Io
 
 class Constants(Document):
     """Initialisation of Constant class.
 
     .. todo::
-        * impl. def get_mol_weight(gas)
+        * impl. def get_mol_weight(gas) done
         * impl. def get_visc(gas)
 
     :param doc: doc constants to search and extract
     :type doc: dict
     """
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, doc):
         if 'Calibration' in doc:

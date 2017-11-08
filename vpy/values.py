@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from .log import log
+from .vpy_io import Io
 from .document import Document
 
 class Values(Document):
@@ -13,8 +13,9 @@ class Values(Document):
     :type quant: str
     """
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, doc, name, quant):
 
@@ -44,9 +45,6 @@ class Time(Values):
 
 
 class AuxValues(Document):
-
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
 
     def __init__(self, doc):
         if 'Calibration' in doc:
@@ -130,9 +128,6 @@ class AuxSe3(AuxValues):
     """AuxValues for FRS5 Standard
     """
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
-
     def __init__(self, doc):
         super().__init__(doc)
 
@@ -140,9 +135,5 @@ class AuxSe3(AuxValues):
 class AuxFrs5(AuxValues):
     """AuxValues for FRS5 Standard
     """
-
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
-
     def __init__(self, doc):
         super().__init__(doc)

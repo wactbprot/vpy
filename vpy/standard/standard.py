@@ -1,5 +1,5 @@
 import copy
-from ..log import log
+from ..vpy_io import Io
 from ..document import Document
 from ..constants import Constants
 from ..calibration_devices import  CalibrationObject
@@ -10,8 +10,9 @@ class Standard(Document):
     Provides the normals main measurand e.g. calibration pressure
     """
 
-    log = log().getLogger(__name__)
-    log.info("Document class ini")
+    io = Io()
+    log = io.log(__name__)
+    log.info("start logging")
 
     def __init__(self, orgdoc, name):
         doc = copy.deepcopy(orgdoc)
