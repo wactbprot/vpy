@@ -132,6 +132,7 @@ class Io(object):
 
     def set_doc_db(self, doc):
         """ Writes doc back do database.
+
         :param doc: document
         :type doc: dict
         """
@@ -141,6 +142,11 @@ class Io(object):
     def logger(self, name):
         """
         Based on http://docs.python.org/howto/logging.html#configuring-logging
+
+        .. todo::
+
+                something is wrong here, double output on level=info
+
         """
 
         logging.config.dictConfig({
@@ -151,23 +157,21 @@ class Io(object):
             },
             'handlers': {
                 'default': {
-
                     'class': 'logging.StreamHandler',
                     'formatter': 'default',
-                    'stream': 'ext://sys.stdout'
+
                 },
             },
             'loggers': {
                 'default': {
-                    'level': 'INFO',
                     'handlers': ['default',
                                 ]
                 }
             },
             'disable_existing_loggers': False
         })
-        coloredlogs.install()
         logger = logging.getLogger('default')
+        coloredlogs.install()
 
         if self.args.log:
             if self.args.log[0] == "d":
