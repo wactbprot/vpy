@@ -15,7 +15,6 @@ class Io(object):
         Gets the configuration out of the file: *config.json*.
         Provides database
         """
-        self.logger = self.log(__name__)
         parser = argparse.ArgumentParser()
         ## --id
         parser.add_argument("--id", type = str, nargs = 1,
@@ -28,15 +27,16 @@ class Io(object):
         ## --log
         parser.add_argument("--log", type = str, nargs = 1,
                             help = """kind of logging:
-                                      p ... production,
                                       d ... debug
-                                      o .. off""")
+                                      i ... info
+                                      e .. error""")
 
         parser.add_argument('-s', action='store_true'
                             , help='save the results of calculation'
                             , default=False)
 
         self.args = parser.parse_args()
+        self.log = self.logger(__name__)
 
         ## open and parse config file
         with open('./conf.json') as json_config_file:
@@ -49,10 +49,10 @@ class Io(object):
         # save doc
 
         if self.args.s:
-            self.logger.info("Will save results")
+            self.log.info("Will save results")
             self.save = True
         else:
-            self.logger.info("Will not save results")
+            self.log.info("Will not save results")
             self.save = False
 
     def load_doc(self):
@@ -62,23 +62,23 @@ class Io(object):
         doc = None
 
         if self.args.id:
-            self.logger.info("""try to get document {}
+            self.log.info("""try to get document {}
                           from database""".format(self.args.id))
             docid = self.args.id[0]
             doc   = self.get_doc_db(docid)
 
         if self.args.file:
-            self.logger.info("""try to get document {}
+            self.log.info("""try to get document {}
                           from file""".format(self.args.file))
             with open(self.args.file[0]) as json_doc_file:
                 doc = json.load(json_doc_file)
 
         if doc:
-            self.logger.info("got doc, will return")
+            self.log.info("got doc, will return")
             return doc
         else:
             err_msg = "document not found"
-            self.logger.error(err_msg)
+            self.log.error(err_msg)
             sys.exit(err_msg)
 
     def save_doc(self, doc):
@@ -90,7 +90,7 @@ class Io(object):
         """
         if self.save:
             if self.args.id:
-                self.logger.info("try writing doc to database")
+                self.log.info("try writing doc to database")
                 doc = self.set_doc_db(doc)
 
             if self.args.file:
@@ -98,12 +98,12 @@ class Io(object):
                 path, file_name = os.path.split(path_file_name)
                 new_file_name   = "{}/new.{}".format(path, file_name)
 
-                self.logger.info("""try writing doc to
+                self.log.info("""try writing doc to
                             new filename: {}""".format(new_file_name))
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
         else:
-            self.logger.warn("Result is not saved (use -s param)")
+            self.log.warn("Result is not saved (use -s param)")
 
 
     def get_doc_db(self, docid):
@@ -118,14 +118,14 @@ class Io(object):
             if "error" in doc:
                 err_msg = """database returns
                           with error: {}""".format(doc['error'])
-                self.logger.error(err_msg)
+                self.log.error(err_msg)
                 sys.exit(err_msg)
             else:
-                self.logger.info("""got document from database """)
+                self.log.info("""got document from database """)
         else:
             err_msg = """document with id {}
                       not found""".format(docid)
-            self.logger.error(err_msg)
+            self.log.error(err_msg)
             sys.exit(err_msg)
 
         return doc
@@ -138,7 +138,7 @@ class Io(object):
         res = self.db.save(doc)
 
 
-    def log(self, name):
+    def logger(self, name):
         """
         Based on http://docs.python.org/howto/logging.html#configuring-logging
         """
@@ -150,32 +150,33 @@ class Io(object):
                  'datefmt': '%Y-%m-%d %H:%M:%S'}
             },
             'handlers': {
-                'console': {
-                    'level': 'DEBUG',
+                'default': {
+
                     'class': 'logging.StreamHandler',
                     'formatter': 'default',
                     'stream': 'ext://sys.stdout'
                 },
-                #'file': {
-                #    'level': 'DEBUG',
-                #    'class': 'logging.handlers.RotatingFileHandler',
-                #    'formatter': 'default',
-                #    'filename': log_path,
-                #    'maxBytes': 1024,
-                #    'backupCount': 3
-                #}
             },
             'loggers': {
                 'default': {
-                    'level': 'DEBUG',
-                    'handlers': ['console',
-                                #'file',
+                    'level': 'INFO',
+                    'handlers': ['default',
                                 ]
                 }
             },
             'disable_existing_loggers': False
         })
         coloredlogs.install()
+        logger = logging.getLogger('default')
 
+        if self.args.log:
+            if self.args.log[0] == "d":
+                logger.setLevel(logging.DEBUG)
 
-        return logging.getLogger('default')
+            if self.args.log[0] == "e":
+                logger.setLevel(logging.ERROR)
+
+            if self.args.log[0] == "i":
+                logger.setLevel(logging.INFO)
+
+        return logger

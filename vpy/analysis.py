@@ -10,7 +10,7 @@ class Analysis(Document):
     """
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
     def __init__(self, orgdoc):

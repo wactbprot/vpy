@@ -5,7 +5,7 @@ from ..vpy_io import Io
 class DmmSystemSwitch(Device):
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
 

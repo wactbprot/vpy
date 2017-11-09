@@ -16,7 +16,7 @@ class Frs5(Standard):
     """
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
     name = "FRS5"

@@ -19,7 +19,7 @@ class Se3(Standard):
     unit = "mbar"
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
     def __init__(self, orgdoc):
@@ -66,8 +66,6 @@ class Se3(Standard):
         gas = self.Aux.get_gas()
         if gas is not None:
             return gas
-
-
 
 
     def pressure_nd(self, res):

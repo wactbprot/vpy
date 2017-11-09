@@ -14,7 +14,7 @@ class Values(Document):
     """
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
     def __init__(self, doc, name, quant):
@@ -90,7 +90,6 @@ class AuxValues(Document):
 
         :param valunit: valunit unit of the type to expand
         :type valunit: str
-
         """
 
         N     = len(meastime)

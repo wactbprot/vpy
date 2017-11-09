@@ -7,7 +7,7 @@ class Cdg(Device):
 
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
     unit              = "mbar"

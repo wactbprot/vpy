@@ -8,7 +8,7 @@ class Document(object):
 
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
 

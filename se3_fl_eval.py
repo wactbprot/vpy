@@ -9,7 +9,7 @@ from vpy.standard.se3  import Se3
 if __name__ == "__main__":
 
     io = Io()
-    log = io.log(__name__)
+    log = io.logger(__name__)
     log.info("start logging")
 
     doc = io.load_doc()
