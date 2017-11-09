@@ -64,7 +64,7 @@ class Se3(Standard):
         :rtype: str
         """
         gas = self.Aux.get_gas()
-        if gas is not None
+        if gas is not None:
             return gas
 
 
