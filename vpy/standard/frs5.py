@@ -15,14 +15,15 @@ class Frs5(Standard):
     """Configuration and methodes of large area piston gauge FRS5.
     """
 
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
+
+
 
     name = "FRS5"
     unit = "mbar"
 
     def __init__(self, orgdoc):
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
         super().__init__(orgdoc, self.name)
 
         doc = copy.deepcopy(orgdoc)

@@ -13,12 +13,11 @@ class Constants(Document):
     :type doc: dict
     """
 
-
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
-
     def __init__(self, doc):
+
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
+
         if 'Calibration' in doc:
             dc = doc['Calibration']
             if 'Constants' in dc:

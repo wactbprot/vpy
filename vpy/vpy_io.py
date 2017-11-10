@@ -15,28 +15,26 @@ class Io(object):
         Gets the configuration out of the file: *config.json*.
         Provides database
         """
+
         parser = argparse.ArgumentParser()
         ## --id
         parser.add_argument("--id", type = str, nargs = 1,
                             help = "id of the document to analyse")
-
         ## --file
         parser.add_argument("--file", type = str, nargs = 1,
                             help = "file containing document to analyse")
-
         ## --log
         parser.add_argument("--log", type = str, nargs = 1,
                             help = """kind of logging:
                                       d ... debug
                                       i ... info (default)
                                       e .. error""")
-
         parser.add_argument('-s', action='store_true'
                             , help='save the results of calculation'
                             , default=False)
 
-        self.args = parser.parse_args()
-        self.log = self.logger(__name__)
+        self.args =  parser.parse_args()
+        self.log  = self.logger(__name__)
 
         ## open and parse config file
         with open('./conf.json') as json_config_file:
@@ -54,6 +52,8 @@ class Io(object):
         else:
             self.log.info("Will not save results")
             self.save = False
+
+
 
     def load_doc(self):
         """Loads the document to analyse from the source

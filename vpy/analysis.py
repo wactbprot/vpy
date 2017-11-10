@@ -8,11 +8,6 @@ class Analysis(Document):
     """Holds a deep copy of original document. Container for storing
     Results of analysis.
     """
-
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
-
     def __init__(self, orgdoc):
         doc = copy.deepcopy(orgdoc)
         d   = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -23,6 +18,8 @@ class Analysis(Document):
         super().__init__(o)
         self.org = doc
 
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
 
     def store(self, quant, t, v, u):
         """Stores the result of a calculation in

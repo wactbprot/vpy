@@ -4,13 +4,13 @@ from ..vpy_io import Io
 
 class DmmSystemSwitch(Device):
 
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
+
 
 
 
     def __init__(self, doc, dev):
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
         super().__init__(doc, dev)
 
     def get_name(self):

@@ -1,6 +1,11 @@
 vpy\.device package
 ===================
 
+.. automodule:: vpy.device
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -37,10 +42,3 @@ vpy\.device\.srg module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: vpy.device
-    :members:
-    :undoc-members:
-    :show-inheritance:

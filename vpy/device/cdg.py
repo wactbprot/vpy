@@ -4,12 +4,6 @@ from ..device.device import Device
 from ..vpy_io import Io
 
 class Cdg(Device):
-
-
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
-
     unit              = "mbar"
     usable_decades    = 3
     max_typehead_mbar = {
@@ -22,6 +16,8 @@ class Cdg(Device):
                         }
 
     def __init__(self, doc, dev):
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
         super().__init__(doc, dev)
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']

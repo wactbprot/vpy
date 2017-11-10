@@ -1,6 +1,11 @@
 vpy package
 ===========
 
+.. automodule:: vpy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -69,10 +74,3 @@ vpy\.vpy\_io module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: vpy
-    :members:
-    :undoc-members:
-    :show-inheritance:

@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
         se3.temperature_before(res)
         se3.temperature_after(res)
+        se3.temperature_room(res)
         se3.pressure_fill(res)
         se3.pressure_nd(res)
         se3.real_gas_correction(res)
@@ -37,10 +38,10 @@ if __name__ == "__main__":
         T_1  = res.pick("Temperature", "after", "K")
 
         cor_tem  =  T_0 / T_1
-        f_m  = (p_1 - p_nd)/(p_0 * rg) * cor_tem
+        f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
 
         res.store("Correction", "temperature_expansion", cor_tem, "1")
-        res.store("Expansion", "m", f_m, "1")
-        print(f_m)
-        print(np.std(f_m)/np.mean(f_m)/np.sqrt(len(f_m)))
+        res.store("Expansion", se3.get_expansion()[-1], f, "1")
+        log.info("expansin factors are: {}".format(f))
+        log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
         io.save_doc(res.build_doc())

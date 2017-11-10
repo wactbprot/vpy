@@ -13,11 +13,11 @@ class Values(Document):
     :type quant: str
     """
 
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
 
     def __init__(self, doc, name, quant):
+
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
 
         if 'Calibration' in doc:
             dc = doc['Calibration']

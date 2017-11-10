@@ -6,18 +6,16 @@ import numpy as np
 import sympy as sym
 class Document(object):
 
-
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
-
-
     def __init__(self, doc):
         """Initialisation of Document class.
 
         :param doc: doc document to search and extract
         :type doc: dict
         """
+
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
+
         self.doc = doc
 
     def get_all(self):
@@ -91,11 +89,10 @@ class Document(object):
         if obj is not None:
             val = self.get_value(val, unit, obj)
             obj['Value'] = val
+            return obj
         else:
             self.log.error("Type " + val + "not found")
-            obj = None
-
-        return obj
+            return None
 
     def get_expression(self, val, unit, o=False):
         """Gets an dict by means of get_object(),
@@ -112,18 +109,20 @@ class Document(object):
                 if 'Unit' in  obj:
                     if obj["Unit"] == unit:
                         if 'Expression' in obj:
-                            ret = sym.sympify(obj['Expression'])
+                            return sym.sympify(obj['Expression'])
 
                         if 'Value' in obj:
-                            ret =  sym.sympify(obj['Value'])
+                            return sym.sympify(obj['Value'])
 
                     else:
-                        ret = "Unit is " + obj["Unit"] + " not " + unit
+                        errmsg = "Unit is " + obj["Unit"] + " not " + unit
+                        elf.log.error(errmsg)
+                        sys.exit(errmsg)
             else:
-                self.log.error("not found")
-                ret = "not found"
+                self.log.error("Expression of Type {} not found".format(val))
+                return None
 
-            return ret
+
 
     def get_value(self, val, unit, o=False):
         """Gets an dict by means of get_object(),
@@ -158,7 +157,7 @@ class Document(object):
                     return np.array([obj['Value']], dtype="f")
 
         else:
-            self.log.error("not found")
+            self.log.error("Value of Type {} not found".format(val))
             return None
 
     def get_object(self, key, val, o=False, d=0):

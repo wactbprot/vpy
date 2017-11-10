@@ -23,11 +23,11 @@ class Se3(Standard):
     name = "SE3"
     unit = "mbar"
 
-    io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
+
 
     def __init__(self, orgdoc):
+        self.log = Io().logger(__name__)
+        self.log.info("start logging")
 
         super().__init__(orgdoc, self.name)
         doc = copy.deepcopy(orgdoc)
@@ -223,10 +223,10 @@ class Se3(Standard):
     def temperature_room(self, res):
         """Calculates the temperature of the room.
         """
-        tem = self.temperature_room()
+        tem = self.temperature_f24()
         res.store("Temperature","room", tem , "K")
 
-    def temperature_room(self):
+    def temperature_f24(self):
         """Temperature of the room. The used  sensors are:
 
         *channel 2029 to 2030*
