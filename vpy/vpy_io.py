@@ -28,7 +28,7 @@ class Io(object):
         parser.add_argument("--log", type = str, nargs = 1,
                             help = """kind of logging:
                                       d ... debug
-                                      i ... info
+                                      i ... info (default)
                                       e .. error""")
 
         parser.add_argument('-s', action='store_true'
@@ -145,7 +145,7 @@ class Io(object):
 
         .. todo::
 
-                something is wrong here, double output on level=info
+                something is wrong here, double output on level=info!
 
         """
 
@@ -171,16 +171,19 @@ class Io(object):
             'disable_existing_loggers': False
         })
         logger = logging.getLogger('default')
-        coloredlogs.install()
 
         if self.args.log:
             if self.args.log[0] == "d":
                 logger.setLevel(logging.DEBUG)
+                coloredlogs.install(level='DEBUG', logger=logger)
 
             if self.args.log[0] == "e":
                 logger.setLevel(logging.ERROR)
+                coloredlogs.install(level='ERROR', logger=logger)
 
             if self.args.log[0] == "i":
                 logger.setLevel(logging.INFO)
+                coloredlogs.install(level='INFO', logger=logger)
+
 
         return logger

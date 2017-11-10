@@ -59,9 +59,10 @@ class Document(object):
         """
 
         N = len(iter_list)
-        for i in range(N):
-            il_item = "{}{}{}".format(prefix, iter_list[i], sufix)
-            self.log.info("search for name: {}".format(il_item))
+        self.log.debug("working on list {}".format(iter_list))
+        for i, val in enumerate(iter_list):
+            il_item = "{}{}{}".format(prefix, val, sufix)
+            self.log.debug("search for name: {}".format(il_item))
             vec = self.get_value(il_item, unit)
 
             if i == 0:
@@ -109,13 +110,15 @@ class Document(object):
             ret = None
             if obj:
                 if 'Unit' in  obj:
-                    if 'Expression' in obj:
-                        ret = sym.sympify(obj['Expression'])
-                    if 'Value' in obj:
-                        ret =  sym.sympify(obj['Value'])
+                    if obj["Unit"] == unit:
+                        if 'Expression' in obj:
+                            ret = sym.sympify(obj['Expression'])
 
-                else:
-                    ret = "Unit is " + obj["Unit"] + " not " + unit
+                        if 'Value' in obj:
+                            ret =  sym.sympify(obj['Value'])
+
+                    else:
+                        ret = "Unit is " + obj["Unit"] + " not " + unit
             else:
                 self.log.error("not found")
                 ret = "not found"
@@ -132,35 +135,37 @@ class Document(object):
         else:
             obj = self.get_object("Type", val)
 
-        ret = None
         if obj:
             if 'Unit' in  obj:
-                if 'Value' in obj:
-                    if obj["Unit"] == unit:
-                        if isinstance(obj['Value'], str):
-                            ret = np.float64(obj['Value'])
-
-                        if isinstance(obj['Value'], list):
-                            ret = np.array(obj['Value'], dtype="f")
-
-                        if isinstance(obj['Value'], float):
-                            ret = np.array([obj['Value']], dtype="f")
-
-                        if isinstance(obj['Value'], int):
-                            ret = np.array([obj['Value']], dtype="f")
-
+                if obj["Unit"] == unit:
+                    self.log.info("unit of Type: {} is {}".format(val, unit))
                 else:
-                    ret = "Unit is " + obj["Unit"] + " not " + unit
+                    errmsg="Unit is {} not {}".format(obj['Unit'], unit)
+                    self.log.error(errmsg)
+                    sys.exit(errmsg)
+
+            if 'Value' in obj:
+                if isinstance(obj['Value'], str):
+                    return np.float64(obj['Value'])
+
+                if isinstance(obj['Value'], list):
+                    return np.array(obj['Value'], dtype="f")
+
+                if isinstance(obj['Value'], float):
+                    return np.array([obj['Value']], dtype="f")
+
+                if isinstance(obj['Value'], int):
+                    return np.array([obj['Value']], dtype="f")
+
         else:
             self.log.error("not found")
-            ret = "not found"
-        return ret
+            return None
 
     def get_object(self, key, val, o=False, d=0):
         """Recursive  searches obj for
         '''obj[key] == val''' and returns obj
         """
-        self.log.debug("recursion level is: {}".format(d))
+        #self.log.debug("recursion level is: {}".format(d))
         if o:
             obj = copy.deepcopy(o)
         else:

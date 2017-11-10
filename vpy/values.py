@@ -40,7 +40,7 @@ class Pressure(Values):
         super().__init__(doc,'Pressure', quant)
 
 class Time(Values):
-    def __init__(self, doc, quant = "Measurement"):
+    def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Time', quant)
 
 
@@ -124,12 +124,29 @@ class AuxValues(Document):
 
 
 class AuxSe3(AuxValues):
-    """AuxValues for FRS5 Standard
+    """AuxValues for SE3 Standard.
     """
 
     def __init__(self, doc):
         super().__init__(doc)
 
+    def get_expansion(self):
+        """On the documents concerned with certain
+        expansions ratios the name of the investigated :math: f
+        is stored in AuxValues.Expansion
+
+        :returns: name of the investigated expansion
+        :rtype: str
+        """
+        if "Expansion" in self.doc:
+            o = self.get_object("Type", "name")
+            if "Value" in o:
+
+                if isinstance(o['Value'], list):
+                    return o['Value'][-1]
+        else:
+            self.log.info("Name of Expansion not available in AuxValues")
+            return None
 
 class AuxFrs5(AuxValues):
     """AuxValues for FRS5 Standard

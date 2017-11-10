@@ -13,6 +13,11 @@ from ..device.cdg  import Cdg
 
 class Se3(Standard):
     """Configuration and methodes of static expansion system Se3.
+
+    There is a need to define the  ``no_of_meas_points``:
+    the time: ``amt_fill`` (absolut measure time of filling pressure)
+    is used for this purpos.
+
     """
 
     name = "SE3"
@@ -48,6 +53,8 @@ class Se3(Standard):
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_3"))
                                     ))
 
+        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
+
     def get_name(self):
         """Returns the name of the Standard.
         """
@@ -63,9 +70,22 @@ class Se3(Standard):
         :returns: gas (N2, He etc.)
         :rtype: str
         """
+
         gas = self.Aux.get_gas()
         if gas is not None:
             return gas
+
+    def get_expansion(self):
+        """Returns an np.array containing
+        the expansion name (``f_s``, ``f_m`` or ``f_l``)
+        of the length: ``self.no_of_meas_points```
+
+        :returns: array of expansion names
+        :rtype: np.array of strings
+        """
+        f = self.Aux.get_expansion()
+        if f is not None:
+            return np.full(self.no_of_meas_points, f)
 
 
     def pressure_nd(self, res):
@@ -116,37 +136,102 @@ class Se3(Standard):
 
         *Temperature, before, K*
         """
+        f   = self.get_expansion()
+        t   = np.full(self.no_of_meas_points, np.nan)
 
-        tem = self.temperature_volume_m()
-        res.store("Temperature" ,"before", tem , "K")
+        i_s = np.where(f == "f_s")
+        i_m = np.where(f == "f_m")
+        i_l = np.where(f == "f_l")
 
-    def temperature_after(self, res):
-        """Calculates the temperature of the end volume.
+        if len(i_s) > 0:
+            t[i_s] = self.temperature_volume_s()[i_s]
+            self.log.info("Points {}  belong to f_s".format(i_s[0]))
 
-        *Temperature, after, K*
+        if len(i_m) > 0:
+            t[i_m] = self.temperature_volume_m()[i_m]
+            self.log.info("Points {}  belong to f_m".format(i_m[0]))
+
+        if len(i_l) > 0:
+            t[i_l] = self.temperature_volume_l()[i_l]
+            self.log.info("Points {}  belong to f_l".format(i_l[0]))
+
+        res.store("Temperature" ,"before", t , "K")
+
+    def temperature_volume_s(self):
+        """Temperature of the medium (0.02l) volume. The used  sensors are:
+
+        *channel 3001 to 3003*
+
+        .. note::
+
+            range(3001,3004) becomes  3001 to 3003
         """
 
-        tem = self.temperature_vessel()
-        res.store("Temperature","after", tem , "K")
-
-    def temperature_volume_m(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
-
-        *channel 3004 to 3013*
-        """
-        chs     = list(range(3004, 3013))
+        chs     = list(range(3001, 3004))
         tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
         conv    = self.Cons.get_conv("C", "K")
 
         return np.mean(tem_arr + cor_arr + conv, axis=0)
 
+
+    def temperature_volume_m(self):
+        """Temperature of the medium (0.2l) volume. The used  sensors are:
+
+        *channel 3004 to 3013*
+        """
+        chs     = list(range(3004, 3014))
+        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
+        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
+        conv    = self.Cons.get_conv("C", "K")
+
+        return np.mean(tem_arr + cor_arr + conv, axis=0)
+
+    def temperature_volume_l(self):
+        """Temperature of the medium (0.2l) volume. The used  sensors are:
+
+        *channel 3014 to 3030*
+        """
+        chs     = list(range(3014, 3031))
+        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
+        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
+        conv    = self.Cons.get_conv("C", "K")
+
+        return np.mean(tem_arr + cor_arr + conv, axis=0)
+
+    def temperature_after(self, res):
+        """Calculates the temperature of the end volume.
+
+        *Temperature, after, K*
+        """
+        tem = self.temperature_vessel()
+        res.store("Temperature","after", tem , "K")
+
     def temperature_vessel(self):
         """Temperature of the medium (0.2l) volume. The used  sensors are:
 
         *channel 1001 to 1030* and *channel 2001 to 2028*
         """
-        chs = list(range(1001, 1030)) + list(range(2001, 1028))
+        chs = list(range(1001, 1031)) + list(range(2001, 2029))
+
+        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
+        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
+        conv    = self.Cons.get_conv("C", "K")
+
+        return np.mean(tem_arr + cor_arr + conv, axis=0)
+
+    def temperature_room(self, res):
+        """Calculates the temperature of the room.
+        """
+        tem = self.temperature_room()
+        res.store("Temperature","room", tem , "K")
+
+    def temperature_room(self):
+        """Temperature of the room. The used  sensors are:
+
+        *channel 2029 to 2030*
+        """
+        chs = list(range(2029, 2031))
 
         tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")

@@ -44,14 +44,6 @@ vpy\.document module
     :undoc-members:
     :show-inheritance:
 
-vpy\.log module
----------------
-
-.. automodule:: vpy.log
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 vpy\.test\_cal module
 ---------------------
 
