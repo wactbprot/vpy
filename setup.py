@@ -28,6 +28,7 @@ setup(
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
     ],
     keywords='Analysis, Uncertainty, Measurands, Vacuum, Pressure',
     packages=find_packages(exclude=['docs',
@@ -42,6 +43,7 @@ setup(
                      ],
     extras_require={
         'dev': ['sphinx',
+                'sphinx_rtd_theme',
                 'autopep8',
                 ],
     },
