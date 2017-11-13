@@ -42,9 +42,11 @@ class Frs5(Standard):
 
 
     def __init__(self, orgdoc):
+        super().__init__(orgdoc, self.name)
+
         self.log = Io().logger(__name__)
         self.log.info("start logging")
-        super().__init__(orgdoc, self.name)
+
 
         doc = copy.deepcopy(orgdoc)
         # measurement values
@@ -54,21 +56,18 @@ class Frs5(Standard):
         self.Aux  = AuxFrs5(doc)
 
         # constants of standard
-        self.A_eff    = self.get_value("A_eff", "m^2")
-        self.g        = self.get_value("g_frs", "m/s^2")
-        self.r_cal    = self.get_value("R_cal", "lb")
-        self.m_cal    = self.get_value("m_cal", "kg")
-        self.rho_frs  = self.get_value("rho_frs", "kg/m^3")
-        self.rho_gas  = self.get_value("rho_gas", "kg/m^3")
+        self.A_eff    = self.get_value("A_eff",          "m^2")
+        self.g        = self.get_value("g_frs",          "m/s^2")
+        self.r_cal    = self.get_value("R_cal",          "lb")
+        self.m_cal    = self.get_value("m_cal",          "kg")
+        self.rho_frs  = self.get_value("rho_frs",        "kg/m^3")
+        self.rho_gas  = self.get_value("rho_gas",        "kg/m^3")
         self.ab       = self.get_value("alpha_beta_frs", "1/C")
 
-        resdev = self.Cobj.get_by_name("FRS55_4019")
-        self.ResDev = Srg(doc, resdev)
+        # residua pressure device
+        self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
 
-        self.model = sym.S((r+ub+usys)/(r_cal-r_cal0)
-                            *m_cal*g/A
-                            *1/(1-rho_gas/rho_frs)/(1.0+ab*(tem-20.0))
-                            +p_res)
+
 
     def get_name(self):
         """Returns the name of the standard
@@ -93,7 +92,6 @@ class Frs5(Standard):
     def uncertainty(self, res):
         """Calculates the total uncertainty.
         sympy derives the sensitivity coefficients.
-
 
         """
         A          = sym.Symbol('A')
@@ -132,6 +130,14 @@ class Frs5(Standard):
 
         u_r_cal   = self.get_expression("u_r_cal", "lb")
         u_r_cal0  = self.get_expression("u_r_cal0", "lb")
+
+    def define_model(self):
+        # measuremen model
+        self.model = sym.S((r+ub+usys)/(r_cal-r_cal0)
+                            *m_cal*g/A
+                            *1.0/(1.0-rho_gas/rho_frs)
+                            *1.0/(1.0+ab*(tem-20.0))
+                            +p_res)
 
     def uncert_r(self, res):
         """Calculates the uncertainty of the r (reading)
