@@ -17,8 +17,9 @@ docu gen
 
 .. code-block:: shell
 
-    > cd docs
-    > sphinx-apidoc -f -o source/ ../vpy
+    > cd $HOME/vpy
+    > sphinx-apidoc -f -M -o docs/source/ vpy
+    > 
     > make html
 
 run script with file
