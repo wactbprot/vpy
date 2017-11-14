@@ -16,8 +16,7 @@ class Constants(Document):
     def __init__(self, doc):
 
         self.log = Io().logger(__name__)
-        self.log.info("start logging")
-
+        
         if 'Calibration' in doc:
             dc = doc['Calibration']
             if 'Constants' in dc:

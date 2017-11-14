@@ -12,7 +12,6 @@ class GroupNormal(object):
 
     def __init__(self, doc, devs):
         self.log = Io().logger(__name__)
-        self.log.info("start logging")
 
         self.Const      = Constants(doc)
         self.Devs       = devs

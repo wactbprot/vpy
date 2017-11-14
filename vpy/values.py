@@ -17,7 +17,6 @@ class Values(Document):
     def __init__(self, doc, name, quant):
 
         self.log = Io().logger(__name__)
-        self.log.info("start logging")
 
         if 'Calibration' in doc:
             dc = doc['Calibration']

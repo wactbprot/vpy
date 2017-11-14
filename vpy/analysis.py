@@ -19,8 +19,7 @@ class Analysis(Document):
         self.org = doc
 
         self.log = Io().logger(__name__)
-        self.log.info("start logging")
-
+        
     def store(self, quant, t, v, u, sd=None, n=None):
         """Stores the result of a calculation in
         the analysis structure below the given quantity.
@@ -33,7 +32,7 @@ class Analysis(Document):
             o['SdValue'] = sd
         if n is not None:
             o['N'] = n
-            
+
         if quant not in self.doc['Values']:
             self.doc['Values'][quant] = []
 

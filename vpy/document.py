@@ -14,8 +14,7 @@ class Document(object):
         """
 
         self.log = Io().logger(__name__)
-        self.log.info("start logging")
-
+        
         self.doc = doc
 
     def get_all(self):

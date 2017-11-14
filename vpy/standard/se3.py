@@ -27,7 +27,6 @@ class Se3(Standard):
 
     def __init__(self, orgdoc):
         self.log = Io().logger(__name__)
-        self.log.info("start logging")
 
         super().__init__(orgdoc, self.name)
         doc = copy.deepcopy(orgdoc)
