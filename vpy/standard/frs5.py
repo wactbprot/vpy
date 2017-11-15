@@ -53,18 +53,9 @@ class Frs5(Standard):
         self.Time = Time(doc)
         self.Aux  = AuxFrs5(doc)
 
-        # constants of standard
-        self.A_eff    = self.get_value("A_eff",          "m^2")
-        self.g        = self.get_value("g_frs",          "m/s^2")
-        self.r_cal    = self.get_value("R_cal",          "lb")
-        self.m_cal    = self.get_value("m_cal",          "kg")
-        self.rho_frs  = self.get_value("rho_frs",        "kg/m^3")
-        self.rho_gas  = self.get_value("rho_gas",        "kg/m^3")
-        self.ab       = self.get_value("alpha_beta_frs", "1/C")
-
         # residua pressure device
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
-
+        self.no_of_meas_points = len(self.Time.get_value("amt_frs5_ind", "ms"))
 
 
     def get_name(self):
@@ -92,9 +83,72 @@ class Frs5(Standard):
         sympy derives the sensitivity coefficients.
 
         """
-        self.define_model()
-        f_r_ind = self.uncert_r_ind()
-        print(f_r_ind)
+
+        A          = sym.Symbol('A')
+        p_res      = sym.Symbol('p_res')
+        m_cal      = sym.Symbol('m_cal')
+        g          = sym.Symbol('g')
+        tem        = sym.Symbol('tem')
+        rho_frs    = sym.Symbol('rho_frs')
+        rho_gas    = sym.Symbol('rho_gas')
+        ab         = sym.Symbol('ab')
+        r_cal      = sym.Symbol('r_cal')
+        r_cal0     = sym.Symbol('r_cal0')
+        r          = sym.Symbol('r')
+        r_0        = sym.Symbol('r_0')
+        ub         = sym.Symbol('ub')
+        usys       = sym.Symbol('usys')
+
+        mt       = self.Time.get_value("amt_frs5_ind", "ms")
+        r_zc0    = self.Aux.get_val_by_time(mt, "offset_mt", "ms", "frs_zc0_p", "lb")
+        r_zc     = self.Pres.get_value("frs_zc_p", "lb")
+        conv     = self.Cons.get_conv("Pa", self.unit)
+        symb = (A,
+                r,
+                r_0,
+                r_cal,
+                r_cal0,
+                ub,
+                usys,
+                p_res,
+                m_cal,
+                g,
+                tem,
+                rho_frs,
+                rho_gas,
+                ab,
+                )
+
+        arr = [ self.get_value("A_eff","m^2"),
+                self.Pres.get_value("frs_p", "lb"),
+                r_zc-r_zc0,
+                self.get_value("R_cal","lb"),
+                np.full(self.no_of_meas_points, 0.0),
+                np.full(self.no_of_meas_points, 0.0),
+                np.full(self.no_of_meas_points, 0.0),
+                res.pick("Pressure", "frs5_res", self.unit),
+                self.get_value("m_cal","kg"),
+                self.get_value("g_frs","m/s^2"),
+                res.pick("Temperature", "frs5", "C"),
+                self.get_value("rho_frs", "kg/m^3"),
+                self.get_value("rho_gas","kg/m^3"),
+                self.get_value("alpha_beta_frs", "1/C"),
+                ]
+
+        p_frs = sym.S(
+                    (r-r_0+ub+usys)/(r_cal-r_cal0)
+                    *m_cal
+                    *g/A
+                    *1.0/(1.0-rho_gas/rho_frs)
+                    *1.0/(1.0+ab*(tem-20.0))
+                    +p_res)
+
+        p = res.pick("Pressure", "frs5", self.unit)
+
+        s_r      = sym.diff(p_frs, r)
+        u_r      = self.get_expression("u_r", "lb")
+        f_r      = sym.lambdify(symb, s_r * u_r, "numpy")
+        print(f_r(*arr)*conv/p)
     #
     #    s_m_cal      = sym.diff(p_frs, m_cal)
     #    s_g          = sym.diff(p_frs, g)
@@ -122,46 +176,6 @@ class Frs5(Standard):
     #    u_r_cal   = self.get_expression("u_r_cal", "lb")
     #    u_r_cal0  = self.get_expression("u_r_cal0", "lb")
 
-    def define_model(self):
-        # measuremen model
-        A          = sym.Symbol('A')
-        p_res      = sym.Symbol('p_res')
-        m_cal      = sym.Symbol('m_cal')
-        g          = sym.Symbol('g')
-        tem        = sym.Symbol('tem')
-        rho_frs    = sym.Symbol('rho_frs')
-        rho_gas    = sym.Symbol('rho_gas')
-        ab         = sym.Symbol('ab')
-        r_cal      = sym.Symbol('r_cal')
-        r_cal0     = sym.Symbol('r_cal0')
-        r_ind      = sym.Symbol('r_ind')
-        r_zc       = sym.Symbol('r_zc')
-        r_zc0      = sym.Symbol('r_zc0')
-        ub         = sym.Symbol('ub')
-        usys       = sym.Symbol('usys')
-
-        self.symb  = (  A      ,
-                        p_res  ,
-                        m_cal  ,
-                        g      ,
-                        tem    ,
-                        rho_frs,
-                        rho_gas,
-                        ab     ,
-                        r_cal  ,
-                        r_cal0 ,
-                        r_ind  ,
-                        r_zc   ,
-                        r_zc0  ,
-                        ub     ,
-                        usys   ,
-                        )
-
-        self.model = sym.S((r_ind-(r_zc-r_zc0)+ub+usys)/(r_cal-r_cal0)
-                            *m_cal*g/A
-                            *1.0/(1.0-rho_gas/rho_frs)
-                            *1.0/(1.0+ab*(tem-20.0))
-                            +p_res)
 
     def uncert_r_ind(self):
         """Calculates the uncertainty of the r (reading)
@@ -172,10 +186,8 @@ class Frs5(Standard):
         :type: class
         """
 
-        s_r_ind  = sym.diff(self.model, sym.Symbol('r_ind'))
-        u_r      = self.get_expression("u_r", "lb")
 
-        return sym.lambdify(self.symb, s_r_ind * u_r, "numpy")
+        return
 
     def uncert_r_0(self, res):
         """Calculates the uncertainty of the r_0 (offset)
@@ -257,43 +269,42 @@ class Frs5(Standard):
                 corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)
         """
 
-        tem      = self.Temp.get_value("frs5", "C")
-        mt       = self.Time.get_value("amt_frs5_ind", "ms")
-        r_zc0    = self.Aux.get_val_by_time(mt, "offset_mt", "ms", "frs_zc0_p", "lb")
-        r_zc     = self.Pres.get_value("frs_zc_p", "lb")
-        r_ind    = self.Pres.get_value("frs_p", "lb")
-        conv     = self.Cons.get_conv("Pa", self.unit)
-        N        = len(r_ind)
-
+        # constants of standard
+        A        = self.get_value("A_eff","m^2")
+        g        = self.get_value("g_frs","m/s^2")
+        r_cal    = self.get_value("R_cal","lb")
+        m_cal    = self.get_value("m_cal","kg")
+        rho_frs  = self.get_value("rho_frs", "kg/m^3")
+        rho_gas  = self.get_value("rho_gas","kg/m^3")
+        ab       = self.get_value("alpha_beta_frs", "1/C")
+        r        = self.Pres.get_value("frs_p", "lb")
         tem      = res.pick("Temperature", "frs5", "C")
-        p_res    = res.pick("Pressure", "frs5_res", "mbar")
+        p_res    = res.pick("Pressure", "frs5_res", self.unit)
 
         # correction buoyancy
-        corr_rho = (1.0 - self.rho_gas / self.rho_frs)
-        corr_rho = np.full(N, corr_rho)
+        corr_rho = (1.0-rho_gas/rho_frs)
+        corr_rho = np.full(self.no_of_meas_points, corr_rho)
 
         # correction temperature
-        corr_tem = (1.0 + self.ab * (tem - 20.0))
+        corr_tem = (1.0 + ab * (tem - 20.0))
 
+        # conversion Pa  to unit
+        conv     = self.Cons.get_conv("Pa", self.unit)
         # conversion lb to Pa
-        f        = self.m_cal/self.r_cal * self.g/(self.A_eff * corr_rho * corr_tem) # Pa
+        f = m_cal/r_cal*g/(A*corr_rho * corr_tem) # Pa
 
         # offset reading
-        r_0      = r_zc-r_zc0
+        mt    = self.Time.get_value("amt_frs5_ind", "ms")
+        r_zc0 = self.Aux.get_val_by_time(mt, "offset_mt", "ms", "frs_zc0_p", "lb")
+        r_zc  = self.Pres.get_value("frs_zc_p", "lb")
+        r_0   = r_zc-r_zc0
 
         # offset pressure
-        p_0      = r_0*f*conv
-
+        p_0 = r_0*f*conv
         # indication
-        r        = r_ind-r_0
-        p        = r*f*conv
-        p_corr   = p+p_res
-
-        res.store('Pressure',"r", r_ind , "lb")
-        res.store('Pressure',"r_0", r_0 , "lb")
+        p_corr   = r*f*conv - p_0 + p_res
 
         res.store("Correction", "buoyancy_frs5", corr_rho, "1")
         res.store("Correction", "temperature_frs5", corr_tem, "1")
-
         res.store('Pressure', "frs5_off", p_0, self.unit)
         res.store('Pressure', "frs5", p_corr, self.unit)
