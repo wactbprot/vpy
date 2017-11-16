@@ -78,12 +78,26 @@ class Frs5(Standard):
         self.log.warn("Default gas N2 used")
         return "N2"
 
-    def uncertainty(self, res):
-        """Calculates the total uncertainty.
-        sympy derives the sensitivity coefficients.
+    def define_model(self, res):
+        """ Defines symbols and model for FRS5.
+        The order of symbols must match the order in ``gen_val_arr``:
+
+        #. A
+        #. r
+        #. r_0
+        #. r_cal
+        #. r_cal0
+        #. ub
+        #. usys
+        #. p_res
+        #. m_cal
+        #. g
+        #. tem
+        #. rho_frs
+        #. rho_gas
+        #. ab
 
         """
-
         A          = sym.Symbol('A')
         p_res      = sym.Symbol('p_res')
         m_cal      = sym.Symbol('m_cal')
@@ -99,27 +113,43 @@ class Frs5(Standard):
         ub         = sym.Symbol('ub')
         usys       = sym.Symbol('usys')
 
+        self.symb = (
+                A,r,r_0,r_cal,r_cal0,ub,usys,p_res,m_cal,g,tem,rho_frs,rho_gas,ab,)
+
+        self.model = sym.S(
+                (r-r_0+ub+usys)/(r_cal-r_cal0)
+                *m_cal
+                *g/A
+                *1.0/(1.0-rho_gas/rho_frs)
+                *1.0/(1.0+ab*(tem-20.0))
+                +p_res)
+
+    def gen_val_array(self, res):
+        """Generates a array of values
+        with the same order as ``define_model``s symbols order:
+
+        #. A
+        #. r
+        #. r_0
+        #. r_cal
+        #. r_cal0
+        #. ub
+        #. usys
+        #. p_res
+        #. m_cal
+        #. g
+        #. tem
+        #. rho_frs
+        #. rho_gas
+        #. ab
+
+        """
+
         mt       = self.Time.get_value("amt_frs5_ind", "ms")
         r_zc0    = self.Aux.get_val_by_time(mt, "offset_mt", "ms", "frs_zc0_p", "lb")
         r_zc     = self.Pres.get_value("frs_zc_p", "lb")
-        conv     = self.Cons.get_conv("Pa", self.unit)
-        symb = (A,
-                r,
-                r_0,
-                r_cal,
-                r_cal0,
-                ub,
-                usys,
-                p_res,
-                m_cal,
-                g,
-                tem,
-                rho_frs,
-                rho_gas,
-                ab,
-                )
 
-        arr = [ self.get_value("A_eff","m^2"),
+        self.val_arr = [ self.get_value("A_eff","m^2"),
                 self.Pres.get_value("frs_p", "lb"),
                 r_zc-r_zc0,
                 self.get_value("R_cal","lb"),
@@ -135,20 +165,15 @@ class Frs5(Standard):
                 self.get_value("alpha_beta_frs", "1/C"),
                 ]
 
-        p_frs = sym.S(
-                    (r-r_0+ub+usys)/(r_cal-r_cal0)
-                    *m_cal
-                    *g/A
-                    *1.0/(1.0-rho_gas/rho_frs)
-                    *1.0/(1.0+ab*(tem-20.0))
-                    +p_res)
+    def uncertainty(self, res):
+        """Calculates the total uncertainty.
+        sympy derives the sensitivity coefficients.
 
-        p = res.pick("Pressure", "frs5", self.unit)
-
-        s_r      = sym.diff(p_frs, r)
-        u_r      = self.get_expression("u_r", "lb")
-        f_r      = sym.lambdify(symb, s_r * u_r, "numpy")
-        print(f_r(*arr)*conv/p)
+        """
+        self.define_model(res)
+        self.gen_val_array(res)
+        self.uncert_r(res)
+        self.uncert_r_0(res)
     #
     #    s_m_cal      = sym.diff(p_frs, m_cal)
     #    s_g          = sym.diff(p_frs, g)
@@ -177,7 +202,7 @@ class Frs5(Standard):
     #    u_r_cal0  = self.get_expression("u_r_cal0", "lb")
 
 
-    def uncert_r_ind(self):
+    def uncert_r(self, res):
         """Calculates the uncertainty of the r (reading)
 
         :param: Class with methode
@@ -185,9 +210,18 @@ class Frs5(Standard):
                 pick(quantity, type, unit)
         :type: class
         """
+        conv   = self.Cons.get_conv("Pa", self.unit)
+        p      = res.pick("Pressure", "frs5", self.unit)
+
+        s_expr = sym.diff(self.model, sym.Symbol('r'))
+        u_expr = self.get_expression("u_r", "lb")
+
+        f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
+        val   = f(*self.val_arr)*conv
+
+        res.store("Uncertainty", "r", np.absolute(val/p), "1")
 
 
-        return
 
     def uncert_r_0(self, res):
         """Calculates the uncertainty of the r_0 (offset)
@@ -197,8 +231,16 @@ class Frs5(Standard):
             pick(quantity, type, unit)
         :type: class
         """
-        s_r_0   = sym.diff(self.model, sym.Symbol('r_0'))
-        u_r_0   = self.get_expression("u_r_0", "lb")
+        conv   = self.Cons.get_conv("Pa", self.unit)
+        p      = res.pick("Pressure", "frs5", self.unit)
+
+        s_expr = sym.diff(self.model, sym.Symbol('r_0'))
+        u_expr = self.get_expression("u_r_0", "lb")
+
+        f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
+        val   = f(*self.val_arr)*conv
+
+        res.store("Uncertainty", "r_0", np.absolute(val/p), "1")
 
     def uncert_ub(self, res):
         """Calculates the uncertainty of the r (reading)
@@ -208,8 +250,16 @@ class Frs5(Standard):
                 pick(quantity, type, unit)
         :type: class
         """
-        s_ub    = sym.diff(self.model, sym.Symbol('ub'))
-        u_ub    = self.get_expression("u_ub", "lb")
+        conv   = self.Cons.get_conv("Pa", self.unit)
+        p      = res.pick("Pressure", "frs5", self.unit)
+
+        s_expr = sym.diff(self.model, sym.Symbol('ub'))
+        u_expr = self.get_expression("u_ub", "lb")
+
+        f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
+        val   = f(*self.val_arr)*conv
+
+        res.store("Uncertainty", "ub", np.absolute(val/p), "1")
 
     def uncert_usys(self, res):
         """Calculates the uncertainty of the r (reading)
