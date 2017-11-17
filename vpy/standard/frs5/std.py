@@ -89,6 +89,25 @@ class Frs5(Standard):
         #. rho_gas
         #. ab
 
+        The equation is:
+
+        .. math::
+
+                p=\\frac{r}{r_{cal}} m_{cal}\\frac{g}{A_{eff}}\\
+                \\frac{1}{corr_{rho}corr_{tem}} + p_{res}
+
+        with
+
+        .. math::
+
+                corr_{rho} = 1 - \\frac{\\rho_{gas}}{\\rho_{piston}}
+
+        and
+
+        .. math::
+
+                corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
@@ -127,19 +146,15 @@ class Frs5(Standard):
                     T,
                     p_res,)
 
-        self.sym_corr_buoyancy    = sym.S(1.0/(1.0-rho_gas/rho_frs))
+        self.model_offset    = r_zc-r_zc0
+        self.model_buoyancy  = 1.0/(1.0-rho_gas/rho_frs)
+        self.model_temp      = 1.0/(1.0+ab*(T-20.0))
+        self.model_conv      = m_cal/r_cal*g/A*self.model_buoyancy *self.model_temp
+        ## all together
+        self.model            = (r-self.model_offset+ub+usys)*self.model_conv+p_res
 
-        self.sym_corr_temperature = sym.S(1.0/(1.0+ab*(T-20.0)))
+        self.model_unit = "Pa"
 
-        self.sym_conv             = sym.S(m_cal/r_cal*g/A
-                                            *self.sym_corr_buoyancy
-                                            *self.sym_corr_temperature)
-
-        self.sym_reading_offset   = r_zc-r_zc0
-
-        self.model                = sym.S((r-self.sym_reading_offset+ub+usys)
-                                            *self.sym_conv
-                                            +p_res)
 
     def gen_val_dict(self, res):
         """Reads in a dict of values
@@ -151,24 +166,45 @@ class Frs5(Standard):
         :type: class
         """
 
+        const_A        = self.get_value("A_eff","m^2"),
+        const_r_cal    = self.get_value("R_cal","lb"),
+        const_m_cal    = self.get_value("m_cal","kg"),
+        const_g        = self.get_value("g_frs","m/s^2"),
+
+        ## correction buoyancy
+        const_rho_frs  = self.get_value("rho_frs", "kg/m^3"),
+        const_rho_gas  = self.get_value("rho_gas","kg/m^3"),
+
+        meas_time      = self.Time.get_value("amt_frs5_ind", "ms")
+
+        ## Temperature in C
+        val_T          = res.pick("Temperature", "frs5", "C")
+        const_ab       = self.get_value("alpha_beta_frs", "1/C"),
+
+        ## residual pressure in Pa
+        conv = self.Cons.get_conv(self.unit, "Pa")
+        val_p_res         = res.pick("Pressure", "frs5_res", self.unit)*conv
+
         self.val_dict={
-                        'A':      self.get_value("A_eff","m^2"),
+                        'A':      np.full(self.no_of_meas_points, const_A ),
                         'r':      self.Pres.get_value("frs_p", "lb"),
                         'r_zc':   self.Pres.get_value("frs_zc_p", "lb"),
-                        'r_zc0':  self.Aux.get_val_by_time(self.Time.get_value("amt_frs5_ind", "ms"),
-                                                            "offset_mt", "ms", "frs_zc0_p", "lb"),
-                        'r_cal':  self.get_value("R_cal","lb"),
-                        'rcal0':  np.full(self.no_of_meas_points, 0.0),
+                        'r_zc0':  self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb"),
+                        'r_cal':  np.full(self.no_of_meas_points, const_r_cal),
+                        'r_cal0':  np.full(self.no_of_meas_points, 0.0),
                         'ub':     np.full(self.no_of_meas_points, 0.0),
                         'usys':   np.full(self.no_of_meas_points, 0.0),
-                        'm_cal':  self.get_value("m_cal","kg"),
-                        'g':      self.get_value("g_frs","m/s^2"),
-                        'rho_frs':self.get_value("rho_frs", "kg/m^3"),
-                        'rho_gas':self.get_value("rho_gas","kg/m^3"),
-                        'ab':     self.get_value("alpha_beta_frs", "1/C"),
-                        'T':      res.pick("Temperature", "frs5", "C"),
-                        'p_res':  res.pick("Pressure", "frs5_res", self.unit)
+                        'm_cal':  np.full(self.no_of_meas_points, const_m_cal),
+                        'g':      np.full(self.no_of_meas_points, const_g),
+                        'rho_frs':np.full(self.no_of_meas_points, const_rho_frs),
+                        'rho_gas':np.full(self.no_of_meas_points, const_rho_gas),
+                        'ab':     np.full(self.no_of_meas_points, const_ab),
+                        'T':      val_T,
+                        'p_res':  val_p_res,
                         }
+
+        self.log.info("value dict genetated")
+        self.log.debug(self.val_dict)
 
     def gen_val_array(self, res):
         """Generates a array of values
@@ -202,7 +238,7 @@ class Frs5(Standard):
                         self.val_dict['r_zc'],
                         self.val_dict['r_zc0'],
                         self.val_dict['r_cal'],
-                        self.val_dict['rcal0'],
+                        self.val_dict['r_cal0'],
                         self.val_dict['ub'],
                         self.val_dict['usys'],
                         self.val_dict['m_cal'],
@@ -213,3 +249,5 @@ class Frs5(Standard):
                         self.val_dict['T'],
                         self.val_dict['p_res'],
                 ]
+        self.log.info("value array derived from dict_arr")
+        self.log.debug(self.val_arr)

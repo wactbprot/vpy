@@ -14,7 +14,7 @@ class Document(object):
         """
 
         self.log = Io().logger(__name__)
-        
+
         self.doc = doc
 
     def get_all(self):
@@ -144,7 +144,7 @@ class Document(object):
 
             if 'Value' in obj:
                 if isinstance(obj['Value'], str):
-                    return np.float64(obj['Value'])
+                    return np.array(np.float64(obj['Value']))
 
                 if isinstance(obj['Value'], list):
                     return np.array(obj['Value'], dtype="f")
