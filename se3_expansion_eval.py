@@ -2,7 +2,8 @@ import sys
 import numpy as np
 from vpy.vpy_io import Io
 from vpy.analysis import Analysis
-from vpy.standard.frs5 import Frs5
+from vpy.standard.frs5.cal import Cal    as FrsCalc
+from vpy.standard.frs5.uncert import Uncert as FrsUncert
 from vpy.standard.se3  import Se3
 
 
@@ -17,12 +18,14 @@ if __name__ == "__main__":
         res  = Analysis(doc)
         se3  = Se3(doc)
 
-        frs5 = Frs5(doc)
-        frs5.temperature(res)
-        frs5.pressure_res(res)
-        frs5.pressure_cal(res)
-        
-        frs5.uncertainty(res)
+        frs_calc    = FrsCalc(doc)
+        frs_uncert = FrsUncert(doc)
+
+        frs_calc.temperature(res)
+        frs_calc.pressure_res(res)
+        frs_calc.pressure_cal(res)
+
+        frs_uncert.total(res)
 
         se3.temperature_before(res)
         se3.temperature_after(res)

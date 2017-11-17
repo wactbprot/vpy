@@ -10,8 +10,6 @@ class Standard(Document):
     Provides the normals main measurand e.g. calibration pressure
     """
 
-
-
     def __init__(self, orgdoc, name):
 
         self.log = Io().logger(__name__)
