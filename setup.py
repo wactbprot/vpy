@@ -40,6 +40,8 @@ setup(
                       'numpy',
                       'scipy',
                       'sympy',
+                      'sphinx',
+                      'sphinx_rtd_theme',
                      ],
     extras_require={
         'dev': ['sphinx',

@@ -26,9 +26,13 @@ class Cal(Se3):
             return np.full(self.no_of_meas_points, f)
 
     def pressure_nd(self, res):
-        """Stores the differential pressure of the zero indicator:
+        """Stores the differential pressure of the zero
+         under the path  *Pressure, nd, mbar*
 
-        *Pressure, nd, mbar*
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         p_nd_off = self.Pres.get_value("nd_offset", "mbar")
         p_nd_ind = self.Pres.get_value("nd_ind", "mbar")
@@ -39,7 +43,12 @@ class Cal(Se3):
         """Calculates the mean value of the filling pressure by means of
         *GroupNormal* methods.
 
-        *Pressure, fill, mbar*
+        Stores result under the path *Pressure, fill, mbar*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         chs = [
             "1T_1","1T_2","1T_3",
@@ -71,7 +80,12 @@ class Cal(Se3):
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
 
-        *Temperature, before, K*
+        Stores result under the path  *Temperature, before, K*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         f   = self.get_expansion()
         t   = np.full(self.no_of_meas_points, np.nan)
@@ -96,8 +110,12 @@ class Cal(Se3):
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
+        Stores result under the path *Temperature, after, K*
 
-        *Temperature, after, K*
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         tem = self.temperature_vessel()
         res.store("Temperature","after", tem , "K")
@@ -109,7 +127,7 @@ class Cal(Se3):
 
         .. note::
 
-        range(3001,3004) becomes  3001 to 3003
+            range(3001,3004) becomes  3001 to 3003
         """
 
         chs     = list(range(3001, 3004))
