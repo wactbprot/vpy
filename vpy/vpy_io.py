@@ -36,13 +36,15 @@ class Io(object):
         self.args =  parser.parse_args()
         self.log  = self.logger(__name__)
 
-        ## open and parse config file
-        with open('./conf.json') as json_config_file:
-            self.config = json.load(json_config_file)
+        if self.args.file:
+            ## open and parse config file
+            with open('./conf.json') as json_config_file:
+                self.config = json.load(json_config_file)
 
-        ## provide data base
-        srv     = couchdb.Server(self.config['db']['url'])
-        self.db = srv[self.config['db']['name']]
+        if self.args.id:
+            ## provide data base
+            srv     = couchdb.Server(self.config['db']['url'])
+            self.db = srv[self.config['db']['name']]
 
         # save doc
 
