@@ -1,78 +1,17 @@
-import copy
 import numpy as np
-from ..vpy_io import Io
-from ..document import Document
-from ..device.dmm_system_switch import DmmSystemSwitch
-from ..device.cdg import InfCdg
-from ..constants import Constants
-from ..calibration_devices import  CalibrationObject
-from ..values import Temperature, Pressure, Time, AuxSe3
-from ..standard.standard import Standard
-from ..standard.group_normal import GroupNormal
-from ..device.cdg  import Cdg
-
-class Se3(Standard):
-    """Configuration and methodes of static expansion system Se3.
-
-    There is a need to define the  ``no_of_meas_points``:
-    the time: ``amt_fill`` (absolut measure time of filling pressure)
-    is used for this purpos.
-
-    """
-
-    name = "SE3"
-    unit = "mbar"
+import sympy as sym
 
 
+from .std import Se3
+from ...vpy_io import Io
 
-    def __init__(self, orgdoc):
+class Cal(Se3):
+
+    def __init__(self, doc):
+        super().__init__(doc)
+
         self.log = Io().logger(__name__)
 
-        super().__init__(orgdoc, self.name)
-        doc = copy.deepcopy(orgdoc)
-
-        self.Temp = Temperature(doc)
-        self.Pres = Pressure(doc)
-        self.Time = Time(doc)
-        self.Aux  = AuxSe3(doc)
-
-        self.TDev = DmmSystemSwitch(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
-        self.GN   = GroupNormal(doc, (
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1T_3")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_10T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_10T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_10T_3")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_100T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_100T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_100T_3")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_3"))
-                                    ))
-
-        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
-
-    def get_name(self):
-        """Returns the name of the Standard.
-        """
-        return self.name
-
-    def get_gas(self):
-        """Returns the name of the calibration gas.
-
-        .. todo::
-
-                get gas from todo if nothing found in AuxValues
-
-        :returns: gas (N2, He etc.)
-        :rtype: str
-        """
-
-        gas = self.Aux.get_gas()
-        if gas is not None:
-            return gas
 
     def get_expansion(self):
         """Returns an np.array containing
@@ -86,11 +25,14 @@ class Se3(Standard):
         if f is not None:
             return np.full(self.no_of_meas_points, f)
 
-
     def pressure_nd(self, res):
-        """Stores the differential pressure of the zero indicator:
+        """Stores the differential pressure of the zero
+         under the path  *Pressure, nd, mbar*
 
-        *Pressure, nd, mbar*
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         p_nd_off = self.Pres.get_value("nd_offset", "mbar")
         p_nd_ind = self.Pres.get_value("nd_ind", "mbar")
@@ -101,7 +43,12 @@ class Se3(Standard):
         """Calculates the mean value of the filling pressure by means of
         *GroupNormal* methods.
 
-         *Pressure, fill, mbar*
+        Stores result under the path *Pressure, fill, mbar*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         chs = [
             "1T_1","1T_2","1T_3",
@@ -133,7 +80,12 @@ class Se3(Standard):
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
 
-        *Temperature, before, K*
+        Stores result under the path  *Temperature, before, K*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
         f   = self.get_expansion()
         t   = np.full(self.no_of_meas_points, np.nan)
@@ -154,7 +106,19 @@ class Se3(Standard):
             t[i_l] = self.temperature_volume_l()[i_l]
             self.log.info("Points {}  belong to f_l".format(i_l[0]))
 
-        res.store("Temperature" ,"before", t , "K")
+            res.store("Temperature" ,"before", t , "K")
+
+    def temperature_after(self, res):
+        """Calculates the temperature of the end volume.
+        Stores result under the path *Temperature, after, K*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        tem = self.temperature_vessel()
+        res.store("Temperature","after", tem , "K")
 
     def temperature_volume_s(self):
         """Temperature of the medium (0.02l) volume. The used  sensors are:
@@ -172,7 +136,6 @@ class Se3(Standard):
         conv    = self.Cons.get_conv("C", "K")
 
         return np.mean(tem_arr + cor_arr + conv, axis=0)
-
 
     def temperature_volume_m(self):
         """Temperature of the medium (0.2l) volume. The used  sensors are:
@@ -197,14 +160,6 @@ class Se3(Standard):
         conv    = self.Cons.get_conv("C", "K")
 
         return np.mean(tem_arr + cor_arr + conv, axis=0)
-
-    def temperature_after(self, res):
-        """Calculates the temperature of the end volume.
-
-        *Temperature, after, K*
-        """
-        tem = self.temperature_vessel()
-        res.store("Temperature","after", tem , "K")
 
     def temperature_vessel(self):
         """Temperature of the medium (0.2l) volume. The used  sensors are:
