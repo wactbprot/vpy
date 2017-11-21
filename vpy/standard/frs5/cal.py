@@ -10,8 +10,9 @@ class Cal(Frs5):
     def __init__(self, doc):
         super().__init__(doc)
 
-        self.log = Io().logger(__name__)
-
+        io = Io()
+        self.log = io.logger(__name__)
+        self.log.debug("init func: {}".format(__name__))
 
     def pressure_res(self, res):
         """Calculates the residual Pressure from

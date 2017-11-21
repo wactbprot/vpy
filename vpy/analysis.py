@@ -18,8 +18,10 @@ class Analysis(Document):
         super().__init__(o)
         self.org = doc
 
-        self.log = Io().logger(__name__)
-        
+        io = Io()
+        self.log = io.logger(__name__)
+        self.log.debug("init func: {}".format(__name__))
+
     def store(self, quant, t, v, u, sd=None, n=None):
         """Stores the result of a calculation in
         the analysis structure below the given quantity.

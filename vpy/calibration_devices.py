@@ -8,8 +8,9 @@ class CalibrationObject(Document):
 
     def __init__(self, doc):
 
-        self.log = Io().logger(__name__)
-    
+        io = Io()
+        self.log = io.logger(__name__)
+        self.log.debug("init func: {}".format(__name__))
 
         if 'Calibration' in doc:
             dc = doc['Calibration']

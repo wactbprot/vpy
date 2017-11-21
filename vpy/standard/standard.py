@@ -12,7 +12,9 @@ class Standard(Document):
 
     def __init__(self, orgdoc, name):
 
-        self.log = Io().logger(__name__)
+        io = Io()
+        self.log = io.logger(__name__)
+
         doc = copy.deepcopy(orgdoc)
 
         if 'Calibration' in doc:

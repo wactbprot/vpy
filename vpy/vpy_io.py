@@ -9,6 +9,7 @@ import couchdb
 
 class Io(object):
     """docstring for Io."""
+
     def __init__(self):
         """
         Parses the command line argumets.
@@ -34,7 +35,9 @@ class Io(object):
                             , default=False)
 
         self.args =  parser.parse_args()
+
         self.log  = self.logger(__name__)
+        self.log.debug("init func: {}".format(__name__))
 
 
         ## open and parse config file
@@ -47,12 +50,9 @@ class Io(object):
             self.db = srv[self.config['db']['name']]
 
         # save doc
-
         if self.args.s:
-            self.log.info("Will save results")
             self.save = True
         else:
-            self.log.info("Will not save results")
             self.save = False
 
 
@@ -150,42 +150,39 @@ class Io(object):
                 something is wrong here, double output on level=info!
 
         """
-
         logging.config.dictConfig({
             'version': 1,
             'formatters': {
-                'default': {'format': '%(asctime)s - %(name)s -[%(filename)s:%(lineno)s - %(funcName)10s() ] - %(levelname)s - %(message)s',
-                 'datefmt': '%Y-%m-%d %H:%M:%S'}
-            },
-            'handlers': {
-                'default': {
+                'default': {'format': '%(asctime)s - %(name)s -*-{}-*-[%(filename)s:%(lineno)s - %(funcName)10s() ] - %(levelname)s - %(message)s'.format(name),
+                                'datefmt': '%Y-%m-%d %H:%M:%S'}
+                },
+                'handlers': {
+                'console': {
+                    'level':'ERROR',
                     'class': 'logging.StreamHandler',
                     'formatter': 'default',
+                    'stream': 'ext://sys.stdout'
+                    },
 
-                },
-            },
-            'loggers': {
-                'default': {
-                    'handlers': ['default',
-                                ]
+                    },
+                    'loggers': {
+                    'default': {
+                    'handlers': ['console']
                 }
             },
             'disable_existing_loggers': False
         })
-        logger = logging.getLogger('default')
+
+        logger =  logging.getLogger("default")
 
         if self.args.log:
             if self.args.log[0] == "d":
-                logger.setLevel(logging.DEBUG)
-                coloredlogs.install(level='DEBUG', logger=logger)
-
-            if self.args.log[0] == "e":
-                logger.setLevel(logging.ERROR)
-                coloredlogs.install(level='ERROR', logger=logger)
+                coloredlogs.install( level = "DEBUG")
 
             if self.args.log[0] == "i":
-                logger.setLevel(logging.INFO)
-                coloredlogs.install(level='INFO', logger=logger)
+                coloredlogs.install(logger=logger, level = "INFO")
 
+        else:
+            coloredlogs.install(logger=logger, level = "ERROR")
 
         return logger

@@ -8,10 +8,10 @@ from ..constants import Constants
 class GroupNormal(object):
     unit = "mbar"
 
-
-
     def __init__(self, doc, devs):
-        self.log = Io().logger(__name__)
+        io = Io()
+        self.log = io.logger(__name__)
+
 
         self.Const      = Constants(doc)
         self.Devs       = devs

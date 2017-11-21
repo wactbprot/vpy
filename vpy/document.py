@@ -12,9 +12,9 @@ class Document(object):
         :param doc: doc document to search and extract
         :type doc: dict
         """
-
-        self.log = Io().logger(__name__)
-
+        io = Io()
+        self.log = io.logger(__name__)
+        self.log.debug("init func: {}".format(__name__))
         self.doc = doc
 
     def get_all(self):
@@ -115,7 +115,7 @@ class Document(object):
 
                     else:
                         errmsg = "Unit is " + obj["Unit"] + " not " + unit
-                        elf.log.error(errmsg)
+                        self.log.error(errmsg)
                         sys.exit(errmsg)
             else:
                 self.log.error("Expression of Type {} not found".format(val))
@@ -136,7 +136,7 @@ class Document(object):
         if obj:
             if 'Unit' in  obj:
                 if obj["Unit"] == unit:
-                    self.log.info("unit of Type: {} is {}".format(val, unit))
+                    self.log.debug("unit of Type: {} is {}".format(val, unit))
                 else:
                     errmsg="Unit is {} not {}".format(obj['Unit'], unit)
                     self.log.error(errmsg)
@@ -163,7 +163,7 @@ class Document(object):
         """Recursive  searches obj for
         '''obj[key] == val''' and returns obj
         """
-        #self.log.debug("recursion level is: {}".format(d))
+        # self.log.debug("recursion level is: {}".format(d))
         if o:
             obj = copy.deepcopy(o)
         else:

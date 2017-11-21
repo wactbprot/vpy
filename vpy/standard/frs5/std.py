@@ -43,7 +43,10 @@ class Frs5(Standard):
     def __init__(self, orgdoc):
         super().__init__(orgdoc, self.name)
 
-        self.log = Io().logger(__name__)
+        io = Io()
+        self.log = io.logger(__name__)
+        self.log.debug("init func: {}".format(__name__))
+
 
         doc = copy.deepcopy(orgdoc)
         # measurement values
