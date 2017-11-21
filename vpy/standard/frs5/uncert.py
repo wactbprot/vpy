@@ -27,6 +27,9 @@ class Uncert(Frs5):
         self.gen_val_array(res)
         self.uncert_r(res)
         self.uncert_r_0(res)
+        self.uncert_ub(res)
+        self.uncert_usys(res)
+
         #
         #    s_m_cal      = sym.diff(p_frs, m_cal)
         #    s_g          = sym.diff(p_frs, g)
@@ -73,8 +76,6 @@ class Uncert(Frs5):
         val   = f(*self.val_arr)*conv
 
         res.store("Uncertainty", "r", np.absolute(val/p), "1")
-
-
 
     def uncert_r_0(self, res):
         """Calculates the uncertainty of the r_0 (offset)

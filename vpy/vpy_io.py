@@ -36,10 +36,10 @@ class Io(object):
         self.args =  parser.parse_args()
         self.log  = self.logger(__name__)
 
-        if self.args.file:
-            ## open and parse config file
-            with open('./conf.json') as json_config_file:
-                self.config = json.load(json_config_file)
+
+        ## open and parse config file
+        with open('./conf.json') as json_config_file:
+            self.config = json.load(json_config_file)
 
         if self.args.id:
             ## provide data base
