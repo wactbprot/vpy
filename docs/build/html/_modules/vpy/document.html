@@ -55,7 +55,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> vpy
+            <a href="../../modules.html" class="icon icon-home"> vpy
           
 
           
@@ -105,7 +105,7 @@
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../index.html">vpy</a>
+          <a href="../../modules.html">vpy</a>
         
       </nav>
 
@@ -133,7 +133,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../modules.html">Docs</a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -169,9 +169,9 @@
 <span class="sd">        :param doc: doc document to search and extract</span>
 <span class="sd">        :type doc: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-
+        <span class="n">io</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span>
 
 <div class="viewcode-block" id="Document.get_all"><a class="viewcode-back" href="../../vpy.html#vpy.document.Document.get_all">[docs]</a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -272,7 +272,7 @@
 
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Unit is &quot;</span> <span class="o">+</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; not &quot;</span> <span class="o">+</span> <span class="n">unit</span>
-                        <span class="n">elf</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Expression of Type </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
@@ -293,7 +293,7 @@
         <span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
             <span class="k">if</span> <span class="s1">&#39;Unit&#39;</span> <span class="ow">in</span>  <span class="n">obj</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">unit</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;unit of Type: </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;unit of Type: </span><span class="si">{}</span><span class="s2"> is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">errmsg</span><span class="o">=</span><span class="s2">&quot;Unit is </span><span class="si">{}</span><span class="s2"> not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s1">&#39;Unit&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
@@ -320,7 +320,7 @@
         <span class="sd">&quot;&quot;&quot;Recursive  searches obj for</span>
 <span class="sd">        &#39;&#39;&#39;obj[key] == val&#39;&#39;&#39; and returns obj</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#self.log.debug(&quot;recursion level is: {}&quot;.format(d))</span>
+        <span class="c1"># self.log.debug(&quot;recursion level is: {}&quot;.format(d))</span>
         <span class="k">if</span> <span class="n">o</span><span class="p">:</span>
             <span class="n">obj</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>

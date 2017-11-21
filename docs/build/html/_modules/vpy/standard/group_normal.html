@@ -55,7 +55,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> vpy
+            <a href="../../../modules.html" class="icon icon-home"> vpy
           
 
           
@@ -105,7 +105,7 @@
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">vpy</a>
+          <a href="../../../modules.html">vpy</a>
         
       </nav>
 
@@ -133,7 +133,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../modules.html">Docs</a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -165,10 +165,10 @@
 <div class="viewcode-block" id="GroupNormal"><a class="viewcode-back" href="../../../vpy.standard.html#vpy.standard.group_normal.GroupNormal">[docs]</a><span class="k">class</span> <span class="nc">GroupNormal</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;mbar&quot;</span>
 
-
-
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">devs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="n">io</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Const</span>      <span class="o">=</span> <span class="n">Constants</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Devs</span>       <span class="o">=</span> <span class="n">devs</span>
