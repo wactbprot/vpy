@@ -99,7 +99,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.standard.group_normal">vpy.standard.group_normal module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-vpy.standard.se3">vpy.standard.se3 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.standard.standard">vpy.standard.standard module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.standard">Module contents</a></li>
 </ul>
@@ -196,6 +195,13 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.standard.frs5.html#module-vpy.standard.frs5">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="vpy.standard.se3.html">vpy.standard.se3 package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vpy.standard.se3.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.standard.se3.html#module-vpy.standard.se3.cal">vpy.standard.se3.cal module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.standard.se3.html#module-vpy.standard.se3.std">vpy.standard.se3.std module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.standard.se3.html#module-vpy.standard.se3">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -226,148 +232,6 @@
 <dl class="attribute">
 <dt id="vpy.standard.group_normal.GroupNormal.unit">
 <code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.group_normal.GroupNormal.unit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-vpy.standard.se3">
-<span id="vpy-standard-se3-module"></span><h2>vpy.standard.se3 module<a class="headerlink" href="#module-vpy.standard.se3" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="vpy.standard.se3.Se3">
-<em class="property">class </em><code class="descclassname">vpy.standard.se3.</code><code class="descname">Se3</code><span class="sig-paren">(</span><em>orgdoc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#vpy.standard.standard.Standard" title="vpy.standard.standard.Standard"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.standard.Standard</span></code></a></p>
-<p>Configuration and methodes of static expansion system Se3.</p>
-<p>There is a need to define the  <code class="docutils literal"><span class="pre">no_of_meas_points</span></code>:
-the time: <code class="docutils literal"><span class="pre">amt_fill</span></code> (absolut measure time of filling pressure)
-is used for this purpos.</p>
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.get_expansion">
-<code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.get_expansion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an np.array containing
-the expansion name (<code class="docutils literal"><span class="pre">f_s</span></code>, <code class="docutils literal"><span class="pre">f_m</span></code> or <code class="docutils literal"><span class="pre">f_l</span></code>)
-of the length: <code class="docutils literal"><span class="pre">self.no_of_meas_points`</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of expansion names</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array of strings</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.get_gas">
-<code class="descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.get_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.get_gas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the name of the calibration gas.</p>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">get gas from todo if nothing found in AuxValues</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">gas (N2, He etc.)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.get_name">
-<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.get_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the name of the Standard.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="vpy.standard.se3.Se3.name">
-<code class="descname">name</code><em class="property"> = 'SE3'</em><a class="headerlink" href="#vpy.standard.se3.Se3.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.pressure_fill">
-<code class="descname">pressure_fill</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.pressure_fill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.pressure_fill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the mean value of the filling pressure by means of
-<em>GroupNormal</em> methods.</p>
-<blockquote>
-<div><em>Pressure, fill, mbar</em></div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.pressure_nd">
-<code class="descname">pressure_nd</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.pressure_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.pressure_nd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stores the differential pressure of the zero indicator:</p>
-<p><em>Pressure, nd, mbar</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_after">
-<code class="descname">temperature_after</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_after" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the temperature of the end volume.</p>
-<p><em>Temperature, after, K</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_before">
-<code class="descname">temperature_before</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the temperature of the starting volumes.</p>
-<p><em>Temperature, before, K</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_f24">
-<code class="descname">temperature_f24</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_f24"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_f24" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the room. The used  sensors are:</p>
-<p><em>channel 2029 to 2030</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_room">
-<code class="descname">temperature_room</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_room"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_room" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the temperature of the room.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_vessel">
-<code class="descname">temperature_vessel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_vessel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_vessel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.2l) volume. The used  sensors are:</p>
-<p><em>channel 1001 to 1030</em> and <em>channel 2001 to 2028</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_volume_l">
-<code class="descname">temperature_volume_l</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_volume_l"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_volume_l" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.2l) volume. The used  sensors are:</p>
-<p><em>channel 3014 to 3030</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_volume_m">
-<code class="descname">temperature_volume_m</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_volume_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_volume_m" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.2l) volume. The used  sensors are:</p>
-<p><em>channel 3004 to 3013</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.Se3.temperature_volume_s">
-<code class="descname">temperature_volume_s</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3.html#Se3.temperature_volume_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.Se3.temperature_volume_s" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.02l) volume. The used  sensors are:</p>
-<p><em>channel 3001 to 3003</em></p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">range(3001,3004) becomes  3001 to 3003</p>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="vpy.standard.se3.Se3.unit">
-<code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.se3.Se3.unit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
