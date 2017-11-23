@@ -149,14 +149,13 @@ class Frs5(Standard):
                     T,
                     p_res,)
 
-        self.model_offset    = r_zc-r_zc0
-        self.model_buoyancy  = 1.0/(1.0-rho_gas/rho_frs)
-        self.model_temp      = 1.0/(1.0+ab*(T-20.0))
-        self.model_conv      = m_cal/r_cal*g/A*self.model_buoyancy *self.model_temp
+        self.model_offset   = r_zc-r_zc0
+        self.model_buoyancy = 1.0/(1.0-rho_gas/rho_frs)
+        self.model_temp     = 1.0/(1.0+ab*(T-20.0))
+        self.model_conv     = m_cal/(r_cal-r_cal0)*g/A*self.model_buoyancy *self.model_temp
         ## all together
-        self.model            = (r-self.model_offset+ub+usys)*self.model_conv+p_res
+        self.model          = (r-self.model_offset+ub+usys)*self.model_conv+p_res
 
-        self.model_unit = "Pa"
 
 
     def gen_val_dict(self, res):
@@ -168,6 +167,7 @@ class Frs5(Standard):
                 pick(quantity, type, unit)
         :type: class
         """
+        self.model_unit = "Pa"
 
         const_A        = self.get_value("A_eff","m^2"),
         const_r_cal    = self.get_value("R_cal","lb"),

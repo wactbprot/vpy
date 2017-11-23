@@ -8,6 +8,8 @@ class Constants(Document):
     .. todo::
         * impl. def get_mol_weight(gas) done
         * impl. def get_visc(gas)
+        * impl. def get_gas_density(gas) -- calculation f(T, gas, p)
+
 
     :param doc: doc constants to search and extract
     :type doc: dict
@@ -29,6 +31,39 @@ class Constants(Document):
 
     def get_name(self):
         return "Constants"
+
+    def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
+        """Calculates the gas density with:
+
+        .. match::
+
+                \\frac{M}{R T} p
+
+        :param gas: kind of gas
+        :type gas: str
+        :param T: Temperature array
+        :type T: np.array
+        :param Tunit: unit of Temperature array
+        :type Tunit: str
+        :param p: pessure array
+        :type p: np.array
+        :param punit: unit of pessure array
+        :type punit: str
+        :param dunit: expected unit of gas density
+        :returns: gas density under given conditions
+        :rtype: np.array
+        """
+        if Tunit == "C":
+            T = T + self.get_conv("C", "K")
+
+        p = p*self.get_conv(punit, "Pa")
+        M = self.get_mol_weight(gas, "kg/mol")
+        R = self.get_value("R", "Pa m^3/mol/K")
+
+        if dunit == "kg/m^3":
+            dens = M/T/R*p
+            self.log.debug("calculated gas density : {}".format(dens))
+            return dens
 
     def get_mol_weight(self, gas, unit):
         """Returns the molecular weight.
@@ -60,13 +95,17 @@ class Constants(Document):
     def get_conv(self, f, t):
         """Get the conversion factor from unit f to unit t.
         """
-        cstr = "{}_2_{}".format(f, t)
-        ustr = "{}/{}".format(t, f)
-        conv = self.get_value(cstr, ustr)
-        if conv is not None:
-            self.log.info("search: "+cstr+" in "+ustr+" found: {}".format(conv))
-            return conv
+        if f == t:
+            self.log.info("units are the same return 1")
+            return np.array([1])
         else:
-            errmsg = "no conversion factor from {} to {}".format(f, t)
-            self.log.error(errmsg)
-            sys.exit(errmsg)
+            cstr = "{}_2_{}".format(f, t)
+            ustr = "{}/{}".format(t, f)
+            conv = self.get_value(cstr, ustr)
+            if conv is not None:
+                self.log.info("search: "+cstr+" in "+ustr+" found: {}".format(conv))
+                return conv
+            else:
+                errmsg = "no conversion factor from {} to {}".format(f, t)
+                self.log.error(errmsg)
+                sys.exit(errmsg)
