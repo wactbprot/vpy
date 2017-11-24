@@ -35,7 +35,7 @@ class Constants(Document):
     def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
 
-        .. match::
+        .. math::
 
                 \\frac{M}{R T} p
 

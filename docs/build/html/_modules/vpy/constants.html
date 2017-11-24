@@ -165,6 +165,8 @@
 <span class="sd">    .. todo::</span>
 <span class="sd">        * impl. def get_mol_weight(gas) done</span>
 <span class="sd">        * impl. def get_visc(gas)</span>
+<span class="sd">        * impl. def get_gas_density(gas) -- calculation f(T, gas, p)</span>
+
 
 <span class="sd">    :param doc: doc constants to search and extract</span>
 <span class="sd">    :type doc: dict</span>
@@ -186,6 +188,39 @@
 
 <div class="viewcode-block" id="Constants.get_name"><a class="viewcode-back" href="../../vpy.html#vpy.constants.Constants.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;Constants&quot;</span></div>
+
+<div class="viewcode-block" id="Constants.get_gas_density"><a class="viewcode-back" href="../../vpy.html#vpy.constants.Constants.get_gas_density">[docs]</a>    <span class="k">def</span> <span class="nf">get_gas_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gas</span><span class="p">,</span>  <span class="n">p</span><span class="p">,</span> <span class="n">punit</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">Tunit</span><span class="p">,</span> <span class="n">dunit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the gas density with:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">                \\frac{M}{R T} p</span>
+
+<span class="sd">        :param gas: kind of gas</span>
+<span class="sd">        :type gas: str</span>
+<span class="sd">        :param T: Temperature array</span>
+<span class="sd">        :type T: np.array</span>
+<span class="sd">        :param Tunit: unit of Temperature array</span>
+<span class="sd">        :type Tunit: str</span>
+<span class="sd">        :param p: pessure array</span>
+<span class="sd">        :type p: np.array</span>
+<span class="sd">        :param punit: unit of pessure array</span>
+<span class="sd">        :type punit: str</span>
+<span class="sd">        :param dunit: expected unit of gas density</span>
+<span class="sd">        :returns: gas density under given conditions</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Tunit</span> <span class="o">==</span> <span class="s2">&quot;C&quot;</span><span class="p">:</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="n">T</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="n">punit</span><span class="p">,</span> <span class="s2">&quot;Pa&quot;</span><span class="p">)</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mol_weight</span><span class="p">(</span><span class="n">gas</span><span class="p">,</span> <span class="s2">&quot;kg/mol&quot;</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;R&quot;</span><span class="p">,</span> <span class="s2">&quot;Pa m^3/mol/K&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">dunit</span> <span class="o">==</span> <span class="s2">&quot;kg/m^3&quot;</span><span class="p">:</span>
+            <span class="n">dens</span> <span class="o">=</span> <span class="n">M</span><span class="o">/</span><span class="n">T</span><span class="o">/</span><span class="n">R</span><span class="o">*</span><span class="n">p</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;calculated gas density : </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dens</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">dens</span></div>
 
 <div class="viewcode-block" id="Constants.get_mol_weight"><a class="viewcode-back" href="../../vpy.html#vpy.constants.Constants.get_mol_weight">[docs]</a>    <span class="k">def</span> <span class="nf">get_mol_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gas</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the molecular weight.</span>
@@ -217,16 +252,20 @@
 <div class="viewcode-block" id="Constants.get_conv"><a class="viewcode-back" href="../../vpy.html#vpy.constants.Constants.get_conv">[docs]</a>    <span class="k">def</span> <span class="nf">get_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get the conversion factor from unit f to unit t.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cstr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_2_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-        <span class="n">ustr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">cstr</span><span class="p">,</span> <span class="n">ustr</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">conv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search: &quot;</span><span class="o">+</span><span class="n">cstr</span><span class="o">+</span><span class="s2">&quot; in &quot;</span><span class="o">+</span><span class="n">ustr</span><span class="o">+</span><span class="s2">&quot; found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conv</span><span class="p">))</span>
-            <span class="k">return</span> <span class="n">conv</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="n">t</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;units are the same return 1&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;no conversion factor from </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span></div></div>
+            <span class="n">cstr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_2_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+            <span class="n">ustr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">cstr</span><span class="p">,</span> <span class="n">ustr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">conv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search: &quot;</span><span class="o">+</span><span class="n">cstr</span><span class="o">+</span><span class="s2">&quot; in &quot;</span><span class="o">+</span><span class="n">ustr</span><span class="o">+</span><span class="s2">&quot; found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conv</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">conv</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;no conversion factor from </span><span class="si">{}</span><span class="s2"> to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

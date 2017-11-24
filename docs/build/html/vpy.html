@@ -309,6 +309,7 @@ the analysis structure below the given quantity.</p>
 <ul class="last simple">
 <li>impl. def get_mol_weight(gas) done</li>
 <li>impl. def get_visc(gas)</li>
+<li>impl. def get_gas_density(gas) – calculation f(T, gas, p)</li>
 </ul>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -323,6 +324,36 @@ the analysis structure below the given quantity.</p>
 <dt id="vpy.constants.Constants.get_conv">
 <code class="descname">get_conv</code><span class="sig-paren">(</span><em>f</em>, <em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/constants.html#Constants.get_conv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.constants.Constants.get_conv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the conversion factor from unit f to unit t.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.constants.Constants.get_gas_density">
+<code class="descname">get_gas_density</code><span class="sig-paren">(</span><em>gas</em>, <em>p</em>, <em>punit</em>, <em>T</em>, <em>Tunit</em>, <em>dunit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/constants.html#Constants.get_gas_density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.constants.Constants.get_gas_density" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the gas density with:</p>
+<div class="math">
+\[\frac{M}{R T} p\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>gas</strong> (<em>str</em>) – kind of gas</li>
+<li><strong>T</strong> (<em>np.array</em>) – Temperature array</li>
+<li><strong>Tunit</strong> (<em>str</em>) – unit of Temperature array</li>
+<li><strong>p</strong> (<em>np.array</em>) – pessure array</li>
+<li><strong>punit</strong> (<em>str</em>) – unit of pessure array</li>
+<li><strong>dunit</strong> – expected unit of gas density</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">gas density under given conditions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

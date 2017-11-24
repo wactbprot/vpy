@@ -368,7 +368,9 @@ pick(quantity, type, unit)</td>
 <dt id="vpy.standard.frs5.std.Frs5.gen_val_dict">
 <code class="descname">gen_val_dict</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/std.html#Frs5.gen_val_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.gen_val_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads in a dict of values
-with the same order as <code class="docutils literal"><span class="pre">define_models</span></code> symbols order:</p>
+with the same order as in <code class="docutils literal"><span class="pre">define_models</span></code>. For the calculation
+of the gas density, the Frs reading is multiplyed by 10 which gives a
+suffucient approximation for the pressure.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -450,6 +452,42 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_T">
+<code class="descname">uncert_T</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_T"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_T" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the temperature correction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_ab">
+<code class="descname">uncert_ab</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_ab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_ab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty temperature expansion coefficient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.frs5.uncert.Uncert.uncert_g">
 <code class="descname">uncert_g</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_g"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_g" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the uncertainty of m_cal</p>
@@ -504,6 +542,42 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_cal">
+<code class="descname">uncert_r_cal</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_r_cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of r_cal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_cal0">
+<code class="descname">uncert_r_cal0</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_r_cal0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_cal0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of r_cal0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_zc">
 <code class="descname">uncert_r_zc</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_r_zc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_zc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the uncertainty of the r_zc
@@ -526,6 +600,53 @@ pick(quantity, type, unit)</td>
 <dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_zc0">
 <code class="descname">uncert_r_zc0</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_r_zc0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_zc0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the uncertainty of the r_zc0 (initial zero check)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_rho_frs">
+<code class="descname">uncert_rho_frs</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_rho_frs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_rho_frs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the buoyancy correction for the piston.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>In order to avoid an uncertainty value of 0 the value 0
+for rho_gas (used during
+calculation) is replaced by the value at p, N2 and 27°C:</p>
+<p class="last">(28.013e-3/(296.0+5.)/8.314*100./2.)</p>
+</div>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">lambdify s_expr with density!</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_rho_gas">
+<code class="descname">uncert_rho_gas</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.uncert_rho_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_rho_gas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the buoyancy correction</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
