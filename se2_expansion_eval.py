@@ -29,22 +29,22 @@ if __name__ == "__main__":
         frs_uncert.total(res)
         print(res.pick("Pressure", "frs5", "mbar"))
 
-#       se2_calc.temperature_before(res)
-#       se2_calc.temperature_after(res)
-#       se2_calc.temperature_room(res)
-#       se2_calc.pressure_fill(res)
-#       se2_calc.pressure_nd(res)
-#       se2_calc.real_gas_correction(res)
-#
-#       rg   = res.pick("Correction", "rg", "1")
-#       p_0  = res.pick("Pressure", "fill", "mbar")
-#       p_1  = res.pick("Pressure", "frs5", "mbar")
-#       p_nd = res.pick("Pressure", "nd", "mbar")
-#       T_0  = res.pick("Temperature", "before", "K")
-#       T_1  = res.pick("Temperature", "after", "K")
-#
-#       cor_tem  =  T_0 / T_1
-#       f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
+        se2_calc.temperature_before(res)
+        se2_calc.temperature_after(res)
+        se2_calc.pressure_nd(res)
+        ## ! pfill noch uncorr!
+        se2_calc.pressure_fill(res)
+        se2_calc.real_gas_correction(res)
+        rg   = res.pick("Correction", "rg", "1")
+        p_0  = res.pick("Pressure", "fill", "mbar")
+        p_1  = res.pick("Pressure", "frs5", "mbar")
+        p_nd = res.pick("Pressure", "nd", "mbar")
+        T_0  = res.pick("Temperature", "before", "K")
+        T_1  = res.pick("Temperature", "after", "K")
+
+        cor_tem  =  T_0 / T_1
+        f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
+        print(f)
 #
 #       res.store("Correction", "temperature_expansion", cor_tem, "1")
 #       res.store("Expansion", se3_calc.get_expansion()[-1], f, "1")

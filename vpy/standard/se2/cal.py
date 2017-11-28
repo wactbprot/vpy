@@ -1,6 +1,6 @@
 import numpy as np
 import sympy as sym
-
+import inspect as insp
 
 from .std import Se2
 from ...vpy_io import Io
@@ -50,14 +50,15 @@ class Cal(Se2):
                 pick(quantity, type, unit)
         :type: class
         """
+        conv    = self.Cons.get_conv("kPa", "mbar")
 
-        p_fill        = self.Pres.get_value("fill","mbar")
+        p_fill        = self.Pres.get_value("fill","kPa")
         meas_time     = self.Time.get_value("amt_fill", "ms")
-        p_fill_offset = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "fill_offset", "mbar")
+        p_fill_offset = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "fill_offset", "kPa")
 
-        print(p_fill  - p_fill_offset)
+        p_fill_uncorr =  (p_fill  - p_fill_offset) * conv
 
-        #res.store("Pressure" ,"fill", p_fill , "mbar")
+        res.store("Pressure" ,"fill", p_fill_uncorr, "mbar")
 
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
@@ -72,23 +73,16 @@ class Cal(Se2):
         f   = self.get_expansion()
         t   = np.full(self.no_of_meas_points, np.nan)
 
-        i_s = np.where(f == "f_s")
-        i_m = np.where(f == "f_m")
-        i_l = np.where(f == "f_l")
+        i_1 = np.where(f == "f_1")[0]
+        i_2 = np.where(f == "f_2")[0]
 
-        if len(i_s) > 0:
-            t[i_s] = self.temperature_volume_s()[i_s]
-            self.log.info("Points {}  belong to f_s".format(i_s[0]))
+        if len(i_1) > 0:
+            t[i_1] = self.temperature_volume_1()[i_1]
+            self.log.info("Points {}  belong to f_1".format(i_1[0]))
 
-        if len(i_m) > 0:
-            t[i_m] = self.temperature_volume_m()[i_m]
-            self.log.info("Points {}  belong to f_m".format(i_m[0]))
+        res.store("Temperature" ,"before", t , "K")
 
-        if len(i_l) > 0:
-            t[i_l] = self.temperature_volume_l()[i_l]
-            self.log.info("Points {}  belong to f_l".format(i_l[0]))
 
-            res.store("Temperature" ,"before", t , "K")
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
@@ -102,34 +96,28 @@ class Cal(Se2):
         tem = self.temperature_vessel()
         res.store("Temperature","after", tem , "K")
 
-    def temperature_volume_s(self):
-        """Temperature of the medium (0.02l) volume. The used  sensors are:
+    def temperature_volume_1(self):
+        """Temperature of the medium (0.1l) volume. The used  sensors are:
 
-        *channel 3001 to 3003*
+        *channel 101*
 
-        .. note::
-
-            range(3001,3004) becomes  3001 to 3003
         """
-
-        chs     = list(range(3001, 3004))
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
         conv    = self.Cons.get_conv("C", "K")
 
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
+        chs     = list(range(101, 102))
+        tem_arr = self.Temp.get_array("keithley_T_before_ch", chs, "", "C")
+        cor_arr = self.TDev.get_array("corr_keithleych", chs, "", "K")
 
-    def temperature_volume_m(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
+        t_mean =  np.mean(tem_arr + cor_arr + conv, axis=0)
 
-        *channel 3004 to 3013*
-        """
-        chs     = list(range(3004, 3014))
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
+        chs_add     = list(range(101, 103))
+        tem_arr_add = self.Temp.get_array("agilent_T_before_ch", chs, "", "C")
+        cor_arr_add = self.TDevAdd.get_array("agilentCorrCh", chs, "", "K")
 
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
+        t_mean_add =  np.mean(tem_arr_add + cor_arr_add + conv, axis=0)
+
+        return (t_mean + t_mean_add)/2.
+
 
     def temperature_volume_l(self):
         """Temperature of the medium (0.2l) volume. The used  sensors are:
@@ -146,31 +134,20 @@ class Cal(Se2):
     def temperature_vessel(self):
         """Temperature of the medium (0.2l) volume. The used  sensors are:
 
-        *channel 1001 to 1030* and *channel 2001 to 2028*
-        """
-        chs = list(range(1001, 1031)) + list(range(2001, 2029))
 
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
+        """
         conv    = self.Cons.get_conv("C", "K")
 
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
+        chs     = list(range(104, 110))
+        tem_arr = self.Temp.get_array("keithley_T_before_ch", chs, "", "C")
+        cor_arr = self.TDev.get_array("corr_keithleych", chs, "", "K")
 
-    def temperature_room(self, res):
-        """Calculates the temperature of the room.
-        """
-        tem = self.temperature_f24()
-        res.store("Temperature","room", tem , "K")
+        t_mean =  np.mean(tem_arr + cor_arr + conv, axis=0)
 
-    def temperature_f24(self):
-        """Temperature of the room. The used  sensors are:
+        chs_add     = list(range(105, 110))
+        tem_arr_add = self.Temp.get_array("agilent_T_before_ch", chs, "", "C")
+        cor_arr_add = self.TDevAdd.get_array("agilentCorrCh", chs, "", "K")
 
-        *channel 2029 to 2030*
-        """
-        chs = list(range(2029, 2031))
+        t_mean_add =  np.mean(tem_arr_add + cor_arr_add + conv, axis=0)
 
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
+        return (t_mean + t_mean_add)/2.
