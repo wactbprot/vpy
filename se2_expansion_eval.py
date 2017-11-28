@@ -35,6 +35,7 @@ if __name__ == "__main__":
         ## ! pfill noch uncorr!
         se2_calc.pressure_fill(res)
         se2_calc.real_gas_correction(res)
+
         rg   = res.pick("Correction", "rg", "1")
         p_0  = res.pick("Pressure", "fill", "mbar")
         p_1  = res.pick("Pressure", "frs5", "mbar")
@@ -44,10 +45,10 @@ if __name__ == "__main__":
 
         cor_tem  =  T_0 / T_1
         f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
-        print(f)
-#
-#       res.store("Correction", "temperature_expansion", cor_tem, "1")
-#       res.store("Expansion", se3_calc.get_expansion()[-1], f, "1")
-#       log.info("expansin factors are: {}".format(f))
-#       log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
+
+
+        res.store("Correction", "temperature_expansion", cor_tem, "1")
+        res.store("Expansion", "f_2", f, "1")
+        log.info("expansin factors are: {}".format(f))
+        log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
         io.save_doc(res.build_doc())

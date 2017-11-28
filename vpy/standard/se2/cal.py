@@ -133,18 +133,16 @@ class Cal(Se2):
 
     def temperature_vessel(self):
         """Temperature of the medium (0.2l) volume. The used  sensors are:
-
-
         """
         conv    = self.Cons.get_conv("C", "K")
 
-        chs     = list(range(104, 110))
+        chs     = list(range(105, 111))
         tem_arr = self.Temp.get_array("keithley_T_before_ch", chs, "", "C")
         cor_arr = self.TDev.get_array("corr_keithleych", chs, "", "K")
 
         t_mean =  np.mean(tem_arr + cor_arr + conv, axis=0)
 
-        chs_add     = list(range(105, 110))
+        chs_add     = list(range(105, 111))
         tem_arr_add = self.Temp.get_array("agilent_T_before_ch", chs, "", "C")
         cor_arr_add = self.TDevAdd.get_array("agilentCorrCh", chs, "", "K")
 

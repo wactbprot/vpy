@@ -1,6 +1,6 @@
 {
   "db":{
     "url":"http://e73461.berlin.ptb.de:5984",
-    "name": "vl_db_work"
+    "name": "vl_db"
   }
 }
