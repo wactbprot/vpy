@@ -348,9 +348,7 @@ class Uncert(Frs5):
 
         ## -- rho piston --
 
-        T       = res.pick("Temperature", "frs5", "C") + self.Cons.get_conv("C", "K")
-        gas     = self.get_gas()
-        dens    = self.Cons.get_gas_density(gas, p, self.unit, T, "K","kg/m^3")
+
         s_expr  = sym.diff(self.model, sym.Symbol('rho_frs'))
         s_expr  = s_expr.subs(sym.Symbol('rho_gas'), dens)
 
