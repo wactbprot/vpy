@@ -30,10 +30,13 @@ class Cal(Frs5):
 
         ind     = self.Pres.get_obj("frs_res_ind", "DCR")
         res_ind = self.ResDev.pressure(ind, tem, "mbar", gas)
+        p_res   = res_ind - res_off
+
+        self.log.debug("residial FRS5 pressure is: {}".format(p_res))
 
         res.store('Pressure',"frs5_res_off", res_off, "mbar")
         res.store('Pressure',"frs5_res_ind", res_ind, "mbar")
-        res.store('Pressure',"frs5_res", res_ind - res_off , "mbar")
+        res.store('Pressure',"frs5_res", p_res , "mbar")
 
     def temperature(self, res):
         """

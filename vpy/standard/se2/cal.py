@@ -9,7 +9,7 @@ class Cal(Se2):
 
     def __init__(self, doc):
         super().__init__(doc)
-    
+
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
@@ -122,6 +122,28 @@ class Cal(Se2):
         t_mean_add =  np.mean(tem_arr_add + cor_arr_add + conv, axis=0)
 
         return (t_mean + t_mean_add)/2.
+
+    def temperature_volume_1(self):
+            """Temperature of the medium (0.1l) volume. The used  sensors are:
+
+            *channel 101*
+
+            """
+            conv    = self.Cons.get_conv("C", "K")
+
+            chs     = list(range(102, 104))
+            tem_arr = self.Temp.get_array("keithley_T_before_ch", chs, "", "C")
+            cor_arr = self.TDev.get_array("corr_keithleych", chs, "", "K")
+
+            t_mean =  np.mean(tem_arr + cor_arr + conv, axis=0)
+
+            chs_add     = list(range(103, 105))
+            tem_arr_add = self.Temp.get_array("agilent_T_before_ch", chs, "", "C")
+            cor_arr_add = self.TDevAdd.get_array("agilentCorrCh", chs, "", "K")
+
+            t_mean_add =  np.mean(tem_arr_add + cor_arr_add + conv, axis=0)
+
+            return (t_mean + t_mean_add)/2.
 
 
 
