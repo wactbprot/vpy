@@ -15,11 +15,6 @@ class Values(Document):
 
 
     def __init__(self, doc, name, quant):
-
-        io = Io()
-        self.log = io.logger(__name__)
-        self.log.debug("init func: {}".format(__name__))
-
         if 'Calibration' in doc:
             dc = doc['Calibration']
             if quant in dc:
@@ -32,6 +27,8 @@ class Values(Document):
         if name in doc:
             super().__init__(doc[name])
 
+        self.log.debug("init func: {}".format(__name__))
+
 class Temperature(Values):
     def __init__(self, doc, quant = "Measurement"):
         super().__init__(doc, 'Temperature', quant)
@@ -43,7 +40,6 @@ class Pressure(Values):
 class Time(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Time', quant)
-
 
 class AuxValues(Document):
 
@@ -122,7 +118,6 @@ class AuxValues(Document):
     def get_obj_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
         val = self.get_by_time(meastime, auxtime, timeunit, auxval, valunit)
         return {"Type": auxval, "Value":  val, "Unit":valunit}
-
 
 class AuxSe3(AuxValues):
     """AuxValues for SE3 Standard.
