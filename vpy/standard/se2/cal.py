@@ -9,9 +9,7 @@ class Cal(Se2):
 
     def __init__(self, doc):
         super().__init__(doc)
-
-        self.log = Io().logger(__name__)
-
+    
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
@@ -49,18 +47,21 @@ class Cal(Se2):
                 pick(quantity, type, unit)
         :type: class
         """
+
         conv    = self.Cons.get_conv("kPa", "mbar")
 
-        p_fill        = self.Pres.get_value("fill","kPa")
+        p_fill        = self.Pres.get_value("fill","kPa")*conv
         meas_time     = self.Time.get_value("amt_fill", "ms")
-        p_fill_offset = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "fill_offset", "kPa")
+        p_fill_offset = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "fill_offset", "kPa")*conv
 
-        p_fill_uncorr = (p_fill  - p_fill_offset) * conv
+        p_fill_uncorr = (p_fill  - p_fill_offset)
         e             = self.Qbs.get_error_correction(p_fill_uncorr, "mbar", "%")/100.
         pfill         = p_fill_uncorr/(e + 1.)
 
         res.store("Error" ,"fill", e, "1")
+        res.store("Pressure" ,"fill_offset", p_fill_offset, "mbar")
         res.store("Pressure" ,"fill", p_fill, "mbar")
+
 
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.

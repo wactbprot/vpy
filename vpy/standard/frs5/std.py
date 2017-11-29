@@ -43,8 +43,6 @@ class Frs5(Standard):
     def __init__(self, orgdoc):
         super().__init__(orgdoc, self.name)
 
-        io = Io()
-        self.log = io.logger(__name__)
         self.log.debug("init func: {}".format(__name__))
 
 

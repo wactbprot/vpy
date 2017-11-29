@@ -5,8 +5,7 @@ from ..vpy_io import Io
 class DmmSystemSwitch(Device):
 
     def __init__(self, doc, dev):
-        io = Io()
-        self.log = io.logger(__name__)
+        
         self.log.debug("init func: {}".format(__name__))
 
         super().__init__(doc, dev)

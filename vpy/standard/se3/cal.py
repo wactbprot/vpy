@@ -9,9 +9,7 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-
-        self.log = Io().logger(__name__)
-
+        
 
     def get_expansion(self):
         """Returns an np.array containing
