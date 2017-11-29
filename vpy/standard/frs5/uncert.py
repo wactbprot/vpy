@@ -10,8 +10,6 @@ class Uncert(Frs5):
     def __init__(self, doc):
         super().__init__(doc)
 
-        io = Io()
-        self.log = io.logger(__name__)
         self.log.debug("init func: {}".format(__name__))
 
     def total(self, res):
@@ -348,17 +346,15 @@ class Uncert(Frs5):
 
         ## -- rho piston --
 
-        T       = res.pick("Temperature", "frs5", "C") + self.Cons.get_conv("C", "K")
-        gas     = self.get_gas()
-        dens    = self.Cons.get_gas_density(gas, p, self.unit, T, "K","kg/m^3")
-        s_expr  = sym.diff(self.model, sym.Symbol('rho_frs'))
-        s_expr  = s_expr.subs(sym.Symbol('rho_gas'), dens)
 
-        u_expr  = self.get_expression("u_rho_frs", "kg/m^3")
+        #s_expr  = sym.diff(self.model, sym.Symbol('rho_frs'))
+        #s_expr  = s_expr.subs(sym.Symbol('rho_gas'), dens)
 
-        f       = sym.lambdify(self.symb, s_expr * u_expr, "numpy")
-        val     = f(*self.val_arr)*pconv
+        #u_expr  = self.get_expression("u_rho_frs", "kg/m^3")
 
+        #f       = sym.lambdify(self.symb, s_expr * u_expr, "numpy")
+        #val     = f(*self.val_arr)*pconv
+        val = np.full(self.no_of_meas_points, 0.0)
         self.log.debug("uncert rho_frs: {}".format(val/p))
         res.store("Uncertainty", "u_rho_frs", np.absolute(val/p), "1")
 

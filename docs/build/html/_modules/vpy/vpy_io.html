@@ -156,7 +156,6 @@
             
   <h1>Source code for vpy.vpy_io</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">logging.config</span>
 <span class="kn">import</span> <span class="nn">coloredlogs</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -307,40 +306,19 @@
 <span class="sd">                something is wrong here, double output on level=info!</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">dictConfig</span><span class="p">({</span>
-            <span class="s1">&#39;version&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-            <span class="s1">&#39;formatters&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;format&#39;</span><span class="p">:</span> <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> -*-</span><span class="si">{}</span><span class="s1">-*-[</span><span class="si">%(filename)s</span><span class="s1">:</span><span class="si">%(lineno)s</span><span class="s1"> - </span><span class="si">%(funcName)10s</span><span class="s1">() ] - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
-                                <span class="s1">&#39;datefmt&#39;</span><span class="p">:</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">}</span>
-                <span class="p">},</span>
-                <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s1">&#39;console&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;level&#39;</span><span class="p">:</span><span class="s1">&#39;ERROR&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;class&#39;</span><span class="p">:</span> <span class="s1">&#39;logging.StreamHandler&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;formatter&#39;</span><span class="p">:</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;stream&#39;</span><span class="p">:</span> <span class="s1">&#39;ext://sys.stdout&#39;</span>
-                    <span class="p">},</span>
 
-                    <span class="p">},</span>
-                    <span class="s1">&#39;loggers&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;default&#39;</span><span class="p">:</span> <span class="p">{</span>
-                    <span class="s1">&#39;handlers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;console&#39;</span><span class="p">]</span>
-                <span class="p">}</span>
-            <span class="p">},</span>
-            <span class="s1">&#39;disable_existing_loggers&#39;</span><span class="p">:</span> <span class="kc">False</span>
-        <span class="p">})</span>
-
-        <span class="n">logger</span> <span class="o">=</span>  <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
-
+        <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+        <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1">,</span><span class="si">%(msecs)03d</span><span class="s1"> </span><span class="si">%(hostname)s</span><span class="s1"> </span><span class="si">%(filename)s</span><span class="s1">:</span><span class="si">%(lineno)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1"> </span><span class="si">%(message)s</span><span class="s1">&#39;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;d&quot;</span><span class="p">:</span>
-                <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span> <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>
+                <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span>
+                <span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span>
-                <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+                <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span> <span class="o">=</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">)</span>
+            <span class="n">coloredlogs</span><span class="o">.</span><span class="n">install</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">logger</span></div></div>
 </pre></div>

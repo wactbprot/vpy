@@ -44,10 +44,10 @@ vpy\.document module
     :undoc-members:
     :show-inheritance:
 
-vpy\.test\_cal module
----------------------
+vpy\.test\_document module
+--------------------------
 
-.. automodule:: vpy.test_cal
+.. automodule:: vpy.test_document
     :members:
     :undoc-members:
     :show-inheritance:

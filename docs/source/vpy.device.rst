@@ -20,10 +20,26 @@ vpy\.device\.device module
     :undoc-members:
     :show-inheritance:
 
+vpy\.device\.dmm module
+-----------------------
+
+.. automodule:: vpy.device.dmm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 vpy\.device\.dmm\_system\_switch module
 ---------------------------------------
 
 .. automodule:: vpy.device.dmm_system_switch
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vpy\.device\.qbs module
+-----------------------
+
+.. automodule:: vpy.device.qbs
     :members:
     :undoc-members:
     :show-inheritance:

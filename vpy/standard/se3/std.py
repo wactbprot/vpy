@@ -22,8 +22,7 @@ class Se3(Standard):
     unit = "mbar"
 
     def __init__(self, orgdoc):
-        self.log = Io().logger(__name__)
-
+        
         super().__init__(orgdoc, self.name)
         doc = copy.deepcopy(orgdoc)
 

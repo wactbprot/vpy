@@ -37,7 +37,7 @@ class Constants(Document):
 
         .. math::
 
-                \\frac{M}{R T} p
+                \\rho_{gas} = \\frac{M}{R T} p
 
         :param gas: kind of gas
         :type gas: str

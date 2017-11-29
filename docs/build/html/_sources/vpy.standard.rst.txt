@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     vpy.standard.frs5
+    vpy.standard.se2
     vpy.standard.se3
 
 Submodules

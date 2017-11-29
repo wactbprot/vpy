@@ -9,9 +9,7 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-
-        self.log = Io().logger(__name__)
-
+        
 
     def get_expansion(self):
         """Returns an np.array containing
@@ -90,9 +88,9 @@ class Cal(Se3):
         f   = self.get_expansion()
         t   = np.full(self.no_of_meas_points, np.nan)
 
-        i_s = np.where(f == "f_s")
-        i_m = np.where(f == "f_m")
-        i_l = np.where(f == "f_l")
+        i_s = np.where(f == "f_s")[0]
+        i_m = np.where(f == "f_m")[0]
+        i_l = np.where(f == "f_l")[0]
 
         if len(i_s) > 0:
             t[i_s] = self.temperature_volume_s()[i_s]
@@ -106,7 +104,7 @@ class Cal(Se3):
             t[i_l] = self.temperature_volume_l()[i_l]
             self.log.info("Points {}  belong to f_l".format(i_l[0]))
 
-            res.store("Temperature" ,"before", t , "K")
+        res.store("Temperature" ,"before", t , "K")
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
