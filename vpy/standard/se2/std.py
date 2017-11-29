@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 from ...vpy_io import Io
-from ...device.cdg import InfCdg
+from ...device.qbs import Qbs
 from ...device.dmm import Dmm
 from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
@@ -34,7 +34,7 @@ class Se2(Standard):
 
         self.TDev    = Dmm(doc, self.Cobj.get_by_name("SE2_DMM_Keithley"))
         self.TDevAdd = Dmm(doc, self.Cobj.get_by_name("FM3_CE3-DMM_Agilent"))
-
+        self.Qbs     = Qbs(doc, self.Cobj.get_by_name("SE2_Ruska"))
 
         self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 

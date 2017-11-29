@@ -98,7 +98,9 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.device.cdg">vpy.device.cdg module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.device.device">vpy.device.device module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-vpy.device.dmm">vpy.device.dmm module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.device.dmm_system_switch">vpy.device.dmm_system_switch module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-vpy.device.qbs">vpy.device.qbs module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.device.srg">vpy.device.srg module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.device">Module contents</a></li>
 </ul>
@@ -196,7 +198,11 @@
 <dl class="method">
 <dt id="vpy.device.cdg.Cdg.cal_error_interpol">
 <code class="descname">cal_error_interpol</code><span class="sig-paren">(</span><em>pind</em>, <em>pcal</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.cal_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.cal_error_interpol" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">implement expected unit of the return value</p>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="vpy.device.cdg.Cdg.cut_values">
@@ -206,7 +212,11 @@
 <dl class="method">
 <dt id="vpy.device.cdg.Cdg.get_error_interpol">
 <code class="descname">get_error_interpol</code><span class="sig-paren">(</span><em>p</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.get_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.get_error_interpol" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">implement expected unit of the return value</p>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="vpy.device.cdg.Cdg.get_name">
@@ -269,6 +279,20 @@ self.Const and self.Dev, nothing more</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-vpy.device.dmm">
+<span id="vpy-device-dmm-module"></span><h2>vpy.device.dmm module<a class="headerlink" href="#module-vpy.device.dmm" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.device.dmm.Dmm">
+<em class="property">class </em><code class="descclassname">vpy.device.dmm.</code><code class="descname">Dmm</code><span class="sig-paren">(</span><em>doc</em>, <em>dev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/dmm.html#Dmm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.dmm.Dmm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<dl class="method">
+<dt id="vpy.device.dmm.Dmm.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/dmm.html#Dmm.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.dmm.Dmm.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-vpy.device.dmm_system_switch">
 <span id="vpy-device-dmm-system-switch-module"></span><h2>vpy.device.dmm_system_switch module<a class="headerlink" href="#module-vpy.device.dmm_system_switch" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -278,6 +302,39 @@ self.Const and self.Dev, nothing more</p>
 <dl class="method">
 <dt id="vpy.device.dmm_system_switch.DmmSystemSwitch.get_name">
 <code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/dmm_system_switch.html#DmmSystemSwitch.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.dmm_system_switch.DmmSystemSwitch.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.qbs">
+<span id="vpy-device-qbs-module"></span><h2>vpy.device.qbs module<a class="headerlink" href="#module-vpy.device.qbs" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.device.qbs.Qbs">
+<em class="property">class </em><code class="descclassname">vpy.device.qbs.</code><code class="descname">Qbs</code><span class="sig-paren">(</span><em>doc</em>, <em>dev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/qbs.html#Qbs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.qbs.Qbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<dl class="method">
+<dt id="vpy.device.qbs.Qbs.get_error_correction">
+<code class="descname">get_error_correction</code><span class="sig-paren">(</span><em>p</em>, <em>punit</em>, <em>runit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/qbs.html#Qbs.get_error_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.qbs.Qbs.get_error_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error of indication by means of the expression stored</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p</strong> (<em>np.array</em>) – p pressure to calculate the error</li>
+<li><strong>punit</strong> (<em>str</em>) – punit pressure unit</li>
+<li><strong>runit</strong> (<em>str</em>) – runit unit of values returned</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.device.qbs.Qbs.get_name">
+<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/qbs.html#Qbs.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.qbs.Qbs.get_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

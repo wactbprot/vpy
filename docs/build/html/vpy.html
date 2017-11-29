@@ -181,7 +181,9 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.device.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device.cdg">vpy.device.cdg module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device.device">vpy.device.device module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device.dmm">vpy.device.dmm module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device.dmm_system_switch">vpy.device.dmm_system_switch module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device.qbs">vpy.device.qbs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device.srg">vpy.device.srg module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.device.html#module-vpy.device">Module contents</a></li>
 </ul>
@@ -194,6 +196,13 @@
 <li class="toctree-l4"><a class="reference internal" href="vpy.standard.frs5.html#module-vpy.standard.frs5.std">vpy.standard.frs5.std module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="vpy.standard.frs5.html#module-vpy.standard.frs5.uncert">vpy.standard.frs5.uncert module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="vpy.standard.frs5.html#module-vpy.standard.frs5">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.standard.se2.html">vpy.standard.se2 package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#module-vpy.standard.se2.cal">vpy.standard.se2.cal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#module-vpy.standard.se2.std">vpy.standard.se2.std module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#module-vpy.standard.se2">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="vpy.standard.se3.html">vpy.standard.se3 package</a><ul>
@@ -570,6 +579,31 @@ numpy typed values.</p>
 <em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">AuxFrs5</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxFrs5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxFrs5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.values.AuxValues" title="vpy.values.AuxValues"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.AuxValues</span></code></a></p>
 <p>AuxValues for FRS5 Standard</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vpy.values.AuxSe2">
+<em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">AuxSe2</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.values.AuxValues" title="vpy.values.AuxValues"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.AuxValues</span></code></a></p>
+<p>AuxValues for SE3 Standard.</p>
+<dl class="method">
+<dt id="vpy.values.AuxSe2.get_expansion">
+<code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe2.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe2.get_expansion" title="Permalink to this definition">¶</a></dt>
+<dd><p>On the documents concerned with certain
+expansions ratios the name of the investigated :math: f
+is stored in AuxValues.Expansion</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">name of the investigated expansion</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">

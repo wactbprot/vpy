@@ -12,7 +12,6 @@ class Cal(Se2):
 
         self.log = Io().logger(__name__)
 
-
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
@@ -56,9 +55,12 @@ class Cal(Se2):
         meas_time     = self.Time.get_value("amt_fill", "ms")
         p_fill_offset = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "fill_offset", "kPa")
 
-        p_fill_uncorr =  (p_fill  - p_fill_offset) * conv
+        p_fill_uncorr = (p_fill  - p_fill_offset) * conv
+        e             = self.Qbs.get_error_correction(p_fill_uncorr, "mbar", "%")/100.
+        pfill         = p_fill_uncorr/(e + 1.)
 
-        res.store("Pressure" ,"fill", p_fill_uncorr, "mbar")
+        res.store("Error" ,"fill", e, "1")
+        res.store("Pressure" ,"fill", p_fill, "mbar")
 
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
@@ -80,9 +82,11 @@ class Cal(Se2):
             t[i_1] = self.temperature_volume_1()[i_1]
             self.log.info("Points {}  belong to f_1".format(i_1[0]))
 
+        if len(i_2) > 0:
+            t[i_2] = self.temperature_volume_2()[i_2]
+            self.log.info("Points {}  belong to f_2".format(i_2[0]))
+
         res.store("Temperature" ,"before", t , "K")
-
-
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
@@ -96,7 +100,7 @@ class Cal(Se2):
         tem = self.temperature_vessel()
         res.store("Temperature","after", tem , "K")
 
-    def temperature_volume_1(self):
+    def temperature_volume_2(self):
         """Temperature of the medium (0.1l) volume. The used  sensors are:
 
         *channel 101*
@@ -119,33 +123,25 @@ class Cal(Se2):
         return (t_mean + t_mean_add)/2.
 
 
-    def temperature_volume_l(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
-
-        *channel 3014 to 3030*
-        """
-        chs     = list(range(3014, 3031))
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
 
     def temperature_vessel(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
+        """Temperature of 100l vessel. The used  sensors are:
+
+        *ch 105 .. 110*
         """
         conv    = self.Cons.get_conv("C", "K")
 
         chs     = list(range(105, 111))
-        tem_arr = self.Temp.get_array("keithley_T_before_ch", chs, "", "C")
+        tem_arr = self.Temp.get_array("keithley_T_after_ch", chs, "", "C")
         cor_arr = self.TDev.get_array("corr_keithleych", chs, "", "K")
 
         t_mean =  np.mean(tem_arr + cor_arr + conv, axis=0)
 
         chs_add     = list(range(105, 111))
-        tem_arr_add = self.Temp.get_array("agilent_T_before_ch", chs, "", "C")
+        tem_arr_add = self.Temp.get_array("agilent_T_after_ch", chs, "", "C")
         cor_arr_add = self.TDevAdd.get_array("agilentCorrCh", chs, "", "K")
 
         t_mean_add =  np.mean(tem_arr_add + cor_arr_add + conv, axis=0)
+
 
         return (t_mean + t_mean_add)/2.

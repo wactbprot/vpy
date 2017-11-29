@@ -32,7 +32,6 @@ if __name__ == "__main__":
         se2_calc.temperature_before(res)
         se2_calc.temperature_after(res)
         se2_calc.pressure_nd(res)
-        ## ! pfill noch uncorr!
         se2_calc.pressure_fill(res)
         se2_calc.real_gas_correction(res)
 

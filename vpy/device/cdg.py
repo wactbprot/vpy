@@ -19,7 +19,7 @@ class Cdg(Device):
         io = Io()
         self.log = io.logger(__name__)
         self.log.debug("init func: {}".format(__name__))
-        
+
         super().__init__(doc, dev)
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']
@@ -42,6 +42,7 @@ class Cdg(Device):
         return self.doc['Name']
 
     def store_error_interpol(self, p, e, punit = "mbar", eunit="1"):
+
         interpol = [
                     {"Type":"p_ind",
                     "Unit": punit,
@@ -55,6 +56,11 @@ class Cdg(Device):
             self.doc['CalibrationObject']['Interpol'] = interpol
 
     def get_error_interpol(self, p, unit):
+        """
+        .. todo::
+
+                implement expected unit of the return value
+        """
         if unit == self.unit:
             f = self.interp_function(self.interpol_x, self.interpol_y)
 
@@ -64,6 +70,11 @@ class Cdg(Device):
         return interp1d(x, y, kind = "linear")
 
     def cal_error_interpol(self, pind, pcal, unit):
+        """
+        .. todo::
+
+                implement expected unit of the return value
+        """
         if unit == self.unit:
             pcal, pind = self.cut_values(pcal, pind)
             x = pind
