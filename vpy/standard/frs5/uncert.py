@@ -2,14 +2,12 @@ import numpy as np
 import sympy as sym
 
 from .std import Frs5
-from ...vpy_io import Io
 
 class Uncert(Frs5):
 
 
     def __init__(self, doc):
         super().__init__(doc)
-
         self.log.debug("init func: {}".format(__name__))
 
     def total(self, res):
@@ -57,9 +55,10 @@ class Uncert(Frs5):
                     )**0.5
 
         p = res.pick("Pressure", "frs5", self.unit)
-        self.log.debug("uncert total: {}".format(u_total))
         res.store("Uncertainty", "total_rel", u_total, "1")
         res.store("Uncertainty", "total_abs", u_total*p, self.unit)
+        self.log.debug("uncert total: {}".format(u_total))
+
 
     def uncert_r(self, res):
         """Calculates the uncertainty of the r (reading)
@@ -78,8 +77,8 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert r: {}".format(val/p))
         res.store("Uncertainty", "u_r", np.absolute(val/p), "1")
+        self.log.debug("uncert r: {}".format(val/p))
 
     def uncert_r_zc(self, res):
         """Calculates the uncertainty of the r_zc

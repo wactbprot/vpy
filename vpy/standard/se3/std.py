@@ -1,7 +1,7 @@
 import copy
 import numpy as np
 from ...vpy_io import Io
-from ...device.dmm_system_switch import DmmSystemSwitch
+from ...device.dmm import Dmm
 from ...device.cdg import InfCdg
 from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
@@ -22,7 +22,7 @@ class Se3(Standard):
     unit = "mbar"
 
     def __init__(self, orgdoc):
-        
+
         super().__init__(orgdoc, self.name)
         doc = copy.deepcopy(orgdoc)
 
@@ -31,7 +31,7 @@ class Se3(Standard):
         self.Time = Time(doc)
         self.Aux  = AuxSe3(doc)
 
-        self.TDev = DmmSystemSwitch(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
+        self.TDev = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
         self.GN   = GroupNormal(doc, (
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1T_2")),

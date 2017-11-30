@@ -1,7 +1,5 @@
 import numpy as np
 import sympy as sym
-
-
 from .std import Se3
 from ...vpy_io import Io
 
@@ -9,7 +7,7 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-        
+
 
     def get_expansion(self):
         """Returns an np.array containing
