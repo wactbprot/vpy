@@ -1,5 +1,4 @@
 import logging
-import logging.config
 import coloredlogs
 import argparse
 import sys
@@ -150,39 +149,18 @@ class Io(object):
                 something is wrong here, double output on level=info!
 
         """
-        logging.config.dictConfig({
-            'version': 1,
-            'formatters': {
-                'default': {'format': '%(asctime)s - %(name)s -*-{}-*-[%(filename)s:%(lineno)s - %(funcName)10s() ] - %(levelname)s - %(message)s'.format(name),
-                                'datefmt': '%Y-%m-%d %H:%M:%S'}
-                },
-                'handlers': {
-                'console': {
-                    'level':'ERROR',
-                    'class': 'logging.StreamHandler',
-                    'formatter': 'default',
-                    'stream': 'ext://sys.stdout'
-                    },
 
-                    },
-                    'loggers': {
-                    'default': {
-                    'handlers': ['console']
-                }
-            },
-            'disable_existing_loggers': False
-        })
-
-        logger =  logging.getLogger("default")
-
+        logger = logging.getLogger()
+        fmt='%(asctime)s,%(msecs)03d %(hostname)s %(filename)s:%(lineno)s %(levelname)s %(message)s'
         if self.args.log:
             if self.args.log[0] == "d":
-                coloredlogs.install( level = "DEBUG")
+                coloredlogs.install(fmt=fmt
+                , level="DEBUG", logger=logger)
 
             if self.args.log[0] == "i":
-                coloredlogs.install(logger=logger, level = "INFO")
+                coloredlogs.install(fmt=fmt, level="INFO", logger=logger)
 
         else:
-            coloredlogs.install(logger=logger, level = "ERROR")
+            coloredlogs.install(fmt=fmt, level="ERROR", logger=logger)
 
         return logger

@@ -136,7 +136,6 @@ class AuxValues(Document):
         val = self.get_by_time(meastime, auxtime, timeunit, auxval, valunit)
         return {"Type": auxval, "Value":  val, "Unit":valunit}
 
-
 class AuxSe3(AuxValues):
     """AuxValues for SE3 Standard.
     """

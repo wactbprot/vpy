@@ -172,11 +172,6 @@
 
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">quant</span><span class="p">):</span>
-
-        <span class="n">io</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
-
         <span class="k">if</span> <span class="s1">&#39;Calibration&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="n">dc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Calibration&#39;</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">quant</span> <span class="ow">in</span> <span class="n">dc</span><span class="p">:</span>
@@ -187,7 +182,9 @@
                         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dcmv</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">name</span><span class="p">])</span></div>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Temperature"><a class="viewcode-back" href="../../vpy.html#vpy.values.Temperature">[docs]</a><span class="k">class</span> <span class="nc">Temperature</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">quant</span> <span class="o">=</span> <span class="s2">&quot;Measurement&quot;</span><span class="p">):</span>
@@ -199,8 +196,24 @@
 
 <div class="viewcode-block" id="Time"><a class="viewcode-back" href="../../vpy.html#vpy.values.Time">[docs]</a><span class="k">class</span> <span class="nc">Time</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">quant</span><span class="o">=</span><span class="s2">&quot;Measurement&quot;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">quant</span><span class="p">)</span></div>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;Time&#39;</span><span class="p">,</span> <span class="n">quant</span><span class="p">)</span>
 
+<div class="viewcode-block" id="Time.get_rmt"><a class="viewcode-back" href="../../vpy.html#vpy.values.Time.get_rmt">[docs]</a>    <span class="k">def</span> <span class="nf">get_rmt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the relative measurement</span>
+
+<span class="sd">        :param val: val of the Type (e.g. amt_fill)</span>
+<span class="sd">        :type val: str</span>
+<span class="sd">        :param unit: expected unit of the Type (e.g. ms)</span>
+<span class="sd">        :type unit: str</span>
+<span class="sd">        :returns: relative measure time</span>
+<span class="sd">        :rtype: np.array | None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">unit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">t</span></div></div>
 
 <div class="viewcode-block" id="AuxValues"><a class="viewcode-back" href="../../vpy.html#vpy.values.AuxValues">[docs]</a><span class="k">class</span> <span class="nc">AuxValues</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
 
@@ -279,7 +292,6 @@
 <div class="viewcode-block" id="AuxValues.get_obj_by_time"><a class="viewcode-back" href="../../vpy.html#vpy.values.AuxValues.get_obj_by_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_obj_by_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meastime</span><span class="p">,</span> <span class="n">auxtime</span><span class="p">,</span> <span class="n">timeunit</span><span class="p">,</span> <span class="n">auxval</span><span class="p">,</span> <span class="n">valunit</span><span class="p">):</span>
         <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_by_time</span><span class="p">(</span><span class="n">meastime</span><span class="p">,</span> <span class="n">auxtime</span><span class="p">,</span> <span class="n">timeunit</span><span class="p">,</span> <span class="n">auxval</span><span class="p">,</span> <span class="n">valunit</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="n">auxval</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">:</span>  <span class="n">val</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">:</span><span class="n">valunit</span><span class="p">}</span></div></div>
-
 
 <div class="viewcode-block" id="AuxSe3"><a class="viewcode-back" href="../../vpy.html#vpy.values.AuxSe3">[docs]</a><span class="k">class</span> <span class="nc">AuxSe3</span><span class="p">(</span><span class="n">AuxValues</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AuxValues for SE3 Standard.</span>

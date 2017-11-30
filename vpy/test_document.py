@@ -7,13 +7,13 @@ class TestDU(unittest.TestCase):
         doc = {'A':'a',
         'B':[ {'C':'c', 'D':'d'},{'E':'e', 'F':'f'}]
         }
-        self.Cal = Document(doc)
+        self.Doc = Document(doc)
 
     def test_get_1(self):
         """flat obj
         """
         o = {'A':'a', 'B':'b'}
-        res = self.Cal.get_object('A', 'a', o)
+        res = self.Doc.get_object('A', 'a', o)
 
         self.assertTrue(type(res) is dict)
         self.assertEqual(res['A'],'a')
@@ -24,7 +24,7 @@ class TestDU(unittest.TestCase):
         o = {'A':'a',
             'B':{'C':'c', 'D':'d'}
             }
-        res = self.Cal.get_object('C', 'c', o)
+        res = self.Doc.get_object('C', 'c', o)
         self.assertTrue(type(res) is dict)
         self.assertEqual(res['C'],'c')
 
@@ -33,7 +33,7 @@ class TestDU(unittest.TestCase):
         """
         o = {'A':'a','B':[{'C':'c', 'D':'d'},
         {'E':'e', 'F':'f'}] }
-        res = self.Cal.get_object('C', 'c', o)
+        res = self.Doc.get_object('C', 'c', o)
         self.assertTrue(type(res) is dict)
         self.assertEqual(res['C'],'c')
 
@@ -43,7 +43,7 @@ class TestDU(unittest.TestCase):
         o = {'A':'a',
             'B':[{'C':'c', 'D':'d'}, {'E':'e', 'F':'f'}]
             }
-        res = self.Cal.get_object('I', 'c', o)
+        res = self.Doc.get_object('I', 'c', o)
         self.assertIsNone(res)
 
     def test_get_5(self):
@@ -53,13 +53,13 @@ class TestDU(unittest.TestCase):
             'B':[
             {'C':'c', 'D':'d'}, {'E':'e', 'F':'f'}]
             }
-        res = self.Cal.get_object('C', 'i', o)
+        res = self.Doc.get_object('C', 'i', o)
         self.assertIsNone(res)
 
     def test_get_6(self):
-        """nested obj in list, self.Cal
+        """nested obj in list, self.Doc
         """
-        res = self.Cal.get_object('C', 'c')
+        res = self.Doc.get_object('C', 'c')
         self.assertTrue(type(res) is dict)
         self.assertEqual(res['C'],'c')
 #

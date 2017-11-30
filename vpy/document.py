@@ -12,9 +12,6 @@ class Document(object):
         :param doc: doc document to search and extract
         :type doc: dict
         """
-        io = Io()
-        self.log = io.logger(__name__)
-        self.log.debug("init func: {}".format(__name__))
         self.doc = doc
 
     def get_all(self):
