@@ -13,6 +13,8 @@ class Document(object):
         :type doc: dict
         """
         self.doc = doc
+        io = Io()
+        self.log = io.logger(__name__)
 
     def get_all(self):
         """Returns the entire document

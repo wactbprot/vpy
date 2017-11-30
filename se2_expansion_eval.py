@@ -25,9 +25,7 @@ if __name__ == "__main__":
         frs_calc.temperature(res)
         frs_calc.pressure_res(res)
         frs_calc.pressure_cal(res)
-
         frs_uncert.total(res)
-        print(res.pick("Pressure", "frs5", "mbar"))
 
         se2_calc.temperature_before(res)
         se2_calc.temperature_after(res)
@@ -35,7 +33,7 @@ if __name__ == "__main__":
         se2_calc.pressure_fill(res)
         se2_calc.real_gas_correction(res)
         se2_calc.time(res)
-        
+
         rg   = res.pick("Correction", "rg", "1")
         p_0  = res.pick("Pressure", "fill", "mbar")
         p_1  = res.pick("Pressure", "frs5", "mbar")
