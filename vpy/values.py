@@ -15,11 +15,6 @@ class Values(Document):
 
 
     def __init__(self, doc, name, quant):
-
-        io = Io()
-        self.log = io.logger(__name__)
-        self.log.debug("init func: {}".format(__name__))
-
         if 'Calibration' in doc:
             dc = doc['Calibration']
             if quant in dc:
@@ -31,6 +26,8 @@ class Values(Document):
 
         if name in doc:
             super().__init__(doc[name])
+
+        self.log.debug("init func: {}".format(__name__))
 
 class Temperature(Values):
     def __init__(self, doc, quant = "Measurement"):
@@ -44,6 +41,22 @@ class Time(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Time', quant)
 
+    def get_rmt(self, val, unit):
+        """Returns the relative measurement
+
+        :param val: val of the Type (e.g. amt_fill)
+        :type val: str
+        :param unit: expected unit of the Type (e.g. ms)
+        :type unit: str
+        :returns: relative measure time
+        :rtype: np.array | None
+        """
+        t = self.get_value(val, unit)
+
+        if t is not None:
+            t = t-t[0]
+
+        return t
 
 class AuxValues(Document):
 

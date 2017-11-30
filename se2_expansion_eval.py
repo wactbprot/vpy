@@ -34,7 +34,8 @@ if __name__ == "__main__":
         se2_calc.pressure_nd(res)
         se2_calc.pressure_fill(res)
         se2_calc.real_gas_correction(res)
-
+        se2_calc.time(res)
+        
         rg   = res.pick("Correction", "rg", "1")
         p_0  = res.pick("Pressure", "fill", "mbar")
         p_1  = res.pick("Pressure", "frs5", "mbar")

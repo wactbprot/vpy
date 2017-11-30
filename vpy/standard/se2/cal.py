@@ -10,6 +10,19 @@ class Cal(Se2):
     def __init__(self, doc):
         super().__init__(doc)
 
+    def time(self, res):
+        """Calculates  time axis
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        conv = self.Cons.get_conv("ms", "h")
+        t = self.Time.get_rmt("amt_fill", "ms")*conv
+
+        res.store("Time" ,"rmt", t , "h")
+
+
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
