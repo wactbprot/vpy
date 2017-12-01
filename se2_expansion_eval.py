@@ -46,7 +46,7 @@ if __name__ == "__main__":
         f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
 
         res.store("Correction", "temperature_expansion", cor_tem, "1")
-        res.store("Expansion", "f_2", f, "1")
+        res.store("Expansion", "f_5", f, "1")
         log.info("expansion factors are: {}".format(f))
         log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
         io.save_doc(res.build_doc())

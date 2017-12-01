@@ -90,6 +90,7 @@ class Cal(Se2):
 
         i_1 = np.where(f == "f_1")[0]
         i_2 = np.where(f == "f_2")[0]
+        i_5 = np.where(f == "f_5")[0]
 
         if len(i_1) > 0:
             t[i_1] = self.temperature_volume_1()[i_1]
@@ -99,7 +100,10 @@ class Cal(Se2):
             t[i_2] = self.temperature_volume_2()[i_2]
             self.log.info("Points {}  belong to f_2".format(i_2[0]))
 
-        res.store("Temperature" ,"before", t , "K")
+        if len(i_5) > 0:
+            t[i_5] = self.temperature_volume_5()[i_5]
+            self.log.info("Points {}  belong to f_5".format(i_5[0]))
+            res.store("Temperature" ,"before", t , "K")
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
@@ -157,6 +161,27 @@ class Cal(Se2):
 
             return (t_mean + t_mean_add)/2.
 
+    def temperature_volume_5(self):
+            """Temperature of the medium (1l) volume. The used  sensors are:
+
+            *channel 101 ... 105*
+
+            """
+            conv    = self.Cons.get_conv("C", "K")
+
+            chs     = list(range(104, 105))
+            tem_arr = self.Temp.get_array("keithley_T_before_ch", chs, "", "C")
+            cor_arr = self.TDev.get_array("corr_keithleych", chs, "", "K")
+
+            t_mean =  np.mean(tem_arr + cor_arr + conv, axis=0)
+
+            chs_add     = list(range(101, 105))
+            tem_arr_add = self.Temp.get_array("agilent_T_before_ch", chs, "", "C")
+            cor_arr_add = self.TDevAdd.get_array("agilentCorrCh", chs, "", "K")
+
+            t_mean_add =  np.mean(tem_arr_add + cor_arr_add + conv, axis=0)
+
+            return (t_mean + t_mean_add)/2.
 
 
     def temperature_vessel(self):
