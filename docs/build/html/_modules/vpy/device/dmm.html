@@ -166,7 +166,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Dmm.get_name"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.dmm.Dmm.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Dmm.uncert_temperature"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.dmm.Dmm.uncert_temperature">[docs]</a>    <span class="k">def</span> <span class="nf">uncert_temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tunit</span><span class="p">,</span> <span class="n">runit</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;calculates the uncertainty of the temperature measurement</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;u1&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">u2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;u2&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">u3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;u3&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">u4</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;u4&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">u5</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;u5&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">u6</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;u6&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">u1</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span><span class="n">u2</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">u3</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span><span class="n">u4</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span><span class="n">u5</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span><span class="n">u6</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

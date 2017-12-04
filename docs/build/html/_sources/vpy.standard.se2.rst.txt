@@ -20,6 +20,14 @@ vpy\.standard\.se2\.std module
     :undoc-members:
     :show-inheritance:
 
+vpy\.standard\.se2\.uncert module
+---------------------------------
+
+.. automodule:: vpy.standard.se2.uncert
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

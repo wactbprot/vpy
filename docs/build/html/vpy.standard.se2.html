@@ -343,6 +343,53 @@ pick(quantity, type, unit)</div></blockquote>
 the time: <code class="docutils literal"><span class="pre">amt_fill</span></code> (absolut measure time of filling pressure)
 is used for this purpos.</p>
 <dl class="method">
+<dt id="vpy.standard.se2.std.Se2.define_model_f">
+<code class="descname">define_model_f</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/std.html#Se2.define_model_f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.std.Se2.define_model_f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines symbols and model for the determination of the
+expansion ratios f.
+The order of symbols must match the order in <code class="docutils literal"><span class="pre">gen_val_arr</span></code>:
+The equation is:
+.. math:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">p</span><span class="o">=</span><span class="n">f_i</span> <span class="n">p_</span><span class="p">{</span><span class="n">fill</span><span class="p">}</span> \<span class="n">frac</span><span class="p">{</span><span class="n">T_</span><span class="p">{</span><span class="n">after</span><span class="p">}}{</span><span class="n">T_</span><span class="p">{</span><span class="n">before</span><span class="p">}}</span> <span class="n">c_</span><span class="p">{</span><span class="n">rg</span><span class="p">}</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se2.std.Se2.define_model_p">
+<code class="descname">define_model_p</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/std.html#Se2.define_model_p"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.std.Se2.define_model_p" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines symbols and model calibration pressure.
+The order of symbols must match the order in <code class="docutils literal"><span class="pre">gen_val_arr</span></code>:</p>
+<p>The equation is:</p>
+<div class="math">
+\[p=f_i p_{fill} \frac{T_{after}}{T_{before}} c_{rg}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.se2.std.Se2.get_gas">
 <code class="descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/std.html#Se2.get_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.std.Se2.get_gas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the name of the calibration gas.</p>
@@ -365,7 +412,7 @@ is used for this purpos.</p>
 <dl class="method">
 <dt id="vpy.standard.se2.std.Se2.get_name">
 <code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/std.html#Se2.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.std.Se2.get_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the name of the Standard.</p>
+<dd><p>Returns the name of the standard.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -377,6 +424,51 @@ is used for this purpos.</p>
 <dt id="vpy.standard.se2.std.Se2.unit">
 <code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.se2.std.Se2.unit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.se2.uncert">
+<span id="vpy-standard-se2-uncert-module"></span><h2>vpy.standard.se2.uncert module<a class="headerlink" href="#module-vpy.standard.se2.uncert" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.standard.se2.uncert.Uncert">
+<em class="property">class </em><code class="descclassname">vpy.standard.se2.uncert.</code><code class="descname">Uncert</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/uncert.html#Uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.se2.std.Se2" title="vpy.standard.se2.std.Se2"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.se2.std.Se2</span></code></a></p>
+<dl class="method">
+<dt id="vpy.standard.se2.uncert.Uncert.total">
+<code class="descname">total</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/uncert.html#Uncert.total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.uncert.Uncert.total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the total uncertainty.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se2.uncert.Uncert.uncert_temperature">
+<code class="descname">uncert_temperature</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se2/uncert.html#Uncert.uncert_temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se2.uncert.Uncert.uncert_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the temperature correction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

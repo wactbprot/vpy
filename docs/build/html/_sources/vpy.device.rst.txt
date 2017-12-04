@@ -28,14 +28,6 @@ vpy\.device\.dmm module
     :undoc-members:
     :show-inheritance:
 
-vpy\.device\.dmm\_system\_switch module
----------------------------------------
-
-.. automodule:: vpy.device.dmm_system_switch
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 vpy\.device\.qbs module
 -----------------------
 

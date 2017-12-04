@@ -1,9 +1,9 @@
 import numpy as np
 import sympy as sym
 
-from .std import Frs5
+from .std import Se2
 
-class Uncert(Frs5):
+class Uncert(Se2):
 
 
     def __init__(self, doc):
@@ -18,6 +18,7 @@ class Uncert(Frs5):
                 pick(quantity, type, unit)
         :type: class
         """
+        pass
 
     def uncert_temperature(self, res):
         """Calculates the uncertainty of the temperature correction.
@@ -27,3 +28,4 @@ class Uncert(Frs5):
                 pick(quantity, type, unit)
         :type: class
         """
+        pass
