@@ -12,6 +12,7 @@ class Cal(Se2):
 
     def time(self, res):
         """Calculates  the time axis
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
@@ -86,6 +87,7 @@ class Cal(Se2):
         :type: class
         """
         f   = self.get_expansion()
+        self.log.debug("expansion name vector is {}".format(f))
         t   = np.full(self.no_of_meas_points, np.nan)
 
         i_1 = np.where(f == "f_1")[0]
@@ -94,16 +96,17 @@ class Cal(Se2):
 
         if len(i_1) > 0:
             t[i_1] = self.temperature_volume_1()[i_1]
-            self.log.info("Points {}  belong to f_1".format(i_1[0]))
+            self.log.info("Points {}  belong to f_1".format(i_1))
 
         if len(i_2) > 0:
             t[i_2] = self.temperature_volume_2()[i_2]
-            self.log.info("Points {}  belong to f_2".format(i_2[0]))
+            self.log.info("Points {}  belong to f_2".format(i_2))
 
         if len(i_5) > 0:
             t[i_5] = self.temperature_volume_5()[i_5]
-            self.log.info("Points {}  belong to f_5".format(i_5[0]))
-            res.store("Temperature" ,"before", t , "K")
+            self.log.info("Points {}  belong to f_5".format(i_5))
+
+        res.store("Temperature" ,"before", t , "K")
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
