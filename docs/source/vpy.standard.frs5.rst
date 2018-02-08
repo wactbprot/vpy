@@ -1,6 +1,11 @@
 vpy\.standard\.frs5 package
 ===========================
 
+.. automodule:: vpy.standard.frs5
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ vpy\.standard\.frs5\.uncert module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: vpy.standard.frs5
-    :members:
-    :undoc-members:
-    :show-inheritance:

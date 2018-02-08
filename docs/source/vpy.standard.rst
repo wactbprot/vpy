@@ -1,6 +1,11 @@
 vpy\.standard package
 =====================
 
+.. automodule:: vpy.standard
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -30,10 +35,3 @@ vpy\.standard\.standard module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: vpy.standard
-    :members:
-    :undoc-members:
-    :show-inheritance:

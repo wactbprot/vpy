@@ -1,6 +1,11 @@
 vpy\.standard\.se2 package
 ==========================
 
+.. automodule:: vpy.standard.se2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -29,10 +34,3 @@ vpy\.standard\.se2\.uncert module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: vpy.standard.se2
-    :members:
-    :undoc-members:
-    :show-inheritance:
