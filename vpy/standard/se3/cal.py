@@ -25,6 +25,9 @@ class Cal(Se3):
         """Stores the differential pressure of the zero
          under the path  *Pressure, nd, mbar*
 
+        ..todo::
+            pressure_nd is alien here--> move to the surface/scripts
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)

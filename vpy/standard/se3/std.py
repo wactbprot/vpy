@@ -50,7 +50,7 @@ class Se3(Standard):
         self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
     def define_model(self):
-        """ Defines symbols and model for FRS5.
+        """ Defines symbols and model for the static expansion system SE3.
         The order of symbols must match the order in ``gen_val_arr``:
 
         #. p_fill
@@ -94,7 +94,7 @@ class Se3(Standard):
                     p_after
                     )
 
-        #self.model_f_corr = 
+        #self.model_f_corr =
         self.model        = p_fill * f_corr
 
     def get_name(self):
