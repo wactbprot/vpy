@@ -57,20 +57,7 @@ class Frs5(Standard):
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
         self.no_of_meas_points = len(self.Time.get_value("amt_frs5_ind", "ms"))
 
-
-    def get_gas(self):
-        """Returns the name of the calibration gas stored in *AuxValues*
-
-        .. todo::
-
-                implementation of aux.gas needed
-
-        """
-
-        self.log.warn("Default gas N2 used")
-        return "N2"
-
-    def define_model(self, res):
+    def define_model(self):
         """ Defines symbols and model for FRS5.
         The order of symbols must match the order in ``gen_val_arr``:
 
@@ -109,9 +96,7 @@ class Frs5(Standard):
 
                 corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)
 
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
+        
         :type: class
         """
         A          = sym.Symbol('A')
@@ -153,6 +138,19 @@ class Frs5(Standard):
         self.model_conv     = m_cal/(r_cal-r_cal0)*g/A*self.model_buoyancy*self.model_temp
         ## all together
         self.model          = (r-self.model_offset+ub+usys)*self.model_conv+p_res
+
+    def get_gas(self):
+        """Returns the name of the calibration gas stored in *AuxValues*
+
+        .. todo::
+
+                implementation of aux.gas needed
+
+        """
+
+        self.log.warn("Default gas N2 used")
+        return "N2"
+
 
 
 

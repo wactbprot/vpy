@@ -49,6 +49,54 @@ class Se3(Standard):
 
         self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
+    def define_model(self):
+        """ Defines symbols and model for the static expansion system SE3.
+        The order of symbols must match the order in ``gen_val_arr``:
+
+        #. p_fill
+        #. f_corr
+        #. p_before
+        #. p_after
+        #. V_5
+        #. V_add
+
+        The equation is:
+
+        .. math::
+
+                p = f_{corr} p_{fill}
+
+        with
+
+        .. math::
+
+                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{add}}{V_{start}}}
+
+        and
+
+        .. math::
+
+                V_{add} = \\frac{V_5}{p_{after}/p_{before} - 1}
+
+        :type: class
+        """
+        f          = sym.Symbol('f')
+        p_fill     = sym.Symbol('p_fill')
+        V_5        = sym.Symbol('V_5')
+        p_before   = sym.Symbol('p_before')
+        p_after    = sym.Symbol('p_after')
+
+        self.symb = (
+                    f,
+                    p_fill,
+                    V_5,
+                    p_before,
+                    p_after
+                    )
+
+        #self.model_f_corr =
+        self.model        = p_fill * f_corr
+
     def get_name(self):
         """Returns the name of the Standard.
         """
