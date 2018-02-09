@@ -42,20 +42,10 @@ class Frs5(Standard):
 
     def __init__(self, orgdoc):
         super().__init__(orgdoc, self.name)
+        self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
 
         self.log.debug("init func: {}".format(__name__))
 
-
-        doc = copy.deepcopy(orgdoc)
-        # measurement values
-        self.Temp = Temperature(doc)
-        self.Pres = Pressure(doc)
-        self.Time = Time(doc)
-        self.Aux  = AuxFrs5(doc)
-
-        # residua pressure device
-        self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
-        self.no_of_meas_points = len(self.Time.get_value("amt_frs5_ind", "ms"))
 
     def define_model(self):
         """ Defines symbols and model for FRS5.
@@ -96,7 +86,7 @@ class Frs5(Standard):
 
                 corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)
 
-        
+
         :type: class
         """
         A          = sym.Symbol('A')

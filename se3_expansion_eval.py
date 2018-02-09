@@ -7,8 +7,7 @@ from vpy.standard.frs5.uncert import Uncert as FrsUncert
 from vpy.standard.se3.cal import Cal as Se3Calc
 #from vpy.standard.se3.uncert import Uncert as FrsUncert
 
-if __name__ == "__main__":
-
+def main():
     io = Io()
     log = io.logger(__name__)
     log.info("start logging")
@@ -50,3 +49,6 @@ if __name__ == "__main__":
         log.info("expansin factors are: {}".format(f))
         log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
         io.save_doc(res.build_doc())
+
+if __name__ == "__main__":
+    main()

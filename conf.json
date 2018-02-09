@@ -2,5 +2,10 @@
   "db":{
     "url":"http://localhost:5984",
     "name": "vl_db"
+  },
+  "standards":{
+    "se3":{
+        "temp_doc_view":"se3_req/doc"
+    }
   }
 }

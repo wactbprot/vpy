@@ -26,11 +26,6 @@ class Se3(Standard):
         super().__init__(orgdoc, self.name)
         doc = copy.deepcopy(orgdoc)
 
-        self.Temp = Temperature(doc)
-        self.Pres = Pressure(doc)
-        self.Time = Time(doc)
-        self.Aux  = AuxSe3(doc)
-
         self.TDev = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
         self.GN   = GroupNormal(doc, (
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
@@ -46,8 +41,6 @@ class Se3(Standard):
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_2")),
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_3"))
                                     ))
-
-        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
     def define_model(self):
         """ Defines symbols and model for the static expansion system SE3.

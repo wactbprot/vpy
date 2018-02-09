@@ -7,6 +7,13 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
+        doc = copy.deepcopy(orgdoc)
+
+        self.Temp = Temperature(doc)
+        self.Pres = Pressure(doc)
+        self.Time = Time(doc)
+        self.Aux  = AuxSe3(doc)
+        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
 
     def get_expansion(self):

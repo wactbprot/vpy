@@ -43,18 +43,11 @@ class Io(object):
         with open('./conf.json') as json_config_file:
             self.config = json.load(json_config_file)
 
-        if self.args.id:
-            ## provide data base
-            srv     = couchdb.Server(self.config['db']['url'])
-            self.db = srv[self.config['db']['name']]
-
         # save doc
         if self.args.s:
             self.save = True
         else:
             self.save = False
-
-
 
     def load_doc(self):
         """Loads the document to analyse from the source
@@ -113,7 +106,10 @@ class Io(object):
         :param docid: document id
         :type docid: str
         """
-        doc = self.db.get(docid)
+
+        srv = couchdb.Server(self.config['db']['url'])
+        db  = srv[self.config['db']['name']]
+        doc = db.get(docid)
 
         if doc:
             if "error" in doc:
@@ -137,8 +133,33 @@ class Io(object):
         :param doc: document
         :type doc: dict
         """
-        res = self.db.save(doc)
+        srv = couchdb.Server(self.config['db']['url'])
+        db  = srv[self.config['db']['name']]
+        res = db.save(doc)
 
+    def gen_temp_doc(self, name):
+        srv  = couchdb.Server(self.config['db']['url'])
+        db   = srv[self.config['db']['name']]
+        view = self.config['standards'][name]['temp_doc_view']
+
+        temp_doc = {"Standard":{},
+                    "Constants":{},
+                    "CalibrationObject":[]}
+
+        for item in db.view(view):
+            if item.key == "Standard":
+                temp_doc["Standard"] = item.value["Standard"]
+
+            if item.key == "Constants":
+                temp_doc["Constants"] = item.value["Constants"]
+
+            if item.key == "CalibrationObject":
+                temp_doc["CalibrationObject"].append(item.value["CalibrationObject"])
+
+        with open("vpy/standard/{}/temp_doc.json".format(name), 'w') as f:
+            json.dump(temp_doc, f, indent=4, ensure_ascii=False)
+
+        return temp_doc
 
     def logger(self, name):
         """

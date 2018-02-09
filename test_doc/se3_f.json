@@ -1,0 +1,4238 @@
+{
+	"_id": "cal-2017-se3|frs5-vg-1001_0005",
+	"_rev": "115-ac2ed68ce0ce4f6e68a16e35d08b5a33",
+	"Calibration": {
+		"ToDo": {
+			"Name": "se3_fm",
+			"Repeat": "1",
+			"Gas": "N2",
+			"Standard": "SE3|FRS5",
+			"Values": {
+				"Temperature": {
+					"Value": ["23.0"],
+					"Type": "target",
+					"MaxDev": "0.1",
+					"Unit": "C"
+				},
+				"Pressure": {
+					"Value": ["1"],
+					"Type": "target",
+					"MaxDev": "0.1",
+					"Unit": "mbar"
+				}
+			},
+			"Type": "vg",
+			"Cmc": true
+		},
+		"Customer": {
+			"DebitorenNr": "intern",
+			"Contact": {
+				"Email": "karl.jousten@ptb.de",
+				"Name": "Dr. Karl Jousten",
+				"Phone": "++49-30-3481-7262",
+				"Fax": "++49-30-3481-7490"
+			},
+			"Name": "PTB AG7.54",
+			"Sign": "PTB",
+			"Address": {
+				"Street": "Abbestr. 2-12",
+				"Zipcode": "10587",
+				"Land": "Deutschland",
+				"Town": "Berlin"
+			},
+			"Type": "NMI",
+			"Lang": "de"
+		},
+		"Year": "2017",
+		"Constants": {
+			"Date": {
+				"Type": "update",
+				"Value": "2017-01-02"
+			},
+			"Values": [{
+				"Type": "referenceTemperature",
+				"Value": 296.15,
+				"Unit": "K",
+				"Comment": "reference Temperatur"
+			}, {
+				"Type": "absoluteTemperature",
+				"Value": 273.15,
+				"Unit": "K",
+				"Comment": "absolute Temperatur"
+			}, {
+				"Type": "standardPressure",
+				"Value": 101.3,
+				"Unit": "kPa",
+				"Comment": "standard atmo pressure"
+			}, {
+				"Type": "standardVolumen",
+				"Value": 24450,
+				"Unit": "cm^3",
+				"Comment": "Standard Volumen bei 25C"
+			}, {
+				"Type": "molWeight_N2",
+				"Value": 0.0280134,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight nitrogen"
+			}, {
+				"Type": "molWeight_Ne",
+				"Value": 0.020179,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight neon"
+			}, {
+				"Type": "molWeight_H2",
+				"Value": 0.00201588,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight hydrogen"
+			}, {
+				"Type": "molWeight_He",
+				"Value": 0.0040026,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight helium"
+			}, {
+				"Type": "molWeight_D2",
+				"Value": 0.0040029,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight deuterium; von http://www.linde-gase.de/datenblatt/db_deuterium_stabiles-wasserstoff-isotop.pdf"
+			}, {
+				"Type": "molWeight_CO",
+				"Value": 0.02801,
+				"Unit": "kg/mol",
+				"Comment": "Kohlenmonoxid; von http://www.linde-gase.de/datenblatt/db_kohlenmonoxid_4.7.pdf"
+			}, {
+				"Type": "molWeight_Ar",
+				"Value": 0.039948,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight argon"
+			}, {
+				"Type": "molWeight_Kr",
+				"Value": 0.0838,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight krypton"
+			}, {
+				"Type": "molWeight_Xe",
+				"Value": 0.13129,
+				"Unit": "kg/mol",
+				"Comment": "molecular weight xenon"
+			}, {
+				"Type": "visc_H2",
+				"Value": 0.0000088,
+				"Unit": "Pa s",
+				"Comment": "Wutz, 10.Auflage 2010, S.844"
+			}, {
+				"Type": "visc_He",
+				"Value": 0.0000197,
+				"Unit": "Pa s",
+				"Comment": "Wutz, 10.Auflage 2010, S.844,k.A. bei Kestin et al."
+			}, {
+				"Type": "visc_D2",
+				"Value": 0.00001231,
+				"Unit": "Pa s",
+				"Comment": "A. van Itterbeek, Miss A. Claes,Physica,Volume 5, Issue 10, December 1938, Pages 938-944"
+			}, {
+				"Type": "visc_N2",
+				"Value": 0.0000171,
+				"Unit": "Pa s",
+				"Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+			}, {
+				"Type": "visc_Ne",
+				"Value": 0.0000313,
+				"Unit": "Pa s",
+				"Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+			}, {
+				"Type": "visc_Kr",
+				"Value": 0.0000246,
+				"Unit": "Pa s",
+				"Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+			}, {
+				"Type": "visc_Xe",
+				"Value": 0.0000223,
+				"Unit": "Pa s",
+				"Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+			}, {
+				"Type": "visc_CO",
+				"Value": 0.0000176,
+				"Unit": "Pa s",
+				"Comment": "Wutz, 10.Auflage 2010, S.844, bei Kestin et al stehen abs. identische Werte bei N2 und CO"
+			}, {
+				"Type": "visc_Ar",
+				"Value": 0.00002239,
+				"Unit": "Pa s",
+				"Comment": "viscosity argon;Quelle: Kestin et al.,J. Phys. Chem Ref. Data, Vol. 13,No 1 1984"
+			}, {
+				"Type": "virialCoeff_H2",
+				"Value": 14.7,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_D2",
+				"Value": 13.4,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_He",
+				"Value": 11.7,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_Ne",
+				"Value": 11.2,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_N2",
+				"Value": -5.1,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_CO",
+				"Value": -8.8,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_Ar",
+				"Value": -16.5,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_H2O",
+				"Value": -1200,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_CO2",
+				"Value": -126.5,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_O2",
+				"Value": -16.9,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_Kr",
+				"Value": -52.7,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "virialCoeff_Xe",
+				"Value": -136.5,
+				"Unit": "cm^3/mol",
+				"Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+			}, {
+				"Type": "R",
+				"Value": 8.3145,
+				"Unit": "Pa m^3/mol/K",
+				"Comment": "molare Gaskonstante"
+			}, {
+				"Type": "Kb",
+				"Value": 1.380655e-23,
+				"Unit": "J/K",
+				"Comment": "K-Boltzmann, PTB-News 2/2011; rel. Uns. 8*10^(-6)"
+			}, {
+				"Type": "u",
+				"Value": 1.6605e-27,
+				"Unit": "kg",
+				"Comment": "atomic mass unit"
+			}, {
+				"Type": "g",
+				"Value": 9.812695,
+				"Unit": "m/s^2",
+				"Comment": "Mittelwert der beiden TU-Werte der Schwerebeschleunigung"
+			}],
+			"Uncertainty": [{
+				"Type": "u_g",
+				"Value": 2.1e-7,
+				"Unit": 1,
+				"Comment": "relative Unsicherheit der beiden TU-Werte der Schwerebeschleunigung; berechnet aus: (Differenz der beiden Werte)/12^0.5 + quadr. addierte Unsicherheiten der beiden Werte"
+			}, {
+				"Type": "u_Kb",
+				"Value": 0.000004,
+				"Unit": 1,
+				"Comment": "1/2 der Angabe aus den PTB-Mitteilungen 2/2011"
+			}],
+			"Conversion": [{
+				"Type": "C_2_K",
+				"Value": 273.15,
+				"Unit": "K/C",
+				"Comment": "conversion C to K"
+			}, {
+				"Type": "sccm_2_mbarl/s",
+				"Value": 0.0169,
+				"Unit": "mbarl/s/sscm",
+				"Comment": "http://www.vacuumtechnology.com/PRODUCTS/LEAKS/LEAK_Files/LeakUnitConversion.shtml"
+			}, {
+				"Type": "m^3/s_2_l/s",
+				"Value": 1000,
+				"Unit": "l/m^3",
+				"Comment": "conversion from m^3/s to l/s"
+			}, {
+				"Type": "01T_V_2_mbar",
+				"Value": 0.0133322368,
+				"Unit": "mbar/Pa",
+				"Comment": "conversion 10Torr, Volt to mbar"
+			}, {
+				"Type": "1000T_V_2_mbar",
+				"Value": 133.322368,
+				"Unit": "mbar/Pa",
+				"Comment": "conversion 10Torr, Volt to mbar"
+			}, {
+				"Type": "Pa_2_mbar",
+				"Value": 0.01,
+				"Unit": "mbar/Pa",
+				"Comment": "conversion Pa to mbar"
+			}, {
+				"Type": "kPa_2_mbar",
+				"Value": 10,
+				"Unit": "mbar/kPa",
+				"Comment": "conversion kPa to mbar"
+			}, {
+				"Type": "kPa_2_Pa",
+				"Value": 1000,
+				"Unit": "Pa/kPa",
+				"Comment": "conversion kPa to Pa"
+			}, {
+				"Type": "mbar_2_Pa",
+				"Value": 100,
+				"Unit": "Pa/mbar",
+				"Comment": "conversion mbar to Pa"
+			}, {
+				"Type": "Torr_2_mbar",
+				"Value": 1.33322368,
+				"Unit": "mbar/Torr",
+				"Comment": "conversion Torr to mbar"
+			}, {
+				"Type": "mbarl/s_2_Pam^3/s",
+				"Value": 0.1,
+				"Unit": "Pam^3/mbarl",
+				"Comment": "conversion mbar l/s to Pa m^3/s"
+			}, {
+				"Type": "Pam^3/mol/K_2_mbarl/mol/K",
+				"Value": 10,
+				"Unit": "Pam^3/mbarl",
+				"Comment": "conversion Pa m^3/mol/K to mbar l/mol/K "
+			}, {
+				"Type": "l_2_cm^3",
+				"Value": 1000,
+				"Unit": "cm^3/l",
+				"Comment": "conversion l to cm^3"
+			}, {
+				"Type": "m^3_2_l",
+				"Value": 1000,
+				"Unit": "m^3/l",
+				"Comment": "conversion m^3 to l (bzw. dm^3)"
+			}, {
+				"Type": "m^3_2_cm^3",
+				"Value": 1000000,
+				"Unit": "cm^3/m^3",
+				"Comment": "conversion m^3 to cm^3"
+			}, {
+				"Type": "mm^3_2_l",
+				"Value": 0.000001,
+				"Unit": "l/mm^3",
+				"Comment": "conversion mm^3 to l"
+			}, {
+				"Type": "ml_2_cm^3",
+				"Value": 1,
+				"Unit": "1",
+				"Comment": "ml = cm^3"
+			}, {
+				"Type": "m^2_2_cm^2",
+				"Value": 10000,
+				"Unit": "1",
+				"Comment": "1m^2 = 10000cm^2"
+			}, {
+				"Type": "mm_2_m",
+				"Value": 0.001,
+				"Unit": "1",
+				"Comment": "1m = 1000mm"
+			}, {
+				"Type": "m_2_mm",
+				"Value": 1000,
+				"Unit": "1",
+				"Comment": "1m = 1000mm"
+			}, {
+				"Type": "ms_2_s",
+				"Value": 0.001,
+				"Unit": "s/ms",
+				"Comment": "1ms = 1e-3s"
+			}, {
+				"Type": "s_2_min",
+				"Value": 0.01666666667,
+				"Unit": "min/s",
+				"Comment": "1min = 60s"
+			}, {
+				"Type": "ms_2_h",
+				"Value": 2.777778e-7,
+				"Unit": "h/ms",
+				"Comment": "1h = 1/3600.000ms"
+			}, {
+				"Type": "min_2_h",
+				"Value": 0.01666666667,
+				"Unit": "h/min",
+				"Comment": "1h = 60min"
+			}, {
+				"Type": "mA_2_A",
+				"Value": 0.001,
+				"Unit": "1",
+				"Comment": "1mA = 1e-3A"
+			}, {
+				"Type": "A_2_mA",
+				"Value": 1000,
+				"Unit": "1",
+				"Comment": "1A = 1000mA"
+			}]
+		},
+		"Type": "VG",
+		"Comment": "f_l",
+		"Analysis": {
+			"Date": [{
+				"Type": "generated",
+				"Value": "2017-11-10 14:06:14"
+			}],
+			"Values": {
+				"Temperature": [{
+					"Type": "frs5",
+					"Value": [29.420000076293945, 29.5, 29.5, 29.530000686645508, 29.5, 29.540000915527344, 29.5, 29.5],
+					"Unit": "C"
+				}, {
+					"Type": "before",
+					"Value": [296.36091196917766, 296.38059468509846, 296.3698700003271, 296.3442991869798, 296.3238614975913, 296.3333028733237, 296.2948139242773, 296.2701672774411],
+					"Unit": "K"
+				}, {
+					"Type": "after",
+					"Value": [296.15921941876474, 296.2021812628473, 296.19296774950584, 296.1854624312917, 296.16864563436405, 296.1685356987351, 296.14934425275965, 296.13725741735885],
+					"Unit": "K"
+				}, {
+					"Type": "room",
+					"Value": [296.1489702835679, 296.1968752518296, 296.13509813696146, 296.0966717377305, 296.16324392706156, 296.08844820410013, 296.1504570618272, 296.09361616522074],
+					"Unit": "K"
+				}],
+				"Pressure": [{
+					"Type": "frs5_res_off",
+					"Value": [0.00001495426758177702, 0.000014956244659851164, 0.000014956244659851164, 0.000014956987166424951, 0.000014956244659851164, 0.000014957234080725021, 0.000014956244659851164, 0.000014956244659851164],
+					"Unit": "mbar"
+				}, {
+					"Type": "frs5_res_ind",
+					"Value": [0.000018211270798929036, 0.00001816151234379504, 0.000018162891137762927, 0.000018171745978179388, 0.00003274238042649813, 0.000039377326174871996, 0.000034921442420454696, 0.0000181338418769883],
+					"Unit": "mbar"
+				}, {
+					"Type": "frs5_res",
+					"Value": [0.000003257003217152015, 0.0000032052676839438745, 0.0000032066464779117622, 0.000003214758811754437, 0.000017786135766646964, 0.000024420092094146975, 0.00001996519776060353, 0.000003177597217137135],
+					"Unit": "mbar"
+				}, {
+					"Type": "frs5_off",
+					"Value": [0.00010804633685425012, -0.00002281586804953337, 0.000027660583620948708, -3.8392081083753817e-7, 0.0006259189698813092, 0.0005137408907307457, 0.0006277837283276654, 0.0005688975817030284],
+					"Unit": "mbar"
+				}, {
+					"Type": "frs5",
+					"Value": [6.009639125686267, 6.009185104816646, 6.007563259959639, 6.007482367338822, 6.010478599186763, 5.986943662591368, 6.0104414720658195, 6.009723626698264],
+					"Unit": "mbar"
+				}, {
+					"Type": "fill",
+					"Value": [600.0982970427285, 600.0792181311672, 600.0688024273027, 600.0892878336458, 600.0854847118545, 600.2083254151394, 600.1486352187612, 600.1444666794499],
+					"Unit": "mbar"
+				}, {
+					"Type": "nd",
+					"Value": [0.0015692400047555566, 0.000672800000756979, -0.0009933200199157, -0.0016206000000238419, 0.00093479995848611, -0.02308480069041252, 0.0005604000180028379, -0.00040368002373725176],
+					"Unit": "mbar"
+				}],
+				"Correction": [{
+					"Type": "buoyancy_frs5",
+					"Value": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0],
+					"Unit": "1"
+				}, {
+					"Type": "temperature_frs5",
+					"Value": [1.000037670135498, 1.0000380277633667, 1.0000380277633667, 1.0000381469726562, 1.0000380277633667, 1.0000381469726562, 1.0000380277633667, 1.0000380277633667],
+					"Unit": "1"
+				}, {
+					"Type": "rg",
+					"Value": [1.0001243352890015, 1.0001243352890015, 1.0001243352890015, 1.0001243352890015, 1.0001243352890015, 1.0001243352890015, 1.0001243352890015, 1.0001243352890015],
+					"Unit": "1"
+				}, {
+					"Type": "temperature_expansion",
+					"Value": [1.0006810426712036, 1.0006023645401, 1.0005972385406494, 1.000536322593689, 1.0005240440368652, 1.0005563497543335, 1.0004911422729492, 1.0004488229751587],
+					"Unit": "1"
+				}],
+				"Expansion": [{
+					"Type": "f_l",
+					"Value": [0.01001738291233778, 0.01001765113323927, 0.010017847642302513, 0.010017807595431805, 0.010018481872975826, 0.01001756265759468, 0.01001765951514244, 0.010017717257142067],
+					"Unit": "1"
+				}]
+			}
+		},
+		"CalibrationObject": [{
+			"Type": "CDG",
+			"Sign": "4041",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056318"
+			},
+			"Name": "CDG_1000T_1",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "1000Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 13mbar bis 20mbar",
+				"From": "13",
+				"To": "20",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 20mbar bis 1300 mbar",
+				"From": "20",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2a",
+				"Value": "0.02033997",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung 2^16",
+				"From": "10",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2b",
+				"Value": "3.8e-6",
+				"Unit": "mbar",
+				"From": "100",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.02",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [13.748869895935059, 15.0388694695541, 18.988078244652613, 23.974349678010785, 30.270016537634614, 38.21892620633115, 48.25522042741279, 60.92704661368674, 76.92649574879147, 97.12740198471168, 122.63306841775619, 154.8365256585499, 195.49661430912596, 246.8340467068651, 311.652694492943, 393.49272630958455, 496.8239594734388, 627.2899858196243, 792.0164050192541, 1218.9830322265625]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [0.003226637840270996, 0.0051168733580907256, 0.004848642457881151, 0.00414770275380344, 0.0032137444699955543, 0.003544048414878018, 0.003298874453244359, 0.001081389957812802, 0.000002736190610283588, 0.0009200258491842822, 0.0016456599561854204, 0.0021022511796588957, 0.001307764460612611, 0.0009903137580843588, 0.0005895004661923407, 0.000502784808687538, 0.0005069536199419559, 0.0005122171614898315, 0.0005546677905340502, 0.0006009340285402232]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4042",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056318"
+			},
+			"Name": "CDG_1000T_2",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "1000Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 13mbar bis 20mbar",
+				"From": "10",
+				"To": "20",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 20mbar bis 1300 mbar",
+				"From": "20",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2a",
+				"Value": "0.02",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung (2^16)",
+				"From": "10",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.02",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "10",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [13.648880004882812, 15.0388694695541, 18.988078244652613, 23.974349678010785, 30.270016537634614, 38.21892620633115, 48.25522042741279, 60.92704661368674, 76.92649574879147, 97.12740198471168, 122.63306841775619, 154.8365256585499, 195.49661430912596, 246.8340467068651, 311.652694492943, 393.49272630958455, 496.8239594734388, 627.2899858196243, 792.0164050192541, 1218.7330322265625]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [-0.004069387912750244, -0.0008892140832107281, -0.000924802661717445, -0.0002834455651567979, 0.0016196789166376703, -0.0004350856922788072, -0.0007322741331462613, -0.0011163721968268422, -0.0010793292201819046, -0.000958809453739179, -0.0004960481629827482, -0.00042450776773133024, -0.00016474397245791746, -0.00012813722464881687, -0.0000819175408428857, 0.000023162825768285232, 0.00008086272388773827, 0.00015371462159312704, 0.00024556817477898256, 0.00039398670538760144]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4043",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056320"
+			},
+			"Name": "CDG_1000T_3",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "1000Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 13mbar bis 20mbar",
+				"From": "13",
+				"To": "20",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 20mbar bis 1300 mbar",
+				"From": "20",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2a",
+				"Value": "0.02",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung (2^16)",
+				"From": "13",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "13",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "13",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "13",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.02",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "13",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "13",
+				"To": "1333",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [13.715539932250977, 15.0388694695541, 18.988078244652613, 23.974349678010785, 30.270016537634614, 38.21892620633115, 48.25522042741279, 60.92704661368674, 76.92649574879147, 97.12740198471168, 122.63306841775619, 154.8365256585499, 195.49661430912596, 246.8340467068651, 311.652694492943, 393.49272630958455, 496.8239594734388, 627.2899858196243, 792.0164050192541, 1219.0250244140625]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [0.0007946491241455078, 0.008996005003808195, 0.005459167607817829, 0.00293160034254306, 0.0031447236239233243, 0.00286399256065672, 0.003658992987738977, 0.002484494027417951, 0.0021042743397895265, 0.001634641472828629, 0.0017951273946894446, 0.0016328840217206414, 0.0010843639963871894, 0.0009305254197414656, 0.0007362888159655851, 0.0006095636378076945, 0.0005104340391321318, 0.00038527299695251716, 0.000470696703967674, 0.0006353855130001307]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4044",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056315"
+			},
+			"Name": "CDG_100T_1",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "100Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "1",
+				"To": "20",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 20mbar bis 130 mbar",
+				"From": "20",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "4e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.005",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [1.983170986175537, 2.3285662984981963, 2.940048064334708, 3.712105009066357, 4.686904192314192, 5.917685748188819, 7.471670675868082, 9.433732216299774, 11.911031332830055, 15.0388694695541, 18.988078244652613, 23.974349678010785, 30.270016537634614, 38.21892620633115, 48.25522042741279, 60.92704661368674, 76.92649574879147, 101.55500030517578]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [0.012150883674621582, 0.010959872281504772, 0.010016915941245331, 0.007307504276017748, 0.0036019686342358224, 0.0025333153585878902, 0.0027492232848054807, 0.002699618197716092, 0.002917595845827151, 0.003966910608363431, 0.002396867602650274, 0.0021168492089799697, 0.0019412582181678787, 0.0008373949524950082, 0.0013439571352141593, 0.0011647644253901307, 0.001399223097266721, 0.0013340711526836913]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4045",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056316"
+			},
+			"Name": "CDG_100T_2",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "100Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "1",
+				"To": "20",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 20mbar bis 130 mbar",
+				"From": "20",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "4e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.005",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [1.9748380184173584, 2.3285662984981963, 2.940048064334708, 3.712105009066357, 4.686904192314192, 5.917685748188819, 7.471670675868082, 9.433732216299774, 11.911031332830055, 15.0388694695541, 18.988078244652613, 23.974349678010785, 30.270016537634614, 38.21892620633115, 48.25522042741279, 60.92704661368674, 76.92649574879147, 101.54170227050781]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [0.00789797306060791, 0.006097017330763551, 0.004483019207965441, 0.0026682158122336196, 0.0006318164422233264, 0.0006480456371707384, 0.0009995377278265724, 0.0005846930341460576, 0.002163473651358291, 0.003355816864592474, 0.0018786782085567209, 0.001837149476367555, 0.0014058798695937413, 0.0005642722396654747, 0.0012985200083421205, 0.0010563377054655725, 0.001273636091641246, 0.0012029409457596785]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4046",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056317"
+			},
+			"Name": "CDG_100T_3",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "100Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "2e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "1",
+				"To": "20",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 20mbar bis 130 mbar",
+				"From": "20",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "4e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.005",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "1",
+				"To": "133",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [1.9835870265960693, 2.3285662984981963, 2.940048064334708, 3.712105009066357, 4.686904192314192, 5.917685748188819, 7.471670675868082, 9.433732216299774, 11.911031332830055, 15.0388694695541, 18.988078244652613, 23.974349678010785, 30.270016537634614, 38.21892620633115, 48.25522042741279, 60.92704661368674, 76.92649574879147, 101.54309844970703]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [0.012363195419311523, 0.008860154838504893, 0.0014939174696364937, 0.0013923084381432765, 0.0016694631770131877, 0.0014997473178956075, 0.0015601756408899976, 0.0019783093990231454, 0.0028796493899061726, 0.004838749990311264, 0.0019723905966567176, 0.0017571628226043278, 0.001691901057462454, 0.0007809883436411559, 0.0012858872436457794, 0.0010014316685697912, 0.0012415123903867778, 0.001216650018442067]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4047",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056312"
+			},
+			"Name": "CDG_10T_1",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "10Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "7e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.1",
+				"To": "0.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.3",
+				"To": "0.6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1c",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.6",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1d",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "1",
+				"To": "6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1e",
+				"Value": "3e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "6",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "4e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "0.13",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "0.13",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [0.1907760053873062, 0.22616759492228644, 0.28555923019901064, 0.3605471154250506, 0.45522682755073096, 0.5747694424835347, 0.7257039612324216, 0.9162739011886731, 1.1568875283162832, 1.460686320364989, 1.8442627085855328, 2.3285662984981963, 2.940048064334708, 3.712105009066357, 4.686904192314192, 5.917685748188819, 7.471670675868082, 11.896940231323242]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [-0.0038409829139709473, -0.0035654174074557857, -0.0018651300507420495, -0.0020588885796462243, -0.002975264492865508, -0.002608406837689171, -0.0005871087767135173, 0.0007473395908536812, 0.0004206449454128326, -0.000600141779643668, -0.0009340395080162572, -0.0010985006403332173, -0.0010161289790779772, -0.0006593272958394195, -0.0004948356602182527, -0.00039782875727919684, -0.00042870878681305614, -0.0002798438073536052]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4048",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056313"
+			},
+			"Name": "CDG_10T_2",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "10Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "7e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.1",
+				"To": "0.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.3",
+				"To": "0.6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1c",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.6",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1d",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "1",
+				"To": "6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1e",
+				"Value": "3e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "6",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "4e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "0.13",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "0.13",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [0.19204680621623993, 0.22616759492228644, 0.28555923019901064, 0.3605471154250506, 0.45522682755073096, 0.5747694424835347, 0.7257039612324216, 0.9162739011886731, 1.1568875283162832, 1.460686320364989, 1.8442627085855328, 2.3285662984981963, 2.940048064334708, 3.712105009066357, 4.686904192314192, 5.917685748188819, 7.471670675868082, 11.89525032043457]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [0.002794623374938965, -0.005635104151947566, -0.00722700878953361, -0.006190073374561709, -0.002850592082408469, -0.0018522621151360918, -0.0012891071603206494, 0.0007103748758214352, -0.0016654096202465777, -0.0011770804197747723, -0.001287450766548756, -0.0006750515648983745, -0.0005946390983086521, -0.0005692318703595032, -0.0002690430414974777, -0.00040751176764405005, -0.00026880112358950613, -0.000421822071099808]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4049",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056311"
+			},
+			"Name": "CDG_10T_3",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "10Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "7e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.1",
+				"To": "0.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.3",
+				"To": "0.6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1c",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.6",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1d",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "1",
+				"To": "6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1e",
+				"Value": "3e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "6",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "4e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "0.1",
+				"To": "13.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "0.13",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "0.13",
+				"To": "13",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [0.19044269621372223, 0.22616759492228644, 0.28555923019901064, 0.3605471154250506, 0.45522682755073096, 0.5747694424835347, 0.7257039612324216, 0.9162739011886731, 1.1568875283162832, 1.460686320364989, 1.8442627085855328, 2.3285662984981963, 2.940048064334708, 3.712105009066357, 4.686904192314192, 5.917685748188819, 7.471670675868082, 11.899629592895508]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [-0.0055814385414123535, -0.005525577223634815, -0.0016463098626945914, -0.0007341554528705642, 0.0006433872243062151, 0.0010180113530375572, 0.0011396521992932066, -0.0003407189336995976, -0.0009173796240731696, -0.0010379474655196313, -0.0010337183797927967, -0.0004847516399869083, -0.0004589996861626176, -0.0004603903197440513, -0.0002198098083845221, -0.00015665729599314133, -0.00016648932627502425, -0.000053882597034038415]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4050",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540071018"
+			},
+			"Name": "CDG_1T_1",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "1Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "7e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.01",
+				"To": "0.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.3",
+				"To": "0.6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1c",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.6",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.0001",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "0.01",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "0.01",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [0.1897260993719101, 0.22616759492228644, 0.28555923019901064, 0.3605471154250506, 0.45522682755073096, 0.5747694424835347, 0.7257039612324216, 0.9162739011886731, 1.2223639488220215]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [-0.009323179721832275, -0.008920591841892153, -0.005981300634534698, -0.004260460976303732, -0.0030258496444270106, -0.0023880659349053146, -0.0017421556204435492, -0.0012518733690312276, -0.0008313655838613765]
+			}],
+			"Values": {
+				"Spline": [{
+					"Type": "1T_1-x",
+					"Unit": "mbar",
+					"Value": [0.1897261, 0.191551, 0.3121598, 0.3130077, 0.4899036, 0.4900411, 0.6887582, 0.6901435, 0.8873107, 0.8885043, 1.219004, 1.222364],
+					"Comment": ""
+				}, {
+					"Type": "1T_1-y",
+					"Unit": "1",
+					"Value": [-0.009330321, -0.01062611, -0.004720343, -0.004825168, -0.002717049, -0.002709233, -0.001767984, -0.001836402, -0.001302966, -0.001280228, -0.0008277556, -0.0008306927],
+					"Comment": ""
+				}, {
+					"Type": "1T_2-x",
+					"Unit": "mbar",
+					"Value": [0.190224, 0.1919718, 0.3120786, 0.3130619, 0.4895661, 0.4898349, 0.6887061, 0.6901226, 0.8872982, 0.8883585, 1.218619, 1.221979],
+					"Comment": ""
+				}, {
+					"Type": "1T_2-y",
+					"Unit": "1",
+					"Value": [-0.006743044, -0.008439821, -0.004980054, -0.004652422, -0.003256268, -0.003276722, -0.001854773, -0.001854953, -0.001381987, -0.00137937, -0.001147105, -0.001141729],
+					"Comment": ""
+				}, {
+					"Type": "1T_3-x",
+					"Unit": "mbar",
+					"Value": [0.1900303, 0.1919551, 0.3124536, 0.3133014, 0.4905161, 0.4907286, 0.6895248, 0.6909934, 0.8885543, 0.8896334, 1.220721, 1.224016],
+					"Comment": ""
+				}, {
+					"Type": "1T_3-y",
+					"Unit": "1",
+					"Value": [-0.007738128, -0.008542865, -0.003757158, -0.003917739, -0.001395641, -0.001384593, -0.0006677374, -0.0005961284, 0.0000473149, 0.00003820378, 0.0005766138, 0.0005225687],
+					"Comment": ""
+				}, {
+					"Type": "10T_1-x",
+					"Unit": "mbar",
+					"Value": [0.190776, 0.1927342, 0.3132868, 0.3140368, 0.4895432, 0.4900848, 0.6883186, 0.6910267, 0.8890313, 0.8891563, 1.220421, 1.2229, 1.95734, 1.959006, 2.96209, 2.963507, 4.938741, 4.943532, 6.883477, 6.889872, 8.873939, 8.890021, 11.88569, 11.89694],
+					"Comment": ""
+				}, {
+					"Type": "10T_1-y",
+					"Unit": "1",
+					"Value": [-0.00428089, -0.004014771, -0.00139851, -0.001418722, -0.003033109, -0.003030811, -0.001213706, -0.001190512, -0.0003314145, -0.0003311761, -0.00004553912, -0.00004563145, -0.0007399798, -0.0007418258, -0.001183412, -0.001183268, -0.0003264059, -0.0003250744, -0.0004476874, -0.0004484212, -0.0003376345, -0.0003351826, -0.0002826031, -0.0002858268],
+					"Comment": ""
+				}, {
+					"Type": "10T_2-x",
+					"Unit": "mbar",
+					"Value": [0.1920468, 0.1926925, 0.3111412, 0.3120578, 0.4903765, 0.4905015, 0.688756, 0.6905059, 0.8874273, 0.8905103, 1.217254, 1.222025, 1.956777, 1.959839, 2.96334, 2.963465, 4.940032, 4.943345, 6.883602, 6.891123, 8.874897, 8.888834, 11.88542, 11.89525],
+					"Comment": ""
+				}, {
+					"Type": "10T_2-y",
+					"Unit": "1",
+					"Value": [-0.0009316407, -0.001115243, -0.007765027, -0.007718392, -0.002064107, -0.002062117, -0.0008533814, -0.0008528117, -0.000993735, -0.0009971197, -0.001216705, -0.001218113, -0.001083887, -0.001082641, -0.0007164126, -0.0007163726, -0.0003065265, -0.0003062608, -0.0003167276, -0.000317007, -0.0003547532, -0.0003548328, -0.0003664265, -0.0003665548],
+					"Comment": ""
+				}, {
+					"Type": "10T_3-x",
+					"Unit": "mbar",
+					"Value": [0.1904427, 0.1921093, 0.3136826, 0.3140993, 0.4920222, 0.492043, 0.6899434, 0.6924641, 0.8878438, 0.8894062, 1.218713, 1.222108, 1.95734, 1.960277, 2.963736, 2.963924, 4.940199, 4.944615, 6.88529, 6.891518, 8.876772, 8.891375, 11.88805, 11.89963],
+					"Comment": ""
+				}, {
+					"Type": "10T_3-y",
+					"Unit": "1",
+					"Value": [-0.006525846, -0.006436653, -0.0009600094, -0.0009461679, 0.00171003, 0.001710044, 0.0005713723, 0.0005532073, -0.0003591056, -0.0003638691, -0.001012027, -0.001015475, -0.0009071675, -0.0009052594, -0.0004438278, -0.0004437723, -0.0002150342, -0.0002148929, -0.0001467692, -0.000146586, -0.000110423, -0.0001102678, -0.00007148886, -0.00007121614],
+					"Comment": ""
+				}, {
+					"Type": "100T_1-x",
+					"Unit": "mbar",
+					"Value": [1.23844, 1.243231, 1.983171, 1.983796, 2.994546, 2.995588, 4.953761, 4.957927, 6.903809, 6.911517, 8.90302, 8.916144, 11.92381, 11.94069, 13.71117, 13.73262, 13.76595, 19.87066, 19.93212, 22.51899, 22.51961, 22.53107, 28.36434, 28.37017, 28.38788, 42.95106, 42.9594, 43.00272, 72.25491, 72.26074, 72.2872, 101.5333, 101.555],
+					"Comment": ""
+				}, {
+					"Type": "100T_1-y",
+					"Unit": "1",
+					"Value": [0.01554352, 0.01552446, 0.01247927, 0.01247667, 0.008561729, 0.008558176, 0.004021143, 0.004015366, 0.002481679, 0.002478966, 0.002236682, 0.002237471, 0.002687815, 0.002689967, 0.002788773, 0.002788601, 0.002788277, 0.002134033, 0.002127238, 0.001928518, 0.001928487, 0.001927921, 0.001761002, 0.001760791, 0.001760149, 0.0006671545, 0.0006666256, 0.0006638877, 0.001180114, 0.001180427, 0.001181848, 0.001192278, 0.001190159],
+					"Comment": ""
+				}, {
+					"Type": "100T_2-x",
+					"Unit": "mbar",
+					"Value": [1.216775, 1.220733, 1.974838, 1.975046, 2.978089, 2.978297, 4.94147, 4.945428, 6.895268, 6.903601, 8.874272, 8.894688, 11.91486, 11.92736, 13.702, 13.73492, 13.75721, 19.86087, 19.91503, 22.51899, 22.52065, 22.53024, 28.3358, 28.34601, 28.37101, 42.94606, 42.95148, 43.00189, 72.24304, 72.24887, 72.27866, 101.5167, 101.5175, 101.5417],
+					"Comment": ""
+				}, {
+					"Type": "100T_2-y",
+					"Unit": "1",
+					"Value": [-0.00236166, -0.002268985, 0.00707703, 0.007077744, 0.004768487, 0.004767549, 0.0001254498, 0.0001228047, 0.0003694957, 0.000373465, 0.001132248, 0.001138395, 0.001752305, 0.001753856, 0.001921704, 0.00192405, 0.001925626, 0.001963233, 0.001959688, 0.001715127, 0.001714934, 0.001713818, 0.0009728703, 0.0009717265, 0.0009689321, 0.0005577675, 0.0005579431, 0.000559583, 0.001032906, 0.001032369, 0.001029618, 0.001038085, 0.001038392, 0.00104772],
+					"Comment": ""
+				}, {
+					"Type": "100T_3-x",
+					"Unit": "mbar",
+					"Value": [1.224691, 1.228858, 1.983587, 1.986712, 2.968507, 2.96934, 4.949594, 4.953969, 6.89506, 6.902559, 8.894896, 8.908436, 11.9234, 11.93256, 13.73325, 13.74887, 13.78345, 19.8567, 19.91608, 22.51461, 22.52128, 28.3608, 28.36788, 28.37955, 42.95356, 42.96065, 43.0021, 72.23637, 72.24345, 72.27532, 101.5211, 101.5231, 101.5431],
+					"Comment": ""
+				}, {
+					"Type": "100T_3-y",
+					"Unit": "1",
+					"Value": [0.004674416, 0.004745307, 0.01008709, 0.01008439, 0.004875907, 0.004870564, -0.0007139699, -0.0007142085, 0.00129775, 0.001307664, 0.003003536, 0.003009568, 0.00326376, 0.003262619, 0.002985594, 0.002982814, 0.002976641, 0.001861714, 0.001854025, 0.001629288, 0.00162895, 0.0015383, 0.001538217, 0.00153808, 0.0006971359, 0.0006965617, 0.0006932051, 0.0009572669, 0.0009586123, 0.0009646802, 0.001083972, 0.001082693, 0.00106989],
+					"Comment": ""
+				}, {
+					"Type": "1000T_1-x",
+					"Unit": "mbar",
+					"Value": [12.0136, 13.74887, 13.76762, 13.77595, 19.9567, 19.99211, 22.58148, 28.40184, 28.40809, 28.41434, 43.10272, 43.12355, 72.11909, 72.1295, 72.167, 101.5333, 101.5563, 160.2431, 160.2514, 160.2619, 195.1923, 195.1944, 341.2658, 341.2679, 341.297, 633.8231, 633.8293, 633.8314, 926.4137, 926.4199, 926.422, 1218.979, 1218.983],
+					"Comment": ""
+				}, {
+					"Type": "1000T_1-y",
+					"Unit": "1",
+					"Value": [0.009408064, 0.005118524, 0.005086861, 0.005072884, 0.004101759, 0.004115757, 0.004739167, 0.004362747, 0.004361838, 0.004360931, 0.002591519, 0.002589493, 0.000818519, 0.0008181938, 0.0008170237, 0.000498395, 0.0004985336, 0.001615519, 0.00161567, 0.001615861, 0.00197467, 0.001974676, 0.0003385441, 0.0003385177, 0.0003381511, 0.0005330914, 0.0005331178, 0.0005331267, 0.0005830825, 0.0005830707, 0.0005830667, 0.0006003476, 0.0006003637],
+					"Comment": ""
+				}, {
+					"Type": "1000T_2-x",
+					"Unit": "mbar",
+					"Value": [11.89486, 11.91569, 13.64888, 13.66555, 13.69263, 19.82962, 19.84212, 22.45649, 28.37267, 28.38517, 42.87149, 42.91732, 72.07742, 72.10242, 101.325, 101.3646, 159.8286, 159.8307, 159.8619, 194.9007, 194.9069, 341.1054, 341.1075, 341.1241, 633.5981, 633.6064, 633.6147, 926.1533, 926.1595, 1218.733],
+					"Comment": ""
+				}, {
+					"Type": "1000T_2-y",
+					"Unit": "1",
+					"Value": [0.0008648948, 0.0007197433, -0.002665889, -0.002656435, -0.002641057, -0.0004583686, -0.0004561478, -0.000136098, -0.00008399354, -0.00008429882, -0.0004768597, -0.0004781646, -0.001158322, -0.001158644, -0.00115361, -0.001153191, -0.000250263, -0.0002502427, -0.0002499413, -0.0001397579, -0.0001397582, -0.0000837111, -0.00008370957, -0.00008369747, 0.0001823405, 0.0001823467, 0.0001823529, 0.0003003474, 0.0003003487, 0.0003963307],
+					"Comment": ""
+				}, {
+					"Type": "1000T_3-x",
+					"Unit": "mbar",
+					"Value": [12.02818, 12.04068, 13.71554, 13.77595, 13.84262, 19.9442, 19.99836, 22.5294, 22.53357, 22.54399, 28.40809, 28.41434, 28.41642, 43.05897, 43.06939, 43.11938, 72.28574, 72.28991, 72.34199, 101.575, 101.6125, 160.1515, 160.1535, 160.1723, 195.1465, 195.1507, 341.347, 341.3512, 633.7397, 926.3824, 1219.01, 1219.025],
+					"Comment": ""
+				}, {
+					"Type": "1000T_3-y",
+					"Unit": "1",
+					"Value": [0.01168184, 0.01154959, 0.005446096, 0.005452506, 0.005460862, 0.004543704, 0.004527056, 0.003764553, 0.00376341, 0.003760556, 0.00272969, 0.002729125, 0.002728938, 0.002934041, 0.002934461, 0.002936465, 0.002280738, 0.002280551, 0.002278213, 0.001417762, 0.001417158, 0.001284022, 0.001284028, 0.001284085, 0.00132807, 0.001328069, 0.0007655365, 0.0007655168, 0.0002533637, 0.0006204301, 0.0006144167, 0.0006143854],
+					"Comment": ""
+				}]
+			}
+		}, {
+			"Type": "CDG",
+			"Sign": "4051",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "5400711571"
+			},
+			"Name": "CDG_1T_2",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "1Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "7e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.01",
+				"To": "0.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.3",
+				"To": "0.6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1c",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.6",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.0001",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "0.01",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "0.01",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [0.19022400677204132, 0.22616759492228644, 0.28555923019901064, 0.3605471154250506, 0.45522682755073096, 0.5747694424835347, 0.7257039612324216, 0.9162739011886731, 1.221979022026062]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [-0.006723344326019287, -0.007453436946091737, -0.005704631881953531, -0.004318736351972323, -0.003542370468339569, -0.002659920850344807, -0.001769444515433707, -0.0014282259633212851, -0.0011460185025093106]
+			}]
+		}, {
+			"Type": "CDG",
+			"Sign": "4052",
+			"Standard": "SE3",
+			"Device": {
+				"Type": "CDG045D",
+				"Producer": "Inficon",
+				"UsedFor": "pfill",
+				"SN": "540056309"
+			},
+			"Name": "CDG_1T_3",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Setup": {
+				"TypeHead": "1Torr",
+				"Heater": "on"
+			},
+			"Uncertainty": [{
+				"Type": "u1a",
+				"Value": "7e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.01",
+				"To": "0.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1b",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.3",
+				"To": "0.6",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u1c",
+				"Value": "3e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 1.3mbar bis 20mbar",
+				"From": "0.6",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u2",
+				"Value": "0.0002",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. Digitalisierung",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u4",
+				"Value": "5e-4",
+				"Unit": "1",
+				"Comment": "Langzeitstab. pro 1a",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u5",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Nichtreproduzierbarkeit",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u6",
+				"Value": "5e-5",
+				"Unit": "1",
+				"Comment": "rel. Uns. durch Temperaturdifferenz (5e-5/K)",
+				"From": "0.01",
+				"To": "1.33",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u7",
+				"Value": "0.0001",
+				"Unit": "mbar",
+				"Comment": "abs. Uns. d. nicht erfassbaren Nullpunktschwankung",
+				"From": "0.01",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "u8",
+				"Value": "1e-4",
+				"Unit": "1",
+				"Comment": "Abweichung von Fitkurve",
+				"From": "0.01",
+				"To": "1.3",
+				"RangeUnit": "mbar"
+			}],
+			"Class": "CDG",
+			"Interpol": [{
+				"Type": "p_ind",
+				"Unit": "mbar",
+				"Value": [0.1900303065776825, 0.22616759492228644, 0.28555923019901064, 0.3605471154250506, 0.45522682755073096, 0.5747694424835347, 0.7257039612324216, 0.9162739011886731, 1.2240159511566162]
+			}, {
+				"Type": "e",
+				"Unit": "1",
+				"Value": [-0.007734775543212891, -0.007178483258247891, -0.004803498468609587, -0.0032481549759544237, -0.0018483569520561056, -0.0011147757929022418, -0.0004855212353460227, 0.00002209762988229447, 0.0005190372573815605]
+			}]
+		}, {
+			"Standard": "FRS5",
+			"Name": "FRS5_DMM",
+			"Sign": ".",
+			"Type": "DMM",
+			"Device": {
+				"SN": "0100855",
+				"Type": "PM 2535",
+				"Producer": "Phillips",
+				"UsedFor": "T"
+			},
+			"Constant": [{
+				"Type": "useDev",
+				"From": "293.15",
+				"To": "300.15",
+				"RangeUnit": "K",
+				"Comment": "Gültigkeitsbereich"
+			}],
+			"Date": {
+				"Type": "generated",
+				"Value": "2015-09-08"
+			},
+			"Defaults": {
+				"@acc": "VXI11",
+				"@host": "e75416",
+				"@device": "gpib0,12",
+				"@docpath": "Calibration.Measurement.Values.Temperature",
+				"@CR": "\n"
+			},
+			"Owner": {
+				"Name": "PTB AG7.54"
+			},
+			"Task": [{
+				"TaskName": "is_ready",
+				"Comment": "Testet ob das Gerät ansprechbar ist",
+				"Action": "@acc",
+				"Host": "@host",
+				"Device": "@device",
+				"LogPriority": "3",
+				"Value": "*ID ?",
+				"PostProcessing": ["var ToExchange={'@exchpath':_x == 'PM25350 S04'};"]
+			}, {
+				"TaskName": "device_ini",
+				"Comment": "Initialisierung des Messgeräts",
+				"Action": "@acc",
+				"Host": "@host",
+				"Device": "@device",
+				"LogPriority": "3",
+				"Values": {
+					"meastemp": "FNC TDC",
+					"measvolt": "FNC VDC"
+				},
+				"PostProcessing": ["var ToExchange={'@exchpath':_x.length > 0};"]
+			}, {
+				"TaskName": "read_temp",
+				"Comment": "VXI-Kommunikation:",
+				"Action": "@acc",
+				"Host": "@host",
+				"Repeat": "10",
+				"Wait": "3000",
+				"LogPriority": "3",
+				"DocPath": "@docpath",
+				"Device": "@device",
+				"Value": "X",
+				"Fallback": {
+					"Result": [{
+						"Type": "frs5",
+						"Unit": "C",
+						"Value": null,
+						"SdValue": null,
+						"N": null
+					}]
+				},
+				"PostProcessing": ["var _vec=_x.map(_.extractPM2535Temp),", "_res = _.vlStat(_.checkNumArr(_vec).Arr),", "temp=_res,", "Result=[_.vlRes('frs5',_res.mv,'C','',_res.sd,_res.N)];"]
+			}],
+			"Uncertainty": [{
+				"Type": "phillips_u1",
+				"Value": "0.015",
+				"Unit": "K",
+				"Comment": "Uns. des Temperaturnormals"
+			}, {
+				"Type": "phillips_u2",
+				"Value": "0.000029",
+				"Unit": "K",
+				"Comment": "Digitalisierung"
+			}, {
+				"Type": "phillips_u3",
+				"Value": "0.02",
+				"Unit": "K",
+				"Comment": "Gradient ueber Al-Block, (Abschätzung)"
+			}, {
+				"Type": "phillips_u4",
+				"Value": "0.0",
+				"Unit": "K",
+				"Comment": "Temperaturabh. der Korrektur"
+			}, {
+				"Type": "phillips_u5",
+				"Value": "0.2",
+				"Unit": "K",
+				"Comment": "Langzeitstab. pro Jahr (war 0.3 auf 2a) gleicher Sensor wie CE3"
+			}, {
+				"Type": "phillips_u6",
+				"Value": "0.08",
+				"Unit": "K",
+				"Comment": "experimentelle Streuung bei der Kalib."
+			}],
+			"History": {
+				"2015-09-08": "als PM in DB angelegt"
+			},
+			"Class": "DMM"
+		}, {
+			"Type": "System Switch/Multimeter",
+			"Name": "SE3_Temperature_Keithley",
+			"Standard": "SE3",
+			"Sign": "4040",
+			"Device": {
+				"SN": "Controller: 4078358, Card1: 4078358, Card2: 4077018, Card3: 4076032",
+				"Producer": "Keithley",
+				"Type": "3706A System Switch/Multimeter"
+			},
+			"Date": {
+				"Type": "generated",
+				"Value": "2015-05-06"
+			},
+			"Owner": {
+				"Name": "PTB AG7.54"
+			},
+			"Defaults": {
+				"@CR": "\n",
+				"@host": "e75440",
+				"@device": "inst0",
+				"@acc": "VXI11",
+				"@docpath": "Calibration.Measurement.Values.Temperature",
+				"@slot": 1,
+				"@token": ""
+			},
+			"Task": [{
+				"TaskName": "is_ready",
+				"Comment": "checkt Ansprechbarkeit der Karte @slot",
+				"LogPriority": "3",
+				"Action": "@acc",
+				"Host": "@host",
+				"Device": "@device",
+				"Value": "print(slot[@slot].idn)",
+				"PostProcessing": ["ok= (_x.substr(0,4) == '3720')?true:false;"]
+			}, {
+				"TaskName": "exec",
+				"Comment": "Temperaturmessung",
+				"LogPriority": "3",
+				"Action": "@acc",
+				"Host": "@host",
+				"VxiTimeout": 90000,
+				"DocPath": "@docpath",
+				"Device": "@device",
+				"Value": "tempscan()@CR",
+				"PostProcessing": ["var _res = _x.trim().split(';'), _chobj = {}, Result = [], ToExchange = {};", "for(var _i = 0; _i < _res.length; _i++){", "var _both = _res[_i].split(':'),", "_channel = _both[0].replace('+',''),", "_value = parseFloat(_both[1]);", "if(_chobj[_channel]){", "_chobj[_channel].push(_value);", "}else{", "_chobj[_channel] = [_value];", "}", "}", "for(var _j in _chobj){", "_tmst = _.vlStat(_chobj[_j]);", "Result.push(_.vlRes('ch_' + _j + '@token', _tmst.mv, 'C', false, _tmst.sd, _tmst.N));", "_exkey ='KeithleyCh' + _j+ '@token';", "ToExchange[_exkey] = {Value:_tmst.mv,", " Unit:'C', ", " SdValue:_tmst.sd, ", " N:_tmst.N, ", "Type:'channel_' + _j};", "};", "var LogData={'x':_x}"]
+			}, {
+				"TaskName": "display",
+				"Comment": "display test",
+				"LogPriority": "3",
+				"Action": "@acc",
+				"Host": "@host",
+				"Device": "@device",
+				"Value": "display.clear() display.settext(\"@text\") print(\"@text\")",
+				"PostProcessing": ["ok= _x;"]
+			}],
+			"Uncertainty": [{
+				"Type": "u1",
+				"Value": "0.015",
+				"Unit": "K",
+				"Comment": "Uns. des Temperaturnormals"
+			}, {
+				"Type": "u2",
+				"Value": "0.000029",
+				"Unit": "K",
+				"Comment": "Digitalisierung"
+			}, {
+				"Type": "u3",
+				"Value": "0.02",
+				"Unit": "K",
+				"Comment": "Gradient ueber Al-Block, (Abschätzung)"
+			}, {
+				"Type": "u4",
+				"Value": "0.0",
+				"Unit": "K",
+				"Comment": "Temperaturabh. der Korrektur"
+			}, {
+				"Type": "u5",
+				"Value": "0.2",
+				"Unit": "K",
+				"Comment": "Langzeitstab. pro Jahr (war 0.3 auf 2a)"
+			}, {
+				"Type": "u6",
+				"Value": "0.08",
+				"Unit": "K",
+				"Comment": "experimentelle Streuung bei der Kalib."
+			}],
+			"Class": "DMM",
+			"Values": {
+				"Temperature": [{
+					"Type": "corr_ch_1001",
+					"Unit": "K",
+					"Value": -0.02055135,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1002",
+					"Unit": "K",
+					"Value": -0.08609136,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1003",
+					"Unit": "K",
+					"Value": -0.1094606,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1004",
+					"Unit": "K",
+					"Value": -0.1140894,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1005",
+					"Unit": "K",
+					"Value": -0.146011,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1006",
+					"Unit": "K",
+					"Value": -0.2235653,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1007",
+					"Unit": "K",
+					"Value": -0.09426584,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1008",
+					"Unit": "K",
+					"Value": -0.05266767,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1009",
+					"Unit": "K",
+					"Value": 0.1385864,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1010",
+					"Unit": "K",
+					"Value": -0.1191169,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1011",
+					"Unit": "K",
+					"Value": -0.0468584,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1012",
+					"Unit": "K",
+					"Value": -0.04691088,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1013",
+					"Unit": "K",
+					"Value": -0.08861834,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1014",
+					"Unit": "K",
+					"Value": -0.1466342,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1015",
+					"Unit": "K",
+					"Value": -0.1575276,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1016",
+					"Unit": "K",
+					"Value": -0.1069595,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1017",
+					"Unit": "K",
+					"Value": -0.07377139,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1018",
+					"Unit": "K",
+					"Value": 0.05459131,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1019",
+					"Unit": "K",
+					"Value": -0.1676449,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1020",
+					"Unit": "K",
+					"Value": 0.07760275,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1021",
+					"Unit": "K",
+					"Value": -0.0721497,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1022",
+					"Unit": "K",
+					"Value": -0.1255891,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1023",
+					"Unit": "K",
+					"Value": -0.01435699,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1024",
+					"Unit": "K",
+					"Value": -0.02880101,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1025",
+					"Unit": "K",
+					"Value": -0.0569549,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1026",
+					"Unit": "K",
+					"Value": -0.206477,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1027",
+					"Unit": "K",
+					"Value": 0.08064548,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1028",
+					"Unit": "K",
+					"Value": -0.1108275,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1029",
+					"Unit": "K",
+					"Value": -0.2205404,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_1030",
+					"Unit": "K",
+					"Value": -0.0781881,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2001",
+					"Unit": "K",
+					"Value": -0.1151062,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2002",
+					"Unit": "K",
+					"Value": -0.1133783,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2003",
+					"Unit": "K",
+					"Value": 0.01223344,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2004",
+					"Unit": "K",
+					"Value": -0.09071967,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2005",
+					"Unit": "K",
+					"Value": 0.008553151,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2006",
+					"Unit": "K",
+					"Value": -0.1005517,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2007",
+					"Unit": "K",
+					"Value": -0.07374411,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2008",
+					"Unit": "K",
+					"Value": -0.1151906,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2009",
+					"Unit": "K",
+					"Value": -0.1536873,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2010",
+					"Unit": "K",
+					"Value": -0.0631553,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2011",
+					"Unit": "K",
+					"Value": -0.2170937,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2012",
+					"Unit": "K",
+					"Value": -0.215548,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2013",
+					"Unit": "K",
+					"Value": -0.2040807,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2014",
+					"Unit": "K",
+					"Value": -0.06997357,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2015",
+					"Unit": "K",
+					"Value": -0.1704739,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2016",
+					"Unit": "K",
+					"Value": 0.1202952,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2017",
+					"Unit": "K",
+					"Value": -0.1013841,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2018",
+					"Unit": "K",
+					"Value": -0.07770844,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2019",
+					"Unit": "K",
+					"Value": -0.2076571,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2020",
+					"Unit": "K",
+					"Value": -0.1087817,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2021",
+					"Unit": "K",
+					"Value": -0.08836235,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2022",
+					"Unit": "K",
+					"Value": -0.04069963,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2023",
+					"Unit": "K",
+					"Value": -0.1250048,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2024",
+					"Unit": "K",
+					"Value": -0.1138856,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2025",
+					"Unit": "K",
+					"Value": -0.05447166,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2026",
+					"Unit": "K",
+					"Value": -0.06111073,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2027",
+					"Unit": "K",
+					"Value": -0.06495957,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2028",
+					"Unit": "K",
+					"Value": -0.1681122,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2029",
+					"Unit": "K",
+					"Value": -0.05194202,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_2030",
+					"Unit": "K",
+					"Value": -0.08746292,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3001",
+					"Unit": "K",
+					"Value": -0.1949124,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3002",
+					"Unit": "K",
+					"Value": -0.1714675,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3003",
+					"Unit": "K",
+					"Value": -0.08590973,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3004",
+					"Unit": "K",
+					"Value": -0.2316187,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3005",
+					"Unit": "K",
+					"Value": -0.05040835,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3006",
+					"Unit": "K",
+					"Value": -0.1007355,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3007",
+					"Unit": "K",
+					"Value": -0.02861267,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3008",
+					"Unit": "K",
+					"Value": 0.06361742,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3009",
+					"Unit": "K",
+					"Value": -0.04486023,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3010",
+					"Unit": "K",
+					"Value": -0.247987,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3011",
+					"Unit": "K",
+					"Value": -0.1624503,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3012",
+					"Unit": "K",
+					"Value": -0.1203539,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3013",
+					"Unit": "K",
+					"Value": -0.1002836,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3014",
+					"Unit": "K",
+					"Value": -0.05129921,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3015",
+					"Unit": "K",
+					"Value": -0.03521956,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3016",
+					"Unit": "K",
+					"Value": -0.1245897,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3017",
+					"Unit": "K",
+					"Value": -0.07564731,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3018",
+					"Unit": "K",
+					"Value": -0.08213775,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3019",
+					"Unit": "K",
+					"Value": -0.1032167,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3020",
+					"Unit": "K",
+					"Value": -0.05902807,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3021",
+					"Unit": "K",
+					"Value": -0.05743068,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3022",
+					"Unit": "K",
+					"Value": -0.09487768,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3023",
+					"Unit": "K",
+					"Value": -0.06266033,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3024",
+					"Unit": "K",
+					"Value": -0.05003964,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3025",
+					"Unit": "K",
+					"Value": 0.003939928,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3026",
+					"Unit": "K",
+					"Value": -0.079641,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3027",
+					"Unit": "K",
+					"Value": -0.02866263,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3028",
+					"Unit": "K",
+					"Value": -0.05390462,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3029",
+					"Unit": "K",
+					"Value": -0.0973043,
+					"Comment": ""
+				}, {
+					"Type": "corr_ch_3030",
+					"Unit": "K",
+					"Value": -0.07041239,
+					"Comment": ""
+				}]
+			}
+		}, {
+			"Comment": "Auslese Spannung",
+			"Type": "2700",
+			"Standard": "SE3",
+			"Name": "SE3_DMM_Keithley_V",
+			"Sign": "4927",
+			"Device": {
+				"SN": "4072951",
+				"Producer": "Keithley",
+				"InvNo": "200055110.14",
+				"LocationBuilding": "Foe-Bau",
+				"LocationRoom": "21"
+			},
+			"Date": {
+				"Type": "generated",
+				"Value": "2017-07-12"
+			},
+			"Owner": {
+				"Name": "PTB AG7.54"
+			},
+			"Defaults": {
+				"@host": "e75444",
+				"@port": "1394",
+				"@acc": "TCP",
+				"@voltchan": "(@101:110)",
+				"@CR": "\n"
+			},
+			"Class": "DMM"
+		}, {
+			"Comment": "",
+			"Type": "PPC",
+			"Name": "SE3_PPC4",
+			"Standard": "SE3",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Device": {
+				"Type": "PPC4",
+				"SN": "53444",
+				"Producer": "Europascal"
+			},
+			"Date": {
+				"Type": "generated",
+				"Value": "2014-05-27"
+			},
+			"Defaults": {
+				"@descr": "Auslesen des Druckwerts",
+				"@acc": "TCP",
+				"@port": "5302",
+				"@CR": "\r",
+				"@host": "e75443",
+				"@cmd": "*CLS?\r",
+				"@token": "ppc",
+				"@exchpath": "SE2_PPC4",
+				"@docpath": "Calibration.Measurement.Values.Pressure"
+			},
+			"Task": [{
+				"TaskName": "init",
+				"Comment": "Initialisiert PPC",
+				"Action": "@acc",
+				"Host": "@host",
+				"Port": "@port",
+				"Values": {
+					"stop": "ABORT@CR",
+					"clear": "*CLS@CR",
+					"set_mbar": "UNIT MBAR@CR",
+					"set_static": "MODE 0@CR",
+					"set_dynamic": "MODE 1@CR"
+				},
+				"Value": "*CLS",
+				"PostProcessing": ["ok = _x ?true:false;"]
+			}, {
+				"TaskName": "exec",
+				"Comment": "@descr",
+				"Action": "@acc",
+				"Host": "@host",
+				"Port": "@port",
+				"Repeat": 10,
+				"Wait": 1000,
+				"DocPath": "@docpath",
+				"Value": "QPRR?@CR",
+				"PostProcessing": ["var _vec = _x.map(_.extractPPC);", "_N = _vec.length,", "_redvec = _vec.splice(@skip - 1 , _N - 1), ", "_res = _.vlStat(_.checkNumArr(_redvec).Arr),", "Result=[_.vlRes('@token',_res.mv,'mbar', '', _res.sd,_res.N)],", "ToExchange={", "'@exchpath.Value':_res.mv,", "'@exchpath.Unit':'mbar',", "'@exchpath.Type':'@token'", "};"]
+			}, {
+				"TaskName": "set_pressure",
+				"Comment": "Sets the target pressure: @pressuretarget mbar",
+				"Action": "@acc",
+				"Host": "@host",
+				"Port": "@port",
+				"Repeat": 2,
+				"FromExchange": {
+					"@pressuretarget": "Pressure_target.Value"
+				},
+				"Wait": 20000,
+				"StopIf": "Pressure_fill_ok.Bool",
+				"Value": "PS @pressuretarget, 2250@CR",
+				"PostProcessing": ["ok = _x ?true:false;"]
+			}],
+			"Class": "PPC"
+		}, {
+			"Type": "SRG",
+			"Sign": "4814",
+			"Name": "SRG_F14",
+			"Standard": "SE3",
+			"Owner": {
+				"Name": "PTB AG7.54"
+			},
+			"Device": {
+				"Producer": "Eigenbau",
+				"Descriptions": "Kugel im Finger F14 mit 16CF Flansch mit Ventil, soll als PN an SE3 dienen",
+				"SN": "F14"
+			},
+			"Date": {
+				"Type": "generated",
+				"Value": "2017-01-19"
+			},
+			"Setup": {
+				"Diameter": 4.762,
+				"Density": 7.715,
+				"Sigma": 1,
+				"Unit": "DCR",
+				"Input": "manuell"
+			},
+			"Constants": [{
+				"Type": "d",
+				"Value": "4.762e-3",
+				"Unit": "m"
+			}, {
+				"Type": "rho",
+				"Value": "7.715e+3",
+				"Unit": "kg/m3",
+				"Comment": "rotor density"
+			}],
+			"Uncertainty": [{
+				"Type": "srg14_u1",
+				"Value": "0.0023",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 0.013 mbar bis 0.013 mbar",
+				"From": "0.00013",
+				"To": "0.013",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "srg14_u2",
+				"Value": "0.001",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. orientierung (SRG-Kopf)",
+				"From": "0.00013",
+				"To": "0.013",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "srg14_u3",
+				"Value": "0.005",
+				"Unit": "mbar",
+				"Comment": "rel. Uns. d. exp. Streuung",
+				"From": "0.00013",
+				"To": "0.013",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "srg14_u4",
+				"Value": "2.7e-9",
+				"Unit": "mbar",
+				"Comment": "Uns. d. offsets 2e-10 * 27",
+				"From": "0.00013",
+				"To": "0.013",
+				"RangeUnit": "mbar"
+			}, {
+				"Type": "srg14_u5",
+				"Value": "0.001",
+				"Unit": "1",
+				"Comment": "rel. Uns. d. Langzeitstab",
+				"From": "0.00013",
+				"To": "0.013",
+				"RangeUnit": "mbar"
+			}],
+			"History": {
+				"2017-01-19": "zur Ausgasratenmessung an SE3 benutzt, keine unterlagen wie KS o.ä. gefunden; Werte für d und roh von F13 übernommen"
+			},
+			"Class": "SRG"
+		}, {
+			"Name": "FRS55_4019",
+			"Type": "SRG",
+			"Class": "SRG",
+			"Standard": "FRS5",
+			"Sign": "4019",
+			"Owner": {
+				"Name": "PTB AG7.54"
+			},
+			"Setup": {
+				"Unit": "DCR"
+			},
+			"Device": {
+				"Producer": "Labor",
+				"Type": "Eigenbau",
+				"SN": "ohne"
+			},
+			"Constants": [{
+				"Type": "d",
+				"Unit": "m",
+				"Value": "4.762e-3"
+			}, {
+				"Comment": "rotor density",
+				"Type": "rho",
+				"Unit": "kg/m3",
+				"Value": "7.715e+3"
+			}, {
+				"Comment": "viscosity during calibration",
+				"Type": "mu",
+				"Unit": "Pas",
+				"Value": "0"
+			}, {
+				"Comment": "aus QS 12/06",
+				"Type": "sigma_eff_N2",
+				"Unit": "1",
+				"Value": "1.0413"
+			}, {
+				"Comment": "aus QS 12/06",
+				"Type": "sigma_eff_He",
+				"Unit": "1",
+				"Value": "1.0325"
+			}]
+		}],
+		"Certificate": "1001",
+		"CustomerObject": {
+			"Name": "CDG_ND_SE3",
+			"Type": "differential capacitance diaphragm gauge (CDG)",
+			"Owner": {
+				"Name": "PTB AG 7.54"
+			},
+			"Device": {
+				"Type": "698A11TRA",
+				"SN": "018247544",
+				"Producer": "MKS"
+			},
+			"Constants": [{
+				"Type": "rangeConversion_X1",
+				"Value": 1,
+				"Unit": "mbar/V"
+			}, {
+				"Type": "rangeConversion_X0.1",
+				"Value": 0.1,
+				"Unit": "mbar/V"
+			}, {
+				"Type": "rangeConversion_X0.01",
+				"Value": 0.01,
+				"Unit": "mbar/V"
+			}],
+			"History": {
+				"2016-10": "Gerät für Expansionsbest. SE3 beschaft; Nullindikator beim Vergleich FRS5 DKM PPC4"
+			},
+			"Class": "CDG"
+		},
+		"Standard": [{
+			"Maintainer": "bock04",
+			"Name": "SE3",
+			"Date": {
+				"Type": "generated",
+				"Value": "2017-10-10"
+			},
+			"Uncertainty": [{
+				"Type": "u_V5",
+				"Value": "0.914",
+				"Unit": "cm^3",
+				"Comment": "nach QSE-SE3-17-2"
+			}, {
+				"Type": "u_VV",
+				"Value": "0.029",
+				"Unit": "cm^3",
+				"Comment": "nach QSE-SE3-17-1"
+			}],
+			"Constants": [{
+				"Type": "V5",
+				"Unit": "cm^3",
+				"Value": "412.475",
+				"Comment": "Volumen 5, Wert nach QSE-SE3-17-2"
+			}, {
+				"Type": "VV",
+				"Unit": "cm^3",
+				"Value": "5.211",
+				"Comment": "Volumen 16CF Ventil, Wert nach QSE-SE3-17-1"
+			}, {
+				"Type": "fm",
+				"Unit": "1",
+				"Value": "4.0299e-3",
+				"Comment": "manuelle Expansion; nach QSE-SE3-17-3 (Stand 11.1.11)",
+				"StartVolume": "V6"
+			}]
+		}, {
+			"Name": "FRS5",
+			"Sign": "4018",
+			"Constants": [{
+				"Type": "R_cal",
+				"Value": "2.290311",
+				"Unit": "lb",
+				"Comment": "Reading bei aufgelegter m_cal"
+			}, {
+				"Type": "m_cal",
+				"Value": "1.038867",
+				"Unit": "kg",
+				"Comment": "Masse Kalibrierstück"
+			}, {
+				"Type": "A_eff",
+				"Value": "0.00453467",
+				"Unit": "m^2",
+				"Comment": "effektive Kolbenfläche N2 "
+			}, {
+				"Type": "rho_frs",
+				"Value": "7920",
+				"Unit": "kg/m^3",
+				"Comment": "Dichte Kolben- Zylinder"
+			}, {
+				"Type": "rho_gas",
+				"Value": "0",
+				"Unit": "kg/m^3",
+				"Comment": "Dichte Gas 0; wird in Unsicherheit wie Metrologia 46(2009) p.389-396 berücksichtigt"
+			}, {
+				"Type": "alpha_beta_frs",
+				"Value": "0.000004",
+				"Unit": "1/C",
+				"Comment": "Ausdehnungskoeffizient"
+			}, {
+				"Type": "g_frs",
+				"Value": 9.8127103,
+				"Unit": "m/s^2",
+				"Comment": "http://a73435.berlin.ptb.de:81/2015/03/05/erdbeschleunigung-in-unseren-laboren/ "
+			}],
+			"Date": {
+				"Type": "updated",
+				"Value": "2012-03-15"
+			},
+			"Defaults": {
+				"@host": "e75491",
+				"@port": "10004",
+				"@acc": "TCP",
+				"@CR": "\r",
+				"@repeat": 60,
+				"@waittime": 100,
+				"@token": "frs_zc0_p",
+				"@exchpath": "frs5"
+			},
+			"Device": {
+				"Serial": "0402211",
+				"Producer": "Furness Controls, Bexhill on Sea, East Sussex, TN39 3LJ, UK",
+				"CalibrationIntervall": "60",
+				"MeasuredQuantity": "P",
+				"Calibration": "0187 PTB 05",
+				"Comment": "Veröffentlichung bei Metrologia 46(2009) S.389-396 ",
+				"LocationBuilding": "Foe-Bau"
+			},
+			"Task": [{
+				"TaskName": "read_out",
+				"LogPriority": "3",
+				"Comment": "Auslese Waage ",
+				"Action": "TCP",
+				"Host": "@host",
+				"Port": "@port",
+				"Repeat": "@repeat",
+				"Fallback": [{
+					"Type": "@token",
+					"Value": null,
+					"Unit": "lb"
+				}, {
+					"Type": "sd_@token",
+					"Value": null,
+					"Unit": "lb"
+				}, {
+					"Type": "N_@token",
+					"Value": null,
+					"Unit": "1"
+				}],
+				"Wait": "@waittime",
+				"Value": "",
+				"DocPath": "@docpath",
+				"PostProcessing": ["var _NoOfSkip = 10,", "_vec = _x.map(_.extractFRS),", "_N = _vec.length,", "_redvec = _vec.splice(_NoOfSkip - 1 , _N - 1), ", "_res =  _.vlStat(_.checkNumArr(_redvec).Arr),", "Result=[", "_.vlRes('@token',_res.mv,'lb', '', _res.sd,_res.N)];", "RawData = _x;", "ToExchange={", "'@exchpath.Caption':'FRS5',", "'@exchpath.Type':'@token',", "'@exchpath.Value':_res.mv,", "'@exchpath.SdValue':_res.sd,", "'@exchpath.N':_res.N,", "'@exchpath.Unit':'lb'};"]
+			}],
+			"Uncertainty": [{
+				"Type": "u_r",
+				"Value": "8.66e-6",
+				"Unit": "lb",
+				"Comment": "aus 1. Bericht zur FRS5"
+			}, {
+				"Type": "u_ub",
+				"Expression": "0.002/453.59+5.0e-6*r_ind",
+				"Unit": "lb",
+				"Comment": "aus 1. Bericht zur FRS5"
+			}, {
+				"Type": "u_usys",
+				"Expression": "1.0e-5*r_ind",
+				"Unit": "lb",
+				"Comment": "aus 1. Bericht zur FRS5"
+			}, {
+				"Type": "u_r_0",
+				"Value": "2.0e-5",
+				"Unit": "lb",
+				"Comment": "sind die beobachteten 2e-4mbar Temperaturdrift, Streuung, nichterfassbare Nullpkt.str."
+			}, {
+				"Type": "u_A",
+				"Value": "1.05e-7",
+				"Unit": "m^2",
+				"Comment": "(k=1) aus Kalibschein 0187PTB05"
+			}, {
+				"Type": "u_p_res_N2",
+				"Expression": "7.2e-2*p_res",
+				"Unit": "Pa",
+				"Comment": "aus Kalib.-schein QS 05/05"
+			}, {
+				"Type": "u_p_res_He",
+				"Expression": "7.043e-13*(pcal)^3+6.976e-10*(pcal)^2+3.0e-5*(pcal)+6.579e-4",
+				"Unit": "Pa",
+				"Comment": "Schätzwert aus Messungen f. Dr. Fellmuth JAN07 für He"
+			}, {
+				"Type": "u_m_cal",
+				"Value": "2.e-6",
+				"Unit": "kg",
+				"Comment": "aus Kalib.-schein QS 05/05"
+			}, {
+				"Type": "u_rho_frs",
+				"Value": "50.0",
+				"Unit": "kg/m^3",
+				"Comment": "aus Kalib.-schein QS 05/05"
+			}, {
+				"Type": "u_rho_gas",
+				"Expression": "M/T/R*p_frs/2.",
+				"Unit": "kg/m^3",
+				"Comment": "Abschätzung: Hälfte der Dichte des gemessenen Drucks"
+			}, {
+				"Type": "u_g",
+				"Value": "4e-8",
+				"Unit": "1",
+				"Comment": "http://a73435.berlin.ptb.de:81/2015/03/05/erdbeschleunigung-in-unseren-laboren/"
+			}, {
+				"Type": "u_r_cal",
+				"Value": "2e-6",
+				"Unit": "lb",
+				"Comment": " aus Kalibschein 0187PTB05"
+			}, {
+				"Type": "u_r_cal0",
+				"Value": "1e-6",
+				"Unit": "lb",
+				"Comment": " aus Kalibschein 0187PTB05"
+			}, {
+				"Type": "u_ab",
+				"Value": "4.62e-7",
+				"Unit": "1/K",
+				"Comment": " aus Kalibschein 0187PTB05"
+			}, {
+				"Type": "u_t",
+				"Value": "0.2",
+				"Unit": "C",
+				"Comment": " aus Kalibschein 0187PTB05"
+			}, {
+				"Type": "u_frs5_1",
+				"Value": "5.544e-10",
+				"Unit": "1",
+				"Comment": "Angabe entspricht Varianz; s. FRS5_Unsicherheit#Herleitung_der_Unsicherheit_der_FRS"
+			}, {
+				"Type": "u_frs5_2",
+				"Value": "1.0798e-8",
+				"Unit": "1/Pa^3/2",
+				"Comment": "quadratisch; s. FRS5_Unsicherheit#Herleitung_der_Unsicherheit_der_FRS "
+			}, {
+				"Type": "u_frs5_3",
+				"Value": "0.0001732695941654803",
+				"Unit": "Pa^2",
+				"Comment": "quadratisch; s. FRS5_Unsicherheit#Herleitung_der_Unsicherheit_der_FRS "
+			}],
+			"History": {
+				"2017-11": "Unsicherheiten u_frs5_1 bis _3 sind deprecated, vpy rechnet (sympy) alles neu ",
+				"2011-02-01": "Wurde am angelegt und soll zukünftig über node.js ausgelesen werden.",
+				"2016-09": "Expansionsmessungen an SE1"
+			}
+		}],
+		"Issue": "0005",
+		"Presettings": {
+			"Date": [{
+				"Type": "generated",
+				"Value": "2017-10-11 08:41"
+			}, {
+				"Type": "CustomerRef",
+				"Value": "2017-10-11"
+			}, {
+				"Duration": "10",
+				"Value": "2017-10-09",
+				"Type": "schedule"
+			}, {
+				"Type": "duplicated",
+				"Value": "2017-11-02 13:01"
+			}, {
+				"Type": "duplicated",
+				"Value": "2017-11-07 10:12"
+			}, {
+				"Type": "duplicated",
+				"Value": "2017-11-08 09:45"
+			}, {
+				"Type": "duplicated",
+				"Value": "2017-11-09 09:21"
+			}],
+			"Maintainer": "Thomas Bock"
+		},
+		"Measurement": {
+			"AuxValues": {
+				"Time": [{
+					"Type": "offset_mt",
+					"Value": ["1510216147276"],
+					"Unit": "ms"
+				}],
+				"Expansion": [{
+					"Type": "name",
+					"Value": ["f_l"]
+				}],
+				"Pressure": [{
+					"N": [51],
+					"Unit": "lb",
+					"Type": "frs_zc0_p",
+					"Value": [0.025160039215686263],
+					"SdValue": [0.0000012955428871903649]
+				}, {
+					"N": [5],
+					"Unit": "DCR",
+					"Type": "frs_res_off",
+					"Value": [5.642579999999999e-7],
+					"SdValue": [3.953014039944704e-9]
+				}, {
+					"N": [20],
+					"Type": "1T_1-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "1T_2-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "1T_3-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "10T_1-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "10T_2-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "10T_3-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "100T_1-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "100T_2-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "100T_3-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Type": "1000T_1-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}, {
+					"N": [20],
+					"Unit": "mbar",
+					"Type": "1000T_2-offset",
+					"Value": [0.162486682087183],
+					"SdValue": [0.012823678332584021]
+				}, {
+					"N": [20],
+					"Type": "1000T_3-offset",
+					"Value": [0],
+					"Unit": "mbar"
+				}]
+			},
+			"Date": [{
+				"Type": "measurement",
+				"Value": ["2017-11-09 09:26"]
+			}],
+			"Values": {
+				"Time": [{
+					"Type": "amt_fill",
+					"Value": ["1510216581520", "1510222045916", "1510223134733", "1510224387215", "1510230010169", "1510231034861", "1510232640890", "1510233680792"],
+					"Unit": "ms"
+				}, {
+					"Type": "amt_frs5_ind",
+					"Value": ["1510216927934", "1510222416901", "1510223752744", "1510224687810", "1510230323841", "1510231267076", "1510232876278", "1510233849056"],
+					"Unit": "ms"
+				}],
+				"Temperature": [{
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1001_before",
+					"Value": [23.0956043658338, 23.154084643778198, 23.133382724399503, 23.1238188463998, 23.1074437448843, 23.1130541271399, 23.0892031922016, 23.0836392256085],
+					"SdValue": [0.001938889051011021, 0.0022437000449768607, 0.002198939162649619, 0.002016920487746224, 0.0018881735291529202, 0.0020263013116807223, 0.0020757759892072675, 0.0021644962292504477]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1002_before",
+					"Value": [23.1441896691583, 23.196839848771695, 23.1870416980712, 23.178327010842, 23.156874742877903, 23.1583757410314, 23.1440116136912, 23.1360443515077],
+					"SdValue": [0.0015984816578373635, 0.001649343241040257, 0.001420880350128228, 0.0016197798922047537, 0.0016311300273661956, 0.0015492583042939264, 0.0014592049518923887, 0.0014806309036310519]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1003_before",
+					"Value": [23.1781011573457, 23.2355431860348, 23.2207289574416, 23.2105593022182, 23.1904969206684, 23.194641089886098, 23.1773099471894, 23.1688589078452],
+					"SdValue": [0.0019922464353742653, 0.0019607237890409863, 0.001960408074484317, 0.002059260765759952, 0.0018883440346474983, 0.002049506973409846, 0.0020192665523296274, 0.0018529385067470106]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1004_before",
+					"Value": [23.2077130521828, 23.2709640712494, 23.2449024877005, 23.2345651903669, 23.2170620307538, 23.225605197682, 23.198287723926402, 23.192795912018397],
+					"SdValue": [0.002064511796693574, 0.0022997525618141564, 0.0020986337689705816, 0.002100029462021234, 0.002364830499629015, 0.002204998515008909, 0.0022887935767865186, 0.002049755078594186]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1005_before",
+					"Value": [23.2502860832115, 23.316402319310896, 23.284129677501102, 23.273895432649798, 23.257587692617495, 23.266419644860907, 23.2366506618992, 23.230733730349698],
+					"SdValue": [0.0022830169267523486, 0.002279725552571823, 0.002043330252945823, 0.0021978583068973353, 0.0019943266918754934, 0.0021980376545383384, 0.0019470639767013584, 0.001991086829074009]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1006_before",
+					"Value": [23.3175859358244, 23.379593840257698, 23.3517405462716, 23.3437882671599, 23.327050132988504, 23.3327750504333, 23.302261872567698, 23.2978553406666],
+					"SdValue": [0.0019398482460386104, 0.0020095463826074154, 0.002193221854247274, 0.0022046233580162466, 0.00222401920394718, 0.002054441716698054, 0.002094163231291297, 0.002029430362638149]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1007_before",
+					"Value": [23.1634419378114, 23.2152397042463, 23.198939192178507, 23.1924268586966, 23.1745242802017, 23.1774077930259, 23.152197402806397, 23.1453955423359],
+					"SdValue": [0.002088992721991309, 0.0021628537473151305, 0.0021037791595889983, 0.0023256061060167197, 0.002168166593170915, 0.002142116692033651, 0.002236176034021082, 0.0020684325372850986]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1008_before",
+					"Value": [23.1062757816091, 23.156335907733897, 23.147077663280303, 23.1402949990465, 23.119117446922605, 23.119426373615898, 23.1034900667182, 23.0946622030467],
+					"SdValue": [0.0017223402163673684, 0.0022312147614163853, 0.0020176807800391505, 0.0020778275850922277, 0.002271403319494761, 0.002141161624867386, 0.002027565757817135, 0.002116999909319304]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1009_before",
+					"Value": [22.884681378323002, 22.935983317613, 22.928709683465097, 22.921824534827596, 22.901829254844298, 22.902926562674196, 22.8884648899344, 22.8761683549182],
+					"SdValue": [0.0020495067838789092, 0.0022014274298385603, 0.0020843513857708384, 0.0022274723679420105, 0.0018885402340929971, 0.0020103498491675586, 0.0019462540842505895, 0.0021371506142531193]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1010_before",
+					"Value": [23.151224547018398, 23.201138331497297, 23.192542326318897, 23.186463862228997, 23.1699205862695, 23.173715390315103, 23.1526622877591, 23.136189082259897],
+					"SdValue": [0.0020330589172908834, 0.0023106276961813747, 0.0020811478397743497, 0.002070008508852878, 0.002043307933296734, 0.0020685484884998186, 0.0021678330774971893, 0.0022467651865687344]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1011_before",
+					"Value": [23.128168144494296, 23.181665571565603, 23.161893784124196, 23.158257577641102, 23.137548135321, 23.151159314609696, 23.1135736017347, 23.093736142466803],
+					"SdValue": [0.002155835758833084, 0.0018998908045257021, 0.001928190376760863, 0.002144420655367494, 0.0020785515665524405, 0.002218267670711801, 0.0020064654968860868, 0.002039214016493123]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1012_before",
+					"Value": [23.1858793031844, 23.252803256509402, 23.209257551738098, 23.207693208332703, 23.1896951093203, 23.203260777176798, 23.1588724135771, 23.1437496495549],
+					"SdValue": [0.0023097980195957023, 0.0021734896299162735, 0.0021926732277584137, 0.0021468561542042127, 0.0019438425544602836, 0.001978754098125241, 0.0021627428234404196, 0.0019693511577010664]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1013_before",
+					"Value": [23.215190385211297, 23.292489887785102, 23.2448341367344, 23.2414035457695, 23.223900338232703, 23.2395761268387, 23.1993234660019, 23.1851907382297],
+					"SdValue": [0.0021355846080013292, 0.002162736053336072, 0.0020625852031125806, 0.0020645054257345994, 0.002288862753821543, 0.0020870179704453214, 0.0020601594482992595, 0.0019920573271362866]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1014_before",
+					"Value": [23.2056345482774, 23.2651243436603, 23.2480372285139, 23.242111957841797, 23.2208191491076, 23.2214203072983, 23.202008540296, 23.191775808857997],
+					"SdValue": [0.0021790856671987675, 0.0019457932456789784, 0.001988128357035918, 0.002138366662960649, 0.002028911050616382, 0.002088083734182883, 0.0018885904112911909, 0.0018465554243848033]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1015_before",
+					"Value": [23.182794341842, 23.232348647904598, 23.2274971219419, 23.219583766655, 23.1966420066811, 23.197715436981305, 23.181918142323, 23.173433619812503],
+					"SdValue": [0.002222530786526578, 0.0019287164536851413, 0.0019784167837367506, 0.0021025322846249406, 0.0021594101818416768, 0.002153367090546941, 0.0022167632682136493, 0.0020323111421040744]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1016_before",
+					"Value": [23.105639755934103, 23.158569728378502, 23.145171174791503, 23.140100962314897, 23.1278271425458, 23.127648769764996, 23.112040571703403, 23.0890352626465],
+					"SdValue": [0.0020316433092968347, 0.0023394002898488014, 0.0021407241486486707, 0.0019764947692123224, 0.00193350724523318, 0.0019471742756127495, 0.0019736131238560976, 0.0018354364511070174]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1017_before",
+					"Value": [23.104686623792603, 23.151710502808903, 23.1440941535678, 23.1423353822475, 23.118639370508, 23.1263458474566, 23.1024677785951, 23.0837631173111],
+					"SdValue": [0.0022123182728598255, 0.001980532872316292, 0.0021787089321284488, 0.0021080112120968053, 0.001996644517729441, 0.0021531906024808345, 0.002005426798507707, 0.0020376108020551255]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1018_before",
+					"Value": [23.012769631977402, 23.055416226271, 23.0458539223078, 23.039414597475904, 23.0161269572954, 23.0236275760575, 22.996094108969196, 22.9779423015898],
+					"SdValue": [0.0019245046336568649, 0.0021782063166786393, 0.0021041584022487665, 0.0019884434076781875, 0.002216536841267193, 0.002174155579564648, 0.002185690378164101, 0.002020821508456833]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1019_before",
+					"Value": [23.260511377165198, 23.3208262924314, 23.293297594327502, 23.2881185625813, 23.264771714684198, 23.276629961971203, 23.2441052563005, 23.2271669513446],
+					"SdValue": [0.002104810505295916, 0.002096471015469432, 0.0021143998942108155, 0.0024102530545397835, 0.00211851869480155, 0.0020843943622177383, 0.002237303582700261, 0.002283140107819491]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1020_before",
+					"Value": [23.0039303472147, 23.074961258034897, 23.036652735813597, 23.031706329352897, 23.016085064821098, 23.0225079027873, 22.989528460464697, 22.9773177301651],
+					"SdValue": [0.002057411753434283, 0.0020810209858940242, 0.0020186888577276617, 0.0021001139728639663, 0.0021913134336613255, 0.0020059400352569266, 0.001969785332935762, 0.001833826716973798]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1021_before",
+					"Value": [23.1004820377481, 23.151749149634398, 23.1394020173965, 23.131892343566, 23.110934740145204, 23.110445275669996, 23.092466659324604, 23.083134717822496],
+					"SdValue": [0.002136990549476589, 0.002094867310219487, 0.001967561748072473, 0.0019355652435219125, 0.002140008840554358, 0.002228634873685206, 0.001994348081572602, 0.0020165216930780297]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1022_before",
+					"Value": [23.1210781793203, 23.168008176726204, 23.1630775226266, 23.1569187689454, 23.1363805513263, 23.1379086794207, 23.1222941081909, 23.1088696477187],
+					"SdValue": [0.0019309293039273404, 0.0023041430439606847, 0.0023248311215507116, 0.002029146554545704, 0.0020569417327379884, 0.0020736742263215615, 0.002306015188671006, 0.0019989209948522565]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1023_before",
+					"Value": [23.0121468439429, 23.0555769824983, 23.052458554014102, 23.047788965116002, 23.0271314568021, 23.030491737880105, 23.013941036486603, 22.9961888175711],
+					"SdValue": [0.001933097611211216, 0.0019967492736995707, 0.002017724083418012, 0.001979175039731155, 0.0019606713360615056, 0.0020420022887360973, 0.001900665552172277, 0.0017037325574686339]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1024_before",
+					"Value": [23.050162503904197, 23.0865703083315, 23.083874615154, 23.079136435654696, 23.056703953124405, 23.0626882812195, 23.041514001251198, 23.0229123457922],
+					"SdValue": [0.002136234619884489, 0.002080284722361178, 0.0023000088926152023, 0.0019381973441642165, 0.0018678068151872687, 0.002183474485681704, 0.002256477802665602, 0.002167786386393445]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1025_before",
+					"Value": [23.1037172515499, 23.145122500345003, 23.140324480839098, 23.1297934390448, 23.10976371958, 23.114076187658696, 23.093868980767503, 23.076379081670503],
+					"SdValue": [0.0019136603120581525, 0.001950022186385497, 0.0019963167569854454, 0.0022764636213890507, 0.0022469140845411922, 0.0022042788837818824, 0.0022736995428533557, 0.002183041080767574]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1026_before",
+					"Value": [23.2670412709476, 23.3197369894222, 23.3032696603963, 23.2941283232385, 23.272798635066003, 23.276025785078097, 23.252782211929105, 23.2402921670078],
+					"SdValue": [0.0020755078003952434, 0.002248176399245076, 0.0019900777659078227, 0.002211907929827996, 0.001957029868522609, 0.0019658360899220987, 0.002081072963727601, 0.0020636424563387906]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1027_before",
+					"Value": [22.9381350537005, 22.9834452801009, 22.9750169940846, 22.965702468365897, 22.945262002789, 22.944177225905904, 22.9262829953866, 22.9156696626189],
+					"SdValue": [0.0020286282813561595, 0.001961300227585873, 0.0020051040883287984, 0.0020801648982258095, 0.0019477715238064098, 0.002110787057025972, 0.002031661503282502, 0.0019730964995569498]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1028_before",
+					"Value": [23.1052159893722, 23.150583571327296, 23.1444000318343, 23.137474470437102, 23.117429854241102, 23.118119419880397, 23.102029385640602, 23.0903972945132],
+					"SdValue": [0.0022792982407589973, 0.002031485427401679, 0.0021089448929820466, 0.0020534945208640462, 0.002092033956884883, 0.002048281252447379, 0.002173959732265039, 0.0021326934367071762]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1029_before",
+					"Value": [23.202985554062, 23.2465377926563, 23.2417138432164, 23.2350889806716, 23.2161938644379, 23.217447102598296, 23.202670637689202, 23.187130516810598],
+					"SdValue": [0.0021729108732075684, 0.00233100963269918, 0.002065285542959682, 0.002180617100618289, 0.0020791433834031962, 0.001991853729321508, 0.0018902245211095269, 0.0020743755765209593]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1030_before",
+					"Value": [23.055511552191, 23.089791891996903, 23.0935523911625, 23.088432151661998, 23.067127288827496, 23.066445810509503, 23.0505921099962, 23.032565875474],
+					"SdValue": [0.0008053066260847388, 0.000781168781045715, 0.0009163727057615892, 0.0009258545546765702, 0.0009461645228676509, 0.0009381243762607878, 0.0009790745421083876, 0.0010525852016727366]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2001_before",
+					"Value": [23.1203586408592, 23.1530819874225, 23.1539404768672, 23.1437547722873, 23.1269587864339, 23.1291451047749, 23.109867298084502, 23.0932117695995],
+					"SdValue": [0.002004310542083926, 0.0021249059987987888, 0.0018970283842374741, 0.0018002334324812258, 0.0018756516872961858, 0.0019418784084032862, 0.002123911576036874, 0.002157641625817386]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2002_before",
+					"Value": [23.1462909711697, 23.187200666367698, 23.184538638394898, 23.1721819500891, 23.1530168602537, 23.1551536775232, 23.1352663733668, 23.121356650106602],
+					"SdValue": [0.0020617090502741513, 0.002014072371536216, 0.0022911651009251592, 0.00195890014914884, 0.0023214140404479297, 0.002345863216910344, 0.0022511027006212802, 0.0023884473282987408]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2003_before",
+					"Value": [22.990449668253397, 23.029586811279298, 23.026213006668, 23.0144163591417, 22.997086472016502, 22.9943450176191, 22.977812501662804, 22.964444068593103],
+					"SdValue": [0.002199221068170956, 0.002231679590372866, 0.0017464719699960198, 0.0021592412634833962, 0.0021739904708865335, 0.002193544584645788, 0.0020267771350194366, 0.0021214726260860204]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2004_before",
+					"Value": [23.0848295123332, 23.126939115417404, 23.1199876780447, 23.1116704552265, 23.0943452780976, 23.0930363925081, 23.0754202536143, 23.067052325998],
+					"SdValue": [0.002002378871759314, 0.0019120746707463135, 0.002246292319323858, 0.0020639569054158526, 0.00196448422561456, 0.0021954449713333327, 0.0023007027723205443, 0.0022263098529183623]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2005_before",
+					"Value": [22.9558767649651, 22.99931760605, 22.990096533373602, 22.9820957143208, 22.968332163934697, 22.9671871233272, 22.953741670979102, 22.937902192749497],
+					"SdValue": [0.0022419603342113893, 0.002121898134716866, 0.0021990477888422936, 0.0020683971882914957, 0.0023436955971084146, 0.0022731337890316305, 0.0021235209202124052, 0.0021323134395704823]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2006_before",
+					"Value": [23.0638905402565, 23.101578191581297, 23.0996616255833, 23.089482097279, 23.075032456223, 23.0736893075818, 23.058861043798895, 23.0437331848033],
+					"SdValue": [0.002282213145550332, 0.002151345740902253, 0.0019790422057425136, 0.0020575305538972433, 0.0018257246260658037, 0.002038138275628804, 0.0021950132702993276, 0.002290401530937626]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2007_before",
+					"Value": [23.0513378830461, 23.0820215803325, 23.0844581082903, 23.0745071332593, 23.058709380992, 23.0579413198552, 23.0418296693495, 23.0281947972781],
+					"SdValue": [0.002044476115762379, 0.002129516723834142, 0.002007509716076558, 0.002247771877538171, 0.0021477978243870316, 0.0021819654884554607, 0.0021154408644491556, 0.0021121222595390865]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2008_before",
+					"Value": [23.1156412398729, 23.148530041644, 23.144549124895804, 23.1343999334133, 23.1196361838622, 23.121041875382595, 23.1018814422698, 23.0870511081311],
+					"SdValue": [0.0020239100668743666, 0.0021120130330176154, 0.0020362009914805727, 0.0022649645278710094, 0.0024079717092698977, 0.001959560474735955, 0.002196698908131002, 0.0018748260658265907]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2009_before",
+					"Value": [23.142804737135997, 23.175892550425406, 23.1753124140112, 23.1635787638107, 23.1497681497975, 23.1480695523958, 23.1292095743639, 23.1174396766367],
+					"SdValue": [0.0018757458688915818, 0.0019484519064605526, 0.0019374376282574786, 0.002150173411114706, 0.002119161701392515, 0.0017079807891543575, 0.0019000995235744673, 0.0018694107058614148]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2010_before",
+					"Value": [23.0443932859744, 23.080968644959402, 23.0780043307363, 23.069104511676496, 23.051219348628997, 23.0485687226352, 23.0323256049025, 23.0236104623384],
+					"SdValue": [0.0019809117571437675, 0.002285736616210062, 0.0021387098241301486, 0.002015668833400646, 0.0019161188351561637, 0.0018454072529068227, 0.0018836593741182546, 0.0019664967093108916]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2011_before",
+					"Value": [23.188183898438098, 23.228379110998297, 23.220341683477194, 23.213319157474604, 23.1984990022973, 23.195760614268096, 23.1797911314673, 23.1705689603417],
+					"SdValue": [0.0018523180270886375, 0.0018913679277983964, 0.0018788481811556474, 0.00196839187206445, 0.0019431349137398214, 0.0020000090083493747, 0.0019129479536813022, 0.0019865559633208017]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2012_before",
+					"Value": [23.170192120880696, 23.208566585431402, 23.2035418067843, 23.1953919643291, 23.181981087662898, 23.1787209414567, 23.164134037835602, 23.1521202452792],
+					"SdValue": [0.002167658052296493, 0.0020072451754884943, 0.0018624471039568446, 0.0018546769112136232, 0.002345109949034419, 0.0020504222342372447, 0.0020910432267980316, 0.002341305522665857]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2013_before",
+					"Value": [23.158694038835698, 23.1894177957829, 23.190969566891802, 23.181559107471504, 23.1673637335492, 23.1640997979197, 23.1486484021321, 23.1366042074511],
+					"SdValue": [0.0017840691980778342, 0.0020346967634897162, 0.00203763099709884, 0.002005543799374224, 0.0018385081659370833, 0.0019153455338666754, 0.001966796432017729, 0.001957424188412468]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2014_before",
+					"Value": [23.0416756702761, 23.070211513847802, 23.072457989425498, 23.0619600344658, 23.0486207873004, 23.045890195720798, 23.0298976347812, 23.0182602531699],
+					"SdValue": [0.002186886756667746, 0.002353784955413001, 0.0023182120847979547, 0.0021036915168983848, 0.001971494440948177, 0.002040129084993512, 0.0021518474637765273, 0.0023401857325826892]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2015_before",
+					"Value": [23.133640784084903, 23.162149190232302, 23.1600109377608, 23.1489276025405, 23.1384695809336, 23.135411351888497, 23.1169992286883, 23.1048689840055],
+					"SdValue": [0.0023385370140320883, 0.0020471086711939448, 0.0023177109917812792, 0.002008607832929003, 0.001948943141989472, 0.0022629725420099758, 0.002068015305395561, 0.0020628722845214002]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2016_before",
+					"Value": [22.8462722259977, 22.877550445928, 22.874284887080098, 22.865068508168, 22.850464505452802, 22.8440211630832, 22.8308961293004, 22.8206369563454],
+					"SdValue": [0.0021411537324400893, 0.0022379959638497496, 0.002234663268982887, 0.0022052153140216454, 0.0020108131041088823, 0.002083616191245263, 0.002301768109484971, 0.0021771097692125057]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2017_before",
+					"Value": [23.0729979819484, 23.107984112103498, 23.103526464403803, 23.0987311454537, 23.0820236076683, 23.0770002812148, 23.0598147446289, 23.0544256986376],
+					"SdValue": [0.0020835917026849576, 0.001949173673801745, 0.001939325178395463, 0.0021968202754395504, 0.0021451398174812094, 0.0021013663387170547, 0.0018906220466565439, 0.0020817969316332097]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2018_before",
+					"Value": [23.0302786546955, 23.067317079099404, 23.060025955037197, 23.055375415970495, 23.0407437339667, 23.034890250030298, 23.0211591179104, 23.011135337838898],
+					"SdValue": [0.002170331756379065, 0.0018767655711242615, 0.0019286336476701613, 0.0021968360431285183, 0.0022789162656545797, 0.0020528044819693196, 0.0019424818379320543, 0.0020087315359268343]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2019_before",
+					"Value": [23.148932098381103, 23.1823995499231, 23.1786501461273, 23.170289888405403, 23.1589977018507, 23.1531058753255, 23.1384679405732, 23.1274953953466],
+					"SdValue": [0.0019729841470161012, 0.002146740946862429, 0.0020634823464062636, 0.0022118226779191193, 0.0018294344469891367, 0.0021525194186736603, 0.0021204331645953097, 0.0022726860589181402]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2020_before",
+					"Value": [23.0559559609329, 23.085009246254703, 23.083804734874604, 23.074813825495802, 23.064522873171, 23.0588135398005, 23.043869717134296, 23.031347118953903],
+					"SdValue": [0.002234581973675122, 0.002103166338866205, 0.002087575965105055, 0.0019140683335587172, 0.0021015608652557496, 0.002293651162848721, 0.002158990621450934, 0.002174494382856896]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2021_before",
+					"Value": [23.030836880360397, 23.0547014601709, 23.055421323856898, 23.0490495783666, 23.0372255344011, 23.025688897406305, 23.0115540921182, 23.002650408961898],
+					"SdValue": [0.0019437834781336856, 0.002303739769707803, 0.002050113581772699, 0.00205226256939171, 0.0021017258507615463, 0.0018975269468492128, 0.0020074014002435725, 0.002209683389320384]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2022_before",
+					"Value": [22.9887160016535, 23.0140350710113, 23.012664074684, 23.009232493948602, 22.9957938732123, 22.981027902037, 22.9706939772652, 22.962601610252],
+					"SdValue": [0.00208643022830355, 0.0020072052595245075, 0.002204584904749988, 0.0020682151576020265, 0.0021289167766069305, 0.0021975470732348563, 0.0021229100547041305, 0.0022787213863519045]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2023_before",
+					"Value": [23.0641226499572, 23.0924967359734, 23.089834697040903, 23.085515662515398, 23.0739808991954, 23.0627678384353, 23.0490594610776, 23.040452708319798],
+					"SdValue": [0.0020859361883845667, 0.002197353060549644, 0.0020916145608223862, 0.001911209484297194, 0.0020491205946989405, 0.0020164294831562903, 0.0020268063171656895, 0.0020523020204814826]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2024_before",
+					"Value": [23.0438540906929, 23.0708271195016, 23.0681149276497, 23.062188748553403, 23.051983235500295, 23.0422517387642, 23.0283834703343, 23.0178344973118],
+					"SdValue": [0.0021887409361998574, 0.002070117681867307, 0.0023845630195151886, 0.002165821331745944, 0.0022400553293484304, 0.0021680403461383072, 0.0022122966621372785, 0.0022548036842581155]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2025_before",
+					"Value": [22.9892937471337, 23.0146812927155, 23.0123334645117, 23.0037067094659, 22.995006536359302, 22.9841791037439, 22.9718406069755, 22.959676117971398],
+					"SdValue": [0.0021891160310773218, 0.0018679567682030448, 0.002302661124870206, 0.0021244255909944245, 0.00188146534409813, 0.0018859604827801996, 0.0018000766343939819, 0.002162450055691488]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2026_before",
+					"Value": [22.9964610242074, 23.019940704582503, 23.017944933673895, 23.007750433006198, 22.9987271196364, 22.985203672331398, 22.976604331010797, 22.9633394179152],
+					"SdValue": [0.0022562894052084925, 0.001958644907993663, 0.0022943691906148127, 0.0022630180225217036, 0.0018737752761867903, 0.0020317809284921347, 0.0021903335836073734, 0.0019754065201948805]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2027_before",
+					"Value": [23.0128599609425, 23.038148768211602, 23.037185087453203, 23.0289861421802, 23.016302872526598, 23.006062179655395, 22.993612529607496, 22.9839350182123],
+					"SdValue": [0.001999323820082565, 0.002168168743425383, 0.0019390249807363172, 0.001898741397954828, 0.0018920792297518532, 0.0020760652004983204, 0.0020236220511852783, 0.002037819353933868]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2028_before",
+					"Value": [23.122414224455003, 23.1497338665303, 23.1486940795426, 23.1440330067295, 23.130259962413795, 23.117242454630496, 23.1047315787055, 23.097300671330096],
+					"SdValue": [0.001978027033320789, 0.0020794130055039415, 0.0021357989231339113, 0.0019715132040689885, 0.0018676242663717855, 0.0019766994103288904, 0.0019173951178761712, 0.0018724315544374184]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2029_before",
+					"Value": [23.0550611234232, 23.0982273180073, 23.043990765984795, 23.0042200472434, 23.0734637411919, 23.020202775027, 23.076419237030496, 23.0027293751981],
+					"SdValue": [0.0026323452632037608, 0.0017444654939845177, 0.0017538137885040766, 0.0019585016119427886, 0.002112551823967844, 0.0020591407809984618, 0.001628932382249401, 0.0019009087318134137]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2030_before",
+					"Value": [23.082295454546, 23.134941259188, 23.065622785557803, 23.0285405566907, 23.0924414101032, 22.996110861643395, 23.0639122198689, 23.023919329628406],
+					"SdValue": [0.0019452058207341347, 0.0023620250944547732, 0.002563549690050437, 0.0022211960798069544, 0.0018599072971794894, 0.001821204941915356, 0.0014101031273076534, 0.002030741866447647]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3001_before",
+					"Value": [23.2168142287624, 23.275578205073003, 23.259819287477605, 23.235595088588802, 23.223204205629596, 23.210090274808998, 23.1565100279652, 23.1571552399813],
+					"SdValue": [0.0018466474055655704, 0.0022852941999138084, 0.0019425287260088262, 0.0021138133051093085, 0.002134689116069812, 0.002084227368673839, 0.002069779180140511, 0.0021486407367569222]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3002_before",
+					"Value": [23.181413415446002, 23.2387901647265, 23.219438634356603, 23.1948184680616, 23.1869116153243, 23.171752837306496, 23.121730399722303, 23.1201202646534],
+					"SdValue": [0.0023933933565847523, 0.002267863774970741, 0.002098925845919186, 0.0021808570877228186, 0.0021873177349187173, 0.0024702657350701243, 0.0022548574251300057, 0.002237163318187363]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3003_before",
+					"Value": [23.096151535605, 23.1524032677188, 23.1361446968263, 23.1134293942467, 23.101306793241502, 23.0879308176118, 23.0389111465147, 23.0367679379969],
+					"SdValue": [0.0020590191659154316, 0.002203325342983534, 0.0022152075179437784, 0.002375151423181663, 0.0023634684931123843, 0.002142511613384646, 0.0022726000881691352, 0.0021545561039088973]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3004_before",
+					"Value": [23.293155569896705, 23.3282948473029, 23.308356334185998, 23.269609033545603, 23.2536998967075, 23.247681570851203, 23.204060381908498, 23.190258777920796],
+					"SdValue": [0.0022275450983101465, 0.0022236403725238176, 0.0020341197274434224, 0.002055697086042274, 0.0021375422601269847, 0.0020624086993797056, 0.002460371766244151, 0.0020446562429323224]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3005_before",
+					"Value": [23.101852858976002, 23.135535192136803, 23.113807647641597, 23.0761213319445, 23.0618395037227, 23.0539516748255, 23.014662926734502, 22.997385197075403],
+					"SdValue": [0.002319610792910571, 0.0020613909595672436, 0.0022417526795320115, 0.002067114434181553, 0.002151204077588403, 0.0018236813321669944, 0.0020977566131278025, 0.00226617884367094]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3006_before",
+					"Value": [23.143781163449198, 23.17719164036, 23.156282104762102, 23.1173346529899, 23.103648982153, 23.0963221254908, 23.0594393160043, 23.040920971782],
+					"SdValue": [0.00193036427153471, 0.001973338168948492, 0.0021572170017617907, 0.0019942673230452937, 0.00223090475766097, 0.0020648982830991243, 0.0018557403715347978, 0.0018046702393744794]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3007_before",
+					"Value": [23.0769401327656, 23.1122484421083, 23.0902333960751, 23.0516481299527, 23.0385390105452, 23.031787176003697, 22.992854847121, 22.973018620808897],
+					"SdValue": [0.0018218681712278062, 0.0019241942544024897, 0.0017902574814030858, 0.00193793207739785, 0.002043586658596563, 0.0021385419490637806, 0.0020981118495968817, 0.002101490356674998]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3008_before",
+					"Value": [23.005337772768403, 23.0379793966872, 23.0209766490613, 22.983595609406002, 22.9683884102815, 22.963068697812997, 22.9198222774995, 22.9051924541251],
+					"SdValue": [0.0020296387431796175, 0.0023248454464245877, 0.0020539720928424827, 0.002179999508185514, 0.00207220508512906, 0.0023294839075440193, 0.0022593060323106984, 0.002055942341667568]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3009_before",
+					"Value": [23.1106186386518, 23.1450970513784, 23.1255649795129, 23.087878119086902, 23.072015301877403, 23.0674684785145, 23.0234743869484, 23.0085279358102],
+					"SdValue": [0.0018467202989268076, 0.002038518673596066, 0.002127497371395485, 0.0021254315714714944, 0.0022821214906149543, 0.001991052585983237, 0.002030842432515501, 0.0020102864275684724]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3010_before",
+					"Value": [23.3142431118989, 23.3485561126838, 23.3270767417063, 23.288850634083797, 23.274216905962497, 23.271014152012302, 23.2264158671527, 23.208265303106298],
+					"SdValue": [0.00212776979443036, 0.0018505660939513785, 0.0022866144752065123, 0.001958112409319256, 0.0022239671919071793, 0.0021869292393145888, 0.0018097243214256343, 0.0021109689172926992]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3011_before",
+					"Value": [23.2316134456767, 23.265588401706, 23.238779365545504, 23.2014949728796, 23.190563661895304, 23.1855633815423, 23.1413964971814, 23.1199635079712],
+					"SdValue": [0.002209527124617643, 0.002082286527451451, 0.002408996209582867, 0.002049672406688666, 0.001939357519797867, 0.0021154421040926203, 0.001987189492795693, 0.002026800354191721]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3012_before",
+					"Value": [23.170625493303795, 23.203827656613097, 23.187164971670597, 23.149760669946005, 23.1322552232203, 23.126429017476, 23.085372168653, 23.0720351749145],
+					"SdValue": [0.002164146281505601, 0.002133945201722624, 0.0022319438494512477, 0.0019647808965987394, 0.002103749498148153, 0.002155432795558923, 0.00215090829965915, 0.002241298430033455]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3013_before",
+					"Value": [23.1366715684189, 23.1692303290427, 23.149928658500404, 23.111737803794302, 23.096806326411297, 23.0890535133949, 23.0542902378877, 23.036591534386798],
+					"SdValue": [0.002112892132285041, 0.0021697249776182785, 0.002195532631088496, 0.0022869053955608927, 0.0022646105523543678, 0.002146221156885914, 0.00212053616156573, 0.0020871250857905418]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3014_before",
+					"Value": [23.2621272822057, 23.2793001217054, 23.2724561281008, 23.247784667588203, 23.222180646365903, 23.233645860701998, 23.194604186315697, 23.176398092577],
+					"SdValue": [0.001981410458465996, 0.0023158959208409977, 0.0019085604117659116, 0.0021115150616893836, 0.0022457022495339825, 0.002173049797488883, 0.002001158595606071, 0.0019494779804779634]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3015_before",
+					"Value": [23.2591108057437, 23.2765616632837, 23.269226351617, 23.245343308841104, 23.218669080942497, 23.2319586283728, 23.191987671008796, 23.1719230044492],
+					"SdValue": [0.002033738525232936, 0.002104914457625952, 0.0018775152217282015, 0.001989638760406468, 0.002081686917454363, 0.0020087148958064702, 0.002035363952240587, 0.002134804010331673]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3016_before",
+					"Value": [23.347199128306602, 23.362563268848298, 23.357897792538104, 23.3331723985683, 23.3031495245596, 23.312645840889495, 23.276437017133198, 23.2596891415617],
+					"SdValue": [0.002213262274899551, 0.002011861195903596, 0.0018284210900658803, 0.0021660891921045436, 0.0021934830150174027, 0.002149339679310457, 0.002180499237653464, 0.001997068086575816]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3017_before",
+					"Value": [23.309191521835803, 23.328039089864998, 23.320343260720705, 23.2980519133775, 23.267957016339103, 23.278927224628, 23.2391043017971, 23.221412098730802],
+					"SdValue": [0.002056251592446843, 0.0020374180126629914, 0.002042039339972555, 0.0020727017954042496, 0.0020708456526090427, 0.002023373498777463, 0.0018546831576886158, 0.0019105088903742583]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3018_before",
+					"Value": [23.2910412935479, 23.3066637917735, 23.2988327270811, 23.2706742728951, 23.247429788862803, 23.254284529823998, 23.219738031592602, 23.1999055837899],
+					"SdValue": [0.0019872621696980304, 0.0020533491427054454, 0.00197367765795123, 0.0019218386081938875, 0.0019991095274148967, 0.002179682012018344, 0.0019821912367012488, 0.0020806532581897786]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3019_before",
+					"Value": [23.334183148132, 23.3526584173918, 23.343700433136497, 23.3191986563793, 23.292354795242296, 23.303941083115, 23.263259726955205, 23.2435319446703],
+					"SdValue": [0.0021793179394344686, 0.0022402133370322307, 0.002201432850834584, 0.002003857476545091, 0.002157513165818943, 0.0022266548861696964, 0.002051768581513209, 0.0020687934555901465]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3020_before",
+					"Value": [23.268912961646297, 23.2864699276735, 23.2764418367258, 23.248223268121997, 23.225142969442597, 23.236565296177503, 23.1980632095238, 23.175372782556998],
+					"SdValue": [0.0021792496550359954, 0.0020292062686240093, 0.0019832142430246994, 0.0020327043875961767, 0.0019460519094821685, 0.002034140788284765, 0.0021402210254519525, 0.0020637907573948016]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3021_before",
+					"Value": [23.2899370060394, 23.3142317607711, 23.2968832187878, 23.2762895031617, 23.255349466229198, 23.2697769337149, 23.2223432224204, 23.1925724044855],
+					"SdValue": [0.00100471994562076, 0.0011402229574672181, 0.001221065589614119, 0.0011706840626330428, 0.001196191916804265, 0.0011871681375942005, 0.0010895648532232587, 0.0009292877856121816]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3022_before",
+					"Value": [23.2867529211984, 23.308116646595597, 23.297309796346, 23.2689158568611, 23.2514798505998, 23.260815091257903, 23.2223470310692, 23.19595825733],
+					"SdValue": [0.0009100704996788019, 0.0012504075433963772, 0.0011114702209780454, 0.0009100670191451985, 0.0011003780567273227, 0.0010878588137359676, 0.0011083740382819291, 0.0011748805508368543]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3023_before",
+					"Value": [23.2733594327363, 23.2940665339288, 23.284620902745797, 23.259912189977403, 23.238779828960997, 23.2515012314635, 23.210930381534702, 23.182399151200197],
+					"SdValue": [0.0009454286750252173, 0.00107509066915381, 0.0009322439544519163, 0.0009648113573572916, 0.0011478412480079702, 0.0010281668166518796, 0.0011754353098903955, 0.000909437698985665]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3024_before",
+					"Value": [23.311931816750104, 23.343557454056597, 23.3241622561461, 23.2991636738013, 23.290809655266, 23.303845465902402, 23.2568196381529, 23.220457532451803],
+					"SdValue": [0.001215678621346138, 0.0009217018989823672, 0.0011655053726880818, 0.0010684079103855703, 0.0009988885421977802, 0.001153430191483488, 0.0012272391375078026, 0.00118176255772016]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3025_before",
+					"Value": [23.256404642153804, 23.2959670874905, 23.261280223498197, 23.241301915079, 23.235496083506895, 23.251719569410504, 23.198227380679597, 23.1565453865754],
+					"SdValue": [0.000908209713471813, 0.0006383325104805245, 0.0012216598221194998, 0.0007129432914545927, 0.0011143818171572136, 0.0010424604419132602, 0.0010598633052870065, 0.0010141564860193359]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3026_before",
+					"Value": [23.275318590121703, 23.2953957787185, 23.2876440674764, 23.2629999579066, 23.2432619428115, 23.2493467672332, 23.2130467376678, 23.1892611236715],
+					"SdValue": [0.0011714183128416647, 0.0009125056527827254, 0.0010493768809954143, 0.0011091438689291603, 0.0010513570875848098, 0.0009180307094386264, 0.0008470913860664189, 0.000997824757686027]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3027_before",
+					"Value": [23.2289060999462, 23.2519042271039, 23.2423358611151, 23.216778001451097, 23.199580645762204, 23.211001298159697, 23.1697695233059, 23.1388813061021],
+					"SdValue": [0.0010070011775519803, 0.0010082325467324902, 0.0010961198765194321, 0.0009567106411926431, 0.0008936414422397545, 0.001053192014815621, 0.0008049246634984248, 0.001007006348771344]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3028_before",
+					"Value": [23.223764430801, 23.2338707977487, 23.2291121958617, 23.2005837091356, 23.181577367803406, 23.182493850690204, 23.154440009246297, 23.134623354947],
+					"SdValue": [0.0012335919415982172, 0.0013845717765992136, 0.0012621402024724831, 0.0014369993641780107, 0.0011793942328530383, 0.0010980968754674535, 0.0009975648462329754, 0.0010803254310918309]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3029_before",
+					"Value": [23.262614477169997, 23.273908228517104, 23.2671168233316, 23.236819359432097, 23.219192787623502, 23.220440330603203, 23.1933309478541, 23.171330749632197],
+					"SdValue": [0.001124427346514623, 0.0015813931413854298, 0.001339017928491434, 0.0017826171938333682, 0.0010847343211763723, 0.0009599180341030934, 0.0012743393943639352, 0.0011824209958990867]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3030_before",
+					"Value": [23.2269851396199, 23.2390664106537, 23.230664723197897, 23.2001074308317, 23.1854659481978, 23.185475579808205, 23.159622270706, 23.134817183919303],
+					"SdValue": [0.0013693532909055278, 0.0011553917956388677, 0.0012652844793056594, 0.001250023047986849, 0.0011874104648463063, 0.0014263409475842187, 0.0010581769185691102, 0.0012859176322406786]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "frs5",
+					"Value": [29.420000000000005, 29.5, 29.5, 29.53, 29.5, 29.54, 29.5, 29.5],
+					"SdValue": [0.04216370213557899, null, null, 0.04830458915396548, null, 0.051639777949432954]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1001_after",
+					"Value": [23.088512835981398, 23.140244758911, 23.1195125608603, 23.1257768050067, 23.1211128763664, 23.106942963067997, 23.088680896603, 23.0727629897263],
+					"SdValue": [0.0017939244185865625, 0.002137918733020035, 0.0020277206828267086, 0.002095737063168998, 0.0021475377323468786, 0.0019367312831936629, 0.0019240993484662466, 0.0020469952078383206]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1002_after",
+					"Value": [23.141173232020897, 23.188168053119497, 23.1738148923938, 23.177523787882397, 23.164179961324102, 23.157825049026002, 23.1409833420743, 23.130134284714504],
+					"SdValue": [0.001644775826998579, 0.001700137578199453, 0.0015879195108270147, 0.001625813580459581, 0.0015978119161146342, 0.0016295449171393312, 0.0016915051146877953, 0.0013560679650641224]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1003_after",
+					"Value": [23.174639120068598, 23.223679643812197, 23.2086179004919, 23.2108453518234, 23.199462781482104, 23.1919690366481, 23.1748186936633, 23.161394893239198],
+					"SdValue": [0.002160993919972043, 0.0018795344312004534, 0.0020242264803230154, 0.0021351037394781876, 0.0018901583136545388, 0.0019038165294934888, 0.001918062227907313, 0.0020600928826625124]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1004_after",
+					"Value": [23.2004462050721, 23.254438377653102, 23.234322388897898, 23.235970996746396, 23.232963522123402, 23.216500363431603, 23.1986605576977, 23.181565147529998],
+					"SdValue": [0.002231446603514538, 0.0020066300771649837, 0.002044945550707827, 0.002152857427573365, 0.001911696437511904, 0.00213926374588934, 0.002329128632785636, 0.0018881861443632334]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1005_after",
+					"Value": [23.2395992076765, 23.2973837299879, 23.2725833147743, 23.276882277903702, 23.2809508836445, 23.258991324014804, 23.2366918270557, 23.2181687438508],
+					"SdValue": [0.001872065657030311, 0.002265603912448708, 0.0021725867215449664, 0.001962259007755424, 0.0021028243756560767, 0.0020229737687716045, 0.0022807357251686112, 0.002230897683676288]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1006_after",
+					"Value": [23.308550901500304, 23.3621526955096, 23.335973219767702, 23.3454743886021, 23.3484747263625, 23.3268160701754, 23.3051355642325, 23.286173825956602],
+					"SdValue": [0.0022581423037066842, 0.0019843194476450994, 0.0023371606083536015, 0.0022856267733750235, 0.0021365013509121278, 0.002309422675242128, 0.002167826602901642, 0.0021484800611211124]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1007_after",
+					"Value": [23.1581928824576, 23.2058851141303, 23.1807467202589, 23.1917248679724, 23.1908861929723, 23.1744805610054, 23.1527399652194, 23.1366318531165],
+					"SdValue": [0.00222229919943067, 0.002116381410979801, 0.002244376750484791, 0.0022923102541511212, 0.002051173022132867, 0.0020017695941683014, 0.0019028433320497306, 0.0022062391075112027]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1008_after",
+					"Value": [23.1046296061076, 23.149399917373803, 23.1329111639696, 23.139391153368997, 23.127941968740405, 23.119660206188502, 23.1006696570966, 23.0899851379506],
+					"SdValue": [0.001967888453278174, 0.001961236597864937, 0.002005025248647994, 0.0018351263002192272, 0.00234250070778375, 0.001939565772886607, 0.0019872309479231427, 0.0019165784553718806]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1009_after",
+					"Value": [22.8895967277099, 22.9258411975651, 22.915999172436404, 22.9201666515065, 22.9086309089049, 22.9037275896732, 22.8812611270304, 22.8732357016486],
+					"SdValue": [0.002071048018509171, 0.0019916615997734163, 0.0022416998494088018, 0.0021409637095238074, 0.0022449003374903705, 0.001980586256833753, 0.002060388878082517, 0.002014173613295609]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1010_after",
+					"Value": [23.161926845154902, 23.188133815666298, 23.176060112263297, 23.1829743355053, 23.1868409758468, 23.1697844962787, 23.1419936135467, 23.1299364405159],
+					"SdValue": [0.002095558419049134, 0.001959115731493781, 0.0019441519021801193, 0.0023313172051756415, 0.0019518027562823847, 0.001984936439434917, 0.0021438056412448584, 0.0020515247525351317]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1011_after",
+					"Value": [23.1353686173126, 23.167455135323003, 23.133861890517, 23.146217292116695, 23.173803641662705, 23.144986190729302, 23.106331717511203, 23.0791347660407],
+					"SdValue": [0.002007422146020365, 0.0022092525021283906, 0.002161174505609234, 0.0018902801283119735, 0.0022880724548637625, 0.0020092900738754014, 0.0021486107866224946, 0.0017469482315150154]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1012_after",
+					"Value": [23.193175165392702, 23.221746859483698, 23.1951570536166, 23.1990576551267, 23.2328600876322, 23.1954003928574, 23.1552905072137, 23.127837938076702],
+					"SdValue": [0.0021216215947418415, 0.00227252711946906, 0.0021408488595721317, 0.00209647049405557, 0.002264079001356064, 0.0017268546978835466, 0.0022375453371537525, 0.0022292154934944923]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1013_after",
+					"Value": [23.225784621334302, 23.259791579393802, 23.2352543080277, 23.231065440671202, 23.264148312903497, 23.224300255615898, 23.1908741496498, 23.1701890958844],
+					"SdValue": [0.002069074941395175, 0.002152061078268489, 0.0020987981784246898, 0.0021563099087416457, 0.0017167564013628967, 0.0020194389399752996, 0.0019266397871049777, 0.002020347317936656]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1014_after",
+					"Value": [23.212759082413395, 23.256988389857398, 23.234039348101405, 23.235296859211303, 23.2339265103399, 23.2209410337132, 23.2005746901977, 23.185682440591798],
+					"SdValue": [0.002102602505955779, 0.0022304542440603854, 0.0021099603007170412, 0.002148078756670268, 0.002004286942563823, 0.001993636669372592, 0.0022937036095029895, 0.0019996208454046253]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1015_after",
+					"Value": [23.187511770735, 23.227558848998, 23.2166681351825, 23.2164859402747, 23.202657609432798, 23.1993004127056, 23.179539749331504, 23.171133624219],
+					"SdValue": [0.0020862457065185607, 0.0021037802830737745, 0.0021379696055239036, 0.0020155975620787434, 0.0022986056834422845, 0.0020825420082822483, 0.0019919960491576356, 0.0020619914596979893]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1016_after",
+					"Value": [23.118505844202996, 23.135456614576803, 23.1274801849851, 23.1382524060296, 23.1428728571103, 23.122407156798197, 23.0938494452622, 23.0840362812659],
+					"SdValue": [0.002056482003014785, 0.0020854076324502632, 0.002061943508579715, 0.0020452194422767925, 0.0019159855178910634, 0.0018236313535345881, 0.0022000686181828243, 0.002208321920909399]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1017_after",
+					"Value": [23.118145443394003, 23.1388243705117, 23.1249603358496, 23.1328278372836, 23.1392685668318, 23.1197315675059, 23.0926898633092, 23.0760118156358],
+					"SdValue": [0.002019055163757634, 0.0021871206212140826, 0.0023187263510570056, 0.0019517888833462788, 0.0024338165068975245, 0.002100566115696419, 0.002108988906020281, 0.0022081305503204654]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1018_after",
+					"Value": [23.020050773434804, 23.0467159500969, 23.0261533363458, 23.0327522334257, 23.040552492917, 23.0206580602923, 22.9908103028837, 22.9695514020542],
+					"SdValue": [0.0021626348721335933, 0.0021803633947780196, 0.00223586039339707, 0.0022334707140131025, 0.002319277570286339, 0.0018679950310784275, 0.0020332976273712403, 0.0021036495804554697]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1019_after",
+					"Value": [23.2690196217507, 23.3032585544547, 23.277647694544, 23.2753275089531, 23.296873722785, 23.2689643135424, 23.2414797117292, 23.2187336247801],
+					"SdValue": [0.0019629818878397357, 0.0019589373454178566, 0.002027260282019108, 0.0020516157810012963, 0.001986878467780613, 0.002193963856228853, 0.0021089941186439353, 0.0022787152703404403]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1020_after",
+					"Value": [23.0145133484836, 23.0517164373626, 23.023487445979402, 23.0220315200767, 23.0422129705688, 23.0142256574546, 22.986529684548202, 22.967643417208002],
+					"SdValue": [0.0019183002064844562, 0.0018715458743855744, 0.001940759170572518, 0.0020061721864854504, 0.0019154242030148562, 0.0018108555633468278, 0.0017411913659396707, 0.002026831857016946]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1021_after",
+					"Value": [23.1044690686211, 23.145771165288302, 23.1309968580237, 23.128977402276803, 23.118279732610397, 23.110465439027298, 23.0928993306252, 23.078342602871096],
+					"SdValue": [0.0019945488417478516, 0.001938832564555392, 0.001917155760399274, 0.002196719327155536, 0.001872551397893556, 0.0019197705136471666, 0.002057328694669826, 0.002126545407940905]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1022_after",
+					"Value": [23.1282615821088, 23.1609810022104, 23.1534683650697, 23.1556254178778, 23.1437312633102, 23.137441976682204, 23.1164028594022, 23.1080072811781],
+					"SdValue": [0.002363631362318593, 0.0021124239567725783, 0.0023304214763068013, 0.002095971135843941, 0.0021080100579658617, 0.0023386196489245496, 0.0022911136872451957, 0.0020698871118749744]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1023_after",
+					"Value": [23.022703050801105, 23.047112837981203, 23.0429610980717, 23.0461705737839, 23.0404490617506, 23.0270341504339, 23.0046830803625, 22.994543109691502],
+					"SdValue": [0.0018987652467504868, 0.002063087191751831, 0.001892689770107506, 0.0018028828367144096, 0.001973717899003802, 0.001984605247955876, 0.0020108266862599927, 0.0019428512640620958]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1024_after",
+					"Value": [23.0577025528898, 23.078060378329404, 23.066927669259304, 23.074021846788696, 23.076945487687304, 23.0586975026217, 23.034141160142397, 23.0165365901924],
+					"SdValue": [0.002025358525360353, 0.002078422608980712, 0.0020591109721374927, 0.0023057411401543634, 0.002012458639551232, 0.0021337320560433225, 0.0018896406384121664, 0.0020035260404122784]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1025_after",
+					"Value": [23.1097035742613, 23.137393163084703, 23.1248891649695, 23.126061271604502, 23.126326548500504, 23.1124314347, 23.0882479662717, 23.0717818014263],
+					"SdValue": [0.001973022958826364, 0.002406739484796204, 0.0022437512735794776, 0.0021801472412259527, 0.0021605597632723354, 0.0021581628760299963, 0.0022521464997099557, 0.0022418484626914653]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1026_after",
+					"Value": [23.270007670743404, 23.3085877719004, 23.288458020051998, 23.285520815603398, 23.2886043904477, 23.274110665037302, 23.2518647527489, 23.2344531075611],
+					"SdValue": [0.0022082540607794633, 0.002185303119635188, 0.002391465774167377, 0.0024090575098126878, 0.0021162241896279777, 0.0019097755442906103, 0.002419846997837022, 0.0023760762984704293]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1027_after",
+					"Value": [22.941982534153205, 22.9779060659785, 22.963797353591595, 22.961327553989598, 22.9529621957828, 22.942750826566098, 22.9265175298261, 22.9115456538488],
+					"SdValue": [0.00206721849125888, 0.001925114182813758, 0.00198636349405803, 0.0018800868165710115, 0.0020628238180214957, 0.0020241283716799802, 0.002084390935468136, 0.0022866366217167786]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1028_after",
+					"Value": [23.1092241051877, 23.145290489389204, 23.1380049536159, 23.1366949225502, 23.122526029698697, 23.118752776757297, 23.0987255527206, 23.0883749483635],
+					"SdValue": [0.0019769071313460495, 0.0021244456032032894, 0.0021596078680110914, 0.002173361021723883, 0.0019920739350347025, 0.002128465176706899, 0.0020719756862762157, 0.00199916001019771]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1029_after",
+					"Value": [23.2096560522343, 23.238422326830204, 23.234971877277403, 23.237078303211902, 23.2267403926872, 23.218625180986397, 23.1955657605603, 23.1871228931492],
+					"SdValue": [0.0019923958191962934, 0.002046182513645794, 0.002072302471364983, 0.002008303485959828, 0.0022143196138958692, 0.002040945933808852, 0.0019993504038165605, 0.002173569207837622]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_1030_after",
+					"Value": [23.064196375926695, 23.081947232152395, 23.0731003767328, 23.081033464159297, 23.0829023394094, 23.065727117429, 23.0429352510823, 23.0273063872962],
+					"SdValue": [0.00109830043821592, 0.001053786784681894, 0.0007595328340369434, 0.0011384189676205132, 0.0010176958906022604, 0.0008140575956283774, 0.0010800581433852436, 0.0010523924591500167]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2001_after",
+					"Value": [23.126625238927296, 23.1479145832619, 23.1398254379399, 23.143116139501103, 23.140110048670202, 23.127341008953998, 23.104225035943205, 23.089761238590096],
+					"SdValue": [0.0019550827649258817, 0.001777511905049819, 0.001985060715065455, 0.002263622075959304, 0.0019787511553147866, 0.0021369907947653604, 0.002084773742251122, 0.0021261129713449297]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2002_after",
+					"Value": [23.1506343051935, 23.1827021139571, 23.1676469806996, 23.166931115779796, 23.164686697519098, 23.155200547497195, 23.134426651948804, 23.119002953822896],
+					"SdValue": [0.002232712139659799, 0.0021662132765962808, 0.0023149304198299882, 0.0023668288291914105, 0.002502700589463387, 0.0023126243215130034, 0.0020285275802801174, 0.0022246503781917213]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2003_after",
+					"Value": [22.993380014748897, 23.0245465292139, 23.0088441828482, 23.0086722474755, 23.0048628532105, 22.9942583648998, 22.9756711396755, 22.960930778443505],
+					"SdValue": [0.0020057768840663287, 0.0020970577493991532, 0.0021587344600476396, 0.0020613478389517282, 0.0021662346583545206, 0.0020558816654019383, 0.0020453416771316277, 0.0022947913633591037]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2004_after",
+					"Value": [23.086619672316502, 23.122282895561597, 23.114589694596802, 23.1117065393217, 23.0988941918303, 23.0929443116733, 23.0719538888502, 23.0616344499971],
+					"SdValue": [0.00205875955856202, 0.0021760284602012347, 0.001982153449728424, 0.00220954263374823, 0.00212435624835632, 0.0021178371221294897, 0.0025116194357206324, 0.002155271609933635]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2005_after",
+					"Value": [22.9605040405379, 22.9888918815685, 22.983861057058, 22.986983670827403, 22.9763921736132, 22.9688468049863, 22.9454845020598, 22.9354587822288],
+					"SdValue": [0.0023676503608897983, 0.002216319657425059, 0.0021861940933765537, 0.0021473153714906784, 0.002360037567841104, 0.0021835295303798594, 0.002139984892316854, 0.002018530429615491]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2006_after",
+					"Value": [23.068259013794798, 23.0928964289427, 23.089933441326302, 23.0944654188113, 23.085610165735197, 23.076087956614995, 23.052172738959804, 23.0429616300895],
+					"SdValue": [0.0022003895271144806, 0.0020855184194792376, 0.0023658863744650364, 0.0021783520415905207, 0.0021386982604287286, 0.0020771964005939533, 0.00230140543614603, 0.0020208455976959624]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2007_after",
+					"Value": [23.055645402323005, 23.077552042510902, 23.071435657080098, 23.0742080721317, 23.0687614650573, 23.058641375304, 23.036405791080405, 23.025141999324603],
+					"SdValue": [0.002247268759564322, 0.0021086142351713897, 0.0021310979221310965, 0.0021110585905126746, 0.0021545286124559824, 0.0018263652245256257, 0.002158443725591161, 0.002009795452371702]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2008_after",
+					"Value": [23.119285531974597, 23.1432030395676, 23.134157474110296, 23.1349285214681, 23.1308958564776, 23.120521894756898, 23.0965213146382, 23.084101182549396],
+					"SdValue": [0.0017591357193854045, 0.001967025017079332, 0.0022347099200462576, 0.0020712535931541338, 0.0018955909818086044, 0.001875452432714084, 0.0020312114704648405, 0.002372111624299839]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2009_after",
+					"Value": [23.145224556761, 23.171232647416996, 23.162622457121103, 23.1619549064886, 23.155791873568198, 23.1471526563644, 23.1264347382339, 23.1143419217031],
+					"SdValue": [0.002177097865959873, 0.0021547623331254592, 0.002015422913092465, 0.001990625982006255, 0.0020456289481738227, 0.0019516592655230472, 0.002497425725141844, 0.0020108910051738764]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2010_after",
+					"Value": [23.0453505732999, 23.0768877648299, 23.0695308051255, 23.067682548087998, 23.056340259354705, 23.048455374360298, 23.0287129736931, 23.0187685153345],
+					"SdValue": [0.0020780917728481425, 0.002057692914457997, 0.0017150038127211446, 0.001911313475212304, 0.0019932115931054514, 0.002120455317749155, 0.002176561940451146, 0.0018856178764828408]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2011_after",
+					"Value": [23.190698975162796, 23.2212130476623, 23.215394454075003, 23.2165855640745, 23.203414521127097, 23.1960777242439, 23.1746282782864, 23.1654450079897],
+					"SdValue": [0.0019374814682855401, 0.0016711781733398103, 0.0019121921591599045, 0.0019073165568629007, 0.0019543533665027277, 0.001913862311146117, 0.00190818784679515, 0.001791353762328612]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2012_after",
+					"Value": [23.1734041511262, 23.2011720483328, 23.1963703888629, 23.200463638731, 23.189417871706, 23.1824391140264, 23.160212799647798, 23.1504354429811],
+					"SdValue": [0.002151900088854439, 0.0023498334805213887, 0.0020641591033561117, 0.002121932244006944, 0.002136200792231492, 0.0020829647685570328, 0.001986048619444908, 0.0020514468711527786]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2013_after",
+					"Value": [23.1603407335554, 23.1845132009393, 23.179060296978, 23.182818350426693, 23.176521962592403, 23.166728691779305, 23.144445345634, 23.133708292795298],
+					"SdValue": [0.00203447139544005, 0.0020252283893380284, 0.0021844958905126166, 0.002112851473348455, 0.00196126518548626, 0.0019665605734314664, 0.0021143327530087005, 0.002020198105382727]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2014_after",
+					"Value": [23.042515502233, 23.0667790896806, 23.062282697295498, 23.0624044187954, 23.0551756823854, 23.0478468330853, 23.0255381593381, 23.015681707051705],
+					"SdValue": [0.0021228297393442726, 0.0021698159462819515, 0.002280042483564069, 0.002276095563377882, 0.0021068534446700223, 0.0018943129091196136, 0.0021722183554447774, 0.0023987817396744883]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2015_after",
+					"Value": [23.133129227469404, 23.1578206549124, 23.148026834422, 23.149463605261296, 23.1459940573667, 23.1365626895128, 23.112624024997, 23.0998351139041],
+					"SdValue": [0.0020361965960831343, 0.0022723241359736833, 0.0021170338180255847, 0.0019120047362017423, 0.0022834954964568704, 0.0022572560330998545, 0.002186264765377638, 0.002036652045338407]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2016_after",
+					"Value": [22.8456807031169, 22.8720798289768, 22.8637948804703, 22.8642372971629, 22.8567125117047, 22.846870681614497, 22.8245676473727, 22.814141089349302],
+					"SdValue": [0.002138499125010289, 0.00207982989846992, 0.0021224463683437627, 0.001994250995160221, 0.0021732077816286528, 0.0021703336205735383, 0.0020067077761587167, 0.001956281606493591]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2017_after",
+					"Value": [23.0737622641806, 23.103526162141996, 23.096790718572798, 23.097892268272602, 23.086402131999, 23.0757674560169, 23.0572219627145, 23.0489386846399],
+					"SdValue": [0.0021002445824822562, 0.00215980983877772, 0.002189494257139883, 0.0019012698884613335, 0.001709577309913918, 0.0019957116252632893, 0.0019888621546713145, 0.0019317646649204634]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2018_after",
+					"Value": [23.0317322459811, 23.060806427699497, 23.0555982553458, 23.058055561510102, 23.046219025687897, 23.037576287603393, 23.0154472714, 23.0074649869756],
+					"SdValue": [0.0020090445317400103, 0.0020928770442756725, 0.002261833702573532, 0.0021718823305215676, 0.0020651599133538184, 0.001957070741936305, 0.001835004792520931, 0.002078344043096899]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2019_after",
+					"Value": [23.1501115404894, 23.1758428422037, 23.170204130206198, 23.1745697373164, 23.166914512544096, 23.157159356898102, 23.134420247058404, 23.123249863100803],
+					"SdValue": [0.0018741169368871945, 0.002032848492308293, 0.0018957059873901444, 0.002204047847785896, 0.001873525243251533, 0.0020234488112232823, 0.002012430376961637, 0.002258870196679743]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2020_after",
+					"Value": [23.0561955943676, 23.0796920132372, 23.073030533519503, 23.0756288985933, 23.0719847884989, 23.062149732265603, 23.0380975081719, 23.026812217188798],
+					"SdValue": [0.002139493663225017, 0.002301126796798652, 0.0021322355929914417, 0.002106823005196096, 0.002174107702401093, 0.0021559850207744234, 0.002040666837030375, 0.0022299423234123676]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2021_after",
+					"Value": [23.0294842684397, 23.0522113458091, 23.0456846549816, 23.047975768567902, 23.040547450673596, 23.027224373500502, 23.004927651891002, 22.996779641010598],
+					"SdValue": [0.002073423487173138, 0.002096718371186853, 0.0018932029223653864, 0.001949674186669345, 0.0019241746980117507, 0.0019387186275617125, 0.0020988833491348297, 0.002138313383948165]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2022_after",
+					"Value": [22.9851621627758, 23.0114269292615, 23.004180526258903, 23.0085738058044, 23.000223980173796, 22.9833478526901, 22.961424618429902, 22.9532120010731],
+					"SdValue": [0.0020007577979533906, 0.0022331071680879834, 0.0023681412593172936, 0.0022067747440774614, 0.002238178981314147, 0.0021670184252457654, 0.0021156844731351015, 0.002067477391610947]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2023_after",
+					"Value": [23.0638516307493, 23.088018559868704, 23.081636526383903, 23.0852720982791, 23.0769258212917, 23.064531863521697, 23.043103236895497, 23.0337402188764],
+					"SdValue": [0.001854619317584299, 0.00216503564673058, 0.002155613371553759, 0.0021372225187398534, 0.0020231138814318004, 0.002200065750392577, 0.0021821170943752423, 0.0020674294224169087]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2024_after",
+					"Value": [23.0429546788465, 23.0655866401518, 23.058111619692596, 23.0612444246185, 23.0572436725633, 23.043010311810402, 23.0215399191768, 23.0104213030882],
+					"SdValue": [0.0021817897738276144, 0.002361823022768869, 0.002195764504910958, 0.0021161440549668053, 0.0022894019751248345, 0.002182854253924865, 0.0020891816305938387, 0.002091274409629392]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2025_after",
+					"Value": [22.9884095767932, 23.0095151122241, 22.999994698055296, 23.0023464269852, 23.001421293992998, 22.9859176164568, 22.964294061059995, 22.9512486193549],
+					"SdValue": [0.0021330713679836074, 0.001973585105266341, 0.002089743700849359, 0.0020150439435306327, 0.0019806781315085706, 0.0021792785594395964, 0.0021427906762841774, 0.002106330667981178]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2026_after",
+					"Value": [22.9929071777972, 23.0147059641397, 23.001626280177994, 23.006490994339902, 23.005759967194898, 22.989654101589103, 22.9656678948327, 22.952758191229],
+					"SdValue": [0.0021730574358495695, 0.0018485871612497879, 0.0023101060522295706, 0.0017785948580028338, 0.0018255422301201242, 0.002137597304174465, 0.0019066330608674127, 0.0021697521082986765]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2027_after",
+					"Value": [23.0098202330328, 23.0334319436992, 23.025086050365495, 23.0276353001188, 23.0221094514953, 23.0075535248646, 22.984664011477697, 22.9775200777104],
+					"SdValue": [0.0021203653225890856, 0.0020344740862177878, 0.0022696553885331564, 0.0020188399405839295, 0.002112550678020943, 0.0022465599637112735, 0.0023019894155202726, 0.002013151895261754]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2028_after",
+					"Value": [23.120254179423398, 23.1470468347752, 23.1402659958431, 23.142468874192893, 23.1330618258958, 23.119465165050606, 23.095698993251297, 23.0900172023706],
+					"SdValue": [0.002081764252459201, 0.0020765062785729053, 0.0017103353284026851, 0.0021303103177555, 0.00202352605346155, 0.0018474069304181954, 0.002262574848289808, 0.0018563150969362018]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2029_after",
+					"Value": [22.998951081203394, 23.045055280761897, 23.0178348310967, 23.0397956210356, 23.0976502041961, 23.058186558396, 22.9945162896838, 22.989508826462902],
+					"SdValue": [0.0020643339107360415, 0.0023607541616845556, 0.0021343744636865905, 0.0017394226717531978, 0.0018882035336581047, 0.0020469239627677782, 0.0021606071212631347, 0.0017840344279070465]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_2030_after",
+					"Value": [23.0651567189308, 23.062692209738497, 22.9845342645448, 23.110644743559398, 23.110660066150498, 23.0152312639921, 22.977789902908697, 22.973765033940797],
+					"SdValue": [0.0017463821341719985, 0.002279882182812732, 0.0013768839888945578, 0.0026015273493133423, 0.0019232726451621064, 0.0020154750914213337, 0.0017218981704241558, 0.0024914320182456034]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3001_after",
+					"Value": [23.2180283829195, 23.2631827887843, 23.2330487594791, 23.2274705536957, 23.228264696413596, 23.2047271723751, 23.1559974255494, 23.1477524123261],
+					"SdValue": [0.0020958243861536638, 0.0018536054211051244, 0.0021501099893802, 0.0018221195693456929, 0.0020545858505082518, 0.0022548088929171236, 0.0020775422434299168, 0.0020768121753734093]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3002_after",
+					"Value": [23.1800387094103, 23.224630802085002, 23.193622975935902, 23.1907733168658, 23.1918463587904, 23.167422248725696, 23.117958938004996, 23.1092581509701],
+					"SdValue": [0.0022664725721746833, 0.002275063005418726, 0.0019324656248745477, 0.0021739119987547076, 0.0022375864600859855, 0.0023052304390754792, 0.0022822957930911797, 0.0022832587629092577]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3003_after",
+					"Value": [23.094628318133, 23.1378481824351, 23.1105087421561, 23.1054577330318, 23.1080618585254, 23.084125836733897, 23.034728450459898, 23.024953972412796],
+					"SdValue": [0.0020529789502942305, 0.002307082300845862, 0.002436923128268363, 0.002079155633160257, 0.0020832242661699496, 0.002459247875727273, 0.0020673734669396622, 0.002176602613013925]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3004_after",
+					"Value": [23.293689006368204, 23.316127079472402, 23.273021974126998, 23.2578207516601, 23.264404913485897, 23.243655642631104, 23.201755162614806, 23.181944400951302],
+					"SdValue": [0.0021456314815105257, 0.0023161054423758896, 0.0020548191514592343, 0.0022300384691379973, 0.0022289418023387964, 0.002136341153215542, 0.0021323170242374396, 0.0022813485448438574]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3005_after",
+					"Value": [23.104328568505696, 23.1210030314703, 23.077207258441796, 23.0637890500914, 23.0761542962955, 23.0497696671512, 23.0089150025507, 22.9873803392447],
+					"SdValue": [0.001982297716356005, 0.002201742571417778, 0.0020829304153204267, 0.002028942789404994, 0.0019025273688361218, 0.002063507524266574, 0.0021055902744495786, 0.002070283155891973]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3006_after",
+					"Value": [23.142305479240402, 23.1614043936428, 23.119743680229, 23.1074527919201, 23.1164686178463, 23.093814354757797, 23.0510155055635, 23.031042755322996],
+					"SdValue": [0.0021207791758564884, 0.0019431776468841282, 0.0020144457670235043, 0.0019246682319138183, 0.0023831723274254134, 0.0020261485808386456, 0.0020014758251282387, 0.0018944010753730435]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3007_after",
+					"Value": [23.0769892105372, 23.095226010614404, 23.0502856506533, 23.039077590530496, 23.0521212885205, 23.0274836932876, 22.9848980854798, 22.963790155188303],
+					"SdValue": [0.0019684940333012596, 0.0022147569788156106, 0.0017170228730424215, 0.0019383955290395364, 0.0018681507469804326, 0.0022219815930420634, 0.0020086704747315923, 0.0019797056600531146]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3008_after",
+					"Value": [23.002656214765402, 23.0240192978592, 22.9854094013325, 22.9712461814681, 22.978489546284, 22.9598544250265, 22.9175552637555, 22.897472243310595],
+					"SdValue": [0.0022229930829893783, 0.0020690484998841514, 0.0020562111740058254, 0.002083915674331374, 0.002082386042099373, 0.0021010382160257424, 0.00216803360651166, 0.0021806029152132223]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3009_after",
+					"Value": [23.109403298999002, 23.130645218727402, 23.0910743539691, 23.0756540305383, 23.0826575697943, 23.062936475761997, 23.020963591025904, 23.001218804635403],
+					"SdValue": [0.002167262678440755, 0.002230948690562472, 0.002278017034376383, 0.0018881119907353007, 0.0020396787987858604, 0.0020084552203984613, 0.002012058609972723, 0.002163963559997698]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3010_after",
+					"Value": [23.3158005136163, 23.335394600822298, 23.292191606674702, 23.276770628105798, 23.2876859113966, 23.263240869692797, 23.2200125374122, 23.2000454993149],
+					"SdValue": [0.002080813052720217, 0.0022647463053729363, 0.001940230194468745, 0.0020563451457970695, 0.002050305317416474, 0.002236625811348526, 0.0021220089157845076, 0.0021717493606160034]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3011_after",
+					"Value": [23.236476700675603, 23.252017869933503, 23.2019261536907, 23.1883678777292, 23.2082941688778, 23.1761982258904, 23.1325558396912, 23.111054569612698],
+					"SdValue": [0.0020221732640000826, 0.002109973384735524, 0.0020487859420717834, 0.0019864074175808396, 0.002090176186991183, 0.0021785109943071794, 0.0020617001305975116, 0.0020436897553340297]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3012_after",
+					"Value": [23.166338426971198, 23.191622654849798, 23.1548653965321, 23.1387206398637, 23.138441690744504, 23.123895263812802, 23.081818615155402, 23.064354884728402],
+					"SdValue": [0.0021213132539492246, 0.002374421877229056, 0.0021319382258208584, 0.002272815030376509, 0.0019315902114117542, 0.0020508601704706773, 0.0020405088452201204, 0.0021234960578231437]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3013_after",
+					"Value": [23.130965754553, 23.1541102936238, 23.116492520604698, 23.1026552541358, 23.105860533721998, 23.090277527108203, 23.0443469325976, 23.026487558062502],
+					"SdValue": [0.002130243264785708, 0.002007786816859239, 0.0020826453595797494, 0.0021263934135064724, 0.001923939998714074, 0.0023525434460907706, 0.002323812214612366, 0.0021699483826910504]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3014_after",
+					"Value": [23.248396414301798, 23.2522622308459, 23.2248200348308, 23.2214714550237, 23.2249471258446, 23.2122124463858, 23.176936674335202, 23.153721626307703],
+					"SdValue": [0.0021631094749927256, 0.0020736398675163517, 0.0023636918992005237, 0.0020407331981538318, 0.002082229201202584, 0.002103771941380539, 0.0021750180281940087, 0.0021698373335771685]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3015_after",
+					"Value": [23.2448162666207, 23.2492076748254, 23.221666478898698, 23.2178837132026, 23.2197330953507, 23.2075240246876, 23.172183553412403, 23.1488771374124],
+					"SdValue": [0.00196794968674633, 0.002354407258369328, 0.0019990582345214194, 0.0019617722802532113, 0.0021577838676531654, 0.0018270995477843467, 0.0018241900236449283, 0.0020103705455982944]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3016_after",
+					"Value": [23.3298229492998, 23.3365835508177, 23.3093844204873, 23.304032469199196, 23.2995669211071, 23.293558173008996, 23.256929505696, 23.235138266539302],
+					"SdValue": [0.0017496411599111764, 0.0020377771986145577, 0.0019638762399426025, 0.001810760353709964, 0.0020379605599639087, 0.0021934813343569936, 0.0020532379132415035, 0.00210889298784219]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3017_after",
+					"Value": [23.294614938373698, 23.2994901361888, 23.2708211511923, 23.267057437703603, 23.2660845489313, 23.2569679679349, 23.219421798176096, 23.1966596412535],
+					"SdValue": [0.001983336817154808, 0.002031024051840758, 0.001932643516813771, 0.002288586490148819, 0.0020437254445680756, 0.002154500349977436, 0.002285593461915933, 0.002033975147260872]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3018_after",
+					"Value": [23.2764591322344, 23.2806182607022, 23.2485555096792, 23.243507026153498, 23.246504845703303, 23.235336168409695, 23.199417751423603, 23.1785707478151],
+					"SdValue": [0.0021729744209327715, 0.0019492493494219331, 0.0019925587536012853, 0.0019633164468385706, 0.002116338967187532, 0.0019893184618936144, 0.0021051702260558992, 0.002084989905785705]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3019_after",
+					"Value": [23.3194110166439, 23.324876616031496, 23.2930846625124, 23.2884507583113, 23.2945325867982, 23.279867444875002, 23.244756574769802, 23.2204014086795],
+					"SdValue": [0.0019670798650326545, 0.0019700109415436164, 0.002028463203143002, 0.00215077883929533, 0.001894450059935815, 0.0021499617392644475, 0.0021436188956314053, 0.0021388027211186465]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3020_after",
+					"Value": [23.255222761515096, 23.259892220625694, 23.223957077318197, 23.221025643755798, 23.2282652590361, 23.2114523237472, 23.1779569757816, 23.151899929616597],
+					"SdValue": [0.0021784832343612172, 0.0023027194165376073, 0.0022029520620080604, 0.0021994676800358532, 0.002331761360788256, 0.0017720977031472844, 0.002203801657089259, 0.002093627159244278]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3021_after",
+					"Value": [23.2821730711824, 23.2810685701405, 23.2414083252578, 23.2420265760634, 23.271619383549197, 23.238295656462704, 23.202827187934496, 23.169366036035797],
+					"SdValue": [0.0009551347236353569, 0.0011915297662846156, 0.0008063918518048675, 0.0010166045482727112, 0.0009529357472002994, 0.0012026967521545251, 0.0009483477743299074, 0.0011670053469700738]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3022_after",
+					"Value": [23.2801887348378, 23.2805848642298, 23.2383613963785, 23.2422398615144, 23.2606008395086, 23.2361399552909, 23.204091650839402, 23.1736697352699],
+					"SdValue": [0.0008325988837298796, 0.001116419811064756, 0.0012754112362678262, 0.0010350504091713082, 0.001147679498230285, 0.001366695779659844, 0.0009788236891302739, 0.0011986191738749903]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3023_after",
+					"Value": [23.2638881943992, 23.2651261596394, 23.229120719538997, 23.231740740511803, 23.251071722674098, 23.225041583865604, 23.190394503830397, 23.160788401129196],
+					"SdValue": [0.0007931583729909574, 0.0011071146835527196, 0.0010831027311201057, 0.000815148436070312, 0.0008663062319406334, 0.0009587395624175311, 0.0011900827030602505, 0.0009703945940685723]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3024_after",
+					"Value": [23.3129828503688, 23.313905016451805, 23.276021237377805, 23.2776550499726, 23.3009154078412, 23.2739577414375, 23.2338275153076, 23.203644842544698],
+					"SdValue": [0.0011482233961317846, 0.0008371542543173529, 0.0008526068879034258, 0.0009463276437527739, 0.001049111444531594, 0.0011225802407216568, 0.001144999831028451, 0.001074063711661586]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3025_after",
+					"Value": [23.2643684083748, 23.2555022182061, 23.211993749311, 23.214396803232297, 23.260714496277597, 23.215936487791303, 23.1748623912023, 23.139565425947797],
+					"SdValue": [0.0011343665733563294, 0.0008999020404891267, 0.0011819986042899472, 0.0008269021717188757, 0.0006463552499451397, 0.0010270689258059318, 0.0009778268109642276, 0.0009117650659208684]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3026_after",
+					"Value": [23.267438212089697, 23.267705249380597, 23.2337068188598, 23.235565274182797, 23.2500159170125, 23.230992057464, 23.1953717166633, 23.1681601195389],
+					"SdValue": [0.0011113142562432995, 0.0010847162669076873, 0.0012617899129901973, 0.0010010652877779603, 0.0010383164638125297, 0.0007965255083539469, 0.00111949939482146, 0.0009942021626959023]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3027_after",
+					"Value": [23.2242669744635, 23.2237532163357, 23.182705512522396, 23.189374151633295, 23.2121007916635, 23.183083358828696, 23.1503960913801, 23.1175254359547],
+					"SdValue": [0.0012366785345379805, 0.0011331024887939174, 0.0009310442010489457, 0.0011120149535614099, 0.0009863624547007655, 0.0009499039564683983, 0.0011587396375756372, 0.0009740025614815391]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3028_after",
+					"Value": [23.203544215627698, 23.2100992572504, 23.1819361761252, 23.1755603567283, 23.175043026381804, 23.1668892382487, 23.131136241833097, 23.109386633961602],
+					"SdValue": [0.0011168774564226027, 0.0011574789311640027, 0.0011471118534245196, 0.0014024782000942471, 0.0012287836865261695, 0.001224162024512661, 0.0011599493384450718, 0.0009897981993285678]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3029_after",
+					"Value": [23.243967973489898, 23.250011471518, 23.2177023700224, 23.214878214435704, 23.2157768032691, 23.2065818105898, 23.170495264439303, 23.147943523488102],
+					"SdValue": [0.0013587821300359917, 0.0012575010276092773, 0.0011985553252701552, 0.001137817513538679, 0.000901317205735194, 0.0011253037846577281, 0.0011868590505178047, 0.0012454123193610946]
+				}, {
+					"N": [10, 10, 10, 10, 10, 10, 10, 10],
+					"Unit": "C",
+					"Type": "ch_3030_after",
+					"Value": [23.2100128599644, 23.215375614757697, 23.181219957340403, 23.179540341628105, 23.184856568642502, 23.1720053684867, 23.135916770232804, 23.111763759745497],
+					"SdValue": [0.0012422322558362185, 0.001285572946670827, 0.0013228069749823784, 0.0011507313346249166, 0.0010194990158294997, 0.0013732987951700338, 0.0010280802850326392, 0.001279973068129124]
+				}],
+				"Pressure": [{
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "1T_1-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "1T_2-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "1T_3-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "10T_1-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "10T_2-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "10T_3-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "100T_1-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "100T_2-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Type": "100T_3-fill",
+					"Value": [0, 0, 0, 0, 0, 0, 0, 0],
+					"Unit": "mbar"
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Unit": "mbar",
+					"Type": "1000T_1-fill",
+					"Value": [600.4132873535157, 600.4059921264649, 600.3945281982421, 600.4112030029297, 600.4091186523438, 600.5299499511718, 600.4539276123047, 600.4539276123047],
+					"SdValue": [0.012665423359096886, 0.011119876262061483, 0.020136739741307343, 0.009201216749910458, null, 0.012665423359096878, 0.011103595330491853, 0.01110359533049186]
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Unit": "mbar",
+					"Type": "1000T_2-fill",
+					"Value": [600.3549438476563, 600.3258056640625, 600.3258056640625, 600.3330902099609, 600.3258056640625, 600.492431640625, 600.4237091064454, 600.4101608276367],
+					"SdValue": [0.019318427610383257, null, null, 0.016017993980820832, null, null, 0.02013673974130734, 0.006591295293869024]
+				}, {
+					"N": [40, 40, 40, 40, 40, 40, 40, 40],
+					"Unit": "mbar",
+					"Type": "1000T_3-fill",
+					"Value": [600.3258056640625, 600.3049621582031, 600.2851608276367, 600.3226791381836, 600.3205947875977, 600.401823425293, 600.367431640625, 600.3684738159179],
+					"SdValue": [null, 0.021109038931828132, 0.006591295293869024, 0.011119876262061483, 0.013962316857299442, 0.01604148077551413, null, 0.006591295293869027]
+				}, {
+					"N": [21, 21, 21, 21, 21, 21, 21, 21],
+					"Unit": "lb",
+					"Type": "frs_p",
+					"Value": [0.6122989523809526, 0.612239619047619, 0.6120795238095239, 0.6120684761904764, 0.612436, 0.6100260952380955, 0.6124321904761905, 0.6123547619047618],
+					"SdValue": [0.000003323795879371633, 0.000001359271513585864, 0.000009031162979490147, 0.0000010779168622598374, 0.000007127411872493986, 0.000004217875791273013, 0.0000014006801069196049, 0.0000024063408300602006]
+				}, {
+					"N": [25, 25, 25, 25, 25, 25, 25, 25],
+					"Unit": "mbar",
+					"Type": "nd_ind",
+					"Value": [0.0015508800000000001, 0.000742, -0.00090336, -0.0015276, 0.0009864000000000001, -0.023016400000000003, 0.0006376, -0.00035719999999999995],
+					"SdValue": [0.000036342491200613474, 0.000012583057392117923, 0.00010332468243357927, 0.000017358955421722025, 0.00008678901620212856, 0.00004357751713900193, 0.000010908712114635707, 0.000027222845797846584]
+				}, {
+					"N": [5, 5, 5, 5, 3, 3, 3, 5],
+					"Unit": "DCR",
+					"Type": "frs_res_ind",
+					"Value": [6.87152e-7, 6.85184e-7, 6.852360000000002e-7, 6.85536e-7, 0.0000012352800000000001, 0.0000014855000000000002, 0.00000131749, 6.8414e-7],
+					"SdValue": [3.288733798895846e-9, 2.7355072655724203e-10, 7.104083332844531e-10, 7.078347264722361e-10, 0.0000010588974004595535, 5.031784176611712e-7, 4.7547324982589713e-7, 3.132091952673302e-10]
+				}, {
+					"N": [21, 21, 21, 21, 21, 21, 21, 21],
+					"Unit": "lb",
+					"Type": "frs_zc_p",
+					"Value": [0.02517104761904761, 0.025157714285714297, 0.025162857142857147, 0.025160000000000002, 0.025223809523809537, 0.02521238095238096, 0.025224000000000014, 0.025218000000000004],
+					"SdValue": [0.0000010235326314375661, 0.0000011464230084413793, 0.0000010141851056734747, 3.5551252101777284e-18, 6.015852075177963e-7, 0.0000014992061391350555, 1.4220500840710914e-17, 3.5551252101777284e-18]
+				}, {
+					"N": [25, 25, 25, 25, 25, 25, 25, 25],
+					"Unit": "mbar",
+					"Type": "nd_offset",
+					"Value": [-0.00001836, 0.00006919999999999999, 0.00008996, 0.00009300000000000001, 0.00005159999999999999, 0.00006839999999999997, 0.00007719999999999999, 0.000046479999999999995],
+					"SdValue": [0.000007398648525237565, 0.000007593857166596344, 0.000007651143705355428, 0.000005090841449767087, 0.00001067707825203131, 0.0000074610097618664626, 0.000006782329983125271, 0.00000950929369967437]
+				}]
+			}
+		}
+	}
+}
