@@ -52,6 +52,8 @@ class Cal(Se2):
     def pressure_fill(self, res):
         """Calculates the mean value of the filling pressure
 
+        ..todo::
+                rm magic number /100. in get error corr
 
         Stores result under the path *Pressure, fill, mbar*
 
@@ -69,11 +71,11 @@ class Cal(Se2):
 
         p_fill_uncorr = (p_fill  - p_fill_offset)
         e             = self.Qbs.get_error_correction(p_fill_uncorr, "mbar", "%")/100.
-        pfill         = p_fill_uncorr/(e + 1.)
+        p_fill_corr   = p_fill_uncorr/(e + 1.)
 
         res.store("Error" ,"fill", e, "1")
         res.store("Pressure" ,"fill_offset", p_fill_offset, "mbar")
-        res.store("Pressure" ,"fill", p_fill, "mbar")
+        res.store("Pressure" ,"fill", p_fill_corr, "mbar")
 
 
     def temperature_before(self, res):
