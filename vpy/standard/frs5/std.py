@@ -42,10 +42,10 @@ class Frs5(Standard):
 
     def __init__(self, orgdoc):
         super().__init__(orgdoc, self.name)
+
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
 
         self.log.debug("init func: {}".format(__name__))
-
 
     def define_model(self):
         """ Defines symbols and model for FRS5.

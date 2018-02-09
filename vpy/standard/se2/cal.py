@@ -1,7 +1,5 @@
 import numpy as np
 import sympy as sym
-import inspect as insp
-
 from .std import Se2
 from ...vpy_io import Io
 
@@ -9,6 +7,14 @@ class Cal(Se2):
 
     def __init__(self, doc):
         super().__init__(doc)
+        doc = copy.deepcopy(orgdoc)
+
+        self.Temp    = Temperature(doc)
+        self.Pres    = Pressure(doc)
+        self.Time    = Time(doc)
+        self.Aux     = AuxSe2(doc)
+        
+        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
     def time(self, res):
         """Calculates  the time axis

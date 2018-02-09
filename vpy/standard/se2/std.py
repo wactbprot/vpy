@@ -26,16 +26,11 @@ class Se2(Standard):
         super().__init__(orgdoc, self.name)
         doc = copy.deepcopy(orgdoc)
 
-        self.Temp    = Temperature(doc)
-        self.Pres    = Pressure(doc)
-        self.Time    = Time(doc)
-        self.Aux     = AuxSe2(doc)
-
         self.TDev    = Dmm(doc, self.Cobj.get_by_name("SE2_DMM_Keithley"))
         self.TDevAdd = Dmm(doc, self.Cobj.get_by_name("FM3_CE3-DMM_Agilent"))
         self.Qbs     = Qbs(doc, self.Cobj.get_by_name("SE2_Ruska"))
 
-        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
+        self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
         """Returns the name of the standard.

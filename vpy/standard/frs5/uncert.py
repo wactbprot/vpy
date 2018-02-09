@@ -5,7 +5,6 @@ from .std import Frs5
 
 class Uncert(Frs5):
 
-
     def __init__(self, doc):
         super().__init__(doc)
         self.log.debug("init func: {}".format(__name__))
