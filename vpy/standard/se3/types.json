@@ -1,4 +1,37 @@
 {"Temperature":{
+    "Small":[
+        {"Type":"ch_3001_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3002_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3003_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"}
+    ],
+    "MediumVolume":[
+        {"Type":"ch_3004_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3005_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3006_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3007_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3008_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3009_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3010_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"}
+    ],
+    "LargeVolume":[
+        {"Type":"ch_3014_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3015_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3016_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3017_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3018_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3019_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3020_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3021_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3022_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3023_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3024_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3025_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3026_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3027_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3028_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3029_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_3030_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"}
+    ],
     "Room":[
         {"Type":"ch_2030_after","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
         {"Type":"ch_2029_after","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"}
