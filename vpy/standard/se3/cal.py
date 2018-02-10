@@ -7,13 +7,6 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-        doc = copy.deepcopy(orgdoc)
-
-        self.Temp = Temperature(doc)
-        self.Pres = Pressure(doc)
-        self.Time = Time(doc)
-        self.Aux  = AuxSe3(doc)
-        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
 
     def get_expansion(self):
@@ -71,6 +64,7 @@ class Cal(Se3):
             chnm = "{}-offset".format(chs[i])
             vec  = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", chnm, "mbar")
             M    = len(vec)
+
             if i == 0:
                 p_off_arr = np.full((N, M), np.nan)
 
@@ -174,7 +168,7 @@ class Cal(Se3):
         """
         chs = list(range(1001, 1031)) + list(range(2001, 2029))
 
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
+        tem_arr = self.Temp.get_array("ch_", chs, "_after", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
         conv    = self.Cons.get_conv("C", "K")
 
@@ -183,10 +177,10 @@ class Cal(Se3):
     def temperature_room(self, res):
         """Calculates the temperature of the room.
         """
-        tem = self.temperature_f24()
+        tem = self.temperature_foe24()
         res.store("Temperature","room", tem , "K")
 
-    def temperature_f24(self):
+    def temperature_foe24(self):
         """Temperature of the room. The used  sensors are:
 
         *channel 2029 to 2030*

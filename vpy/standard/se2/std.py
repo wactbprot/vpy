@@ -21,10 +21,16 @@ class Se2(Standard):
     name = "SE2"
     unit = "mbar"
 
-    def __init__(self, orgdoc):
+    def __init__(self, doc):
 
-        super().__init__(orgdoc, self.name)
-        doc = copy.deepcopy(orgdoc)
+        doc = copy.deepcopy(doc)
+        super().__init__(doc, self.name)
+
+                # measurement values
+        self.Temp = Temperature(doc)
+        self.Pres = Pressure(doc)
+        self.Time = Time(doc)
+        self.Aux  = AuxSe2(doc)
 
         self.TDev    = Dmm(doc, self.Cobj.get_by_name("SE2_DMM_Keithley"))
         self.TDevAdd = Dmm(doc, self.Cobj.get_by_name("FM3_CE3-DMM_Agilent"))

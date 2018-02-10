@@ -9,7 +9,6 @@ from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
 from ...values import Temperature, Pressure, Time, AuxFrs5
 
-
 class Frs5(Standard):
     """Calculation methods of large area piston gauge FRS5.
 
@@ -40,14 +39,24 @@ class Frs5(Standard):
     unit  = "mbar"
 
 
-    def __init__(self, orgdoc):
-        super().__init__(orgdoc, self.name)
+    def __init__(self, doc):
+        doc = copy.deepcopy(doc)
+        super().__init__(doc, self.name)
+
+        # measurement values
+        self.Temp = Temperature(doc)
+        self.Pres = Pressure(doc)
+        self.Time = Time(doc)
+        self.Aux  = AuxFrs5(doc)
+
+        # residua pressure device
+        self.no_of_meas_points = len(self.Time.get_value("amt_frs5_ind", "ms"))
 
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
 
         self.log.debug("init func: {}".format(__name__))
 
-    def define_model(self):
+    def define_model(self, res):
         """ Defines symbols and model for FRS5.
         The order of symbols must match the order in ``gen_val_arr``:
 

@@ -8,16 +8,6 @@ class Cal(Frs5):
 
     def __init__(self, doc):
         super().__init__(doc)
-        doc = copy.deepcopy(orgdoc)
-
-        # measurement values
-        self.Temp = Temperature(doc)
-        self.Pres = Pressure(doc)
-        self.Time = Time(doc)
-        self.Aux  = AuxFrs5(doc)
-
-        # residua pressure device
-        self.no_of_meas_points = len(self.Time.get_value("amt_frs5_ind", "ms"))
 
         self.log.debug("init func: {}".format(__name__))
 

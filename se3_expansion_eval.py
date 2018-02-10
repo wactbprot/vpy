@@ -13,11 +13,10 @@ def main():
     log.info("start logging")
 
     doc = io.load_doc()
+
     if doc:
         res        = Analysis(doc)
-
-        se3_calc   =  Se3Calc(doc)
-
+        se3_calc   = Se3Calc(doc)
         frs_calc   = FrsCalc(doc)
         frs_uncert = FrsUncert(doc)
 

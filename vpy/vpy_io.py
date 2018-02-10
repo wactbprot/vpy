@@ -137,7 +137,7 @@ class Io(object):
         db  = srv[self.config['db']['name']]
         res = db.save(doc)
 
-    def gen_temp_doc(self, name):
+    def gen_base_doc(self, name):
         srv  = couchdb.Server(self.config['db']['url'])
         db   = srv[self.config['db']['name']]
         view = self.config['standards'][name]['temp_doc_view']
@@ -156,7 +156,7 @@ class Io(object):
             if item.key == "CalibrationObject":
                 temp_doc["CalibrationObject"].append(item.value["CalibrationObject"])
 
-        with open("vpy/standard/{}/temp_doc.json".format(name), 'w') as f:
+        with open("vpy/standard/{}/base_doc.json".format(name), 'w') as f:
             json.dump(temp_doc, f, indent=4, ensure_ascii=False)
 
         return temp_doc
