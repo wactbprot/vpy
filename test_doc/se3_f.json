@@ -26,12 +26,6 @@
 		},
 		"Customer": {
 			"DebitorenNr": "intern",
-			"Contact": {
-				"Email": "karl.jousten@ptb.de",
-				"Name": "Dr. Karl Jousten",
-				"Phone": "++49-30-3481-7262",
-				"Fax": "++49-30-3481-7490"
-			},
 			"Name": "PTB AG7.54",
 			"Sign": "PTB",
 			"Address": {
