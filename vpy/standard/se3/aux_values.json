@@ -1,0 +1,28 @@
+{
+"Pressure":{
+    "FillOffset":[
+        {"Type":"1T_1-offset","Min":-1e-4,"Max":1e-4,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"1T_2-offset","Min":-1e-4,"Max":1e-4,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"1T_3-offset","Min":-1e-4,"Max":1e-4,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"10T_1-offset","Min":-1e-3,"Max":1e-3,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"10T_2-offset","Min":-1e-3,"Max":1e-3,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"10T_3-offset","Min":-1e-3,"Max":1e-3,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"100T_1-offset","Min":-1e-2,"Max":1e-2,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"100T_2-offset","Min":-1e-2,"Max":1e-2,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"100T_3-offset","Min":-1e-2,"Max":1e-2,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"1000T_1-offset","Min":-1e-1,"Max":1e-1,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"1000T_2-offset","Min":-1e-1,"Max":1e-1,"Sim":[0.0],"Unit":"mbar"},
+        {"Type":"1000T_3-offset","Min":-1e-1,"Max":1e-1,"Sim":[0.0],"Unit":"mbar"}
+        ]
+    },
+"Expansion":{
+    "Name":[
+            {"Type":"name","Sim":["f_m"]}
+        ]
+    },
+"Time":{
+        "Offset":[
+            {"Type":"offset_mt","Sim":[0.0],"Unit":"ms"}
+        ]
+    }
+}

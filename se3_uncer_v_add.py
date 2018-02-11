@@ -1,16 +1,24 @@
 import sys
 import numpy as np
-import couchdb
-from vpy.vpy_io import Io
-from vpy.standard.se3.uncert import Uncert as Se3Uncert
 
+from vpy.analysis import Analysis
+from vpy.sim import Sim
+
+from vpy.standard.se3.uncert import Uncert
+from vpy.standard.se3.cal import Cal
 
 def main():
-    io       = Io()
-    base_doc = io.gen_base_doc("se3")
+    sim = Sim("se3")
+    doc = sim.build()
 
-    se3_uncert = Se3Uncert(base_doc)
+    uncert = Uncert(doc)
+    cal    = Cal(doc)
+    res    = Analysis(doc)
 
+    cal.temperature_before(res)
+    #cal.temperature_after(res)
+    #cal.temperature_room(res)
+    #cal.pressure_fill(res)
 
 if __name__ == "__main__":
     main()

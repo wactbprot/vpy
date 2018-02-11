@@ -10,31 +10,26 @@ class Standard(Document):
     Provides the normals main measurand e.g. calibration pressure
     """
 
-    def __init__(self, orgdoc, name):
-        doc = copy.deepcopy(orgdoc)
-
-        if 'Calibration' in doc:
-            dc = doc['Calibration']
-            if 'Standard' in dc:
-                dcs = dc['Standard']
-
-            if isinstance(dcs, list):
-                for s in dcs:
-                    if s['Name'] == name:
-                        super().__init__(s)
-
-            if isinstance(dcs, dict):
-                if dcs['Name'] == name:
-                    super().__init__(dcs)
-
-        if 'Standard' in doc:
-            if doc['Standard']['Name'] == name:
-                super().__init__(doc['Standard'])
-
+    def __init__(self, doc, name):
 
         self.Cons = Constants(doc)
         self.Cobj = CalibrationObject(doc)
 
+        if 'Calibration' in doc:
+            doc = doc['Calibration']
+
+        if 'Standard' in doc:
+            doc = doc['Standard']
+
+            if isinstance(doc, list):
+                for s in doc:
+                    if s['Name'] == name:
+                        super().__init__(s)
+
+            if isinstance(doc, dict):
+                if doc['Name'] == name:
+                    super().__init__(doc)
+        
     def real_gas_correction(self, res):
         """Real gas correction for already calculated filling pressure
         """

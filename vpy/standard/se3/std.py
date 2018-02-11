@@ -22,8 +22,6 @@ class Se3(Standard):
     unit = "mbar"
 
     def __init__(self, doc):
-
-        doc = copy.deepcopy(doc)
         super().__init__(doc, self.name)
 
         # measurement values
@@ -31,6 +29,8 @@ class Se3(Standard):
         self.Pres = Pressure(doc)
         self.Time = Time(doc)
         self.Aux  = AuxSe3(doc)
+
+        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
         self.TDev = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
         self.GN   = GroupNormal(doc, (

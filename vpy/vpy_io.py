@@ -136,31 +136,7 @@ class Io(object):
         srv = couchdb.Server(self.config['db']['url'])
         db  = srv[self.config['db']['name']]
         res = db.save(doc)
-
-    def gen_base_doc(self, name):
-        srv  = couchdb.Server(self.config['db']['url'])
-        db   = srv[self.config['db']['name']]
-        view = self.config['standards'][name]['temp_doc_view']
-
-        temp_doc = {"Standard":{},
-                    "Constants":{},
-                    "CalibrationObject":[]}
-
-        for item in db.view(view):
-            if item.key == "Standard":
-                temp_doc["Standard"] = item.value["Standard"]
-
-            if item.key == "Constants":
-                temp_doc["Constants"] = item.value["Constants"]
-
-            if item.key == "CalibrationObject":
-                temp_doc["CalibrationObject"].append(item.value["CalibrationObject"])
-
-        with open("vpy/standard/{}/base_doc.json".format(name), 'w') as f:
-            json.dump(temp_doc, f, indent=4, ensure_ascii=False)
-
-        return temp_doc
-
+        
     def logger(self, name):
         """
         Based on http://docs.python.org/howto/logging.html#configuring-logging

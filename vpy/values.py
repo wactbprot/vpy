@@ -1,6 +1,5 @@
 import sys
 import numpy as np
-from .vpy_io import Io
 from .document import Document
 
 class Values(Document):
@@ -16,13 +15,13 @@ class Values(Document):
 
     def __init__(self, doc, name, quant):
         if 'Calibration' in doc:
-            dc = doc['Calibration']
-            if quant in dc:
-                dcm = dc[quant]
-                if 'Values' in dcm:
-                    dcmv = dcm['Values']
-                    if name in dcmv:
-                        super().__init__(dcmv[name])
+            doc = doc['Calibration']
+
+        if quant in doc:
+            doc = doc[quant]
+
+        if 'Values' in doc:
+            doc = doc['Values']
 
         if name in doc:
             super().__init__(doc[name])
@@ -62,14 +61,14 @@ class AuxValues(Document):
 
     def __init__(self, doc):
         if 'Calibration' in doc:
-            dc = doc['Calibration']
-            if 'Measurement' in dc:
-                dcm = dc['Measurement']
-                if 'AuxValues' in dcm:
-                    super().__init__(dcm['AuxValues'])
+            doc = doc['Calibration']
 
-        if "AuxValues" in doc:
+        if 'Measurement' in doc:
+            doc = doc['Measurement']
+
+        if 'AuxValues' in doc:
             super().__init__(doc['AuxValues'])
+
 
     def get_gas(self):
         if "Gas" in self.doc:
@@ -154,7 +153,6 @@ class AuxSe3(AuxValues):
         if "Expansion" in self.doc:
             o = self.get_object("Type", "name")
             if "Value" in o:
-
                 if isinstance(o['Value'], list):
                     return o['Value'][-1]
         else:

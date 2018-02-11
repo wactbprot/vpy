@@ -8,7 +8,6 @@ class Cal(Se3):
     def __init__(self, doc):
         super().__init__(doc)
 
-
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
@@ -17,6 +16,7 @@ class Cal(Se3):
         :returns: array of expansion names
         :rtype: np.array of strings
         """
+        print(self.Aux.doc)
         f = self.Aux.get_expansion()
         if f is not None:
             return np.full(self.no_of_meas_points, f)
