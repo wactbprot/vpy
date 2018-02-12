@@ -2408,7 +2408,551 @@
                     "Comment": "experimentelle Streuung bei der Kalib."
                 }
             ],
-            "Class": "DMM"
+            "Class": "DMM",
+            "Values": {
+                "Temperature": [
+                    {
+                        "Type": "corr_ch_1001",
+                        "Unit": "K",
+                        "Value": -0.02055135,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1002",
+                        "Unit": "K",
+                        "Value": -0.08609136,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1003",
+                        "Unit": "K",
+                        "Value": -0.1094606,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1004",
+                        "Unit": "K",
+                        "Value": -0.1140894,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1005",
+                        "Unit": "K",
+                        "Value": -0.146011,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1006",
+                        "Unit": "K",
+                        "Value": -0.2235653,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1007",
+                        "Unit": "K",
+                        "Value": -0.09426584,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1008",
+                        "Unit": "K",
+                        "Value": -0.05266767,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1009",
+                        "Unit": "K",
+                        "Value": 0.1385864,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1010",
+                        "Unit": "K",
+                        "Value": -0.1191169,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1011",
+                        "Unit": "K",
+                        "Value": -0.0468584,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1012",
+                        "Unit": "K",
+                        "Value": -0.04691088,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1013",
+                        "Unit": "K",
+                        "Value": -0.08861834,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1014",
+                        "Unit": "K",
+                        "Value": -0.1466342,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1015",
+                        "Unit": "K",
+                        "Value": -0.1575276,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1016",
+                        "Unit": "K",
+                        "Value": -0.1069595,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1017",
+                        "Unit": "K",
+                        "Value": -0.07377139,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1018",
+                        "Unit": "K",
+                        "Value": 0.05459131,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1019",
+                        "Unit": "K",
+                        "Value": -0.1676449,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1020",
+                        "Unit": "K",
+                        "Value": 0.07760275,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1021",
+                        "Unit": "K",
+                        "Value": -0.0721497,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1022",
+                        "Unit": "K",
+                        "Value": -0.1255891,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1023",
+                        "Unit": "K",
+                        "Value": -0.01435699,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1024",
+                        "Unit": "K",
+                        "Value": -0.02880101,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1025",
+                        "Unit": "K",
+                        "Value": -0.0569549,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1026",
+                        "Unit": "K",
+                        "Value": -0.206477,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1027",
+                        "Unit": "K",
+                        "Value": 0.08064548,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1028",
+                        "Unit": "K",
+                        "Value": -0.1108275,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1029",
+                        "Unit": "K",
+                        "Value": -0.2205404,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_1030",
+                        "Unit": "K",
+                        "Value": -0.0781881,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2001",
+                        "Unit": "K",
+                        "Value": -0.1151062,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2002",
+                        "Unit": "K",
+                        "Value": -0.1133783,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2003",
+                        "Unit": "K",
+                        "Value": 0.01223344,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2004",
+                        "Unit": "K",
+                        "Value": -0.09071967,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2005",
+                        "Unit": "K",
+                        "Value": 0.008553151,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2006",
+                        "Unit": "K",
+                        "Value": -0.1005517,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2007",
+                        "Unit": "K",
+                        "Value": -0.07374411,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2008",
+                        "Unit": "K",
+                        "Value": -0.1151906,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2009",
+                        "Unit": "K",
+                        "Value": -0.1536873,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2010",
+                        "Unit": "K",
+                        "Value": -0.0631553,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2011",
+                        "Unit": "K",
+                        "Value": -0.2170937,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2012",
+                        "Unit": "K",
+                        "Value": -0.215548,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2013",
+                        "Unit": "K",
+                        "Value": -0.2040807,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2014",
+                        "Unit": "K",
+                        "Value": -0.06997357,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2015",
+                        "Unit": "K",
+                        "Value": -0.1704739,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2016",
+                        "Unit": "K",
+                        "Value": 0.1202952,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2017",
+                        "Unit": "K",
+                        "Value": -0.1013841,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2018",
+                        "Unit": "K",
+                        "Value": -0.07770844,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2019",
+                        "Unit": "K",
+                        "Value": -0.2076571,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2020",
+                        "Unit": "K",
+                        "Value": -0.1087817,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2021",
+                        "Unit": "K",
+                        "Value": -0.08836235,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2022",
+                        "Unit": "K",
+                        "Value": -0.04069963,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2023",
+                        "Unit": "K",
+                        "Value": -0.1250048,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2024",
+                        "Unit": "K",
+                        "Value": -0.1138856,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2025",
+                        "Unit": "K",
+                        "Value": -0.05447166,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2026",
+                        "Unit": "K",
+                        "Value": -0.06111073,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2027",
+                        "Unit": "K",
+                        "Value": -0.06495957,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2028",
+                        "Unit": "K",
+                        "Value": -0.1681122,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2029",
+                        "Unit": "K",
+                        "Value": -0.05194202,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_2030",
+                        "Unit": "K",
+                        "Value": -0.08746292,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3001",
+                        "Unit": "K",
+                        "Value": -0.1949124,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3002",
+                        "Unit": "K",
+                        "Value": -0.1714675,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3003",
+                        "Unit": "K",
+                        "Value": -0.08590973,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3004",
+                        "Unit": "K",
+                        "Value": -0.2316187,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3005",
+                        "Unit": "K",
+                        "Value": -0.05040835,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3006",
+                        "Unit": "K",
+                        "Value": -0.1007355,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3007",
+                        "Unit": "K",
+                        "Value": -0.02861267,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3008",
+                        "Unit": "K",
+                        "Value": 0.06361742,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3009",
+                        "Unit": "K",
+                        "Value": -0.04486023,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3010",
+                        "Unit": "K",
+                        "Value": -0.247987,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3011",
+                        "Unit": "K",
+                        "Value": -0.1624503,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3012",
+                        "Unit": "K",
+                        "Value": -0.1203539,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3013",
+                        "Unit": "K",
+                        "Value": -0.1002836,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3014",
+                        "Unit": "K",
+                        "Value": -0.05129921,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3015",
+                        "Unit": "K",
+                        "Value": -0.03521956,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3016",
+                        "Unit": "K",
+                        "Value": -0.1245897,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3017",
+                        "Unit": "K",
+                        "Value": -0.07564731,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3018",
+                        "Unit": "K",
+                        "Value": -0.08213775,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3019",
+                        "Unit": "K",
+                        "Value": -0.1032167,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3020",
+                        "Unit": "K",
+                        "Value": -0.05902807,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3021",
+                        "Unit": "K",
+                        "Value": -0.05743068,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3022",
+                        "Unit": "K",
+                        "Value": -0.09487768,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3023",
+                        "Unit": "K",
+                        "Value": -0.06266033,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3024",
+                        "Unit": "K",
+                        "Value": -0.05003964,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3025",
+                        "Unit": "K",
+                        "Value": 0.003939928,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3026",
+                        "Unit": "K",
+                        "Value": -0.079641,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3027",
+                        "Unit": "K",
+                        "Value": -0.02866263,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3028",
+                        "Unit": "K",
+                        "Value": -0.05390462,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3029",
+                        "Unit": "K",
+                        "Value": -0.0973043,
+                        "Comment": ""
+                    },
+                    {
+                        "Type": "corr_ch_3030",
+                        "Unit": "K",
+                        "Value": -0.07041239,
+                        "Comment": ""
+                    }
+                ]
+            }
         },
         {
             "Comment": "Auslese Spannung",
@@ -2438,96 +2982,6 @@
                 "@CR": "\n"
             },
             "Class": "DMM"
-        },
-        {
-            "Comment": "",
-            "Type": "PPC",
-            "Name": "SE3_PPC4",
-            "Standard": "SE3",
-            "Owner": {
-                "Name": "PTB AG 7.54"
-            },
-            "Device": {
-                "Type": "PPC4",
-                "SN": "53444",
-                "Producer": "Europascal"
-            },
-            "Date": {
-                "Type": "generated",
-                "Value": "2014-05-27"
-            },
-            "Defaults": {
-                "@descr": "Auslesen des Druckwerts",
-                "@acc": "TCP",
-                "@port": "5302",
-                "@CR": "\r",
-                "@host": "e75443",
-                "@cmd": "*CLS?\r",
-                "@token": "ppc",
-                "@exchpath": "SE2_PPC4",
-                "@docpath": "Calibration.Measurement.Values.Pressure"
-            },
-            "Task": [
-                {
-                    "TaskName": "init",
-                    "Comment": "Initialisiert PPC",
-                    "Action": "@acc",
-                    "Host": "@host",
-                    "Port": "@port",
-                    "Values": {
-                        "stop": "ABORT@CR",
-                        "clear": "*CLS@CR",
-                        "set_mbar": "UNIT MBAR@CR",
-                        "set_static": "MODE 0@CR",
-                        "set_dynamic": "MODE 1@CR"
-                    },
-                    "Value": "*CLS",
-                    "PostProcessing": [
-                        "ok = _x ?true:false;"
-                    ]
-                },
-                {
-                    "TaskName": "exec",
-                    "Comment": "@descr",
-                    "Action": "@acc",
-                    "Host": "@host",
-                    "Port": "@port",
-                    "Repeat": 10,
-                    "Wait": 1000,
-                    "DocPath": "@docpath",
-                    "Value": "QPRR?@CR",
-                    "PostProcessing": [
-                        "var _vec = _x.map(_.extractPPC);",
-                        "_N = _vec.length,",
-                        "_redvec = _vec.splice(@skip - 1 , _N - 1), ",
-                        "_res = _.vlStat(_.checkNumArr(_redvec).Arr),",
-                        "Result=[_.vlRes('@token',_res.mv,'mbar', '', _res.sd,_res.N)],",
-                        "ToExchange={",
-                        "'@exchpath.Value':_res.mv,",
-                        "'@exchpath.Unit':'mbar',",
-                        "'@exchpath.Type':'@token'",
-                        "};"
-                    ]
-                },
-                {
-                    "TaskName": "set_pressure",
-                    "Comment": "Sets the target pressure: @pressuretarget mbar",
-                    "Action": "@acc",
-                    "Host": "@host",
-                    "Port": "@port",
-                    "Repeat": 2,
-                    "FromExchange": {
-                        "@pressuretarget": "Pressure_target.Value"
-                    },
-                    "Wait": 20000,
-                    "StopIf": "Pressure_fill_ok.Bool",
-                    "Value": "PS @pressuretarget, 2250@CR",
-                    "PostProcessing": [
-                        "ok = _x ?true:false;"
-                    ]
-                }
-            ],
-            "Class": "PPC"
         },
         {
             "Type": "SRG",

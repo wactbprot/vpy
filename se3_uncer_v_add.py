@@ -16,9 +16,9 @@ def main():
     res    = Analysis(doc)
 
     cal.temperature_before(res)
-    #cal.temperature_after(res)
-    #cal.temperature_room(res)
-    #cal.pressure_fill(res)
+    cal.temperature_after(res)
+    cal.temperature_room(res)
+    cal.pressure_fill(res)
 
 if __name__ == "__main__":
     main()

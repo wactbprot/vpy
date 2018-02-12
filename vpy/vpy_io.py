@@ -136,7 +136,41 @@ class Io(object):
         srv = couchdb.Server(self.config['db']['url'])
         db  = srv[self.config['db']['name']]
         res = db.save(doc)
-        
+
+    def get_base_doc(self, name):
+        srv  = couchdb.Server(self.config['db']['url'])
+        db   = srv[self.config['db']['name']]
+        view = self.config['standards'][name]['temp_doc_view']
+
+        doc = {
+                "Standard":{},
+                "Constants":{},
+                "CalibrationObject":[]
+              }
+        cob = {}
+        val = {}
+
+        for i in db.view(view):
+            if i.key == "Standard":
+                doc["Standard"] = i.value["Standard"]
+
+            if i.key == "Constants":
+                doc["Constants"] = i.value["Constants"]
+
+            if i.key == "CalibrationObject":
+                cob[ i.value["CalibrationObject"]["Sign"]] = i.value["CalibrationObject"]
+
+            if i.key.startswith( "Result" ):
+                val[i.value["Sign"]] = i.value["Result"]
+
+        for j in cob:
+            if j in val:
+                cob[j]["Values"] = val[j]
+
+            doc["CalibrationObject"].append(cob[j])
+
+        return doc
+
     def logger(self, name):
         """
         Based on http://docs.python.org/howto/logging.html#configuring-logging

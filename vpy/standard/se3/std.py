@@ -33,8 +33,7 @@ class Se3(Standard):
         self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
         self.TDev = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
-        print("-------")
-        print(self.TDev.doc)
+    
         self.GN   = GroupNormal(doc, (
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
                                     InfCdg(doc, self.Cobj.get_by_name("CDG_1T_2")),

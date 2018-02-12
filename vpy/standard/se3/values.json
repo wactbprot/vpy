@@ -58,7 +58,9 @@
     ],
     "Room":[
         {"Type":"ch_2030_after","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
-        {"Type":"ch_2029_after","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"}
+        {"Type":"ch_2029_after","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_2029_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
+        {"Type":"ch_2030_before","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"}
     ],
     "Vessel":[
         {"Type":"ch_1001_after","Min":22.0,"Max":24.0,"Sim":[23.0],"Unit":"C"},
