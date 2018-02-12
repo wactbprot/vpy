@@ -15,17 +15,27 @@ class Sim(object):
                 "Standard":{},
                 "Constants":{},
                 "CalibrationObject":[]
-                }
+              }
+        cob = {}
+        val = {}
+        for i in db.view(view):
+            if i.key == "Standard":
+                doc["Standard"] = i.value["Standard"]
 
-        for item in db.view(view):
-            if item.key == "Standard":
-                doc["Standard"] = item.value["Standard"]
+            if i.key == "Constants":
+                doc["Constants"] = i.value["Constants"]
 
-            if item.key == "Constants":
-                doc["Constants"] = item.value["Constants"]
+            if i.key == "CalibrationObject":
+                cob[ i.value["CalibrationObject"]["Sign"]] = i.value["CalibrationObject"])
 
-            if item.key == "CalibrationObject":
-                doc["CalibrationObject"].append(item.value["CalibrationObject"])
+            if i.key.startswith( "Result" ):
+                val[i.value.Sign] = i.val.Result
+
+        for j in cob:
+            if j in val:
+                cob[j].Values = val[j].Result
+                
+            doc["CalibrationObject"].append(cob[j])
 
         with open("vpy/standard/{}/base_doc.json".format(name), 'w') as f:
             json.dump(temp_doc, f, indent=4, ensure_ascii=False)
