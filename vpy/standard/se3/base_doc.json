@@ -29,7 +29,13 @@
                 "Type": "u_Vm",
                 "Value": "0.41",
                 "Unit": "cm^3",
-                "Comment": "nach QSE-SE3-18-1"
+                "Comment": "nach QSE-SE3-18-2"
+            },
+            {
+                "Type": "u_Vl",
+                "Value": "2.74",
+                "Unit": "cm^3",
+                "Comment": "nach QSE-SE3-18-3"
             },
             {
                 "Type": "u_VV",
@@ -56,6 +62,12 @@
                 "Unit": "cm^3",
                 "Value": "209.03",
                 "Comment": "Volumen Vs, Wert nach QSE-SE3-18-2"
+            },
+            {
+                "Type": "Vl",
+                "Unit": "cm^3",
+                "Value": "1981.3",
+                "Comment": "Volumen Vs, Wert nach QSE-SE3-18-3"
             },
             {
                 "Type": "VV",

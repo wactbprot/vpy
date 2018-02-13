@@ -16,7 +16,7 @@ class Cal(Se3):
         :returns: array of expansion names
         :rtype: np.array of strings
         """
-        print(self.Aux.doc)
+
         f = self.Aux.get_expansion()
         if f is not None:
             return np.full(self.no_of_meas_points, f)
@@ -49,33 +49,41 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        chs = [
-            "1T_1","1T_2","1T_3",
-            "10T_1","10T_2","10T_3",
-            "100T_1","100T_2","100T_3",
-            "1000T_1","1000T_2","1000T_3"
-            ]
-        N = len(chs)
+        ind_1000      = []
+        off_1000      = []
+        val_conf_1000 = self.val_conf["Pressure"]["1000TorrFill"]
+        aux_conf_1000 = self.aux_val_conf["Pressure"]["1000TorrFillOffset"]
+        
+        for val in val_conf_1000:
+            ind_1000.append(self.Pres.get_value(val["Type"], val["Unit"]))
 
-        p_ind_arr = self.Pres.get_array("", chs, "-fill","mbar")
-        meas_time = self.Time.get_value("amt_fill", "ms")
+        #chs = [
+        #    "1T_1","1T_2","1T_3",
+        #    "10T_1","10T_2","10T_3",
+        #    "100T_1","100T_2","100T_3",
+        #    "1000T_1","1000T_2","1000T_3"
+        #    ]
+        #N = len(chs)
 
-        for i in range(N):
-            chnm = "{}-offset".format(chs[i])
-            vec  = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", chnm, "mbar")
-            M    = len(vec)
+        #p_ind_arr = self.Pres.get_array("", chs, "-fill","mbar")
+        #meas_time = self.Time.get_value("amt_fill", "ms")
 
-            if i == 0:
-                p_off_arr = np.full((N, M), np.nan)
+        #for i in range(N):
+        #    chnm = "{}-offset".format(chs[i])
+        #    vec  = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", chnm, "mbar")
+        #    M    = len(vec)
 
-            p_off_arr[i][:] = vec[:]
+        #    if i == 0:
+        #        p_off_arr = np.full((N, M), np.nan)
 
-        p_arr     = p_ind_arr - p_off_arr
-        e_arr     = self.GN.get_error_iterpol(p_arr, "mbar")
-        p_cor_arr = p_arr/(e_arr + 1.0)
-        p_fill    = self.GN.cal_mean_pressure(p_cor_arr, "mbar" )
+        #    p_off_arr[i][:] = vec[:]
 
-        res.store("Pressure" ,"fill", p_fill , "mbar")
+        #p_arr     = p_ind_arr - p_off_arr
+        #e_arr     = self.GN.get_error_iterpol(p_arr, "mbar")
+        #p_cor_arr = p_arr/(e_arr + 1.0)
+        #p_fill    = self.GN.cal_mean_pressure(p_cor_arr, "mbar" )
+
+        #res.store("Pressure" ,"fill", p_fill , "mbar")
 
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.

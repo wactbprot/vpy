@@ -1,4 +1,5 @@
 import copy
+import json
 import numpy as np
 from ...vpy_io import Io
 from ...device.dmm import Dmm
@@ -24,6 +25,12 @@ class Se3(Standard):
     def __init__(self, doc):
         super().__init__(doc, self.name)
 
+        with open('./vpy/standard/se3/values.json') as valf:
+            self.val_conf = json.load(valf)
+
+        with open('./vpy/standard/se3/aux_values.json') as auxf:
+            self.aux_val_conf = json.load(auxf)
+
         # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
@@ -32,22 +39,27 @@ class Se3(Standard):
 
         self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
-        self.TDev = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
-    
-        self.GN   = GroupNormal(doc, (
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1T_3")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_10T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_10T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_10T_3")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_100T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_100T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_100T_3")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_1")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_2")),
-                                    InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_3"))
-                                    ))
+        self.TDev          = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
+
+        self.CDG1Torr    = [InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_1T_2")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_1T_3"))]
+
+        self.CDG10Torr   = [InfCdg(doc, self.Cobj.get_by_name("CDG_10T_1")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_10T_2")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_10T_3"))]
+
+        self.CDG100Torr  = [InfCdg(doc, self.Cobj.get_by_name("CDG_100T_1")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_100T_2")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_100T_3"))]
+
+        self.CDG1000Torr = [InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_1")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_2")),
+                            InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_3"))]
+
+
+
+
 
     def define_model(self):
         """ Defines symbols and model for the static expansion system SE3.
@@ -83,6 +95,7 @@ class Se3(Standard):
         f          = sym.Symbol('f')
         p_fill     = sym.Symbol('p_fill')
         V_5        = sym.Symbol('V_5')
+        V_start    = sym.Symbol('V_start')
         p_before   = sym.Symbol('p_before')
         p_after    = sym.Symbol('p_after')
 
@@ -90,12 +103,59 @@ class Se3(Standard):
                     f,
                     p_fill,
                     V_5,
+                    V_start,
                     p_before,
                     p_after
                     )
+        V_add  = V_start/(p_before/p_after -1)
+        f_corr = 1.0/(1.0/f + V_add/V_start)
 
-        #self.model_f_corr =
+        self.model_V_add = V_add
         self.model        = p_fill * f_corr
+
+    def gen_val_dict(self, res):
+        """Reads in a dict of values
+        with the same order as in ``define_models``. For the calculation
+        of the gas density, the Frs reading is multiplyed by 10 which gives a
+        suffucient approximation for the pressure.
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+        :type: class
+        """
+        self.model_unit = "mbar"
+
+        p_fill = res.pick("Pressure", "fill", self.unit)
+
+        V_5        = self.get_value("V5","cm^3")
+        V_s        = self.get_value("Vm","cm^3")
+        V_m        = self.get_value("Vs","cm^3")
+        V_l        = self.get_value("Vl","cm^3")
+
+        f = self.Aux.get_expansion()
+        if f is None:
+            pass # get expansion from values
+        else:
+            f = np.full(self.no_of_meas_points, f)
+
+        if f == "fs":
+            V_start = const_V_s
+
+        if f == "fm":
+            V_start = const_V_m
+
+        if f == "fl":
+            V_start = const_V_l
+
+        self.val_dict = {
+        'f': f ,
+        'p_fill':pfill,
+        'V_5':V_5,
+        'V_start':V_start,
+        'p_before': self.Aux.get_value("add_before", "V"),
+        'p_after': self.Aux.get_value("add_after", "V"),
+        }
 
     def get_name(self):
         """Returns the name of the Standard.

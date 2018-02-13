@@ -11,13 +11,10 @@ def main():
     sim = Sim("se3")
     doc = sim.build()
 
-    uncert = Uncert(doc)
-    cal    = Cal(doc)
-    res    = Analysis(doc)
+    res = Analysis(doc)
+    cal = Cal(doc)
+    unc = Uncert(doc)
 
-    cal.temperature_before(res)
-    cal.temperature_after(res)
-    cal.temperature_room(res)
     cal.pressure_fill(res)
 
 if __name__ == "__main__":

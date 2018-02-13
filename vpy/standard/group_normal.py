@@ -12,7 +12,6 @@ class GroupNormal(object):
         io = Io()
         self.log = io.logger(__name__)
 
-
         self.Const      = Constants(doc)
         self.Devs       = devs
         self.no_of_devs = len(devs)

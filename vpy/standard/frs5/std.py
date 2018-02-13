@@ -151,8 +151,6 @@ class Frs5(Standard):
         return "N2"
 
 
-
-
     def gen_val_dict(self, res):
         """Reads in a dict of values
         with the same order as in ``define_models``. For the calculation
