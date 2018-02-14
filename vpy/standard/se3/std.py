@@ -39,27 +39,11 @@ class Se3(Standard):
 
         self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
 
-        self.TDev          = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
+        self.TDev  = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
 
-        self.CDG1Torr    = [InfCdg(doc, self.Cobj.get_by_name("CDG_1T_1")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_1T_2")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_1T_3"))]
-
-        self.CDG10Torr   = [InfCdg(doc, self.Cobj.get_by_name("CDG_10T_1")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_10T_2")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_10T_3"))]
-
-        self.CDG100Torr  = [InfCdg(doc, self.Cobj.get_by_name("CDG_100T_1")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_100T_2")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_100T_3"))]
-
-        self.CDG1000Torr = [InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_1")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_2")),
-                            InfCdg(doc, self.Cobj.get_by_name("CDG_1000T_3"))]
-
-
-
-
+        self.FillDevs = []
+        for val in self.val_conf["Pressure"]["Fill"]:
+            self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(val["DevName"])))
 
     def define_model(self):
         """ Defines symbols and model for the static expansion system SE3.

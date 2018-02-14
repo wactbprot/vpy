@@ -11,10 +11,27 @@ class Sim(object):
             d = json.load(jf)
 
         o = {}
-        for m in d: # Temperature ect.
+        for m in d: #m ... Temperature ect.
             o[m] = []
-            for n in d[m]: #
-                for v in d[m][n]:
+            for n in d[m]: # n... 100TFill
+                if isinstance(d[m][n], list):
+                    for v in d[m][n]:
+
+                        e = {}
+                        if "Type" in v:
+                            e["Type"] = v["Type"]
+
+                        if "Sim" in v:
+                            e["Value"] = v["Sim"]
+
+                        if "Unit" in v:
+                            e["Unit"] = v["Unit"]
+
+                        o[m].append(e)
+
+                if isinstance(d[m][n], dict):
+                    v = d[m][n]
+
                     e = {}
                     if "Type" in v:
                         e["Type"] = v["Type"]

@@ -16,11 +16,10 @@ class Cdg(Device):
                         }
 
     def __init__(self, doc, dev):
-        io = Io()
-        self.log = io.logger(__name__)
-        self.log.debug("init func: {}".format(__name__))
 
         super().__init__(doc, dev)
+        self.log.debug("init func: {}".format(__name__))
+
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']
 
@@ -55,16 +54,31 @@ class Cdg(Device):
         if "CalibrationObject" in self.doc:
             self.doc['CalibrationObject']['Interpol'] = interpol
 
-    def get_error_interpol(self, p, unit):
+    def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
         .. todo::
 
                 implement expected unit of the return value
         """
-        if unit == self.unit:
+        N = len(p_interpol)
+
+        e = np.full(N, np.nan)
+
+        if unit_interpol == self.unit:
             f = self.interp_function(self.interpol_x, self.interpol_y)
 
-        return f(p)
+        if p_target is None:
+            p_target = p_interpol
+
+        if unit_target is None:
+            unit_target = unit_interpol
+
+        for i in range(N):
+            if p_interpol[i] > self.interpol_min and  p_interpol[i] < self.interpol_max:
+                e[i] =  f(p_interpol[i])
+
+
+        return e
 
     def interp_function(self, x, y):
         return interp1d(x, y, kind = "linear")

@@ -49,38 +49,44 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        ind_1000      = []
-        off_1000      = []
-        val_conf_1000 = self.val_conf["Pressure"]["1000TorrFill"]
-        aux_conf_1000 = self.aux_val_conf["Pressure"]["1000TorrFillOffset"]
-        
-        for val in val_conf_1000:
-            ind_1000.append(self.Pres.get_value(val["Type"], val["Unit"]))
+        val_conf_time = self.val_conf["Time"]["Fill"]
+        aux_conf_time = self.aux_val_conf["Time"]["Offset"]
+        val_conf      = self.val_conf["Pressure"]["Fill"]
 
-        #chs = [
-        #    "1T_1","1T_2","1T_3",
-        #    "10T_1","10T_2","10T_3",
-        #    "100T_1","100T_2","100T_3",
-        #    "1000T_1","1000T_2","1000T_3"
-        #    ]
-        #N = len(chs)
+        val_conf_targ = self.val_conf["Pressure"]["FillTarget"]
+        aux_conf      = self.aux_val_conf["Pressure"]["Offset"]
 
-        #p_ind_arr = self.Pres.get_array("", chs, "-fill","mbar")
-        #meas_time = self.Time.get_value("amt_fill", "ms")
+        fill_time     = self.Time.get_value(val_conf_time["Type"],
+                                            val_conf_time["Unit"])
 
-        #for i in range(N):
-        #    chnm = "{}-offset".format(chs[i])
-        #    vec  = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", chnm, "mbar")
-        #    M    = len(vec)
+        fill_target   = self.Pres.get_value(val_conf_targ["Type"],
+                                            val_conf_targ["Unit"])
 
-        #    if i == 0:
-        #        p_off_arr = np.full((N, M), np.nan)
+        N   = len(val_conf)
 
-        #    p_off_arr[i][:] = vec[:]
+        ind_arr = []
+        off_arr = []
+        for i in range(N):
+
+            p_corr = np.full(self.no_of_meas_points, np.nan)
+            val = val_conf[i]
+            aux = aux_conf[i]
+
+
+            ind     = self.Pres.get_value(val["Type"], val["Unit"])
+            off     = self.Aux.get_val_by_time(fill_time, aux_conf_time["Type"],
+                                                        aux_conf_time["Unit"],
+                                                        aux["Type"],
+                                                        aux["Unit"])
+            p = ind - off
+
+            FillDev = self.FillDevs[i]
+            e       = FillDev.get_error_interpol(p, self.unit)
+            print(e)
+            p_corr = p/(e + 1.0)
 
         #p_arr     = p_ind_arr - p_off_arr
         #e_arr     = self.GN.get_error_iterpol(p_arr, "mbar")
-        #p_cor_arr = p_arr/(e_arr + 1.0)
         #p_fill    = self.GN.cal_mean_pressure(p_cor_arr, "mbar" )
 
         #res.store("Pressure" ,"fill", p_fill , "mbar")

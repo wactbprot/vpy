@@ -70,6 +70,8 @@ class AuxValues(Document):
             super().__init__(doc['AuxValues'])
 
 
+
+
     def get_gas(self):
         if "Gas" in self.doc:
             return self.doc['Gas']
@@ -104,7 +106,7 @@ class AuxValues(Document):
         :param valunit: valunit unit of the type to expand
         :type valunit: str
         """
-
+    
         N     = len(meastime)
         ret   = np.full(N, np.nan)
         time  = self.get_value(auxtime, timeunit)
