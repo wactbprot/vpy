@@ -7,7 +7,6 @@ from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
 from ...values import Temperature, Pressure, Time, AuxSe2
 from ..standard import Standard
-from ..group_normal import GroupNormal
 from ...device.cdg  import Cdg
 
 class Se2(Standard):

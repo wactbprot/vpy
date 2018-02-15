@@ -19,7 +19,6 @@ class Uncert(Frs5):
         :type: class
         """
 
-        self.define_model(res)
         self.gen_val_array(res)
         self.uncert_r(res)
         self.uncert_r_zc(res)

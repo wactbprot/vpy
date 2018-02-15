@@ -56,20 +56,21 @@ class Cdg(Device):
 
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
+        Returns the interpolation error at the points where:
+        
+        (p_target > self.interpol_min) & (p_target < self.interpol_max)
+
         .. todo::
 
                 implement expected unit of the return value
         """
         N = len(p_interpol)
-
         e = np.full(N, np.nan)
 
         if unit_interpol == self.unit:
             f = self.interp_function(self.interpol_x, self.interpol_y)
-
         if p_target is None:
             p_target = p_interpol
-
         if unit_target is None:
             unit_target = unit_interpol
 

@@ -1,6 +1,7 @@
 import copy
 import json
 import numpy as np
+import sympy as sym
 from ...vpy_io import Io
 from ...device.dmm import Dmm
 from ...device.cdg import InfCdg
@@ -8,7 +9,6 @@ from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
 from ...values import Temperature, Pressure, Time, AuxSe3
 from ..standard import Standard
-from ..group_normal import GroupNormal
 from ...device.cdg  import Cdg
 
 class Se3(Standard):
@@ -31,6 +31,8 @@ class Se3(Standard):
         with open('./vpy/standard/se3/aux_values.json') as auxf:
             self.aux_val_conf = json.load(auxf)
 
+        # define model
+        self.define_model()
         # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
@@ -49,12 +51,12 @@ class Se3(Standard):
         """ Defines symbols and model for the static expansion system SE3.
         The order of symbols must match the order in ``gen_val_arr``:
 
+        #. f
         #. p_fill
-        #. f_corr
+        #. V_5
+        #. V_start
         #. p_before
         #. p_after
-        #. V_5
-        #. V_add
 
         The equation is:
 
@@ -72,7 +74,11 @@ class Se3(Standard):
 
         .. math::
 
-                V_{add} = \\frac{V_5}{p_{after}/p_{before} - 1}
+                V_{add} = \\frac{V_5}{p_{ratio} - 1}
+
+        and
+
+                p_{ratio} = p_{after}/p_{before}
 
         :type: class
         """
@@ -80,22 +86,46 @@ class Se3(Standard):
         p_fill     = sym.Symbol('p_fill')
         V_5        = sym.Symbol('V_5')
         V_start    = sym.Symbol('V_start')
-        p_before   = sym.Symbol('p_before')
-        p_after    = sym.Symbol('p_after')
+        p_ratio    = sym.Symbol('p_ratio')
 
         self.symb = (
                     f,
                     p_fill,
                     V_5,
                     V_start,
-                    p_before,
-                    p_after
+                    p_ratio,
                     )
-        V_add  = V_start/(p_before/p_after -1)
-        f_corr = 1.0/(1.0/f + V_add/V_start)
+
+        V_add   = V_5/(p_ratio - 1.0)
+        f_corr  = 1.0/(1.0/f + V_add/V_start)
 
         self.model_V_add = V_add
-        self.model        = p_fill * f_corr
+        self.model       = p_fill * f_corr
+
+    def gen_val_array(self, res):
+        """Generates a array of values
+        with the same order as define_models symbols order:
+
+        #. f
+        #. p_fill
+        #. V_5
+        #. V_start
+        #. p_ratio
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+        :type: class
+        """
+
+        self.gen_val_dict(res)
+        self.val_arr = [
+                    self.val_dict['f'],
+                    self.val_dict['p_fill'],
+                    self.val_dict['V_5'],
+                    self.val_dict['V_start'],
+                    self.val_dict['p_ratio'],
+                    ]
 
     def gen_val_dict(self, res):
         """Reads in a dict of values
@@ -110,36 +140,38 @@ class Se3(Standard):
         """
         self.model_unit = "mbar"
 
-        p_fill = res.pick("Pressure", "fill", self.unit)
+        V_start = np.full(self.no_of_meas_points, np.nan)
+        f_name  = self.get_expansion()
 
-        V_5        = self.get_value("V5","cm^3")
-        V_s        = self.get_value("Vm","cm^3")
-        V_m        = self.get_value("Vs","cm^3")
-        V_l        = self.get_value("Vl","cm^3")
+        idxs    = np.where(f_name == "f_s")
+        if len(idxs) > 0:
+            V_start[idxs] = self.get_value("V_s","cm^3")
+
+        idxm    = np.where(f_name == "f_m")
+        if len(idxm) > 0:
+            V_start[idxm] = self.get_value("V_m","cm^3")
+
+        idxl    = np.where(f_name == "f_l")
+        if len(idxl) > 0:
+            V_start[idxl] = self.get_value("V_l","cm^3")
+
+        self.val_dict = {
+        'p_fill':res.pick("Pressure", "fill", self.unit),
+        'V_5':self.get_value("V_5","cm^3"),
+        'V_start':V_start,
+        'p_ratio': self.Aux.get_press_ratio(self.no_of_meas_points),
+        }
+
+    def get_expansion(self):
 
         f = self.Aux.get_expansion()
+
         if f is None:
             pass # get expansion from values
         else:
             f = np.full(self.no_of_meas_points, f)
 
-        if f == "fs":
-            V_start = const_V_s
-
-        if f == "fm":
-            V_start = const_V_m
-
-        if f == "fl":
-            V_start = const_V_l
-
-        self.val_dict = {
-        'f': f ,
-        'p_fill':pfill,
-        'V_5':V_5,
-        'V_start':V_start,
-        'p_before': self.Aux.get_value("add_before", "V"),
-        'p_after': self.Aux.get_value("add_after", "V"),
-        }
+        return f
 
     def get_name(self):
         """Returns the name of the Standard.

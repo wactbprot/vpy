@@ -96,7 +96,7 @@ class Cal(Se3):
 
         p_std        = np.nanstd(rsh_corr_arr, axis=0)
         n            = np.apply_along_axis(cnt_nan, 0, rsh_corr_arr)
-        
+
         res.store("Pressure" ,"fill",p_mean, val["Unit"], p_std, n)
 
         #p_arr     = p_ind_arr - p_off_arr

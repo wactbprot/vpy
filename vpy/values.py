@@ -106,7 +106,7 @@ class AuxValues(Document):
         :param valunit: valunit unit of the type to expand
         :type valunit: str
         """
-    
+
         N     = len(meastime)
         ret   = np.full(N, np.nan)
         time  = self.get_value(auxtime, timeunit)
@@ -160,6 +160,13 @@ class AuxSe3(AuxValues):
         else:
             self.log.info("Name of Expansion not available in AuxValues")
             return None
+
+    def get_press_ratio(self, no):
+
+        p_before = self.get_value("add_before", "V")
+        p_after  = self.get_value("add_after","V")
+
+        return np.full(no, p_before/p_after)
 
 class AuxSe2(AuxValues):
     """AuxValues for SE3 Standard.

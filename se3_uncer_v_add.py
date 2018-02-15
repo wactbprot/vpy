@@ -12,10 +12,15 @@ def main():
     doc = sim.build()
 
     res = Analysis(doc)
-    cal = Cal(doc)
     unc = Uncert(doc)
+    cal = Cal(doc)
+
 
     cal.pressure_fill(res)
-    print(res.build_doc())
+    unc.gen_val_dict(res)
+    unc.gen_val_array(res)
+    unc.uncert_v_start(res)
+
+    print(res.pick("Uncertainty", "u_V_start", "mbar"))
 if __name__ == "__main__":
     main()

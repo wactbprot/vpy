@@ -43,6 +43,9 @@ class Frs5(Standard):
         doc = copy.deepcopy(doc)
         super().__init__(doc, self.name)
 
+        # define model
+        self.define_model()
+        
         # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
@@ -56,7 +59,7 @@ class Frs5(Standard):
 
         self.log.debug("init func: {}".format(__name__))
 
-    def define_model(self, res):
+    def define_model(self):
         """ Defines symbols and model for FRS5.
         The order of symbols must match the order in ``gen_val_arr``:
 

@@ -14,31 +14,31 @@
         ],
         "Uncertainty": [
             {
-                "Type": "u_V5",
+                "Type": "u_V_5",
                 "Value": "0.91",
                 "Unit": "cm^3",
                 "Comment": "nach QSE-SE3-17-2"
             },
             {
-                "Type": "u_Vs",
+                "Type": "u_V_s",
                 "Value": "0.06",
                 "Unit": "cm^3",
                 "Comment": "nach QSE-SE3-18-1"
             },
             {
-                "Type": "u_Vm",
+                "Type": "u_V_m",
                 "Value": "0.41",
                 "Unit": "cm^3",
                 "Comment": "nach QSE-SE3-18-2"
             },
             {
-                "Type": "u_Vl",
+                "Type": "u_V_l",
                 "Value": "2.74",
                 "Unit": "cm^3",
                 "Comment": "nach QSE-SE3-18-3"
             },
             {
-                "Type": "u_VV",
+                "Type": "u_V_v",
                 "Value": "0.029",
                 "Unit": "cm^3",
                 "Comment": "nach QSE-SE3-17-1"
@@ -46,37 +46,37 @@
         ],
         "Constants": [
             {
-                "Type": "V5",
+                "Type": "V_5",
                 "Unit": "cm^3",
                 "Value": "412.475",
                 "Comment": "Volumen 5, Wert nach QSE-SE3-17-2"
             },
             {
-                "Type": "Vs",
+                "Type": "V_s",
                 "Unit": "cm^3",
                 "Value": "20.7",
-                "Comment": "Volumen Vs, Wert nach QSE-SE3-18-1"
+                "Comment": "Volumen V_s, Wert nach QSE-SE3-18-1"
             },
             {
-                "Type": "Vm",
+                "Type": "V_m",
                 "Unit": "cm^3",
                 "Value": "209.03",
-                "Comment": "Volumen Vs, Wert nach QSE-SE3-18-2"
+                "Comment": "Volumen V_s, Wert nach QSE-SE3-18-2"
             },
             {
-                "Type": "Vl",
+                "Type": "V_l",
                 "Unit": "cm^3",
                 "Value": "1981.3",
-                "Comment": "Volumen Vs, Wert nach QSE-SE3-18-3"
+                "Comment": "Volumen V_s, Wert nach QSE-SE3-18-3"
             },
             {
-                "Type": "VV",
+                "Type": "V_v",
                 "Unit": "cm^3",
                 "Value": "5.211",
                 "Comment": "Volumen 16CF Ventil, Wert nach QSE-SE3-17-1"
             },
             {
-                "Type": "fm",
+                "Type": "f_m",
                 "Unit": "1",
                 "Value": "4.0299e-3",
                 "Comment": "manuelle Expansion; nach QSE-SE3-17-3 (Stand 11.1.11)",

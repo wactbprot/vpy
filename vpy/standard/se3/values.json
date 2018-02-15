@@ -1,11 +1,11 @@
 {   "Time":{
         "Fill":
-        {"Type":"amt_fill","Sim":[10.0],"Unit":"ms"}
+        {"Type":"amt_fill","Sim":[10.0, 20.0, 30.0, 40.0],"Unit":"ms"}
 
     },
     "Pressure":{
         "FillTarget":
-        {"Type":"target-fill","Min":1.33e-1,"Max":1330,"Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"Type":"target-fill","Min":1.33e-1,"Max":1330,"Sim":[1.0, 11.0, 110.0, 1000.0],"Unit":"mbar"},
         "Fill":[
         {"DevName":"CDG_1T_1",    "Type":"1T_1-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
         {"DevName":"CDG_1T_2",    "Type":"1T_2-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
