@@ -63,27 +63,41 @@ class Cal(Se3):
                                             val_conf_targ["Unit"])
 
         N   = len(val_conf)
+        M   = len(fill_target)
 
-        ind_arr = []
-        off_arr = []
+        cor_arr = []
         for i in range(N):
+            FillDev = self.FillDevs[i]
 
             p_corr = np.full(self.no_of_meas_points, np.nan)
             val = val_conf[i]
             aux = aux_conf[i]
 
-
-            ind     = self.Pres.get_value(val["Type"], val["Unit"])
-            off     = self.Aux.get_val_by_time(fill_time, aux_conf_time["Type"],
+            ind = self.Pres.get_value(val["Type"], val["Unit"])
+            off = self.Aux.get_val_by_time(fill_time, aux_conf_time["Type"],
                                                         aux_conf_time["Unit"],
                                                         aux["Type"],
                                                         aux["Unit"])
-            p = ind - off
+            p   = ind - off
 
-            FillDev = self.FillDevs[i]
             e       = FillDev.get_error_interpol(p, self.unit)
-            print(e)
+
             p_corr = p/(e + 1.0)
+            cor_arr.append(p_corr)
+            ldevname = FillDev.get_name().lower()
+            res.store("Pressure" ,"{}-fill".format(ldevname), p_corr , val["Unit"])
+            res.store("Pressure" ,"{}-fill_offset".format(ldevname), off, val["Unit"])
+
+        rsh_corr_arr = np.reshape(cor_arr, (N, M))
+        p_mean       = np.nanmean(rsh_corr_arr, axis=0)
+
+        def cnt_nan(d):
+            return np.count_nonzero(~np.isnan(d))
+
+        p_std        = np.nanstd(rsh_corr_arr, axis=0)
+        n            = np.apply_along_axis(cnt_nan, 0, rsh_corr_arr)
+        
+        res.store("Pressure" ,"fill",p_mean, val["Unit"], p_std, n)
 
         #p_arr     = p_ind_arr - p_off_arr
         #e_arr     = self.GN.get_error_iterpol(p_arr, "mbar")

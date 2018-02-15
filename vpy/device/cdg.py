@@ -73,10 +73,10 @@ class Cdg(Device):
         if unit_target is None:
             unit_target = unit_interpol
 
-        for i in range(N):
-            if p_interpol[i] > self.interpol_min and  p_interpol[i] < self.interpol_max:
-                e[i] =  f(p_interpol[i])
+        idx = (p_target > self.interpol_min) & (p_target < self.interpol_max)
 
+        if len(idx) > 0:
+            e[idx] = f(p_interpol[idx])
 
         return e
 

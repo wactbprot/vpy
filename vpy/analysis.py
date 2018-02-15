@@ -73,3 +73,6 @@ class Analysis(Document):
         if "Calibration" in self.org:
             self.org['Calibration']['Analysis'] = self.doc
             return self.org
+        else:
+            self.org['Analysis'] = self.doc
+            return self.org

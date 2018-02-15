@@ -10,12 +10,12 @@ from vpy.standard.se3.cal import Cal
 def main():
     sim = Sim("se3")
     doc = sim.build()
-    
+
     res = Analysis(doc)
     cal = Cal(doc)
     unc = Uncert(doc)
 
     cal.pressure_fill(res)
-
+    print(res.build_doc())
 if __name__ == "__main__":
     main()
