@@ -141,23 +141,29 @@ class Se3(Standard):
         self.model_unit = "mbar"
 
         V_start = np.full(self.no_of_meas_points, np.nan)
+        f       = np.full(self.no_of_meas_points, np.nan)
         f_name  = self.get_expansion()
 
         idxs    = np.where(f_name == "f_s")
-        if len(idxs) > 0:
+        if np.shape(idxs)[1] > 0:
             V_start[idxs] = self.get_value("V_s","cm^3")
+            f[idxs]       = self.get_value("f_s","1")
 
         idxm    = np.where(f_name == "f_m")
-        if len(idxm) > 0:
+        if np.shape(idxm)[1] > 0:
             V_start[idxm] = self.get_value("V_m","cm^3")
+            f[idxm]       = self.get_value("f_m","1")
+
 
         idxl    = np.where(f_name == "f_l")
-        if len(idxl) > 0:
+        if np.shape(idxl)[1] > 0:
             V_start[idxl] = self.get_value("V_l","cm^3")
+            f[idxl]       = self.get_value("f_l","1")
 
         self.val_dict = {
+        'f': f,
         'p_fill':res.pick("Pressure", "fill", self.unit),
-        'V_5':self.get_value("V_5","cm^3"),
+        'V_5':np.full(self.no_of_meas_points,self.get_value("V_5","cm^3")),
         'V_start':V_start,
         'p_ratio': self.Aux.get_press_ratio(self.no_of_meas_points),
         }

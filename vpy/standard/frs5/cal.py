@@ -61,7 +61,7 @@ class Cal(Frs5):
         :type: class
         """
 
-        self.define_model(res)
+        self.define_model()
         self.gen_val_array(res)
 
         conv  = self.Cons.get_conv(self.model_unit, self.unit)

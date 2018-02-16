@@ -20,7 +20,12 @@ def main():
     unc.gen_val_dict(res)
     unc.gen_val_array(res)
     unc.uncert_v_start(res)
+    unc.uncert_v_5(res)
 
-    print(res.pick("Uncertainty", "u_V_start", "mbar"))
+    u_V_start = res.pick("Uncertainty", "u_V_start", "1")
+    u_V_5     = res.pick("Uncertainty", "u_V_5", "1")
+
+    print(np.sqrt(u_V_start**2 +u_V_5**2))
+
 if __name__ == "__main__":
     main()
