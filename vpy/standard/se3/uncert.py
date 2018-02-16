@@ -42,8 +42,8 @@ class Uncert(Se3):
         s_expr = sym.diff(self.model, sym.Symbol('V_start'))
         print(s_expr)
         print(self.val_arr)
-        u      = sym.lambdify(self.symb, s_expr , "numpy")
+        u      = sym.lambdify(self.symb, s_expr * u_V_start, "numpy")
 
-        val   = u(*self.val_arr)* u_V_start
+        val   = u(*self.val_arr)
         res.store("Uncertainty", "u_V_start", np.absolute(val),self.unit)
         self.log.debug("uncert u_V_start: {}".format(val))
