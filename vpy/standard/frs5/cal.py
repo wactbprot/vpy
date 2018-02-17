@@ -1,8 +1,7 @@
 import numpy as np
 import sympy as sym
-
 from .std import Frs5
-from ...vpy_io import Io
+
 
 class Cal(Frs5):
 
@@ -20,22 +19,23 @@ class Cal(Frs5):
                 pick(quantity, type, unit)
         :type: class
         """
-        tem = self.Temp.get_obj("frs5", "C")
-        gas = self.Aux.get_gas()
-        mt  = self.Time.get_value("amt_frs5_ind", "ms")
 
-        off = self.Aux.get_obj_by_time(mt, "offset_mt", "ms", "frs_res_off", "DCR")
+        tem     = self.Temp.get_obj("frs5", "C")
+        gas     = self.Aux.get_gas()
+        mt      = self.Time.get_value("amt_frs5_ind", "ms")
+
+        off     = self.Aux.get_obj_by_time(mt, "offset_mt", "ms", "frs_res_off", "DCR")
         res_off = self.ResDev.pressure(off, tem, "mbar", gas)
 
         ind     = self.Pres.get_obj("frs_res_ind", "DCR")
         res_ind = self.ResDev.pressure(ind, tem, "mbar", gas)
         p_res   = res_ind - res_off
 
-        self.log.debug("residial FRS5 pressure is: {}".format(p_res))
-
         res.store('Pressure',"frs5_res_off", res_off, "mbar")
         res.store('Pressure',"frs5_res_ind", res_ind, "mbar")
         res.store('Pressure',"frs5_res", p_res , "mbar")
+
+        self.log.debug("residial FRS5 pressure is: {}".format(p_res))
 
     def temperature(self, res):
         """

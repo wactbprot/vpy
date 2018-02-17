@@ -5,4 +5,3 @@ from . import device
 from . import document
 from . import standard
 from . import values
-from . import vpy_io

@@ -20,7 +20,7 @@ import sys
 
 from device.cdg import InfCdg
 from values import  Pressure
-from vpy_io import Io
+from pkg_io import Io
 
 if __name__ == "__main__":
     io = Io()

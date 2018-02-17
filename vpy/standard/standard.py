@@ -29,7 +29,9 @@ class Standard(Document):
             if isinstance(doc, dict):
                 if doc['Name'] == name:
                     super().__init__(doc)
-        
+                    
+        self.log.debug("init func: {}".format(__name__))
+
     def real_gas_correction(self, res):
         """Real gas correction for already calculated filling pressure
         """

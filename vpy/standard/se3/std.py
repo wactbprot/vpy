@@ -2,7 +2,6 @@ import copy
 import json
 import numpy as np
 import sympy as sym
-from ...vpy_io import Io
 from ...device.dmm import Dmm
 from ...device.cdg import InfCdg
 from ...constants import Constants
@@ -46,6 +45,8 @@ class Se3(Standard):
         self.FillDevs = []
         for val in self.val_conf["Pressure"]["Fill"]:
             self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(val["DevName"])))
+
+        self.log.debug("init func: {}".format(__name__))
 
     def define_model(self):
         """ Defines symbols and model for the static expansion system SE3.

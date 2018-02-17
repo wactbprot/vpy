@@ -1,8 +1,5 @@
-import copy
 import numpy as np
 import sympy as sym
-
-from ... vpy_io import Io
 from ..standard import Standard
 from ...device.srg import Srg
 from ...constants import Constants
@@ -40,12 +37,10 @@ class Frs5(Standard):
 
 
     def __init__(self, doc):
-        doc = copy.deepcopy(doc)
         super().__init__(doc, self.name)
-
         # define model
         self.define_model()
-        
+
         # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)

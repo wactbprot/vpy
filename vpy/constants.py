@@ -1,6 +1,5 @@
 import sys
 from .document import Document
-from .vpy_io import Io
 
 class Constants(Document):
     """Initialisation of Constant class.
@@ -17,10 +16,6 @@ class Constants(Document):
 
     def __init__(self, doc):
 
-        io = Io()
-        self.log = io.logger(__name__)
-        self.log.debug("init func: {}".format(__name__))
-
         if 'Calibration' in doc:
             dc = doc['Calibration']
             if 'Constants' in dc:
@@ -29,8 +24,7 @@ class Constants(Document):
         if 'Constants' in doc:
             super().__init__(doc['Constants'])
 
-    def get_name(self):
-        return "Constants"
+        self.log.debug("init func: {}".format(__name__))
 
     def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
@@ -102,6 +96,7 @@ class Constants(Document):
             cstr = "{}_2_{}".format(f, t)
             ustr = "{}/{}".format(t, f)
             conv = self.get_value(cstr, ustr)
+            
             if conv is not None:
                 self.log.info("search: "+cstr+" in "+ustr+" found: {}".format(conv))
                 return conv

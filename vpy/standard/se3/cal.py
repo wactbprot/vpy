@@ -1,13 +1,13 @@
 import numpy as np
 import sympy as sym
 from .std import Se3
-from ...vpy_io import Io
 
 class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-
+        self.log.debug("init func: {}".format(__name__))
+        
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)

@@ -18,7 +18,6 @@ class Cdg(Device):
     def __init__(self, doc, dev):
 
         super().__init__(doc, dev)
-        self.log.debug("init func: {}".format(__name__))
 
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']
@@ -36,6 +35,8 @@ class Cdg(Device):
             self.interpol_y   = self.get_value("e", "1")
             self.interpol_min = np.min(self.interpol_x)
             self.interpol_max = np.max(self.interpol_x)
+
+        self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
         return self.doc['Name']
@@ -57,7 +58,7 @@ class Cdg(Device):
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
         Returns the interpolation error at the points where:
-        
+
         (p_target > self.interpol_min) & (p_target < self.interpol_max)
 
         .. todo::

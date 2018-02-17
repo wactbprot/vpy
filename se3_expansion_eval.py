@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from vpy.vpy_io import Io
+from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.frs5.cal import Cal as FrsCalc
 from vpy.standard.frs5.uncert import Uncert as FrsUncert

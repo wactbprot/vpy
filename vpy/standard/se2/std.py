@@ -1,6 +1,4 @@
-import copy
 import numpy as np
-from ...vpy_io import Io
 from ...device.qbs import Qbs
 from ...device.dmm import Dmm
 from ...constants import Constants
@@ -21,8 +19,6 @@ class Se2(Standard):
     unit = "mbar"
 
     def __init__(self, doc):
-
-        doc = copy.deepcopy(doc)
         super().__init__(doc, self.name)
 
                 # measurement values

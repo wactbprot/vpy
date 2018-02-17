@@ -1,15 +1,14 @@
 import datetime
 import copy
 import numpy as np
-from .vpy_io import Io
 from .document import Document
 
 class Analysis(Document):
     """Holds a deep copy of original document. Container for storing
     Results of analysis.
     """
-    def __init__(self, orgdoc):
-        doc = copy.deepcopy(orgdoc)
+    def __init__(self, doc):
+        doc = copy.deepcopy(doc)
         d   = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         o   = {"Date":[{
                     "Type": "generated",
@@ -18,8 +17,6 @@ class Analysis(Document):
         super().__init__(o)
         self.org = doc
 
-        io = Io()
-        self.log = io.logger(__name__)
         self.log.debug("init func: {}".format(__name__))
 
     def store(self, quant, t, v, u, sd=None, n=None):

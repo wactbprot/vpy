@@ -11,8 +11,7 @@ class Values(Document):
     :param quant: quant part to search in e.g. Measurement, Analysis
     :type quant: str
     """
-
-
+    
     def __init__(self, doc, name, quant):
         if 'Calibration' in doc:
             doc = doc['Calibration']

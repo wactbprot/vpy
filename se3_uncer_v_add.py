@@ -1,9 +1,7 @@
 import sys
 import numpy as np
-
 from vpy.analysis import Analysis
 from vpy.sim import Sim
-
 from vpy.standard.se3.uncert import Uncert
 from vpy.standard.se3.cal import Cal
 
@@ -15,7 +13,6 @@ def main():
     unc = Uncert(doc)
     cal = Cal(doc)
 
-
     cal.pressure_fill(res)
     unc.gen_val_dict(res)
     unc.gen_val_array(res)
@@ -24,8 +21,6 @@ def main():
 
     u_V_start = res.pick("Uncertainty", "u_V_start", "1")
     u_V_5     = res.pick("Uncertainty", "u_V_5", "1")
-
-    print(np.sqrt(u_V_start**2 +u_V_5**2))
 
 if __name__ == "__main__":
     main()

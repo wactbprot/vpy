@@ -1,5 +1,5 @@
 import json
-from vpy.vpy_io import Io
+from vpy.pkg_io import Io
 
 def main():
     io = Io()
