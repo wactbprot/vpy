@@ -155,16 +155,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for vpy.standard.se2.std</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">...vpy_io</span> <span class="k">import</span> <span class="n">Io</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">...device.qbs</span> <span class="k">import</span> <span class="n">Qbs</span>
 <span class="kn">from</span> <span class="nn">...device.dmm</span> <span class="k">import</span> <span class="n">Dmm</span>
 <span class="kn">from</span> <span class="nn">...constants</span> <span class="k">import</span> <span class="n">Constants</span>
 <span class="kn">from</span> <span class="nn">...calibration_devices</span> <span class="k">import</span>  <span class="n">CalibrationObject</span>
 <span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">AuxSe2</span>
 <span class="kn">from</span> <span class="nn">..standard</span> <span class="k">import</span> <span class="n">Standard</span>
-<span class="kn">from</span> <span class="nn">..group_normal</span> <span class="k">import</span> <span class="n">GroupNormal</span>
 <span class="kn">from</span> <span class="nn">...device.cdg</span>  <span class="k">import</span> <span class="n">Cdg</span>
 
 <div class="viewcode-block" id="Se2"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.std.Se2">[docs]</a><span class="k">class</span> <span class="nc">Se2</span><span class="p">(</span><span class="n">Standard</span><span class="p">):</span>
@@ -178,21 +175,20 @@
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;SE2&quot;</span>
     <span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;mbar&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orgdoc</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">orgdoc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="n">doc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">orgdoc</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span>    <span class="o">=</span> <span class="n">Temperature</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span>    <span class="o">=</span> <span class="n">Pressure</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Time</span>    <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span>     <span class="o">=</span> <span class="n">AuxSe2</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+                <span class="c1"># measurement values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span> <span class="o">=</span> <span class="n">Temperature</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span> <span class="o">=</span> <span class="n">Pressure</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span>  <span class="o">=</span> <span class="n">AuxSe2</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span>    <span class="o">=</span> <span class="n">Dmm</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;SE2_DMM_Keithley&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">TDevAdd</span> <span class="o">=</span> <span class="n">Dmm</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;FM3_CE3-DMM_Agilent&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Qbs</span>     <span class="o">=</span> <span class="n">Qbs</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;SE2_Ruska&quot;</span><span class="p">))</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Se2.get_name"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.std.Se2.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the name of the standard.</span>

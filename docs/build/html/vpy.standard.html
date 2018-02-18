@@ -98,7 +98,6 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">vpy.standard package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-vpy.standard.group_normal">vpy.standard.group_normal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-vpy.standard.standard">vpy.standard.standard module</a></li>
 </ul>
 </li>
@@ -109,9 +108,10 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.calibration_devices">vpy.calibration_devices module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.constants">vpy.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document">vpy.document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.sim">vpy.sim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values">vpy.values module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.vpy_io">vpy.vpy_io module</a></li>
 </ul>
 </li>
 </ul>
@@ -212,40 +212,11 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-vpy.standard.group_normal">
-<span id="vpy-standard-group-normal-module"></span><h2>vpy.standard.group_normal module<a class="headerlink" href="#module-vpy.standard.group_normal" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="vpy.standard.group_normal.GroupNormal">
-<em class="property">class </em><code class="descclassname">vpy.standard.group_normal.</code><code class="descname">GroupNormal</code><span class="sig-paren">(</span><em>doc</em>, <em>devs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/group_normal.html#GroupNormal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.group_normal.GroupNormal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="vpy.standard.group_normal.GroupNormal.cal_mean_pressure">
-<code class="descname">cal_mean_pressure</code><span class="sig-paren">(</span><em>p_arr</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/group_normal.html#GroupNormal.cal_mean_pressure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.group_normal.GroupNormal.cal_mean_pressure" title="Permalink to this definition">¶</a></dt>
-<dd><p>At this stage a simple mean value.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">implement CDG untcertainty, calculate a weighted mean value</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.group_normal.GroupNormal.get_error_iterpol">
-<code class="descname">get_error_iterpol</code><span class="sig-paren">(</span><em>p_arr</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/group_normal.html#GroupNormal.get_error_iterpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.group_normal.GroupNormal.get_error_iterpol" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="vpy.standard.group_normal.GroupNormal.unit">
-<code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.group_normal.GroupNormal.unit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-vpy.standard.standard">
 <span id="vpy-standard-standard-module"></span><h2>vpy.standard.standard module<a class="headerlink" href="#module-vpy.standard.standard" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vpy.standard.standard.Standard">
-<em class="property">class </em><code class="descclassname">vpy.standard.standard.</code><code class="descname">Standard</code><span class="sig-paren">(</span><em>orgdoc</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/standard.html#Standard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.standard.Standard" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">vpy.standard.standard.</code><code class="descname">Standard</code><span class="sig-paren">(</span><em>doc</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/standard.html#Standard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.standard.Standard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="vpy.html#vpy.document.Document" title="vpy.document.Document"><code class="xref py py-class docutils literal"><span class="pre">vpy.document.Document</span></code></a></p>
 <p>Standard Class. Needs access to Constants, CalibrationObjects
 and measurement values.

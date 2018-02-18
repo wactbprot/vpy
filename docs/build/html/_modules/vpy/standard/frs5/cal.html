@@ -157,9 +157,8 @@
   <h1>Source code for vpy.standard.frs5.cal</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sym</span>
-
 <span class="kn">from</span> <span class="nn">.std</span> <span class="k">import</span> <span class="n">Frs5</span>
-<span class="kn">from</span> <span class="nn">...vpy_io</span> <span class="k">import</span> <span class="n">Io</span>
+
 
 <div class="viewcode-block" id="Cal"><a class="viewcode-back" href="../../../../vpy.standard.frs5.html#vpy.standard.frs5.cal.Cal">[docs]</a><span class="k">class</span> <span class="nc">Cal</span><span class="p">(</span><span class="n">Frs5</span><span class="p">):</span>
 
@@ -177,22 +176,23 @@
 <span class="sd">                pick(quantity, type, unit)</span>
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">gas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_gas</span><span class="p">()</span>
-        <span class="n">mt</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_frs5_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
 
-        <span class="n">off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_obj_by_time</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="s2">&quot;offset_mt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;frs_res_off&quot;</span><span class="p">,</span> <span class="s2">&quot;DCR&quot;</span><span class="p">)</span>
+        <span class="n">tem</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">gas</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_gas</span><span class="p">()</span>
+        <span class="n">mt</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_frs5_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+
+        <span class="n">off</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_obj_by_time</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="s2">&quot;offset_mt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;frs_res_off&quot;</span><span class="p">,</span> <span class="s2">&quot;DCR&quot;</span><span class="p">)</span>
         <span class="n">res_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span><span class="o">.</span><span class="n">pressure</span><span class="p">(</span><span class="n">off</span><span class="p">,</span> <span class="n">tem</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">gas</span><span class="p">)</span>
 
         <span class="n">ind</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;frs_res_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;DCR&quot;</span><span class="p">)</span>
         <span class="n">res_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span><span class="o">.</span><span class="n">pressure</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">tem</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">gas</span><span class="p">)</span>
         <span class="n">p_res</span>   <span class="o">=</span> <span class="n">res_ind</span> <span class="o">-</span> <span class="n">res_off</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;residial FRS5 pressure is: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p_res</span><span class="p">))</span>
-
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res_off&quot;</span><span class="p">,</span> <span class="n">res_off</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res_ind&quot;</span><span class="p">,</span> <span class="n">res_ind</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res&quot;</span><span class="p">,</span> <span class="n">p_res</span> <span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s1">&#39;Pressure&#39;</span><span class="p">,</span><span class="s2">&quot;frs5_res&quot;</span><span class="p">,</span> <span class="n">p_res</span> <span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;residial FRS5 pressure is: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p_res</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Cal.temperature"><a class="viewcode-back" href="../../../../vpy.standard.frs5.html#vpy.standard.frs5.cal.Cal.temperature">[docs]</a>    <span class="k">def</span> <span class="nf">temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -218,7 +218,7 @@
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">define_model</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">define_model</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gen_val_array</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
         <span class="n">conv</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_unit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>

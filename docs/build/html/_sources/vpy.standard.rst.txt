@@ -18,14 +18,6 @@ Subpackages
 Submodules
 ----------
 
-vpy\.standard\.group\_normal module
------------------------------------
-
-.. automodule:: vpy.standard.group_normal
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 vpy\.standard\.standard module
 ------------------------------
 

@@ -102,9 +102,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#module-vpy.calibration_devices">vpy.calibration_devices module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-vpy.constants">vpy.constants module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-vpy.document">vpy.document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-vpy.pkg_io">vpy.pkg_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-vpy.sim">vpy.sim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-vpy.test_document">vpy.test_document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-vpy.values">vpy.values module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-vpy.vpy_io">vpy.vpy_io module</a></li>
 </ul>
 </li>
 </ul>
@@ -211,7 +212,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.standard.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vpy.standard.html#module-vpy.standard.group_normal">vpy.standard.group_normal module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.standard.html#module-vpy.standard.standard">vpy.standard.standard module</a></li>
 </ul>
 </li>
@@ -225,7 +225,7 @@
 <span id="vpy-analysis-module"></span><h2>vpy.analysis module<a class="headerlink" href="#module-vpy.analysis" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="vpy.analysis.Analysis">
-<em class="property">class </em><code class="descclassname">vpy.analysis.</code><code class="descname">Analysis</code><span class="sig-paren">(</span><em>orgdoc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">vpy.analysis.</code><code class="descname">Analysis</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.document.Document" title="vpy.document.Document"><code class="xref py py-class docutils literal"><span class="pre">vpy.document.Document</span></code></a></p>
 <p>Holds a deep copy of original document. Container for storing
 Results of analysis.</p>
@@ -384,11 +384,6 @@ the analysis structure below the given quantity.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="vpy.constants.Constants.get_name">
-<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/constants.html#Constants.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.constants.Constants.get_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>
@@ -517,6 +512,96 @@ numpy typed values.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-vpy.pkg_io">
+<span id="vpy-pkg-io-module"></span><h2>vpy.pkg_io module<a class="headerlink" href="#module-vpy.pkg_io" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.pkg_io.Io">
+<em class="property">class </em><code class="descclassname">vpy.pkg_io.</code><code class="descname">Io</code><a class="reference internal" href="_modules/vpy/pkg_io.html#Io"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>docstring for Io.</p>
+<dl class="method">
+<dt id="vpy.pkg_io.Io.get_base_doc">
+<code class="descname">get_base_doc</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_base_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_base_doc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.get_doc_db">
+<code class="descname">get_doc_db</code><span class="sig-paren">(</span><em>docid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_doc_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_doc_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the document from the database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>docid</strong> (<em>str</em>) – document id</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.load_doc">
+<code class="descname">load_doc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.load_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.load_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the document to analyse from the source
+given with the command line arguments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.logger">
+<code class="descname">logger</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Based on <a class="reference external" href="http://docs.python.org/howto/logging.html#configuring-logging">http://docs.python.org/howto/logging.html#configuring-logging</a></p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">something is wrong here, double output on level=info!</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.save_doc">
+<code class="descname">save_doc</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.save_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.save_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the document. The location depends on
+command line arguments:</p>
+<ul class="simple">
+<li><em>–id</em>: back do databes</li>
+<li><em>–file</em>: new.&lt;filename&gt;</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.set_doc_db">
+<code class="descname">set_doc_db</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.set_doc_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.set_doc_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes doc back do database.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>doc</strong> (<em>dict</em>) – document</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.sim">
+<span id="vpy-sim-module"></span><h2>vpy.sim module<a class="headerlink" href="#module-vpy.sim" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.sim.Sim">
+<em class="property">class </em><code class="descclassname">vpy.sim.</code><code class="descname">Sim</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/sim.html#Sim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.sim.Sim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="vpy.sim.Sim.build">
+<code class="descname">build</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/sim.html#Sim.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.sim.Sim.build" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vpy.sim.Sim.collect">
+<code class="descname">collect</code><span class="sig-paren">(</span><em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/sim.html#Sim.collect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.sim.Sim.collect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-vpy.test_document">
 <span id="vpy-test-document-module"></span><h2>vpy.test_document module<a class="headerlink" href="#module-vpy.test_document" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -623,6 +708,11 @@ is stored in AuxValues.Expansion</p>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="method">
+<dt id="vpy.values.AuxSe3.get_press_ratio">
+<code class="descname">get_press_ratio</code><span class="sig-paren">(</span><em>no</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe3.get_press_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe3.get_press_ratio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -737,72 +827,6 @@ temperature, pressure …</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-vpy.vpy_io">
-<span id="vpy-vpy-io-module"></span><h2>vpy.vpy_io module<a class="headerlink" href="#module-vpy.vpy_io" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="vpy.vpy_io.Io">
-<em class="property">class </em><code class="descclassname">vpy.vpy_io.</code><code class="descname">Io</code><a class="reference internal" href="_modules/vpy/vpy_io.html#Io"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.vpy_io.Io" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>docstring for Io.</p>
-<dl class="method">
-<dt id="vpy.vpy_io.Io.get_doc_db">
-<code class="descname">get_doc_db</code><span class="sig-paren">(</span><em>docid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/vpy_io.html#Io.get_doc_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.vpy_io.Io.get_doc_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the document from the database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>docid</strong> (<em>str</em>) – document id</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.vpy_io.Io.load_doc">
-<code class="descname">load_doc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/vpy_io.html#Io.load_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.vpy_io.Io.load_doc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the document to analyse from the source
-given with the command line arguments</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.vpy_io.Io.logger">
-<code class="descname">logger</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/vpy_io.html#Io.logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.vpy_io.Io.logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Based on <a class="reference external" href="http://docs.python.org/howto/logging.html#configuring-logging">http://docs.python.org/howto/logging.html#configuring-logging</a></p>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">something is wrong here, double output on level=info!</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.vpy_io.Io.save_doc">
-<code class="descname">save_doc</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/vpy_io.html#Io.save_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.vpy_io.Io.save_doc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the document. The location depends on
-command line arguments:</p>
-<ul class="simple">
-<li><em>–id</em>: back do databes</li>
-<li><em>–file</em>: new.&lt;filename&gt;</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.vpy_io.Io.set_doc_db">
-<code class="descname">set_doc_db</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/vpy_io.html#Io.set_doc_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.vpy_io.Io.set_doc_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes doc back do database.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>doc</strong> (<em>dict</em>) – document</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 </div>

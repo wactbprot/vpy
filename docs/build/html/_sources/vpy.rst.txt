@@ -49,6 +49,22 @@ vpy\.document module
     :undoc-members:
     :show-inheritance:
 
+vpy\.pkg\_io module
+-------------------
+
+.. automodule:: vpy.pkg_io
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vpy\.sim module
+---------------
+
+.. automodule:: vpy.sim
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 vpy\.test\_document module
 --------------------------
 
@@ -61,14 +77,6 @@ vpy\.values module
 ------------------
 
 .. automodule:: vpy.values
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-vpy\.vpy\_io module
--------------------
-
-.. automodule:: vpy.vpy_io
     :members:
     :undoc-members:
     :show-inheritance:

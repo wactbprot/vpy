@@ -158,15 +158,14 @@
 <span></span><span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">.vpy_io</span> <span class="k">import</span> <span class="n">Io</span>
 <span class="kn">from</span> <span class="nn">.document</span> <span class="k">import</span> <span class="n">Document</span>
 
 <div class="viewcode-block" id="Analysis"><a class="viewcode-back" href="../../vpy.html#vpy.analysis.Analysis">[docs]</a><span class="k">class</span> <span class="nc">Analysis</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Holds a deep copy of original document. Container for storing</span>
 <span class="sd">    Results of analysis.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orgdoc</span><span class="p">):</span>
-        <span class="n">doc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">orgdoc</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="n">d</span>   <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
         <span class="n">o</span>   <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Date&quot;</span><span class="p">:[{</span>
                     <span class="s2">&quot;Type&quot;</span><span class="p">:</span> <span class="s2">&quot;generated&quot;</span><span class="p">,</span>
@@ -175,8 +174,6 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">org</span> <span class="o">=</span> <span class="n">doc</span>
 
-        <span class="n">io</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Analysis.store"><a class="viewcode-back" href="../../vpy.html#vpy.analysis.Analysis.store">[docs]</a>    <span class="k">def</span> <span class="nf">store</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">quant</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">sd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -229,7 +226,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;Calibration&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">org</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">org</span><span class="p">[</span><span class="s1">&#39;Calibration&#39;</span><span class="p">][</span><span class="s1">&#39;Analysis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">org</span></div></div>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">org</span><span class="p">[</span><span class="s1">&#39;Analysis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">org</span></div></div>
 </pre></div>
 
            </div>

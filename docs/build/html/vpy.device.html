@@ -113,7 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document">vpy.document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values">vpy.values module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.vpy_io">vpy.vpy_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#vpy-vpy-io-module">vpy.vpy_io module</a></li>
 </ul>
 </li>
 </ul>
@@ -208,8 +208,10 @@
 
 <dl class="method">
 <dt id="vpy.device.cdg.Cdg.get_error_interpol">
-<code class="descname">get_error_interpol</code><span class="sig-paren">(</span><em>p</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.get_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.get_error_interpol" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition-todo admonition" id="index-1">
+<code class="descname">get_error_interpol</code><span class="sig-paren">(</span><em>p_interpol</em>, <em>unit_interpol</em>, <em>p_target=None</em>, <em>unit_target=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.get_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.get_error_interpol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the interpolation error at the points where:</p>
+<p>(p_target &gt; self.interpol_min) &amp; (p_target &lt; self.interpol_max)</p>
+<div class="admonition-todo admonition" id="index-1">
 <p class="first admonition-title">Todo</p>
 <p class="last">implement expected unit of the return value</p>
 </div>
@@ -232,7 +234,7 @@
 
 <dl class="attribute">
 <dt id="vpy.device.cdg.Cdg.max_typehead_mbar">
-<code class="descname">max_typehead_mbar</code><em class="property"> = {'001Torr': 0.0013, '01Torr': 0.0133, '1Torr': 1.3332, '10Torr': 13.332, '100Torr': 133.32, '1000Torr': 1333.2}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.max_typehead_mbar" title="Permalink to this definition">¶</a></dt>
+<code class="descname">max_typehead_mbar</code><em class="property"> = {'001Torr': 0.0013, '01Torr': 0.0133, '1000Torr': 1333.2, '100Torr': 133.32, '10Torr': 13.332, '1Torr': 1.3332}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.max_typehead_mbar" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

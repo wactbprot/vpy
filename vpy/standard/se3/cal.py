@@ -26,7 +26,8 @@ class Cal(Se3):
         """Stores the differential pressure of the zero
          under the path  *Pressure, nd, mbar*
 
-        ..todo::
+        .. todo::
+        
             pressure_nd is alien here--> move to the surface/scripts
 
         :param: Class with methode
@@ -105,7 +106,8 @@ class Cal(Se3):
 
         Stores result under the path  *Temperature, before, K*
 
-        ..todo::
+        .. todo::
+
             use shape() instead of len()
 
         :param: Class with methode
