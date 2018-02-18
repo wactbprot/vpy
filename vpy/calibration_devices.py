@@ -38,11 +38,11 @@ class CustomerObject(Document):
 
     def __init__(self, doc):
         if 'Calibration' in doc:
-            d0c = doc['Calibration']
+            doc = doc['Calibration']
 
         if 'CustomerObject' in doc:
-                cob = doc['CustomerObject']
-                super().__init__(cob)
+            cob = doc['CustomerObject']
+            super().__init__(cob)
 
             if "Class" in cob:
                 self.device_class = cob['Class']

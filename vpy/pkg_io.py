@@ -192,6 +192,6 @@ class Io(object):
                 coloredlogs.install(fmt=fmt, level="INFO", logger=logger)
 
         else:
-            coloredlogs.install(fmt=fmt, level="ERROR", logger=logger)
+            coloredlogs.install(fmt=fmt, level="DEBUG", logger=logger)
 
         return logger

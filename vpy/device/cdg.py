@@ -1,7 +1,6 @@
 import numpy as np
 from scipy.interpolate import interp1d
 from ..device.device import Device
-from ..vpy_io import Io
 
 class Cdg(Device):
     unit              = "mbar"

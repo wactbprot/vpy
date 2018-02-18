@@ -7,7 +7,7 @@ class Uncert(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-        
+
         self.log.debug("init func: {}".format(__name__))
 
     def uncert_total(self, res):
@@ -45,7 +45,7 @@ class Uncert(Se3):
         u      = sym.lambdify(self.symb, s_expr, "numpy")
         val    = u(*self.val_arr)*u_V_start
 
-        p_nom = self.val_dict['f'] * self.val_dict['p_fill']
+        p_nom = self.val_dict['f']*self.val_dict['p_fill']
 
         res.store("Uncertainty", "u_V_start", np.absolute(val/p_nom),"1")
         self.log.debug("uncert u_V_start: {}".format(val/p_nom))

@@ -2,7 +2,7 @@
 "Pressure":{
     "AddVolumeBefore":[
       {"Type":"add_before","Min":11.0,"Max":13.0,"Sim":[12.0],"Unit":"V"},
-      {"Type":"add_after","Min":1.0,"Max":13.0,"Sim":[8.0],"Unit":"V"}
+      {"Type":"add_after","Min":1.0,"Max":13.0,"Sim":[10.0],"Unit":"V"}
       ],
     "Offset":[
         {"DevName":"CDG_1T_1",    "Type":"1T_1-offset","Min":-1e-4,"Max":1e-4,"Sim":[0.0],"Unit":"mbar"},

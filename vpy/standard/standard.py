@@ -1,5 +1,4 @@
 import copy
-from ..vpy_io import Io
 from ..document import Document
 from ..constants import Constants
 from ..calibration_devices import  CalibrationObject
@@ -29,7 +28,7 @@ class Standard(Document):
             if isinstance(doc, dict):
                 if doc['Name'] == name:
                     super().__init__(doc)
-                    
+
         self.log.debug("init func: {}".format(__name__))
 
     def real_gas_correction(self, res):

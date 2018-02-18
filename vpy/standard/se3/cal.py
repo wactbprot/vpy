@@ -6,8 +6,9 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
+
         self.log.debug("init func: {}".format(__name__))
-        
+
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
@@ -39,8 +40,8 @@ class Cal(Se3):
         res.store("Pressure" ,"nd", p_nd_ind - p_nd_off , "mbar")
 
     def pressure_fill(self, res):
-        """Calculates the mean value of the filling pressure by means of
-        *GroupNormal* methods.
+        """Calculates the singel and mean value of the filling pressure
+        by means data in values.json
 
         Stores result under the path *Pressure, fill, mbar*
 
@@ -80,7 +81,7 @@ class Cal(Se3):
                                                         aux["Unit"])
             p   = ind - off
 
-            e       = FillDev.get_error_interpol(p, self.unit)
+            e   = FillDev.get_error_interpol(p, self.unit)
 
             p_corr = p/(e + 1.0)
             cor_arr.append(p_corr)
@@ -99,16 +100,13 @@ class Cal(Se3):
 
         res.store("Pressure" ,"fill",p_mean, val["Unit"], p_std, n)
 
-        #p_arr     = p_ind_arr - p_off_arr
-        #e_arr     = self.GN.get_error_iterpol(p_arr, "mbar")
-        #p_fill    = self.GN.cal_mean_pressure(p_cor_arr, "mbar" )
-
-        #res.store("Pressure" ,"fill", p_fill , "mbar")
-
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
 
         Stores result under the path  *Temperature, before, K*
+
+        ..todo::
+            use shape() instead of len()
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -121,6 +119,7 @@ class Cal(Se3):
         i_s = np.where(f == "f_s")[0]
         i_m = np.where(f == "f_m")[0]
         i_l = np.where(f == "f_l")[0]
+
 
         if len(i_s) > 0:
             t[i_s] = self.temperature_volume_s()[i_s]
