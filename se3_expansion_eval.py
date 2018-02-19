@@ -41,12 +41,16 @@ def main():
         T_1  = res.pick("Temperature", "after", "K")
 
         cor_tem  =  T_0 / T_1
-        f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
+        f        = (p_1-p_nd)/(p_0*rg)*cor_tem
 
         res.store("Correction", "temperature_expansion", cor_tem, "1")
         res.store("Expansion", se3_calc.get_expansion()[-1], f, "1")
         log.info("expansion factors are: {}".format(f))
+        log.info("mean value: {}".format(np.nanmean(f)))
         log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
+
+
+        print(p_0)
         io.save_doc(res.build_doc())
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ class Cal(Se3):
          under the path  *Pressure, nd, mbar*
 
         .. todo::
-        
+
             pressure_nd is alien here--> move to the surface/scripts
 
         :param: Class with methode
@@ -65,7 +65,7 @@ class Cal(Se3):
                                             val_conf_targ["Unit"])
 
         N   = len(val_conf)
-        M   = len(fill_target)
+        M   = self.no_of_meas_points
 
         cor_arr = []
         for i in range(N):
@@ -99,7 +99,7 @@ class Cal(Se3):
         p_std        = np.nanstd(rsh_corr_arr, axis=0)
         n            = np.apply_along_axis(cnt_nan, 0, rsh_corr_arr)
 
-        res.store("Pressure" ,"fill",p_mean, val["Unit"], p_std, n)
+        res.store("Pressure" ,"fill", p_mean, val["Unit"], p_std, n)
 
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.

@@ -13,7 +13,7 @@ class Document(object):
         :param doc: doc document to search and extract
         :type doc: dict
         """
-        self.doc = doc
+        self.doc = copy.deepcopy(doc)
         io = Io()
         self.log = io.logger(__name__)
 
