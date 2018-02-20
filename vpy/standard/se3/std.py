@@ -69,17 +69,13 @@ class Se3(Standard):
 
         .. math::
 
-                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{add}}{V_{start}}}
+                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{5}r_{add}}{V_{start}}}
 
         and
 
         .. math::
 
-                V_{add} = \\frac{V_5}{p_{ratio} - 1}
-
-        and
-
-                p_{ratio} = p_{after}/p_{before}
+                r_{add} = \\frac{p_{after}}{p_{before} - p_{after}}
 
         :type: class
         """
@@ -87,21 +83,18 @@ class Se3(Standard):
         p_fill     = sym.Symbol('p_fill')
         V_5        = sym.Symbol('V_5')
         V_start    = sym.Symbol('V_start')
-        p_ratio    = sym.Symbol('p_ratio')
+        r_add      = sym.Symbol('r_add')
 
         self.symb = (
                     f,
                     p_fill,
                     V_5,
                     V_start,
-                    p_ratio,
+                    r_add,
                     )
 
-        V_add   = V_5/(p_ratio - 1.0)
-        f_corr  = 1.0/(1.0/f + V_add/V_start)
 
-        self.model_V_add = V_add
-        self.model       = p_fill * f_corr
+        self.model = p_fill*1.0/(1.0/f + V_5*r_add/V_start)
 
     def gen_val_array(self, res):
         """Generates a array of values
@@ -111,7 +104,7 @@ class Se3(Standard):
         #. p_fill
         #. V_5
         #. V_start
-        #. p_ratio
+        #. r_add
 
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -125,7 +118,7 @@ class Se3(Standard):
                     self.val_dict['p_fill'],
                     self.val_dict['V_5'],
                     self.val_dict['V_start'],
-                    self.val_dict['p_ratio'],
+                    self.val_dict['r_add'],
                     ]
 
     def gen_val_dict(self, res):
@@ -161,13 +154,17 @@ class Se3(Standard):
             V_start[idxl] = self.get_value("V_l","cm^3")
             f[idxl]       = self.get_value("f_l","1")
 
+        V_5  = self.get_value("V_5", "cm^3")
+        
         self.val_dict = {
         'f': f,
         'p_fill':res.pick("Pressure", "fill", self.unit),
-        'V_5':np.full(self.no_of_meas_points,self.get_value("V_5","cm^3")),
+        'V_5': np.full(self.no_of_meas_points,V_5),
         'V_start':V_start,
-        'p_ratio': self.Aux.get_press_ratio(self.no_of_meas_points),
+        'r_add': res.pick("Ratio", "add", "1"),
         }
+
+
 
     def get_expansion(self):
 

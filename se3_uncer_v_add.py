@@ -16,6 +16,7 @@ def main():
     cal = Cal(doc)
 
     cal.pressure_fill(res)
+    cal.get_add_ratio(res)
     unc.gen_val_dict(res)
     unc.gen_val_array(res)
     unc.uncert_v_start(res)

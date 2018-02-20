@@ -9,6 +9,22 @@ class Cal(Se3):
 
         self.log.debug("init func: {}".format(__name__))
 
+    def get_add_ratio(self, res):
+        """ Calculates the pressure ratio measured during
+        the estimation of additional volume and stores it
+        below ``Ratio``
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        """
+
+        p_before = self.Aux.get_value("add_before", "V")
+        p_after  = self.Aux.get_value("add_after","V")
+        r_add    = np.nanmean(p_after/(p_before - p_after))
+
+        res.store("Ratio" ,"add", np.full(self.no_of_meas_points, r_add), "1")
+
     def get_expansion(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
@@ -121,7 +137,6 @@ class Cal(Se3):
         i_s = np.where(f == "f_s")[0]
         i_m = np.where(f == "f_m")[0]
         i_l = np.where(f == "f_l")[0]
-
 
         if len(i_s) > 0:
             t[i_s] = self.temperature_volume_s()[i_s]

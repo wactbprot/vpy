@@ -11,7 +11,7 @@ class Values(Document):
     :param quant: quant part to search in e.g. Measurement, Analysis
     :type quant: str
     """
-    
+
     def __init__(self, doc, name, quant):
         if 'Calibration' in doc:
             doc = doc['Calibration']
@@ -160,13 +160,7 @@ class AuxSe3(AuxValues):
             self.log.info("Name of Expansion not available in AuxValues")
             return None
 
-    def get_press_ratio(self, no):
-
-        p_before = self.get_value("add_before", "V")
-        p_after  = self.get_value("add_after","V")
-
-        return np.full(no, p_before/p_after)
-
+    
 class AuxSe2(AuxValues):
     """AuxValues for SE3 Standard.
     """
