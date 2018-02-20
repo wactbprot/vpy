@@ -97,8 +97,7 @@ class Cal(Se3):
                                                         aux["Type"],
                                                         aux["Unit"])
             p   = ind - off
-
-            e   = FillDev.get_error_interpol(p, self.unit)
+            e   = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
 
             p_corr = p/(e + 1.0)
             cor_arr.append(p_corr)
@@ -106,7 +105,7 @@ class Cal(Se3):
             res.store("Pressure" ,"{}-fill".format(ldevname), p_corr , val["Unit"])
             res.store("Pressure" ,"{}-fill_offset".format(ldevname), off, val["Unit"])
 
-        rsh_corr_arr = np.reshape(cor_arr, (N, M))
+        rsh_corr_arr = np.reshape(cor_arr, (M, N))
         p_mean       = np.nanmean(rsh_corr_arr, axis=0)
 
         def cnt_nan(d):

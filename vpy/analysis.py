@@ -23,17 +23,19 @@ class Analysis(Document):
         """Stores the result of a calculation in
         the analysis structure below the given quantity.
         """
-        v[np.where(np.isnan(v))] = 0.0
 
         if "tolist" in dir(v):
+            v = copy.deepcopy(v)
             v[np.where(np.isnan(v))] = 0.0
             v = v.tolist()
 
         if "tolist" in dir(sd):
+            sd = copy.deepcopy(sd)
             sd[np.where(np.isnan(sd))] = 0.0
             sd = sd.tolist()
 
         if "tolist" in dir(n):
+            n = copy.deepcopy(n)
             n[np.where(np.isnan(n))] = 0.0
             n = n.tolist()
 
