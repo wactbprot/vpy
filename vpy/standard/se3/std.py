@@ -155,11 +155,11 @@ class Se3(Standard):
             f[idxl]       = self.get_value("f_l","1")
 
         V_5  = self.get_value("V_5", "cm^3")
-        
+
         self.val_dict = {
         'f': f,
         'p_fill':res.pick("Pressure", "fill", self.unit),
-        'V_5': np.full(self.no_of_meas_points,V_5),
+        'V_5': np.full(self.no_of_meas_points, V_5),
         'V_start':V_start,
         'r_add': res.pick("Ratio", "add", "1"),
         }

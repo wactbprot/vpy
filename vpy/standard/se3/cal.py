@@ -105,14 +105,13 @@ class Cal(Se3):
             res.store("Pressure" ,"{}-fill".format(ldevname), p_corr , val["Unit"])
             res.store("Pressure" ,"{}-fill_offset".format(ldevname), off, val["Unit"])
 
-        rsh_corr_arr = np.reshape(cor_arr, (M, N))
-        p_mean       = np.nanmean(rsh_corr_arr, axis=0)
+        p_mean       = np.nanmean(cor_arr, axis=0)
 
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
-        p_std        = np.nanstd(rsh_corr_arr, axis=0)
-        n            = np.apply_along_axis(cnt_nan, 0, rsh_corr_arr)
+        p_std        = np.nanstd(cor_arr, axis=0)
+        n            = np.apply_along_axis(cnt_nan, 0, cor_arr)
 
         res.store("Pressure" ,"fill", p_mean, val["Unit"], p_std, n)
 
