@@ -54,60 +54,54 @@ class Se2(Standard):
             return gas
 
     def define_model_p(self):
-            """ Defines symbols and model calibration pressure.
-            The order of symbols must match the order in ``gen_val_arr``:
+        """ Defines symbols and model calibration pressure.
+        The order of symbols must match the order in ``gen_val_arr``:
+        The equation is:
+        .. math::
+                p=f_i p_{fill} \\frac{T_{after}}{T_{before}} c_{rg}
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
 
-            The equation is:
-
-            .. math::
-
-                    p=f_i p_{fill} \\frac{T_{after}}{T_{before}} c_{rg}
-
-            :param: Class with methode
-                    store(quantity, type, value, unit, [stdev], [N])) and
-                    pick(quantity, type, unit)
-            :type: class
-            """
-
-            f_i       = sym.Symbol('f_i')
-            p_fill    = sym.Symbol('p_fill')
-            T_before  = sym.Symbol('T_before')
-            T_after   = sym.Symbol('T_after')
-            rg        = sym.Symbol('rg')
-
-            self.symb = (
-                        p_fill,
-                        T_before,
-                        T_after,
-                        f_i,
-                        rg)
-
-            self.model = f_i*p_fill*T_after/T_before*rg
+        f_i       = sym.Symbol('f_i')
+        p_fill    = sym.Symbol('p_fill')
+        T_before  = sym.Symbol('T_before')
+        T_after   = sym.Symbol('T_after')
+        rg        = sym.Symbol('rg')
+        self.symb = (
+                    p_fill,
+                    T_before,
+                    T_after,
+                    f_i,
+                    rg,
+                    )
+        self.model = f_i*p_fill*T_after/T_before*rg
 
     def define_model_f(self):
-            """ Defines symbols and model for the determination of the
-            expansion ratios f.
-            The order of symbols must match the order in ``gen_val_arr``:
-            The equation is:
-            .. math::
-                    p=f_i p_{fill} \\frac{T_{after}}{T_{before}} c_{rg}
-            :param: Class with methode
-                    store(quantity, type, value, unit, [stdev], [N])) and
-                    pick(quantity, type, unit)
-            :type: class
-            """
-            p_fill    = sym.Symbol('p_fill')
-            p_frs     = sym.Symbol('p_frs')
-            p_nd      = sym.Symbol('p_nd')
-            T_before  = sym.Symbol('T_before')
-            T_after   = sym.Symbol('T_after')
-            rg        = sym.Symbol('rg')
-
-            self.symb = (
-                        p_fill,
-                        p_frs,
-                        p_nd,
-                        T_before,
-                        T_after,
-                        rg)
-            self.model = (p_frs-p_nd)/p_fill*T_before/T_after/rg
+        """ Defines symbols and model for the determination of the
+        expansion ratios f.
+        The order of symbols must match the order in ``gen_val_arr``:
+        The equation is:
+        .. math::
+                p=f_i p_{fill} \\frac{T_{after}}{T_{before}} c_{rg}
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        p_fill    = sym.Symbol('p_fill')
+        p_frs     = sym.Symbol('p_frs')
+        p_nd      = sym.Symbol('p_nd')
+        T_before  = sym.Symbol('T_before')
+        T_after   = sym.Symbol('T_after')
+        rg        = sym.Symbol('rg')
+        self.symb = (
+                    p_fill,
+                    p_frs,
+                    p_nd,
+                    T_before,
+                    T_after,
+                    rg)
+        self.model = (p_frs-p_nd)/p_fill*T_before/T_after/rg
