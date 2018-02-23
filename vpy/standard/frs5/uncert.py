@@ -7,7 +7,7 @@ class Uncert(Frs5):
 
     def __init__(self, doc):
         super().__init__(doc)
-        
+
         self.log.debug("init func: {}".format(__name__))
 
     def total(self, res):
@@ -54,8 +54,8 @@ class Uncert(Frs5):
                     )**0.5
 
         p = res.pick("Pressure", "frs5", self.unit)
-        res.store("Uncertainty", "total_rel", u_total, "1")
-        res.store("Uncertainty", "total_abs", u_total*p, self.unit)
+        res.store("Uncertainty", "frs5_total_rel", u_total, "1")
+        res.store("Uncertainty", "frs5_total_abs", u_total*p, self.unit)
         self.log.debug("uncert total: {}".format(u_total))
 
 

@@ -40,6 +40,25 @@ class Cdg(Device):
     def get_name(self):
         return self.doc['Name']
 
+    def get_total_uncert(self, p, unit, runit):
+        """ Collects all Uncertainty contrib for the given
+        pressure
+
+        """
+        u_arr = []
+        N = np.shape(p)[1]
+        if "Uncertainty" in self.doc:
+            u_dict = self.doc["Uncertainty"]
+            for u_i in u_dict:
+                u = np.full(N, np.nan)
+
+                if "From" in u_i and "To" in u_i:
+                    pass
+
+
+
+
+
     def store_error_interpol(self, p, e, punit = "mbar", eunit="1"):
 
         interpol = [

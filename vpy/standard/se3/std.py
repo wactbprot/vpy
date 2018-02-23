@@ -167,7 +167,7 @@ class Se3(Standard):
 
 
     def get_expansion(self):
-
+        
         f = self.Aux.get_expansion()
 
         if f is None:

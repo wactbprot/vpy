@@ -15,6 +15,33 @@ class Uncert(Se3):
         self.gen_val_dict(res)
         self.gen_val_array(res)
 
+    def uncert_p_fill(self, res):
+        """ Calculates theuncertainty of the filling pressure_fill.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        val_conf_targ = self.val_conf["Pressure"]["FillTarget"]
+        val_conf      = self.val_conf["Pressure"]["Fill"]
+
+
+        fill_target   = self.Pres.get_value(val_conf_targ["Type"],
+                                            val_conf_targ["Unit"])
+
+        N   = len(val_conf)
+        M   = self.no_of_meas_points
+        u_arr = []
+
+        for i in range(N):
+            FillDev = self.FillDevs[i]
+
+            u = FillDev.get_total_uncert(fill_target, val_conf_targ["Unit"], "1")
+
+
+
+
     def uncert_v_start(self, res):
         """Calculates the uncertainty contribution
         of the starting volume

@@ -5,6 +5,7 @@ from vpy.analysis import Analysis
 from vpy.standard.frs5.cal import Cal as FrsCalc
 from vpy.standard.frs5.uncert import Uncert as FrsUncert
 from vpy.standard.se3.cal import Cal as Se3Calc
+from vpy.standard.se3.uncert import Uncert as Se3Uncert
 #from vpy.standard.se3.uncert import Uncert as FrsUncert
 
 def main():
@@ -16,7 +17,8 @@ def main():
 
     if doc:
         res        = Analysis(doc)
-        se3_calc   = Se3Calc(doc)
+
+        ## FRS5:
         frs_calc   = FrsCalc(doc)
         frs_uncert = FrsUncert(doc)
 
@@ -26,6 +28,10 @@ def main():
 
         frs_uncert.total(res)
 
+        ## SE3:
+        se3_calc   = Se3Calc(doc)
+        se3_uncert = Se3Uncert(doc)
+
         se3_calc.temperature_before(res)
         se3_calc.temperature_after(res)
         se3_calc.temperature_room(res)
@@ -33,12 +39,15 @@ def main():
         se3_calc.pressure_nd(res)
         se3_calc.real_gas_correction(res)
 
+        se3_uncert.uncert_p_fill(res)
+
         rg   = res.pick("Correction", "rg", "1")
         p_0  = res.pick("Pressure", "fill", "mbar")
         p_1  = res.pick("Pressure", "frs5", "mbar")
         p_nd = res.pick("Pressure", "nd", "mbar")
         T_0  = res.pick("Temperature", "before", "K")
         T_1  = res.pick("Temperature", "after", "K")
+
 
         cor_tem  =  T_0 / T_1
         f        = (p_1-p_nd)/(p_0*rg)*cor_tem

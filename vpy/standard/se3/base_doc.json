@@ -9,7 +9,7 @@
             },
             {
                 "Type": "updated",
-                "Value": "2018-02-01"
+                "Value": "2018-02-19"
             }
         ],
         "Uncertainty": [
@@ -78,9 +78,8 @@
             {
                 "Type": "f_m",
                 "Unit": "1",
-                "Value": "4.0299e-3",
-                "Comment": "manuelle Expansion; nach QSE-SE3-17-3 (Stand 11.1.11)",
-                "StartVolume": "V6"
+                "Value": "1.0106e-3",
+                "Comment": "nach QSE-SE3-18-4"
             }
         ]
     },
