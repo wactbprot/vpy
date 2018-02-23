@@ -57,8 +57,10 @@ class Se2(Standard):
         """ Defines symbols and model calibration pressure.
         The order of symbols must match the order in ``gen_val_arr``:
         The equation is:
+
         .. math::
                 p=f_i p_{fill} \\frac{T_{after}}{T_{before}} c_{rg}
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
@@ -84,19 +86,23 @@ class Se2(Standard):
         expansion ratios f.
         The order of symbols must match the order in ``gen_val_arr``:
         The equation is:
-        .. math::
+
+            .. math::
                 p=f_i p_{fill} \\frac{T_{after}}{T_{before}} c_{rg}
-        :param: Class with methode
+
+            :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
-        :type: class
+            :type: class
         """
+
         p_fill    = sym.Symbol('p_fill')
         p_frs     = sym.Symbol('p_frs')
         p_nd      = sym.Symbol('p_nd')
         T_before  = sym.Symbol('T_before')
         T_after   = sym.Symbol('T_after')
         rg        = sym.Symbol('rg')
+
         self.symb = (
                     p_fill,
                     p_frs,
@@ -104,4 +110,5 @@ class Se2(Standard):
                     T_before,
                     T_after,
                     rg)
+
         self.model = (p_frs-p_nd)/p_fill*T_before/T_after/rg
