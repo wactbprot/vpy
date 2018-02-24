@@ -1,4 +1,5 @@
 import sys
+import numpy as np
 from .document import Document
 
 class Constants(Document):
@@ -17,9 +18,7 @@ class Constants(Document):
     def __init__(self, doc):
 
         if 'Calibration' in doc:
-            dc = doc['Calibration']
-            if 'Constants' in dc:
-                super().__init__(dc['Constants'])
+            doc = doc['Calibration']
 
         if 'Constants' in doc:
             super().__init__(doc['Constants'])
@@ -96,7 +95,7 @@ class Constants(Document):
             cstr = "{}_2_{}".format(f, t)
             ustr = "{}/{}".format(t, f)
             conv = self.get_value(cstr, ustr)
-            
+
             if conv is not None:
                 self.log.info("search: "+cstr+" in "+ustr+" found: {}".format(conv))
                 return conv

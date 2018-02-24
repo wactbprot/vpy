@@ -105,7 +105,7 @@ class Cal(Se3):
             res.store("Pressure" ,"{}-fill".format(ldevname), p_corr , val["Unit"])
             res.store("Pressure" ,"{}-fill_offset".format(ldevname), off, val["Unit"])
 
-        p_mean       = np.nanmean(cor_arr, axis=0)
+        p_mean  = np.nanmean(cor_arr, axis=0)
 
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))

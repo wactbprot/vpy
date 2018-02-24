@@ -63,6 +63,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">gen_val_dict</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">gen_val_array</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Uncert.uncert_p_fill"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.uncert.Uncert.uncert_p_fill">[docs]</a>    <span class="k">def</span> <span class="nf">uncert_p_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculates theuncertainty of the filling pressure_fill.</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">val_conf_targ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_conf</span><span class="p">[</span><span class="s2">&quot;Pressure&quot;</span><span class="p">][</span><span class="s2">&quot;FillTarget&quot;</span><span class="p">]</span>
+        <span class="n">val_conf</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_conf</span><span class="p">[</span><span class="s2">&quot;Pressure&quot;</span><span class="p">][</span><span class="s2">&quot;Fill&quot;</span><span class="p">]</span>
+
+
+        <span class="n">fill_target</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">val_conf_targ</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">],</span>
+                                            <span class="n">val_conf_targ</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">])</span>
+
+        <span class="n">N</span>   <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_conf</span><span class="p">)</span>
+        <span class="n">M</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span>
+        <span class="n">u_arr</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">FillDev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FillDevs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">u</span> <span class="o">=</span> <span class="n">FillDev</span><span class="o">.</span><span class="n">get_total_uncert</span><span class="p">(</span><span class="n">fill_target</span><span class="p">,</span> <span class="n">val_conf_targ</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">],</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div>
+
+
+
+
 <div class="viewcode-block" id="Uncert.uncert_v_start"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.uncert.Uncert.uncert_v_start">[docs]</a>    <span class="k">def</span> <span class="nf">uncert_v_start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the uncertainty contribution</span>
 <span class="sd">        of the starting volume</span>

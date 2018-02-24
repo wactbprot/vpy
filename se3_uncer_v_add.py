@@ -21,6 +21,7 @@ def main():
     unc.gen_val_array(res)
     unc.uncert_v_start(res)
     unc.uncert_v_5(res)
+    unc.uncert_p_fill(res)
 
     u_V_start = res.pick("Uncertainty", "u_V_start", "1")
     u_V_5     = res.pick("Uncertainty", "u_V_5", "1")

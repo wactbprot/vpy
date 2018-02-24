@@ -88,6 +88,25 @@
 <div class="viewcode-block" id="Cdg.get_name"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.cdg.Cdg.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="Cdg.get_total_uncert"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.cdg.Cdg.get_total_uncert">[docs]</a>    <span class="k">def</span> <span class="nf">get_total_uncert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">unit</span><span class="p">,</span> <span class="n">runit</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Collects all Uncertainty contrib for the given</span>
+<span class="sd">        pressure</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s2">&quot;Uncertainty&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
+            <span class="n">u_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">[</span><span class="s2">&quot;Uncertainty&quot;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">u_i</span> <span class="ow">in</span> <span class="n">u_dict</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="s2">&quot;From&quot;</span> <span class="ow">in</span> <span class="n">u_i</span> <span class="ow">and</span> <span class="s2">&quot;To&quot;</span> <span class="ow">in</span> <span class="n">u_i</span><span class="p">:</span>
+                    <span class="k">pass</span></div>
+
+
+
+
+
 <div class="viewcode-block" id="Cdg.store_error_interpol"><a class="viewcode-back" href="../../../vpy.device.html#vpy.device.cdg.Cdg.store_error_interpol">[docs]</a>    <span class="k">def</span> <span class="nf">store_error_interpol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">punit</span> <span class="o">=</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="n">eunit</span><span class="o">=</span><span class="s2">&quot;1&quot;</span><span class="p">):</span>
 
         <span class="n">interpol</span> <span class="o">=</span> <span class="p">[</span>

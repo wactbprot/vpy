@@ -11,5 +11,4 @@ class Device(Document):
         super().__init__(dev)
 
         self.Const = Constants(doc)
-
         self.log.debug("init func: {}".format(__name__))

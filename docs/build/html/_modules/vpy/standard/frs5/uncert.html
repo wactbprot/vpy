@@ -55,7 +55,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Uncert.total"><a class="viewcode-back" href="../../../../vpy.standard.frs5.html#vpy.standard.frs5.uncert.Uncert.total">[docs]</a>    <span class="k">def</span> <span class="nf">total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
@@ -102,8 +102,8 @@
                     <span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;frs5&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Uncertainty&quot;</span><span class="p">,</span> <span class="s2">&quot;total_rel&quot;</span><span class="p">,</span> <span class="n">u_total</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Uncertainty&quot;</span><span class="p">,</span> <span class="s2">&quot;total_abs&quot;</span><span class="p">,</span> <span class="n">u_total</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Uncertainty&quot;</span><span class="p">,</span> <span class="s2">&quot;frs5_total_rel&quot;</span><span class="p">,</span> <span class="n">u_total</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Uncertainty&quot;</span><span class="p">,</span> <span class="s2">&quot;frs5_total_abs&quot;</span><span class="p">,</span> <span class="n">u_total</span><span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;uncert total: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u_total</span><span class="p">))</span></div>
 
 

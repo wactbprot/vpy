@@ -40,24 +40,49 @@ class Cdg(Device):
     def get_name(self):
         return self.doc['Name']
 
-    def get_total_uncert(self, p, unit, runit):
+    def get_total_rel_uncert(self, p, unit):
         """ Collects all Uncertainty contrib for the given
-        pressure
+        pressure. Calculates the quadratic sum and returns
+        a np.array of the length as p.
 
         """
         u_arr = []
-        N = np.shape(p)[1]
+        N     = np.shape(p)[0]
         if "Uncertainty" in self.doc:
             u_dict = self.doc["Uncertainty"]
             for u_i in u_dict:
-                u = np.full(N, np.nan)
+                u   = np.full(N, np.nan)
+                idx = range(N+1)
 
-                if "From" in u_i and "To" in u_i:
-                    pass
+                if "From" in u_i and "To" in u_i and "RangeUnit" in u_i:
+                    range_conv = self.Const.get_conv(u_i["RangeUnit"], unit)
+                    f = float(u_i["From"])*range_conv
+                    t = float(u_i["To"])*range_conv
+                    i = (p > f) & (p < t)
+                    if len(i) > 0:
+                        idx = i
 
+                if "Value" in u_i:
+                    u[idx] = float(u_i["Value"])
 
+                if "Expression" in u_i:
+                    sys.exit("implement expression")
 
+                if u_i["Unit"] != "1":
+                    conv = self.Const.get_conv(u_i["Unit"], unit)
+                    u = u*conv/p
 
+                u_arr.append(u)
+
+            u = np.sqrt(np.nansum(np.power(u_arr, 2), axis=0))
+            i = (u==0.0)
+
+            if len(i) > 0:
+                u[i] = np.nan
+
+            return u
+        else:
+            sys.exit("No uncertainty dict available")
 
     def store_error_interpol(self, p, e, punit = "mbar", eunit="1"):
 
@@ -117,7 +142,7 @@ class Cdg(Device):
             nx = self.get_nice_vals(x)
             ny = f(nx)
 
-            return nx , ny
+            return nx, ny
 
     def cut_values(self, pcal, pind):
         i     = np.where(pcal < self.max_p_mbar)[0][-1]

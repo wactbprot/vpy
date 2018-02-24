@@ -23,24 +23,24 @@ class Uncert(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        val_conf_targ = self.val_conf["Pressure"]["FillTarget"]
-        val_conf      = self.val_conf["Pressure"]["Fill"]
+        conf_targ = self.val_conf["Pressure"]["FillTarget"]
+        conf_fill = self.val_conf["Pressure"]["Fill"]
 
+        fill_target   = self.Pres.get_value(conf_targ["Type"],
+                                            conf_targ["Unit"])
 
-        fill_target   = self.Pres.get_value(val_conf_targ["Type"],
-                                            val_conf_targ["Unit"])
-
-        N   = len(val_conf)
+        N   = np.shape(conf_fill)[0]
         M   = self.no_of_meas_points
         u_arr = []
 
         for i in range(N):
             FillDev = self.FillDevs[i]
+            u_arr.append(FillDev.get_total_rel_uncert(fill_target, conf_targ["Unit"]))
 
-            u = FillDev.get_total_uncert(fill_target, val_conf_targ["Unit"], "1")
+        res.store("Uncertainty", "u_V_start", np.absolute(val/p_nom),"1")
+        self.log.debug("uncert u_V_start: {}".format(val/p_nom))
 
-
-
+        print(np.power(np.nansum(np.power(u_arr, -1), axis=0), -1))
 
     def uncert_v_start(self, res):
         """Calculates the uncertainty contribution
@@ -72,8 +72,8 @@ class Uncert(Se3):
 
         p_nom = self.val_dict['f']*self.val_dict['p_fill']
 
-        res.store("Uncertainty", "u_V_start", np.absolute(val/p_nom),"1")
-        self.log.debug("uncert u_V_start: {}".format(val/p_nom))
+        res.store("Uncertainty", "v_start", np.absolute(val/p_nom),"1")
+        self.log.debug("uncert v_start: {}".format(val/p_nom))
 
     def uncert_v_5(self, res):
         """Calculates the uncertainty contribution
@@ -92,6 +92,5 @@ class Uncert(Se3):
 
         p_nom = self.val_dict['f'] * self.val_dict['p_fill']
 
-        res.store("Uncertainty", "u_V_5", np.absolute(val/p_nom),"1")
-
-        self.log.debug("uncert u_V_5: {}".format(val/p_nom))
+        res.store("Uncertainty", "v_5", np.absolute(val/p_nom),"1")
+        self.log.debug("uncert v_5: {}".format(val/p_nom))
