@@ -35,12 +35,19 @@ class Uncert(Se3):
 
         for i in range(N):
             FillDev = self.FillDevs[i]
-            u_arr.append(FillDev.get_total_rel_uncert(fill_target, conf_targ["Unit"]))
+            u_i     = FillDev.get_total_uncert(fill_target, conf_targ["Unit"], self.unit)
+            u_arr.append(u_i)
 
-        res.store("Uncertainty", "u_V_start", np.absolute(val/p_nom),"1")
-        self.log.debug("uncert u_V_start: {}".format(val/p_nom))
+        u_comb = np.power(np.nansum(np.power(u_arr, -1), axis=0), -1)
 
-        print(np.power(np.nansum(np.power(u_arr, -1), axis=0), -1))
+        s_expr = sym.diff(self.model, sym.Symbol('p_fill'))
+        u      = sym.lambdify(self.symb, s_expr, "numpy")
+        val    = u(*self.val_arr)*u_comb
+
+        p_nom = self.val_dict['f']*self.val_dict['p_fill']
+
+        res.store("Uncertainty", "p_fill", val/p_nom,"1")
+        self.log.debug("uncert u_p_fill: {}".format(val/p_nom))
 
     def uncert_v_start(self, res):
         """Calculates the uncertainty contribution

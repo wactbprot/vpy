@@ -542,7 +542,7 @@
                     "Type": "u2b",
                     "Value": "3.8e-6",
                     "Unit": "mbar",
-                    "From": "100",
+                    "From": "133",
                     "To": "1333",
                     "RangeUnit": "mbar"
                 },
@@ -672,7 +672,7 @@
                     "Value": "2e-4",
                     "Unit": "1",
                     "Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 13mbar bis 20mbar",
-                    "From": "10",
+                    "From": "13",
                     "To": "20",
                     "RangeUnit": "mbar"
                 },
@@ -687,11 +687,19 @@
                 },
                 {
                     "Type": "u2a",
-                    "Value": "0.02",
+                    "Value": "0.02033997",
                     "Unit": "mbar",
-                    "Comment": "abs. Uns. d. Digitalisierung (2^16)",
+                    "Comment": "abs. Uns. d. Digitalisierung 2^16",
                     "From": "10",
                     "To": "133",
+                    "RangeUnit": "mbar"
+                },
+                {
+                    "Type": "u2b",
+                    "Value": "3.8e-6",
+                    "Unit": "mbar",
+                    "From": "133",
+                    "To": "1333",
                     "RangeUnit": "mbar"
                 },
                 {

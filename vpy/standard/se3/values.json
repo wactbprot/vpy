@@ -1,24 +1,24 @@
 {   "Time":{
         "Fill":
-        {"Type":"amt_fill","Sim":[10.0, 20.0, 30.0, 40.0],"Unit":"ms"}
+        {"Type":"amt_fill","Sim":[1.0, 10.0, 20.0, 30.0, 40.0],"Unit":"ms"}
 
     },
     "Pressure":{
         "FillTarget":
-        {"Type":"target-fill","Min":1.33e-1,"Max":1330,"Sim":[1.0, 11.0, 110.0, 1000.0],"Unit":"mbar"},
+        {"Type":"target-fill","Min":1.33e-1,"Max":1330,"Sim":[0.2, 1.0, 11.0, 110.0, 1000.0],"Unit":"mbar"},
         "Fill":[
-        {"DevName":"CDG_1T_1",    "Type":"1T_1-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_1T_2",    "Type":"1T_2-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_1T_3",    "Type":"1T_3-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_10T_1",   "Type":"10T_1-fill",   "Min":1.33e-1,"Max":13.3, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_10T_2",   "Type":"10T_2-fill",   "Min":1.33e-1,"Max":13.3, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_10T_3",   "Type":"10T_3-fill",   "Min":1.33e-1,"Max":13.3, "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_100T_1",  "Type":"100T_1-fill",  "Min":1.330,"Max":133.0,  "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_100T_2",  "Type":"100T_2-fill",  "Min":1.330,"Max":133.0,  "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_100T_3",  "Type":"100T_3-fill",  "Min":1.330,"Max":133.0,  "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_1000T_1", "Type":"1000T_1-fill", "Min":13.3,"Max":1330,    "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_1000T_2", "Type":"1000T_2-fill", "Min":13.3,"Max":1330,    "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"},
-        {"DevName":"CDG_1000T_3", "Type":"1000T_3-fill", "Min":13.3,"Max":1330,    "Sim":[1.0,11.0,110.0,1000.0],"Unit":"mbar"}
+        {"DevName":"CDG_1T_1",    "Type":"1T_1-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_1T_2",    "Type":"1T_2-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_1T_3",    "Type":"1T_3-fill",    "Min":1.33e-2,"Max":1.33, "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_10T_1",   "Type":"10T_1-fill",   "Min":1.33e-1,"Max":13.3, "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_10T_2",   "Type":"10T_2-fill",   "Min":1.33e-1,"Max":13.3, "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_10T_3",   "Type":"10T_3-fill",   "Min":1.33e-1,"Max":13.3, "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_100T_1",  "Type":"100T_1-fill",  "Min":1.330,"Max":133.0,  "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_100T_2",  "Type":"100T_2-fill",  "Min":1.330,"Max":133.0,  "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_100T_3",  "Type":"100T_3-fill",  "Min":1.330,"Max":133.0,  "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_1000T_1", "Type":"1000T_1-fill", "Min":13.3,"Max":1330,    "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_1000T_2", "Type":"1000T_2-fill", "Min":13.3,"Max":1330,    "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"},
+        {"DevName":"CDG_1000T_3", "Type":"1000T_3-fill", "Min":13.3,"Max":1330,    "Sim":[0.2,1.0,11.0,110.0,1000.0],"Unit":"mbar"}
   ]
   },
     "Temperature":{

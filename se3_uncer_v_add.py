@@ -23,11 +23,14 @@ def main():
     unc.uncert_v_5(res)
     unc.uncert_p_fill(res)
 
-    u_V_start = res.pick("Uncertainty", "u_V_start", "1")
-    u_V_5     = res.pick("Uncertainty", "u_V_5", "1")
-
-    io.log.info(" Uncertainty u_V_start: {}".format(u_V_start))
-    io.log.info(" Uncertainty u_V_5: {}".format(u_V_5))
+    u_1 = res.pick("Uncertainty", "v_start", "1")
+    u_2 = res.pick("Uncertainty", "v_5", "1")
+    u_3 = res.pick("Uncertainty", "p_fill", "1")
+    u_t = np.sqrt(np.power(u_1, 2) +np.power(u_3, 2) +np.power(u_3, 2) )
+    io.log.info(" Uncertainty u_V_start: {}".format(u_1))
+    io.log.info(" Uncertainty u_V_5: {}".format(u_2))
+    io.log.info(" Uncertainty u_pfill: {}".format(u_3))
+    io.log.info(" Uncertainty u_total: {}".format(u_t))
 
 if __name__ == "__main__":
     main()
