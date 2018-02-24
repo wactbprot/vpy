@@ -33,23 +33,49 @@ class Uncert(Se3):
         self.log.info(" Uncertainty pfill: {}".format(u_3))
         self.log.info(" Uncertainty total: {}".format(u_t))
 
-
-    def pressure_fill(self, res):
-        """ Calculates theuncertainty of the filling pressure_fill.
+    def temperature_before(self, res):
+        """ Calculates the uncertainty of the temperature before expasion.
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
         """
-        conf_targ = self.val_conf["Pressure"]["FillTarget"]
-        conf_fill = self.val_conf["Pressure"]["Fill"]
+        conf_temp     = self.val_conf["Pressure"]["Fill"]
+
+        
+        f   = self.get_expansion()
+        i_l = np.where(f == "f_l")
+        i_m = np.where(f == "f_m")
+        i_s = np.where(f == "f_s")
+
+        if np.shape(i_s)[1] > 0:
+            V[i_s] = self.get_value("u_V_s","cm^3")
+
+        if np.shape(i_m)[1] > 0:
+            V[i_m] = self.get_value("u_V_m","cm^3")
+
+        if np.shape(i_l)[1] > 0:
+            V[i_l] = self.get_value("u_V_l","cm^3")
+
+
+    def pressure_fill(self, res):
+        """ Calculates the uncertainty of the filling pressure_fill.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        conf_targ     = self.val_conf["Pressure"]["FillTarget"]
+        conf_fill     = self.val_conf["Pressure"]["Fill"]
 
         fill_target   = self.Pres.get_value(conf_targ["Type"],
                                             conf_targ["Unit"])
 
-        N   = np.shape(conf_fill)[0]
-        M   = self.no_of_meas_points
+        N     = np.shape(conf_fill)[0]
+        M     = self.no_of_meas_points
         u_arr = []
 
         for i in range(N):
@@ -59,11 +85,11 @@ class Uncert(Se3):
 
         u_comb = np.power(np.nansum(np.power(u_arr, -1), axis=0), -1)
 
-        s_expr = sym.diff(self.model, sym.Symbol('p_fill'))
+        s_expr = sym.diff(self.model, sym.Symbol("p_fill"))
         u      = sym.lambdify(self.symb, s_expr, "numpy")
         val    = u(*self.val_arr)*u_comb
 
-        p_nom = self.val_dict['f']*self.val_dict['p_fill']
+        p_nom  = self.val_dict["f"]*self.val_dict["p_fill"]
 
         res.store("Uncertainty", "p_fill", val/p_nom,"1")
         self.log.debug("uncert u_p_fill: {}".format(val/p_nom))
@@ -77,24 +103,25 @@ class Uncert(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        f         = self.get_expansion()
-        u_V_start = np.full(self.no_of_meas_points, np.nan)
-
-        i_s = np.where(f == "f_s")
-        if np.shape(i_s)[1] > 0:
-            u_V_start[i_s] = self.get_value("u_V_s","cm^3")
-
-        i_m = np.where(f == "f_m")
-        if np.shape(i_m)[1] > 0:
-            u_V_start[i_m] = self.get_value("u_V_m","cm^3")
+        f   = self.get_expansion()
+        V = np.full(self.no_of_meas_points, np.nan)
 
         i_l = np.where(f == "f_l")
+        i_m = np.where(f == "f_m")
+        i_s = np.where(f == "f_s")
+
+        if np.shape(i_s)[1] > 0:
+            V[i_s] = self.get_value("u_V_s","cm^3")
+
+        if np.shape(i_m)[1] > 0:
+            V[i_m] = self.get_value("u_V_m","cm^3")
+
         if np.shape(i_l)[1] > 0:
-            u_V_start[i_l] = self.get_value("u_V_l","cm^3")
+            V[i_l] = self.get_value("u_V_l","cm^3")
 
         s_expr = sym.diff(self.model, sym.Symbol('V_start'))
         u      = sym.lambdify(self.symb, s_expr, "numpy")
-        val    = u(*self.val_arr)*u_V_start
+        val    = u(*self.val_arr)*V
 
         p_nom = self.val_dict['f']*self.val_dict['p_fill']
 
