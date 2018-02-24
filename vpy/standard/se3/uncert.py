@@ -10,12 +10,31 @@ class Uncert(Se3):
 
         self.log.debug("init func: {}".format(__name__))
 
-    def uncert_total(self, res):
+    def total(self, res):
+
 
         self.gen_val_dict(res)
         self.gen_val_array(res)
 
-    def uncert_p_fill(self, res):
+        self.volume_start(res)
+        self.volume_5(res)
+        self.pressure_fill(res)
+
+        u_1 = res.pick("Uncertainty", "v_start", "1")
+        u_2 = res.pick("Uncertainty", "v_5", "1")
+        u_3 = res.pick("Uncertainty", "p_fill", "1")
+
+        u_t = np.sqrt(np.power(u_1, 2) +np.power(u_2, 2) +np.power(u_3, 2) )
+
+        res.store("Uncertainty", "total", u_t,"1")
+
+        self.log.info(" Uncertainty V_start: {}".format(u_1))
+        self.log.info(" Uncertainty V_5: {}".format(u_2))
+        self.log.info(" Uncertainty pfill: {}".format(u_3))
+        self.log.info(" Uncertainty total: {}".format(u_t))
+
+
+    def pressure_fill(self, res):
         """ Calculates theuncertainty of the filling pressure_fill.
 
         :param: Class with methode
@@ -34,8 +53,8 @@ class Uncert(Se3):
         u_arr = []
 
         for i in range(N):
-            FillDev = self.FillDevs[i]
-            u_i     = FillDev.get_total_uncert(fill_target, conf_targ["Unit"], self.unit)
+            Dev = self.FillDevs[i]
+            u_i = Dev.get_total_uncert(fill_target, conf_targ["Unit"], self.unit)
             u_arr.append(u_i)
 
         u_comb = np.power(np.nansum(np.power(u_arr, -1), axis=0), -1)
@@ -49,7 +68,7 @@ class Uncert(Se3):
         res.store("Uncertainty", "p_fill", val/p_nom,"1")
         self.log.debug("uncert u_p_fill: {}".format(val/p_nom))
 
-    def uncert_v_start(self, res):
+    def volume_start(self, res):
         """Calculates the uncertainty contribution
         of the starting volume
 
@@ -82,7 +101,7 @@ class Uncert(Se3):
         res.store("Uncertainty", "v_start", np.absolute(val/p_nom),"1")
         self.log.debug("uncert v_start: {}".format(val/p_nom))
 
-    def uncert_v_5(self, res):
+    def volume_5(self, res):
         """Calculates the uncertainty contribution
          of the  volume 5
 
