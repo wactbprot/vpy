@@ -47,6 +47,7 @@
             
   <h1>Source code for vpy.constants</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.document</span> <span class="k">import</span> <span class="n">Document</span>
 
 <div class="viewcode-block" id="Constants"><a class="viewcode-back" href="../../vpy.html#vpy.constants.Constants">[docs]</a><span class="k">class</span> <span class="nc">Constants</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
@@ -65,9 +66,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="s1">&#39;Calibration&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
-            <span class="n">dc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Calibration&#39;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s1">&#39;Constants&#39;</span> <span class="ow">in</span> <span class="n">dc</span><span class="p">:</span>
-                <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dc</span><span class="p">[</span><span class="s1">&#39;Constants&#39;</span><span class="p">])</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Calibration&#39;</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="s1">&#39;Constants&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Constants&#39;</span><span class="p">])</span>
@@ -144,7 +143,7 @@
             <span class="n">cstr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_2_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
             <span class="n">ustr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
             <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="n">cstr</span><span class="p">,</span> <span class="n">ustr</span><span class="p">)</span>
-            
+
             <span class="k">if</span> <span class="n">conv</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;search: &quot;</span><span class="o">+</span><span class="n">cstr</span><span class="o">+</span><span class="s2">&quot; in &quot;</span><span class="o">+</span><span class="n">ustr</span><span class="o">+</span><span class="s2">&quot; found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">conv</span><span class="p">))</span>
                 <span class="k">return</span> <span class="n">conv</span>

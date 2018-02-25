@@ -372,9 +372,9 @@ pick(quantity, type, unit)</td>
 <em class="property">class </em><code class="descclassname">vpy.standard.se3.uncert.</code><code class="descname">Uncert</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.standard.se3.std.Se3" title="vpy.standard.se3.std.Se3"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.se3.std.Se3</span></code></a></p>
 <dl class="method">
-<dt id="vpy.standard.se3.uncert.Uncert.uncert_p_fill">
-<code class="descname">uncert_p_fill</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.uncert_p_fill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.uncert_p_fill" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates theuncertainty of the filling pressure_fill.</p>
+<dt id="vpy.standard.se3.uncert.Uncert.pressure_fill">
+<code class="descname">pressure_fill</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.pressure_fill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.pressure_fill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the filling pressure_fill.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -390,13 +390,31 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.uncert.Uncert.uncert_total">
-<code class="descname">uncert_total</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.uncert_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.uncert_total" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.se3.uncert.Uncert.temperature_before">
+<code class="descname">temperature_before</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.temperature_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.temperature_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the temperature before expasion.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.uncert.Uncert.total">
+<code class="descname">total</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.total" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.uncert.Uncert.uncert_v_5">
-<code class="descname">uncert_v_5</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.uncert_v_5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.uncert_v_5" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.se3.uncert.Uncert.volume_5">
+<code class="descname">volume_5</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.volume_5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_5" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Calculates the uncertainty contribution</dt>
 <dd>of the  volume 5</dd>
@@ -415,8 +433,8 @@ pick(quantity, type, unit)
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.uncert.Uncert.uncert_v_start">
-<code class="descname">uncert_v_start</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.uncert_v_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.uncert_v_start" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.se3.uncert.Uncert.volume_start">
+<code class="descname">volume_start</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.volume_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the uncertainty contribution
 of the starting volume</p>
 <table class="docutils field-list" frame="void" rules="none">

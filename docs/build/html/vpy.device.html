@@ -100,13 +100,6 @@
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="vpy.device.cdg.Cdg.get_total_uncert">
-<code class="descname">get_total_uncert</code><span class="sig-paren">(</span><em>p</em>, <em>unit</em>, <em>runit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.get_total_uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.get_total_uncert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collects all Uncertainty contrib for the given
-pressure</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="vpy.device.cdg.Cdg.interp_function">
 <code class="descname">interp_function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.interp_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.interp_function" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -154,6 +147,18 @@ pressure</p>
 <dd><p>Bases: <a class="reference internal" href="vpy.html#vpy.document.Document" title="vpy.document.Document"><code class="xref py py-class docutils literal"><span class="pre">vpy.document.Document</span></code></a></p>
 <p>Class should be complete with
 self.Const and self.Dev, nothing more</p>
+<dl class="method">
+<dt id="vpy.device.device.Device.get_total_uncert">
+<code class="descname">get_total_uncert</code><span class="sig-paren">(</span><em>meas</em>, <em>unit</em>, <em>runit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/device.html#Device.get_total_uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.device.Device.get_total_uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects all Uncertainty contrib for the given
+measurant (m). Calculates the quadratic sum and returns
+a np.array of the length as m.</p>
+<div class="admonition-todo admonition" id="index-2">
+<p class="first admonition-title">Todo</p>
+<p class="last">Test Expression branch</p>
+</div>
+</dd></dl>
+
 </dd></dl>
 
 </div>
