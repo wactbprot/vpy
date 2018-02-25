@@ -9,6 +9,29 @@ class Cal(Se3):
 
         self.log.debug("init func: {}".format(__name__))
 
+    def pressure_cal(self, res):
+        """Calculates the calibration pressure by means of defined model
+
+        Stores result under the path *Pressure, cal, mbar*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        self.define_model()
+        self.get_add_ratio(res)
+        self.pressure_fill(res)
+        self.temperature_before(res)
+        self.temperature_after(res)
+        self.real_gas_correction(res)
+        self.gen_val_array(res)
+
+        p_cal = sym.lambdify(self.symb, self.model, "numpy")(*self.val_arr)
+
+        res.store("Pressure" ,"cal", p_cal, self.unit)
+
     def get_add_ratio(self, res):
         """ Calculates the pressure ratio measured during
         the estimation of additional volume and stores it
@@ -55,6 +78,7 @@ class Cal(Se3):
         p_nd_ind = self.Pres.get_value("nd_ind", "mbar")
 
         res.store("Pressure" ,"nd", p_nd_ind - p_nd_off , "mbar")
+
 
     def pressure_fill(self, res):
         """Calculates the singel and mean value of the filling pressure
@@ -188,7 +212,7 @@ class Cal(Se3):
         tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
         conv    = self.Cons.get_conv("C", "K")
-        
+
         return np.mean(tem_arr + cor_arr + conv, axis=0)
 
     def temperature_volume_l(self):

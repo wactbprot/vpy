@@ -79,13 +79,14 @@ class Se3(Standard):
 
         :type: class
         """
-        f          = sym.Symbol('f')
-        p_fill     = sym.Symbol('p_fill')
-        V_5        = sym.Symbol('V_5')
-        V_start    = sym.Symbol('V_start')
-        r_add      = sym.Symbol('r_add')
-        T_before   = sym.Symbol('T_before')
-        T_after    = sym.Symbol('T_after')
+        f         = sym.Symbol('f')
+        p_fill    = sym.Symbol('p_fill')
+        V_5       = sym.Symbol('V_5')
+        V_start   = sym.Symbol('V_start')
+        r_add     = sym.Symbol('r_add')
+        T_before  = sym.Symbol('T_before')
+        T_after   = sym.Symbol('T_after')
+        rg        = sym.Symbol('rg')
 
         self.symb = (
                     f,
@@ -95,10 +96,10 @@ class Se3(Standard):
                     r_add,
                     T_before,
                     T_after,
+                    rg,
                     )
 
-
-        self.model = p_fill*1.0/(1.0/f + V_5*r_add/V_start)/T_before*T_after
+        self.model = p_fill*1.0/(1.0/f+V_5*r_add/V_start)/T_before*T_after/rg
 
     def gen_val_array(self, res):
         """Generates a array of values
@@ -127,6 +128,7 @@ class Se3(Standard):
                     self.val_dict['r_add'],
                     self.val_dict['T_before'],
                     self.val_dict['T_after'],
+                    self.val_dict['rg'],
                     ]
 
     def gen_val_dict(self, res):
@@ -172,9 +174,8 @@ class Se3(Standard):
         'r_add': res.pick("Ratio", "add", "1"),
         'T_before':res.pick("Temperature", "before", "K"),
         'T_after':res.pick("Temperature", "after", "K"),
+        'rg':res.pick("Correction", "rg", "1"),
         }
-
-
 
     def get_expansion(self):
 

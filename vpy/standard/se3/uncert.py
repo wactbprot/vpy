@@ -21,7 +21,7 @@ class Uncert(Se3):
         self.pressure_fill(res)
         self.temperature_before(res)
         self.temperature_after(res)
-
+        
         u_1 = res.pick("Uncertainty", "v_start", "1")
         u_2 = res.pick("Uncertainty", "v_5", "1")
         u_3 = res.pick("Uncertainty", "p_fill", "1")
@@ -37,7 +37,9 @@ class Uncert(Se3):
 
         res.store("Uncertainty", "total", u_t,"1")
         print(self.val_dict["f"]*self.val_dict["p_fill"])
-        self.log.info(" Uncertainty total: {}".format(u_t))
+        self.log.info("Calibration pressure: {}".format(self.val_dict["f"]*self.val_dict["p_fill"]))
+        self.log.info("Uncertainty total: {}".format(u_t))
+
 
     def temperature_after(self, res):
             """ Calculates the uncertainty of the temperature afterexpasion.
