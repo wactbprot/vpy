@@ -137,16 +137,16 @@ class Cal(Se3):
         i_l = np.where(f == "f_l")[0]
 
         if len(i_s) > 0:
+            self.log.info("Points {}  belong to f_s".format(i_s))
             t[i_s] = self.temperature_volume_s()[i_s]
-            self.log.info("Points {}  belong to f_s".format(i_s[0]))
 
         if len(i_m) > 0:
+            self.log.info("Points {}  belong to f_m".format(i_m))
             t[i_m] = self.temperature_volume_m()[i_m]
-            self.log.info("Points {}  belong to f_m".format(i_m[0]))
 
         if len(i_l) > 0:
+            self.log.info("Points {}  belong to f_l".format(i_l))
             t[i_l] = self.temperature_volume_l()[i_l]
-            self.log.info("Points {}  belong to f_l".format(i_l[0]))
 
         res.store("Temperature" ,"before", t , "K")
 
@@ -188,7 +188,7 @@ class Cal(Se3):
         tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
         cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
         conv    = self.Cons.get_conv("C", "K")
-
+        
         return np.mean(tem_arr + cor_arr + conv, axis=0)
 
     def temperature_volume_l(self):

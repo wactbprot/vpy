@@ -2410,7 +2410,7 @@
                 },
                 {
                     "Type": "u4",
-                    "Value": "0.0",
+                    "Value": "0.01",
                     "Unit": "K",
                     "Comment": "Temperaturabh. der Korrektur"
                 },

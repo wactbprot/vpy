@@ -27,11 +27,11 @@ class Device(Document):
                 u_dict = self.doc["Uncertainty"]
                 for u_i in u_dict:
                     u   = np.full(N, np.nan)
-                    idx = range(N+1)
+                    idx = np.full(N, True)
 
                     if "From" in u_i and "To" in u_i and "RangeUnit" in u_i:
                         range_conv = self.Const.get_conv(u_i["RangeUnit"], unit)
-                        if unit == "K":
+                        if u_i["RangeUnit"] and unit == "K":
                             f = float(u_i["From"])+range_conv
                             t = float(u_i["To"])+range_conv
                         else:
@@ -53,13 +53,13 @@ class Device(Document):
                     if "Unit" in u_i:
                         if u_i["Unit"] != "1":
                             conv = self.Const.get_conv(u_i["Unit"], runit)
-                            if runit == "K":
+                            if  unit =="C" and runit == "K":
                                 u = u+conv
                             else:
                                 u = u*conv
                         else:
                             conv = self.Const.get_conv(unit, runit)
-                            if runit == "K":
+                            if unit =="C" and runit == "K":
                                 u = (u+conv)*meas
                             else:
                                 u = u*meas*conv

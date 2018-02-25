@@ -84,6 +84,8 @@ class Se3(Standard):
         V_5        = sym.Symbol('V_5')
         V_start    = sym.Symbol('V_start')
         r_add      = sym.Symbol('r_add')
+        T_before   = sym.Symbol('T_before')
+        T_after    = sym.Symbol('T_after')
 
         self.symb = (
                     f,
@@ -91,10 +93,12 @@ class Se3(Standard):
                     V_5,
                     V_start,
                     r_add,
+                    T_before,
+                    T_after,
                     )
 
 
-        self.model = p_fill*1.0/(1.0/f + V_5*r_add/V_start)
+        self.model = p_fill*1.0/(1.0/f + V_5*r_add/V_start)/T_before*T_after
 
     def gen_val_array(self, res):
         """Generates a array of values
@@ -105,6 +109,8 @@ class Se3(Standard):
         #. V_5
         #. V_start
         #. r_add
+        #. T_before
+        #. T_after
 
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -119,6 +125,8 @@ class Se3(Standard):
                     self.val_dict['V_5'],
                     self.val_dict['V_start'],
                     self.val_dict['r_add'],
+                    self.val_dict['T_before'],
+                    self.val_dict['T_after'],
                     ]
 
     def gen_val_dict(self, res):
@@ -162,12 +170,14 @@ class Se3(Standard):
         'V_5': np.full(self.no_of_meas_points, V_5),
         'V_start':V_start,
         'r_add': res.pick("Ratio", "add", "1"),
+        'T_before':res.pick("Temperature", "before", "K"),
+        'T_after':res.pick("Temperature", "after", "K"),
         }
 
 
 
     def get_expansion(self):
-        
+
         f = self.Aux.get_expansion()
 
         if f is None:

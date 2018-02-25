@@ -52,7 +52,7 @@ master_doc = 'modules'
 
 # General information about the project.
 project = 'vpy'
-copyright = '2017, wactbprot'
+copyright = '2018, wactbprot'
 author = 'wactbprot <wactbprot@gmail.com>'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -89,11 +89,10 @@ todo_include_todos = True
 # a list of builtin themes.
 #
 #html_theme = 'classic'
-#import sphinx_rtd_theme
-#html_theme = "sphinx_rtd_theme"
-#html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-
-html_theme = "nature"
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+#html_theme = "nature"
 #html_theme_options = {
 #    "rightsidebar": "true",
 #    "relbarbgcolor": "black"

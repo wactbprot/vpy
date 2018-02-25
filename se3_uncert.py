@@ -17,6 +17,8 @@ def main():
 
     cal.get_add_ratio(res)
     cal.pressure_fill(res)
+    cal.temperature_before(res)
+    cal.temperature_after(res)
 
     unc.total(res)
 
