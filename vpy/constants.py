@@ -87,19 +87,30 @@ class Constants(Document):
 
     def get_conv(self, f, t):
         """Get the conversion factor from unit f to unit t.
+
+        :param f: f from unit
+        :type f: str
+
+        :param t: t to unit
+        :type t: str
+
+        :returns: conversion factor
+        :rtype: np.array of length 1
         """
+
         if f == t:
-            self.log.info("units are the same return 1")
-            return np.array([1])
+            self.log.debug("units are the same return 1")
+            conv = np.array([1])
         else:
             cstr = "{}_2_{}".format(f, t)
             ustr = "{}/{}".format(t, f)
             conv = self.get_value(cstr, ustr)
 
             if conv is not None:
-                self.log.info("search: "+cstr+" in "+ustr+" found: {}".format(conv))
-                return conv
+                self.log.debug("search for: {} in {} found: {}".format(cstr, ustr, conv))
             else:
                 errmsg = "no conversion factor from {} to {}".format(f, t)
                 self.log.error(errmsg)
                 sys.exit(errmsg)
+
+        return conv
