@@ -44,7 +44,11 @@ class Cal(Se3):
 
         p_before = self.Aux.get_value("add_before", "V")
         p_after  = self.Aux.get_value("add_after","V")
-        r_add    = np.nanmean(p_after/(p_before - p_after))
+        if p_before is None and p_after is None:
+            r_add = 0.0
+            self.log.warn("No additional Volume, r_add becomes 0.0")
+        else:
+            r_add = np.nanmean(p_after/(p_before - p_after))
 
         res.store("Ratio" ,"add", np.full(self.no_of_meas_points, r_add), "1")
 

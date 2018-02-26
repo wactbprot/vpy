@@ -30,16 +30,23 @@ def main():
 
         ## SE3:
         se3_calc   = Se3Calc(doc)
-        se3_uncert = Se3Uncert(doc)
 
         se3_calc.temperature_before(res)
         se3_calc.temperature_after(res)
         se3_calc.temperature_room(res)
+        se3_calc.get_add_ratio(res)
         se3_calc.pressure_fill(res)
+
         se3_calc.pressure_nd(res)
         se3_calc.real_gas_correction(res)
 
-        se3_uncert.uncert_p_fill(res)
+        # se3 uncert
+        se3_uncert = Se3Uncert(doc)
+        se3_uncert.gen_val_dict(res)
+        se3_uncert.gen_val_array(res)
+        se3_uncert.pressure_fill(res)
+        se3_uncert.temperature_after(res)
+        se3_uncert.temperature_before(res)
 
         rg   = res.pick("Correction", "rg", "1")
         p_0  = res.pick("Pressure", "fill", "mbar")
@@ -58,8 +65,19 @@ def main():
         log.info("mean value: {}".format(np.nanmean(f)))
         log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
 
+        # nd uncert
+        u_nd_rel = 1.0e-2
+        res.store("Uncertainty", "nd", p_nd*u_nd_rel/p_1, "1")
 
-        print(p_0)
+        u_1 = res.pick("Uncertainty", "p_fill", "1")
+        u_2 = res.pick("Uncertainty", "t_before", "1")
+        u_3 = res.pick("Uncertainty", "t_after", "1")
+        u_4 = res.pick("Uncertainty", "nd", "1")
+
+        u_t = np.sqrt(u_1**2+u_2**2+u_3**2+u_4**2)
+        print(u_t)
+        res.store("Uncertainty", "total", u_t, "1")
+
         io.save_doc(res.build_doc())
 
 if __name__ == "__main__":

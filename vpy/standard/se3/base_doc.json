@@ -542,7 +542,7 @@
                     "Type": "u2b",
                     "Value": "3.8e-6",
                     "Unit": "mbar",
-                    "From": "133",
+                    "From": "100",
                     "To": "1333",
                     "RangeUnit": "mbar"
                 },
@@ -672,7 +672,7 @@
                     "Value": "2e-4",
                     "Unit": "1",
                     "Comment": "rel. Uns. d. Kalibrierdrucks im Bereich 13mbar bis 20mbar",
-                    "From": "13",
+                    "From": "10",
                     "To": "20",
                     "RangeUnit": "mbar"
                 },
@@ -687,19 +687,11 @@
                 },
                 {
                     "Type": "u2a",
-                    "Value": "0.02033997",
+                    "Value": "0.02",
                     "Unit": "mbar",
-                    "Comment": "abs. Uns. d. Digitalisierung 2^16",
+                    "Comment": "abs. Uns. d. Digitalisierung (2^16)",
                     "From": "10",
                     "To": "133",
-                    "RangeUnit": "mbar"
-                },
-                {
-                    "Type": "u2b",
-                    "Value": "3.8e-6",
-                    "Unit": "mbar",
-                    "From": "133",
-                    "To": "1333",
                     "RangeUnit": "mbar"
                 },
                 {
@@ -2410,15 +2402,15 @@
                 },
                 {
                     "Type": "u4",
-                    "Value": "0.01",
+                    "Value": "0.0",
                     "Unit": "K",
                     "Comment": "Temperaturabh. der Korrektur"
                 },
                 {
                     "Type": "u5",
-                    "Value": "0.2",
+                    "Value": "0.05",
                     "Unit": "K",
-                    "Comment": "Langzeitstab. pro Jahr (war 0.3 auf 2a)"
+                    "Comment": "Langzeitstab. pro Jahr (war 0.01 auf 2a, 0.05 ist mehr als konservativ)"
                 },
                 {
                     "Type": "u6",
