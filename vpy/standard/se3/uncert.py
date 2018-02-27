@@ -21,7 +21,7 @@ class Uncert(Se3):
         self.pressure_fill(res)
         self.temperature_before(res)
         self.temperature_after(res)
-        
+
         u_1 = res.pick("Uncertainty", "v_start", "1")
         u_2 = res.pick("Uncertainty", "v_5", "1")
         u_3 = res.pick("Uncertainty", "p_fill", "1")
@@ -42,7 +42,11 @@ class Uncert(Se3):
 
 
     def temperature_after(self, res):
-            """ Calculates the uncertainty of the temperature afterexpasion.
+            """ Calculates the uncertainty of the temperature after expasion.
+
+            .. attention::
+                The Uncertainty is multiplied by 2 in order to
+                have an upper estimation of that value
 
             :param: Class with methode
                     store(quantity, type, value, unit, [stdev], [N])) and
@@ -58,7 +62,8 @@ class Uncert(Se3):
 
             s_expr = sym.diff(self.model, sym.Symbol("T_after"))
             u      = sym.lambdify(self.symb, s_expr, "numpy")
-            val    = u(*self.val_arr)*u_pro
+            ## Sicherheitsfaktor
+            val    = u(*self.val_arr)*u_pro*2
 
             p_nom  = self.val_dict["f"]*self.val_dict["p_fill"]
 

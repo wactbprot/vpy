@@ -143,10 +143,27 @@ class Cal(Se3):
 
         res.store("Pressure" ,"fill", p_mean, val["Unit"], p_std, n)
 
+    def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr= "corr_ch_"):
+        tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")
+        cor_arr = self.TDev.get_array(prefix_corr, channels, sufix_corr, "K")
+
+        conv    = self.Cons.get_conv("C", "K")
+        t_m = np.mean(tem_arr + cor_arr + conv, axis=0)
+        t_s = np.std(tem_arr + cor_arr + conv, axis=0)
+
+        return t_m, t_s, len(channels)
+
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
 
         Stores result under the path  *Temperature, before, K*
+        For the temperature of the medium (0.02l) volume the used  sensors are:
+        *channel 3001 to 3003*
+        For the temperature of the medium (0.2l) volume the used  sensors are:
+        *channel 3004 to 3013*
+        For the temperature of the large (2l) volume the used  sensors are:
+        *channel 3014 to 3030*
+
 
         .. todo::
 
@@ -158,7 +175,9 @@ class Cal(Se3):
         :type: class
         """
         f   = self.get_expansion()
-        t   = np.full(self.no_of_meas_points, np.nan)
+        t_mean  = np.full(self.no_of_meas_points, np.nan)
+        t_stdv  = np.full(self.no_of_meas_points, np.nan)
+        t_N     = np.full(self.no_of_meas_points, np.nan)
 
         i_s = np.where(f == "f_s")[0]
         i_m = np.where(f == "f_m")[0]
@@ -166,99 +185,47 @@ class Cal(Se3):
 
         if len(i_s) > 0:
             self.log.info("Points {}  belong to f_s".format(i_s))
-            t[i_s] = self.temperature_volume_s()[i_s]
+            t_m, t_s, N = self.temperature(list(range(3001, 3004)))
+            t_mean[i_s] = t_m[i_s]
+            t_stdv[i_s] = t_s[i_s]
+            t_N[i_s] = N
 
         if len(i_m) > 0:
             self.log.info("Points {}  belong to f_m".format(i_m))
-            t[i_m] = self.temperature_volume_m()[i_m]
+            t_m, t_s, N = self.temperature(list(range(3004, 3014)))
+            t_mean[i_m] = t_m[i_m]
+            t_stdv[i_m] = t_s[i_m]
+            t_N[i_m] = N
 
         if len(i_l) > 0:
             self.log.info("Points {}  belong to f_l".format(i_l))
-            t[i_l] = self.temperature_volume_l()[i_l]
+            t_m, t_s, N = self.temperature(list(range(3014, 3031)))
+            t_mean[i_l] = t_m[i_l]
+            t_stdv[i_l] = t_s[i_l]
+            t_N[i_l] = N
 
-        res.store("Temperature" ,"before", t , "K")
+        res.store("Temperature" ,"before", t_mean , "K", t_stdv, t_N)
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
         Stores result under the path *Temperature, after, K*
-
+        The used  sensors are:
+        *channel 1001 to 1030* and *channel 2001 to 2028*
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
         """
-        tem = self.temperature_vessel()
-        res.store("Temperature","after", tem , "K")
 
-    def temperature_volume_s(self):
-        """Temperature of the medium (0.02l) volume. The used  sensors are:
-
-        *channel 3001 to 3003*
-
-        .. note::
-
-            range(3001,3004) becomes  3001 to 3003
-        """
-
-        chs     = list(range(3001, 3004))
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
-
-    def temperature_volume_m(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
-
-        *channel 3004 to 3013*
-        """
-        chs     = list(range(3004, 3014))
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
-
-    def temperature_volume_l(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
-
-        *channel 3014 to 3030*
-        """
-        chs     = list(range(3014, 3031))
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
-
-    def temperature_vessel(self):
-        """Temperature of the medium (0.2l) volume. The used  sensors are:
-
-        *channel 1001 to 1030* and *channel 2001 to 2028*
-        """
-        chs = list(range(1001, 1031)) + list(range(2001, 2029))
-
-        tem_arr = self.Temp.get_array("ch_", chs, "_after", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
+        t_mean, t_stdv, t_N = self.temperature(list(range(1001, 1031)) + list(range(2001, 2029)), "_after")
+        res.store("Temperature","after", t_mean , "K", t_stdv, t_N)
 
     def temperature_room(self, res):
         """Calculates the temperature of the room.
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
         """
-        tem = self.temperature_foe24()
-        res.store("Temperature","room", tem , "K")
-
-    def temperature_foe24(self):
-        """Temperature of the room. The used  sensors are:
-
-        *channel 2029 to 2030*
-        """
-        chs = list(range(2029, 2031))
-
-        tem_arr = self.Temp.get_array("ch_", chs, "_before", "C")
-        cor_arr = self.TDev.get_array("corr_ch_", chs, "", "K")
-        conv    = self.Cons.get_conv("C", "K")
-
-        return np.mean(tem_arr + cor_arr + conv, axis=0)
+        t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_after")
+        res.store("Temperature","room", t_mean , "K", t_stdv, t_N)
