@@ -75,7 +75,6 @@ def main():
         u_4 = res.pick("Uncertainty", "nd", "1")
 
         u_t = np.sqrt(u_1**2+u_2**2+u_3**2+u_4**2)
-        print(u_t)
         res.store("Uncertainty", "total", u_t, "1")
 
         io.save_doc(res.build_doc())
