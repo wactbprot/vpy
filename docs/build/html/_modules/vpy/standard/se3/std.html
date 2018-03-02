@@ -236,11 +236,14 @@
 
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">f</span>          <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
-        <span class="n">p_fill</span>     <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;p_fill&#39;</span><span class="p">)</span>
-        <span class="n">V_5</span>        <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_5&#39;</span><span class="p">)</span>
-        <span class="n">V_start</span>    <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_start&#39;</span><span class="p">)</span>
-        <span class="n">r_add</span>      <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;r_add&#39;</span><span class="p">)</span>
+        <span class="n">f</span>         <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
+        <span class="n">p_fill</span>    <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;p_fill&#39;</span><span class="p">)</span>
+        <span class="n">V_5</span>       <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_5&#39;</span><span class="p">)</span>
+        <span class="n">V_start</span>   <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_start&#39;</span><span class="p">)</span>
+        <span class="n">r_add</span>     <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;r_add&#39;</span><span class="p">)</span>
+        <span class="n">T_before</span>  <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;T_before&#39;</span><span class="p">)</span>
+        <span class="n">T_after</span>   <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;T_after&#39;</span><span class="p">)</span>
+        <span class="n">rg</span>        <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;rg&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">symb</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">f</span><span class="p">,</span>
@@ -248,10 +251,12 @@
                     <span class="n">V_5</span><span class="p">,</span>
                     <span class="n">V_start</span><span class="p">,</span>
                     <span class="n">r_add</span><span class="p">,</span>
+                    <span class="n">T_before</span><span class="p">,</span>
+                    <span class="n">T_after</span><span class="p">,</span>
+                    <span class="n">rg</span><span class="p">,</span>
                     <span class="p">)</span>
 
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">p_fill</span><span class="o">*</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">f</span> <span class="o">+</span> <span class="n">V_5</span><span class="o">*</span><span class="n">r_add</span><span class="o">/</span><span class="n">V_start</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">p_fill</span><span class="o">*</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">f</span><span class="o">+</span><span class="n">V_5</span><span class="o">*</span><span class="n">r_add</span><span class="o">/</span><span class="n">V_start</span><span class="p">)</span><span class="o">/</span><span class="n">T_before</span><span class="o">*</span><span class="n">T_after</span><span class="o">/</span><span class="n">rg</span></div>
 
 <div class="viewcode-block" id="Se3.gen_val_array"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.std.Se3.gen_val_array">[docs]</a>    <span class="k">def</span> <span class="nf">gen_val_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates a array of values</span>
@@ -262,6 +267,8 @@
 <span class="sd">        #. V_5</span>
 <span class="sd">        #. V_start</span>
 <span class="sd">        #. r_add</span>
+<span class="sd">        #. T_before</span>
+<span class="sd">        #. T_after</span>
 
 <span class="sd">        :param: Class with methode</span>
 <span class="sd">            store(quantity, type, value, unit, [stdev], [N])) and</span>
@@ -276,6 +283,9 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_5&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_start&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;r_add&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;T_before&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;T_after&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;rg&#39;</span><span class="p">],</span>
                     <span class="p">]</span></div>
 
 <div class="viewcode-block" id="Se3.gen_val_dict"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.std.Se3.gen_val_dict">[docs]</a>    <span class="k">def</span> <span class="nf">gen_val_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
@@ -319,12 +329,13 @@
         <span class="s1">&#39;V_5&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">V_5</span><span class="p">),</span>
         <span class="s1">&#39;V_start&#39;</span><span class="p">:</span><span class="n">V_start</span><span class="p">,</span>
         <span class="s1">&#39;r_add&#39;</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;T_before&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;T_after&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;rg&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;rg&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
         <span class="p">}</span></div>
 
-
-
 <div class="viewcode-block" id="Se3.get_expansion"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.std.Se3.get_expansion">[docs]</a>    <span class="k">def</span> <span class="nf">get_expansion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
+
         <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_expansion</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>

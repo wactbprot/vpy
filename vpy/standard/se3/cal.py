@@ -155,7 +155,6 @@ class Cal(Se3):
 
     def temperature_before(self, res):
         """Calculates the temperature of the starting volumes.
-
         Stores result under the path  *Temperature, before, K*
         For the temperature of the medium (0.02l) volume the used  sensors are:
         *channel 3001 to 3003*
@@ -164,9 +163,7 @@ class Cal(Se3):
         For the temperature of the large (2l) volume the used  sensors are:
         *channel 3014 to 3030*
 
-
         .. todo::
-
             use shape() instead of len()
 
         :param: Class with methode
@@ -211,6 +208,7 @@ class Cal(Se3):
         Stores result under the path *Temperature, after, K*
         The used  sensors are:
         *channel 1001 to 1030* and *channel 2001 to 2028*
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
@@ -222,6 +220,7 @@ class Cal(Se3):
 
     def temperature_room(self, res):
         """Calculates the temperature of the room.
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)

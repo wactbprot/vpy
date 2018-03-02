@@ -228,6 +228,25 @@ of the length: <code class="docutils literal"><span class="pre">self.no_of_meas_
 </dd></dl>
 
 <dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_cal">
+<code class="descname">pressure_cal</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.pressure_cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the calibration pressure by means of defined model</p>
+<p>Stores result under the path <em>Pressure, cal, mbar</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.pressure_fill">
 <code class="descname">pressure_fill</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.pressure_fill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_fill" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the singel and mean value of the filling pressure
@@ -273,10 +292,17 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.temperature">
+<code class="descname">temperature</code><span class="sig-paren">(</span><em>channels</em>, <em>sufix='_before'</em>, <em>prefix='ch_'</em>, <em>sufix_corr=''</em>, <em>prefix_corr='corr_ch_'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.temperature_after">
 <code class="descname">temperature_after</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_after" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the temperature of the end volume.
-Stores result under the path <em>Temperature, after, K</em></p>
+Stores result under the path <em>Temperature, after, K</em>
+The used  sensors are:
+<em>channel 1001 to 1030</em> and <em>channel 2001 to 2028</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -294,8 +320,14 @@ pick(quantity, type, unit)</td>
 <dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.temperature_before">
 <code class="descname">temperature_before</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_before"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_before" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the temperature of the starting volumes.</p>
-<p>Stores result under the path  <em>Temperature, before, K</em></p>
+<dd><p>Calculates the temperature of the starting volumes.
+Stores result under the path  <em>Temperature, before, K</em>
+For the temperature of the medium (0.02l) volume the used  sensors are:
+<em>channel 3001 to 3003</em>
+For the temperature of the medium (0.2l) volume the used  sensors are:
+<em>channel 3004 to 3013</em>
+For the temperature of the large (2l) volume the used  sensors are:
+<em>channel 3014 to 3030</em></p>
 <div class="admonition-todo admonition" id="index-1">
 <p class="first admonition-title">Todo</p>
 <p class="last">use shape() instead of len()</p>
@@ -315,48 +347,21 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.temperature_foe24">
-<code class="descname">temperature_foe24</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_foe24"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_foe24" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the room. The used  sensors are:</p>
-<p><em>channel 2029 to 2030</em></p>
-</dd></dl>
-
-<dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.temperature_room">
 <code class="descname">temperature_room</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_room"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_room" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the temperature of the room.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.temperature_vessel">
-<code class="descname">temperature_vessel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_vessel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_vessel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.2l) volume. The used  sensors are:</p>
-<p><em>channel 1001 to 1030</em> and <em>channel 2001 to 2028</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.temperature_volume_l">
-<code class="descname">temperature_volume_l</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_volume_l"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_volume_l" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.2l) volume. The used  sensors are:</p>
-<p><em>channel 3014 to 3030</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.temperature_volume_m">
-<code class="descname">temperature_volume_m</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_volume_m"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_volume_m" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.2l) volume. The used  sensors are:</p>
-<p><em>channel 3004 to 3013</em></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.temperature_volume_s">
-<code class="descname">temperature_volume_s</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperature_volume_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_volume_s" title="Permalink to this definition">¶</a></dt>
-<dd><p>Temperature of the medium (0.02l) volume. The used  sensors are:</p>
-<p><em>channel 3001 to 3003</em></p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">range(3001,3004) becomes  3001 to 3003</p>
-</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -415,6 +420,8 @@ with the same order as define_models symbols order:</p>
 <li>V_5</li>
 <li>V_start</li>
 <li>r_add</li>
+<li>T_before</li>
+<li>T_after</li>
 </ol>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -505,6 +512,29 @@ pick(quantity, type, unit)</td>
 <dt id="vpy.standard.se3.uncert.Uncert.pressure_fill">
 <code class="descname">pressure_fill</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.pressure_fill"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.pressure_fill" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the uncertainty of the filling pressure_fill.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.uncert.Uncert.temperature_after">
+<code class="descname">temperature_after</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/uncert.html#Uncert.temperature_after"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.temperature_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the temperature after expasion.</p>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">The Uncertainty is multiplied by 2 in order to
+have an upper estimation of that value</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

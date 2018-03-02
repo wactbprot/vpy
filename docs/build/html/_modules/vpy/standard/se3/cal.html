@@ -166,6 +166,29 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
+<div class="viewcode-block" id="Cal.pressure_cal"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.pressure_cal">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the calibration pressure by means of defined model</span>
+
+<span class="sd">        Stores result under the path *Pressure, cal, mbar*</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">define_model</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_add_ratio</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pressure_fill</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature_before</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature_after</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">real_gas_correction</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gen_val_array</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+        <span class="n">p_cal</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">val_arr</span><span class="p">)</span>
+
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span> <span class="p">,</span><span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Cal.get_add_ratio"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.get_add_ratio">[docs]</a>    <span class="k">def</span> <span class="nf">get_add_ratio</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calculates the pressure ratio measured during</span>
 <span class="sd">        the estimation of additional volume and stores it</span>
@@ -178,7 +201,11 @@
 
         <span class="n">p_before</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;add_before&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">)</span>
         <span class="n">p_after</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;add_after&quot;</span><span class="p">,</span><span class="s2">&quot;V&quot;</span><span class="p">)</span>
-        <span class="n">r_add</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">p_after</span><span class="o">/</span><span class="p">(</span><span class="n">p_before</span> <span class="o">-</span> <span class="n">p_after</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">p_before</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">p_after</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">r_add</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No additional Volume, r_add becomes 0.0&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r_add</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">p_after</span><span class="o">/</span><span class="p">(</span><span class="n">p_before</span> <span class="o">-</span> <span class="n">p_after</span><span class="p">))</span>
 
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Ratio&quot;</span> <span class="p">,</span><span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">r_add</span><span class="p">),</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div>
 
@@ -212,6 +239,7 @@
         <span class="n">p_nd_ind</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;nd_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
 
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span> <span class="p">,</span><span class="s2">&quot;nd&quot;</span><span class="p">,</span> <span class="n">p_nd_ind</span> <span class="o">-</span> <span class="n">p_nd_off</span> <span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Cal.pressure_fill"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.pressure_fill">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the singel and mean value of the filling pressure</span>
@@ -272,13 +300,27 @@
 
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span> <span class="p">,</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="n">p_mean</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">],</span> <span class="n">p_std</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Cal.temperature"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature">[docs]</a>    <span class="k">def</span> <span class="nf">temperature</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">sufix</span><span class="o">=</span><span class="s2">&quot;_before&quot;</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;ch_&quot;</span><span class="p">,</span> <span class="n">sufix_corr</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">prefix_corr</span><span class="o">=</span> <span class="s2">&quot;corr_ch_&quot;</span><span class="p">):</span>
+        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">sufix</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="n">prefix_corr</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">sufix_corr</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+
+        <span class="n">conv</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">t_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">t_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">t_m</span><span class="p">,</span> <span class="n">t_s</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">channels</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Cal.temperature_before"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_before">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_before</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the temperature of the starting volumes.</span>
-
 <span class="sd">        Stores result under the path  *Temperature, before, K*</span>
+<span class="sd">        For the temperature of the medium (0.02l) volume the used  sensors are:</span>
+<span class="sd">        *channel 3001 to 3003*</span>
+<span class="sd">        For the temperature of the medium (0.2l) volume the used  sensors are:</span>
+<span class="sd">        *channel 3004 to 3013*</span>
+<span class="sd">        For the temperature of the large (2l) volume the used  sensors are:</span>
+<span class="sd">        *channel 3014 to 3030*</span>
 
 <span class="sd">        .. todo::</span>
-
 <span class="sd">            use shape() instead of len()</span>
 
 <span class="sd">        :param: Class with methode</span>
@@ -287,110 +329,62 @@
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_expansion</span><span class="p">()</span>
-        <span class="n">t</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">t_mean</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">t_stdv</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">t_N</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
         <span class="n">i_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;f_s&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">i_m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;f_m&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">i_l</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;f_l&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_volume_s</span><span class="p">()[</span><span class="n">i_s</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_s</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_s</span><span class="p">))</span>
+            <span class="n">t_m</span><span class="p">,</span> <span class="n">t_s</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3001</span><span class="p">,</span> <span class="mi">3004</span><span class="p">)))</span>
+            <span class="n">t_mean</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_m</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span>
+            <span class="n">t_stdv</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_s</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span>
+            <span class="n">t_N</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_m</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_volume_m</span><span class="p">()[</span><span class="n">i_m</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_m&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_m</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_m&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_m</span><span class="p">))</span>
+            <span class="n">t_m</span><span class="p">,</span> <span class="n">t_s</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3004</span><span class="p">,</span> <span class="mi">3014</span><span class="p">)))</span>
+            <span class="n">t_mean</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_m</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span>
+            <span class="n">t_stdv</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_s</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span>
+            <span class="n">t_N</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_l</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_volume_l</span><span class="p">()[</span><span class="n">i_l</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_l&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_l</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_l&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_l</span><span class="p">))</span>
+            <span class="n">t_m</span><span class="p">,</span> <span class="n">t_s</span><span class="p">,</span> <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3014</span><span class="p">,</span> <span class="mi">3031</span><span class="p">)))</span>
+            <span class="n">t_mean</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_m</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span>
+            <span class="n">t_stdv</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span> <span class="o">=</span> <span class="n">t_s</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span>
+            <span class="n">t_N</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span> <span class="o">=</span> <span class="n">N</span>
 
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span> <span class="p">,</span><span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="n">t</span> <span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span></div>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span> <span class="p">,</span><span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="n">t_mean</span> <span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">t_stdv</span><span class="p">,</span> <span class="n">t_N</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Cal.temperature_after"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_after">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the temperature of the end volume.</span>
 <span class="sd">        Stores result under the path *Temperature, after, K*</span>
+<span class="sd">        The used  sensors are:</span>
+<span class="sd">        *channel 1001 to 1030* and *channel 2001 to 2028*</span>
 
 <span class="sd">        :param: Class with methode</span>
 <span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
 <span class="sd">                pick(quantity, type, unit)</span>
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_vessel</span><span class="p">()</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="n">tem</span> <span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Cal.temperature_volume_s"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_volume_s">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_volume_s</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (0.02l) volume. The used  sensors are:</span>
-
-<span class="sd">        *channel 3001 to 3003*</span>
-
-<span class="sd">        .. note::</span>
-
-<span class="sd">            range(3001,3004) becomes  3001 to 3003</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">chs</span>     <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3001</span><span class="p">,</span> <span class="mi">3004</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;_before&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-        <span class="n">conv</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_volume_m"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_volume_m">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_volume_m</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (0.2l) volume. The used  sensors are:</span>
-
-<span class="sd">        *channel 3004 to 3013*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chs</span>     <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3004</span><span class="p">,</span> <span class="mi">3014</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;_before&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-        <span class="n">conv</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_volume_l"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_volume_l">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_volume_l</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (0.2l) volume. The used  sensors are:</span>
-
-<span class="sd">        *channel 3014 to 3030*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chs</span>     <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3014</span><span class="p">,</span> <span class="mi">3031</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;_before&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-        <span class="n">conv</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_vessel"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_vessel">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_vessel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (0.2l) volume. The used  sensors are:</span>
-
-<span class="sd">        *channel 1001 to 1030* and *channel 2001 to 2028*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="mi">1031</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">2029</span><span class="p">))</span>
-
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;_after&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-        <span class="n">conv</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+        <span class="n">t_mean</span><span class="p">,</span> <span class="n">t_stdv</span><span class="p">,</span> <span class="n">t_N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1001</span><span class="p">,</span> <span class="mi">1031</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2001</span><span class="p">,</span> <span class="mi">2029</span><span class="p">)),</span> <span class="s2">&quot;_after&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span><span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="n">t_mean</span> <span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">t_stdv</span><span class="p">,</span> <span class="n">t_N</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Cal.temperature_room"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_room">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_room</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the temperature of the room.</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_foe24</span><span class="p">()</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span><span class="s2">&quot;room&quot;</span><span class="p">,</span> <span class="n">tem</span> <span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_foe24"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperature_foe24">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_foe24</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the room. The used  sensors are:</span>
-
-<span class="sd">        *channel 2029 to 2030*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">chs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2029</span><span class="p">,</span> <span class="mi">2031</span><span class="p">))</span>
-
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;_before&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_ch_&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-        <span class="n">conv</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div></div>
+        <span class="n">t_mean</span><span class="p">,</span> <span class="n">t_stdv</span><span class="p">,</span> <span class="n">t_N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">2029</span><span class="p">,</span> <span class="mi">2031</span><span class="p">)),</span> <span class="s2">&quot;_after&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span><span class="s2">&quot;room&quot;</span><span class="p">,</span> <span class="n">t_mean</span> <span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">,</span> <span class="n">t_stdv</span><span class="p">,</span> <span class="n">t_N</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
