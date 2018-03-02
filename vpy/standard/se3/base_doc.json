@@ -14,6 +14,18 @@
         ],
         "Uncertainty": [
             {
+                "Type": "u_f_m",
+                "Value": "2.2e-4",
+                "Unit": "1",
+                "Comment": "nach QSE-SE3-18-4"
+            },
+            {
+                "Type": "u_f_l",
+                "Value": "2.2e-4",
+                "Unit": "1",
+                "Comment": "nach QSE-SE3-18-5"
+            },
+            {
                 "Type": "u_V_5",
                 "Value": "0.91",
                 "Unit": "cm^3",
@@ -78,8 +90,14 @@
             {
                 "Type": "f_m",
                 "Unit": "1",
-                "Value": "1.0106e-3",
+                "Value": "1.0657e-3",
                 "Comment": "nach QSE-SE3-18-4"
+            },
+            {
+                "Type": "f_l",
+                "Unit": "1",
+                "Value": "1.00177e-2",
+                "Comment": "nach QSE-SE3-18-5"
             }
         ]
     },
