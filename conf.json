@@ -5,7 +5,8 @@
   },
   "standards":{
     "se3":{
-        "temp_doc_view":"se3_req/doc"
+        "all_doc_view":"se3_req/doc",
+        "state_doc_view":"se3_req/meas"
     }
   }
 }

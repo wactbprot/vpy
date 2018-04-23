@@ -9,6 +9,48 @@ class Cal(Se3):
 
         self.log.debug("init func: {}".format(__name__))
 
+    def volume_add(self, res):
+        """ Calculates additional volumes of dut-a,b,c branch of state
+        measurement documents.
+
+
+        .. math::
+
+                V_{add} = V_5 \\frac{p_{after}}{p_{before} - p_{after}}
+
+        Stores result under the path *Volume, add_x, cm^3*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        V_5          = self.get_value("V_5","cm^3")
+
+        p_before_a   = self.Pres.get_value("add_vol_a_before", "mbar")
+        p_before_ab  = self.Pres.get_value("add_vol_ab_before", "mbar")
+        p_before_abc = self.Pres.get_value("add_vol_abc_before", "mbar")
+
+        p_after_a    = self.Pres.get_value("add_vol_a_after", "mbar")
+        p_after_ab   = self.Pres.get_value("add_vol_ab_after", "mbar")
+        p_after_abc  = self.Pres.get_value("add_vol_abc_after", "mbar")
+
+        V_add_a   = V_5*p_after_a/(p_before_a-p_after_a)
+        V_add_ab  = V_5*p_after_ab/(p_before_ab-p_after_ab)
+        V_add_abc = V_5*p_after_abc/(p_before_abc-p_after_abc)
+
+        V_add_b = V_add_ab-V_add_a
+        V_add_c = V_add_abc-V_add_ab
+
+        res.store("Volume" ,"add_a",   V_add_a, "cm^3")
+        res.store("Volume" ,"add_ab",  V_add_ab, "cm^3")
+        res.store("Volume" ,"add_abc", V_add_abc, "cm^3")
+
+        res.store("Volume" ,"add_a",   V_add_a, "cm^3")
+        res.store("Volume" ,"add_b",   V_add_b, "cm^3")
+        res.store("Volume" ,"add_c",   V_add_c, "cm^3")
+
+
     def pressure_cal(self, res):
         """Calculates the calibration pressure by means of defined model
 
@@ -21,7 +63,6 @@ class Cal(Se3):
         """
 
         self.define_model()
-        self.get_add_ratio(res)
         self.pressure_fill(res)
         self.temperature_before(res)
         self.temperature_after(res)
@@ -32,25 +73,6 @@ class Cal(Se3):
 
         res.store("Pressure" ,"cal", p_cal, self.unit)
 
-    def get_add_ratio(self, res):
-        """ Calculates the pressure ratio measured during
-        the estimation of additional volume and stores it
-        below ``Ratio``
-
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        """
-
-        p_before = self.Aux.get_value("add_before", "V")
-        p_after  = self.Aux.get_value("add_after","V")
-        if p_before is None and p_after is None:
-            r_add = 0.0
-            self.log.warn("No additional Volume, r_add becomes 0.0")
-        else:
-            r_add = np.nanmean(p_after/(p_before - p_after))
-
-        res.store("Ratio" ,"add", np.full(self.no_of_meas_points, r_add), "1")
 
     def get_expansion(self):
         """Returns an np.array containing

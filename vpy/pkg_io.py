@@ -100,16 +100,19 @@ class Io(object):
             self.log.warn("Result is not saved (use -s param)")
 
 
-    def get_doc_db(self, docid):
+    def get_doc_db(self, doc_id):
         """Gets the document from the database.
 
-        :param docid: document id
-        :type docid: str
+        :param doc_id: document id
+        :type doc_id: str
+
+        :returns: assembled dictionary
+        :rtype: dict
         """
 
         srv = couchdb.Server(self.config['db']['url'])
         db  = srv[self.config['db']['name']]
-        doc = db.get(docid)
+        doc = db.get(doc_id)
 
         if doc:
             if "error" in doc:
@@ -121,7 +124,7 @@ class Io(object):
                 self.log.info("""got document from database """)
         else:
             err_msg = """document with id {}
-                      not found""".format(docid)
+                      not found""".format(doc_id)
             self.log.error(err_msg)
             sys.exit(err_msg)
 
@@ -140,7 +143,7 @@ class Io(object):
     def get_base_doc(self, name):
         srv  = couchdb.Server(self.config['db']['url'])
         db   = srv[self.config['db']['name']]
-        view = self.config['standards'][name]['temp_doc_view']
+        view = self.config['standards'][name]['all_doc_view']
 
         doc = {
                 "Standard":{},
@@ -168,6 +171,33 @@ class Io(object):
                 cob[j]["Values"] = val[j]
 
             doc["CalibrationObject"].append(cob[j])
+
+        return doc
+
+    def get_state_meas_doc(self, name, doc_id=False):
+        """Gets and returns:
+
+         a) a certain document with ```doc_id``` or
+         b) the latest
+
+        containing the additional volume outgasing rate ect.
+
+        :param name: name of the calibration standard
+        :type name: str
+        :param doc_id: id of the document to get
+        :type doc_id: str
+        :returns: document
+        :rtype: dict
+        """
+        srv  = couchdb.Server(self.config['db']['url'])
+        db   = srv[self.config['db']['name']]
+
+        if doc_id:
+            doc = self.get_doc_db(doc_id)
+        else:
+            view = self.config['standards'][name]['state_doc_view']
+            for item in db.view(view):
+                doc = item.value
 
         return doc
 

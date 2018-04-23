@@ -16,6 +16,6 @@ def main():
     unc.total(res)
     p = res.pick("Pressure", "cal", "mbar")
     u = res.pick("Uncertainty", "total", "1")*1.4
-    print([p,u])
+    
 if __name__ == "__main__":
     main()

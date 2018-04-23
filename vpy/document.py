@@ -90,7 +90,7 @@ class Document(object):
             obj['Value'] = val
             return obj
         else:
-            self.log.error("Type " + val + "not found")
+            self.log.warn("Type " + val + " not found")
             return None
 
     def get_expression(self, val, unit, o=False):
@@ -156,7 +156,7 @@ class Document(object):
                     return np.array([obj['Value']], dtype="f")
 
         else:
-            self.log.error("Value of Type {} not found".format(val))
+            self.log.warn("Value of Type {} not found".format(val))
             return None
 
     def get_object(self, key, val, o=False, d=0):

@@ -17,6 +17,9 @@ class Standard(Document):
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
+        if 'State' in doc:
+            doc = doc['State']
+
         if 'Standard' in doc:
             doc = doc['Standard']
 

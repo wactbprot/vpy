@@ -544,13 +544,48 @@ numpy typed values.</p>
 
 <dl class="method">
 <dt id="vpy.pkg_io.Io.get_doc_db">
-<code class="descname">get_doc_db</code><span class="sig-paren">(</span><em>docid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_doc_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_doc_db" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_doc_db</code><span class="sig-paren">(</span><em>doc_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_doc_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_doc_db" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the document from the database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>docid</strong> (<em>str</em>) – document id</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>doc_id</strong> (<em>str</em>) – document id</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">assembled dictionary</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.get_state_meas_doc">
+<code class="descname">get_state_meas_doc</code><span class="sig-paren">(</span><em>name</em>, <em>doc_id=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_state_meas_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_state_meas_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets and returns:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li>a certain document with <code class="docutils literal"><span class="pre">`doc_id`</span></code> or</li>
+<li>the latest</li>
+</ol>
+</div></blockquote>
+<p>containing the additional volume outgasing rate ect.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> (<em>str</em>) – name of the calibration standard</li>
+<li><strong>doc_id</strong> (<em>str</em>) – id of the document to get</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">document</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
 </tr>
 </tbody>
 </table>

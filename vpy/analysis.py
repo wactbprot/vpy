@@ -16,7 +16,6 @@ class Analysis(Document):
                     "Values":{}}
         super().__init__(o)
         self.org = doc
-
         self.log.debug("init func: {}".format(__name__))
 
     def store(self, quant, t, v, u, sd=None, n=None):
@@ -82,6 +81,8 @@ class Analysis(Document):
         """
         if "Calibration" in self.org:
             self.org['Calibration']['Analysis'] = self.doc
+        elif "State" in self.org:
+            self.org['State']['Analysis'] = self.doc
         else:
             self.org['Analysis'] = self.doc
 

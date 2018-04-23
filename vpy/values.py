@@ -62,6 +62,9 @@ class AuxValues(Document):
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
+        if 'State' in doc:
+            doc = doc['State']
+
         if 'Measurement' in doc:
             doc = doc['Measurement']
 
@@ -160,7 +163,7 @@ class AuxSe3(AuxValues):
             self.log.info("Name of Expansion not available in AuxValues")
             return None
 
-    
+
 class AuxSe2(AuxValues):
     """AuxValues for SE3 Standard.
     """

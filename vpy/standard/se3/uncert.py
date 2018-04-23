@@ -36,7 +36,6 @@ class Uncert(Se3):
                        )
 
         res.store("Uncertainty", "total", u_t,"1")
-        print(self.val_dict["f"]*self.val_dict["p_fill"])
         self.log.info("Calibration pressure: {}".format(self.val_dict["f"]*self.val_dict["p_fill"]))
         self.log.info("Uncertainty total: {}".format(u_t))
 

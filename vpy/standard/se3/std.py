@@ -11,12 +11,12 @@ from ..standard import Standard
 from ...device.cdg  import Cdg
 
 class Se3(Standard):
-    """Configuration and methodes of static expansion system Se3.
+    """Configuration and methodes of static expansion system SE3.
 
     There is a need to define the  ``no_of_meas_points``:
     the time: ``amt_fill`` (absolut measure time of filling pressure)
-    is used for this purpos.
-
+    is used for this purpose if doc is a calibration. For the analysis of
+    state measurements ``amt`` is used.
     """
     name = "SE3"
     unit = "mbar"
@@ -38,7 +38,12 @@ class Se3(Standard):
         self.Time = Time(doc)
         self.Aux  = AuxSe3(doc)
 
-        self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
+
+        time = self.Time.get_value("amt_fill", "ms")
+        if time is None:
+            time = self.Time.get_value("amt", "ms")
+
+        self.no_of_meas_points = len(time)
 
         self.TDev  = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
 
@@ -69,21 +74,15 @@ class Se3(Standard):
 
         .. math::
 
-                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{5}r_{add}}{V_{start}}}
+                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{add}}{V_{start}}}
 
-        and
-
-        .. math::
-
-                r_{add} = \\frac{p_{after}}{p_{before} - p_{after}}
 
         :type: class
         """
         f         = sym.Symbol('f')
         p_fill    = sym.Symbol('p_fill')
-        V_5       = sym.Symbol('V_5')
         V_start   = sym.Symbol('V_start')
-        r_add     = sym.Symbol('r_add')
+        V_add     = sym.Symbol('V_add')
         T_before  = sym.Symbol('T_before')
         T_after   = sym.Symbol('T_after')
         rg        = sym.Symbol('rg')
@@ -91,15 +90,14 @@ class Se3(Standard):
         self.symb = (
                     f,
                     p_fill,
-                    V_5,
                     V_start,
-                    r_add,
+                    V_add,
                     T_before,
                     T_after,
                     rg,
                     )
 
-        self.model = p_fill*1.0/(1.0/f+V_5*r_add/V_start)/T_before*T_after/rg
+        self.model = p_fill*1.0/(1.0/f+V_add/V_start)/T_before*T_after/rg
 
     def gen_val_array(self, res):
         """Generates a array of values
@@ -109,7 +107,7 @@ class Se3(Standard):
         #. p_fill
         #. V_5
         #. V_start
-        #. r_add
+        #. V_add
         #. T_before
         #. T_after
 
@@ -125,7 +123,7 @@ class Se3(Standard):
                     self.val_dict['p_fill'],
                     self.val_dict['V_5'],
                     self.val_dict['V_start'],
-                    self.val_dict['r_add'],
+                    self.val_dict['V_add'],
                     self.val_dict['T_before'],
                     self.val_dict['T_after'],
                     self.val_dict['rg'],
@@ -164,14 +162,11 @@ class Se3(Standard):
             V_start[idxl] = self.get_value("V_l","cm^3")
             f[idxl]       = self.get_value("f_l","1")
 
-        V_5  = self.get_value("V_5", "cm^3")
-
         self.val_dict = {
         'f': f,
         'p_fill':res.pick("Pressure", "fill", self.unit),
-        'V_5': np.full(self.no_of_meas_points, V_5),
         'V_start':V_start,
-        'r_add': res.pick("Ratio", "add", "1"),
+        'V_add': res.pick("Volume", "add", "1"),
         'T_before':res.pick("Temperature", "before", "K"),
         'T_after':res.pick("Temperature", "after", "K"),
         'rg':res.pick("Correction", "rg", "1"),
