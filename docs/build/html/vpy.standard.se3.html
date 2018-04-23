@@ -192,24 +192,6 @@
 <em class="property">class </em><code class="descclassname">vpy.standard.se3.cal.</code><code class="descname">Cal</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.standard.se3.std.Se3" title="vpy.standard.se3.std.Se3"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.se3.std.Se3</span></code></a></p>
 <dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.get_add_ratio">
-<code class="descname">get_add_ratio</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.get_add_ratio"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.get_add_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the pressure ratio measured during
-the estimation of additional volume and stores it
-below <code class="docutils literal"><span class="pre">Ratio</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
-store(quantity, type, value, unit, [stdev], [N])) and
-pick(quantity, type, unit)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.get_expansion">
 <code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.get_expansion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an np.array containing
@@ -364,6 +346,28 @@ pick(quantity, type, unit)</td>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.volume_add">
+<code class="descname">volume_add</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.volume_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.volume_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates additional volumes of dut-a,b,c branch of state
+measurement documents.</p>
+<div class="math">
+\[V_{add} = V_5 \frac{p_{after}}{p_{before} - p_{after}}\]</div>
+<p>Stores result under the path <em>Volume, add_x, cm^3</em></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -376,7 +380,8 @@ pick(quantity, type, unit)</td>
 <p>Configuration and methodes of static expansion system SE3.</p>
 <p>There is a need to define the  <code class="docutils literal"><span class="pre">no_of_meas_points</span></code>:
 the time: <code class="docutils literal"><span class="pre">amt_fill</span></code> (absolut measure time of filling pressure)
-is used for this purpose.</p>
+is used for this purpose if doc is a calibration. For the analysis of
+state measurements <code class="docutils literal"><span class="pre">amt</span></code> is used.</p>
 <dl class="method">
 <dt id="vpy.standard.se3.std.Se3.define_model">
 <code class="descname">define_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.define_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.define_model" title="Permalink to this definition">¶</a></dt>
@@ -395,10 +400,7 @@ The order of symbols must match the order in <code class="docutils literal"><spa
 \[p = f_{corr} p_{fill}\]</div>
 <p>with</p>
 <div class="math">
-\[f_{corr} = \frac{1}{ \frac{1}{f} + \frac{V_{5}r_{add}}{V_{start}}}\]</div>
-<p>and</p>
-<div class="math">
-\[r_{add} = \frac{p_{after}}{p_{before} - p_{after}}\]</div>
+\[f_{corr} = \frac{1}{ \frac{1}{f} + \frac{V_{add}}{V_{start}}}\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -419,7 +421,7 @@ with the same order as define_models symbols order:</p>
 <li>p_fill</li>
 <li>V_5</li>
 <li>V_start</li>
-<li>r_add</li>
+<li>V_add</li>
 <li>T_before</li>
 <li>T_after</li>
 </ol>

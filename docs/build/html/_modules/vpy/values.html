@@ -219,6 +219,9 @@
         <span class="k">if</span> <span class="s1">&#39;Calibration&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Calibration&#39;</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="s1">&#39;State&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="s1">&#39;Measurement&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Measurement&#39;</span><span class="p">]</span>
 
@@ -317,7 +320,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Name of Expansion not available in AuxValues&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">None</span></div></div>
 
-    
+
 <div class="viewcode-block" id="AuxSe2"><a class="viewcode-back" href="../../vpy.html#vpy.values.AuxSe2">[docs]</a><span class="k">class</span> <span class="nc">AuxSe2</span><span class="p">(</span><span class="n">AuxValues</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AuxValues for SE3 Standard.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

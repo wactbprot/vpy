@@ -172,8 +172,8 @@
 
 <span class="sd">    There is a need to define the  ``no_of_meas_points``:</span>
 <span class="sd">    the time: ``amt_fill`` (absolut measure time of filling pressure)</span>
-<span class="sd">    is used for this purpose.</span>
-
+<span class="sd">    is used for this purpose if doc is a calibration. For the analysis of</span>
+<span class="sd">    state measurements ``amt`` is used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;SE3&quot;</span>
     <span class="n">unit</span> <span class="o">=</span> <span class="s2">&quot;mbar&quot;</span>
@@ -195,7 +195,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">Time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span>  <span class="o">=</span> <span class="n">AuxSe3</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">))</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span>  <span class="o">=</span> <span class="n">Dmm</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;SE3_Temperature_Keithley&quot;</span><span class="p">))</span>
 
@@ -226,21 +231,15 @@
 
 <span class="sd">        .. math::</span>
 
-<span class="sd">                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{5}r_{add}}{V_{start}}}</span>
+<span class="sd">                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{add}}{V_{start}}}</span>
 
-<span class="sd">        and</span>
-
-<span class="sd">        .. math::</span>
-
-<span class="sd">                r_{add} = \\frac{p_{after}}{p_{before} - p_{after}}</span>
 
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span>         <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span>
         <span class="n">p_fill</span>    <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;p_fill&#39;</span><span class="p">)</span>
-        <span class="n">V_5</span>       <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_5&#39;</span><span class="p">)</span>
         <span class="n">V_start</span>   <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_start&#39;</span><span class="p">)</span>
-        <span class="n">r_add</span>     <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;r_add&#39;</span><span class="p">)</span>
+        <span class="n">V_add</span>     <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;V_add&#39;</span><span class="p">)</span>
         <span class="n">T_before</span>  <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;T_before&#39;</span><span class="p">)</span>
         <span class="n">T_after</span>   <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;T_after&#39;</span><span class="p">)</span>
         <span class="n">rg</span>        <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">Symbol</span><span class="p">(</span><span class="s1">&#39;rg&#39;</span><span class="p">)</span>
@@ -248,15 +247,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">symb</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">f</span><span class="p">,</span>
                     <span class="n">p_fill</span><span class="p">,</span>
-                    <span class="n">V_5</span><span class="p">,</span>
                     <span class="n">V_start</span><span class="p">,</span>
-                    <span class="n">r_add</span><span class="p">,</span>
+                    <span class="n">V_add</span><span class="p">,</span>
                     <span class="n">T_before</span><span class="p">,</span>
                     <span class="n">T_after</span><span class="p">,</span>
                     <span class="n">rg</span><span class="p">,</span>
                     <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">p_fill</span><span class="o">*</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">f</span><span class="o">+</span><span class="n">V_5</span><span class="o">*</span><span class="n">r_add</span><span class="o">/</span><span class="n">V_start</span><span class="p">)</span><span class="o">/</span><span class="n">T_before</span><span class="o">*</span><span class="n">T_after</span><span class="o">/</span><span class="n">rg</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">p_fill</span><span class="o">*</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">f</span><span class="o">+</span><span class="n">V_add</span><span class="o">/</span><span class="n">V_start</span><span class="p">)</span><span class="o">/</span><span class="n">T_before</span><span class="o">*</span><span class="n">T_after</span><span class="o">/</span><span class="n">rg</span></div>
 
 <div class="viewcode-block" id="Se3.gen_val_array"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.std.Se3.gen_val_array">[docs]</a>    <span class="k">def</span> <span class="nf">gen_val_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates a array of values</span>
@@ -266,7 +264,7 @@
 <span class="sd">        #. p_fill</span>
 <span class="sd">        #. V_5</span>
 <span class="sd">        #. V_start</span>
-<span class="sd">        #. r_add</span>
+<span class="sd">        #. V_add</span>
 <span class="sd">        #. T_before</span>
 <span class="sd">        #. T_after</span>
 
@@ -282,7 +280,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;p_fill&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_5&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_start&#39;</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;r_add&#39;</span><span class="p">],</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_add&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;T_before&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;T_after&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;rg&#39;</span><span class="p">],</span>
@@ -321,14 +319,11 @@
             <span class="n">V_start</span><span class="p">[</span><span class="n">idxl</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;V_l&quot;</span><span class="p">,</span><span class="s2">&quot;cm^3&quot;</span><span class="p">)</span>
             <span class="n">f</span><span class="p">[</span><span class="n">idxl</span><span class="p">]</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;f_l&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
 
-        <span class="n">V_5</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;V_5&quot;</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span>
         <span class="s1">&#39;p_fill&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">),</span>
-        <span class="s1">&#39;V_5&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">V_5</span><span class="p">),</span>
         <span class="s1">&#39;V_start&#39;</span><span class="p">:</span><span class="n">V_start</span><span class="p">,</span>
-        <span class="s1">&#39;r_add&#39;</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;V_add&#39;</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
         <span class="s1">&#39;T_before&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
         <span class="s1">&#39;T_after&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
         <span class="s1">&#39;rg&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;rg&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
