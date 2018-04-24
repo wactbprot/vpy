@@ -174,7 +174,7 @@ class Io(object):
 
         return doc
 
-    def get_state_meas_doc(self, name, doc_id=False):
+    def get_state_doc(self, name):
         """Gets and returns:
 
          a) a certain document with ```doc_id``` or
@@ -184,20 +184,24 @@ class Io(object):
 
         :param name: name of the calibration standard
         :type name: str
-        :param doc_id: id of the document to get
-        :type doc_id: str
+
         :returns: document
         :rtype: dict
         """
         srv  = couchdb.Server(self.config['db']['url'])
         db   = srv[self.config['db']['name']]
 
-        if doc_id:
+        if self.args.id:
+            self.log.info("""try to get document {}
+                          from database""".format(self.args.id))
+            doc_id = self.args.id[0]
             doc = self.get_doc_db(doc_id)
         else:
             view = self.config['standards'][name]['state_doc_view']
             for item in db.view(view):
                 doc = item.value
+
+            self.args.id = doc['_id']
 
         return doc
 

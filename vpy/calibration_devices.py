@@ -11,6 +11,9 @@ class CalibrationObject(Document):
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
+        if 'State' in doc:
+            doc = doc['State']
+
         if 'CalibrationObject' in doc:
             cob = doc['CalibrationObject']
             super().__init__(cob)

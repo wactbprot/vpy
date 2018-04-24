@@ -16,6 +16,9 @@ class Values(Document):
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
+        if 'State' in doc:
+            doc = doc['State']
+
         if quant in doc:
             doc = doc[quant]
 

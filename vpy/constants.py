@@ -20,6 +20,9 @@ class Constants(Document):
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
+        if 'State' in doc:
+            doc = doc['State']
+
         if 'Constants' in doc:
             super().__init__(doc['Constants'])
 

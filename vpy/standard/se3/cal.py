@@ -2,12 +2,35 @@ import numpy as np
 import sympy as sym
 from .std import Se3
 
+
 class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
 
         self.log.debug("init func: {}".format(__name__))
+
+    def outgas_rate(self, res):
+        """ Calculates the outgasing rate of  dut-a,b,c
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        m_abc = self.Pres.get_value("rise_abc_slope_x", "mbar/ms")
+        m_bc = self.Pres.get_value("rise_bc_slope_x", "mbar/ms")
+        m_c = self.Pres.get_value("rise_c_slope_x", "mbar/ms")
+        m_u = self.Pres.get_value("rise_u_slope_x", "mbar/ms")
+
+        m_b = m_bc - m_c
+        m_a = m_abc - m_bc
+        
+        res.store("OutGasRate", "outgas_a",  m_a, "mbar/ms")
+        res.store("OutGasRate", "outgas_b",  m_b, "mbar/ms")
+        res.store("OutGasRate", "outgas_c",  m_c, "mbar/ms")
+        res.store("OutGasRate", "outgas",  m_u, "mbar/ms")
+
 
     def volume_add(self, res):
         """ Calculates additional volumes of dut-a,b,c branch of state
@@ -25,31 +48,40 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        V_5          = self.get_value("V_5","cm^3")
-
-        p_before_a   = self.Pres.get_value("add_vol_a_before", "mbar")
-        p_before_ab  = self.Pres.get_value("add_vol_ab_before", "mbar")
+        V_5 = self.get_value("V_5", "cm^3")
+        p_before = self.Pres.get_value("add_vol_before", "mbar")
+        p_before_a = self.Pres.get_value("add_vol_a_before", "mbar")
+        p_before_ab = self.Pres.get_value("add_vol_ab_before", "mbar")
         p_before_abc = self.Pres.get_value("add_vol_abc_before", "mbar")
 
-        p_after_a    = self.Pres.get_value("add_vol_a_after", "mbar")
-        p_after_ab   = self.Pres.get_value("add_vol_ab_after", "mbar")
-        p_after_abc  = self.Pres.get_value("add_vol_abc_after", "mbar")
+        p_after = self.Pres.get_value("add_vol_after", "mbar")
+        p_after_a = self.Pres.get_value("add_vol_a_after", "mbar")
+        p_after_ab = self.Pres.get_value("add_vol_ab_after", "mbar")
+        p_after_abc = self.Pres.get_value("add_vol_abc_after", "mbar")
 
-        V_add_a   = V_5*p_after_a/(p_before_a-p_after_a)
-        V_add_ab  = V_5*p_after_ab/(p_before_ab-p_after_ab)
-        V_add_abc = V_5*p_after_abc/(p_before_abc-p_after_abc)
+        V_add = V_5 * p_after / (p_before - p_after)
+        V_add_a = V_5 * p_after_a / (p_before_a - p_after_a)
+        V_add_ab = V_5 * p_after_ab / (p_before_ab - p_after_ab)
+        V_add_abc = V_5 * p_after_abc / (p_before_abc - p_after_abc)
 
-        V_add_b = V_add_ab-V_add_a
-        V_add_c = V_add_abc-V_add_ab
+        V_a = V_add_a - V_add
+        V_b = V_add_ab - V_add - V_a
+        V_c = V_add_abc - V_add - V_a - V_b
 
-        res.store("Volume" ,"add_a",   V_add_a, "cm^3")
-        res.store("Volume" ,"add_ab",  V_add_ab, "cm^3")
-        res.store("Volume" ,"add_abc", V_add_abc, "cm^3")
+        V_add_bc = V_add + V_b + V_c
+        V_add_c = V_add  + V_c
 
-        res.store("Volume" ,"add_a",   V_add_a, "cm^3")
-        res.store("Volume" ,"add_b",   V_add_b, "cm^3")
-        res.store("Volume" ,"add_c",   V_add_c, "cm^3")
+        res.store("Volume", "add_z",   V_add, "cm^3")
 
+        res.store("Volume", "add_a",   V_add_a, "cm^3")
+        res.store("Volume", "add_ab",  V_add_ab, "cm^3")
+        res.store("Volume", "add_abc", V_add_abc, "cm^3")
+        res.store("Volume", "add_bc",   V_add_bc, "cm^3")
+        res.store("Volume", "add_c",  V_add_c, "cm^3")
+
+        res.store("Volume", "a",   V_a, "cm^3")
+        res.store("Volume", "b",   V_b, "cm^3")
+        res.store("Volume", "c",   V_c, "cm^3")
 
     def pressure_cal(self, res):
         """Calculates the calibration pressure by means of defined model
@@ -71,8 +103,7 @@ class Cal(Se3):
 
         p_cal = sym.lambdify(self.symb, self.model, "numpy")(*self.val_arr)
 
-        res.store("Pressure" ,"cal", p_cal, self.unit)
-
+        res.store("Pressure", "cal", p_cal, self.unit)
 
     def get_expansion(self):
         """Returns an np.array containing
@@ -103,8 +134,7 @@ class Cal(Se3):
         p_nd_off = self.Pres.get_value("nd_offset", "mbar")
         p_nd_ind = self.Pres.get_value("nd_ind", "mbar")
 
-        res.store("Pressure" ,"nd", p_nd_ind - p_nd_off , "mbar")
-
+        res.store("Pressure", "nd", p_nd_ind - p_nd_off, "mbar")
 
     def pressure_fill(self, res):
         """Calculates the singel and mean value of the filling pressure
@@ -119,19 +149,19 @@ class Cal(Se3):
         """
         val_conf_time = self.val_conf["Time"]["Fill"]
         aux_conf_time = self.aux_val_conf["Time"]["Offset"]
-        val_conf      = self.val_conf["Pressure"]["Fill"]
+        val_conf = self.val_conf["Pressure"]["Fill"]
 
         val_conf_targ = self.val_conf["Pressure"]["FillTarget"]
-        aux_conf      = self.aux_val_conf["Pressure"]["Offset"]
+        aux_conf = self.aux_val_conf["Pressure"]["Offset"]
 
-        fill_time     = self.Time.get_value(val_conf_time["Type"],
-                                            val_conf_time["Unit"])
+        fill_time = self.Time.get_value(val_conf_time["Type"],
+                                        val_conf_time["Unit"])
 
-        fill_target   = self.Pres.get_value(val_conf_targ["Type"],
-                                            val_conf_targ["Unit"])
+        fill_target = self.Pres.get_value(val_conf_targ["Type"],
+                                          val_conf_targ["Unit"])
 
-        N   = len(val_conf)
-        M   = self.no_of_meas_points
+        N = len(val_conf)
+        M = self.no_of_meas_points
 
         cor_arr = []
         for i in range(N):
@@ -143,33 +173,36 @@ class Cal(Se3):
 
             ind = self.Pres.get_value(val["Type"], val["Unit"])
             off = self.Aux.get_val_by_time(fill_time, aux_conf_time["Type"],
-                                                        aux_conf_time["Unit"],
-                                                        aux["Type"],
-                                                        aux["Unit"])
-            p   = ind - off
-            e   = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
+                                           aux_conf_time["Unit"],
+                                           aux["Type"],
+                                           aux["Unit"])
+            p = ind - off
+            e = FillDev.get_error_interpol(
+                p, self.unit, fill_target, self.unit)
 
-            p_corr = p/(e + 1.0)
+            p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
             ldevname = FillDev.get_name().lower()
-            res.store("Pressure" ,"{}-fill".format(ldevname), p_corr , val["Unit"])
-            res.store("Pressure" ,"{}-fill_offset".format(ldevname), off, val["Unit"])
+            res.store("Pressure", "{}-fill".format(ldevname),
+                      p_corr, val["Unit"])
+            res.store("Pressure", "{}-fill_offset".format(ldevname),
+                      off, val["Unit"])
 
-        p_mean  = np.nanmean(cor_arr, axis=0)
+        p_mean = np.nanmean(cor_arr, axis=0)
 
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
-        p_std        = np.nanstd(cor_arr, axis=0)
-        n            = np.apply_along_axis(cnt_nan, 0, cor_arr)
+        p_std = np.nanstd(cor_arr, axis=0)
+        n = np.apply_along_axis(cnt_nan, 0, cor_arr)
 
-        res.store("Pressure" ,"fill", p_mean, val["Unit"], p_std, n)
+        res.store("Pressure", "fill", p_mean, val["Unit"], p_std, n)
 
-    def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr= "corr_ch_"):
+    def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
         tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")
         cor_arr = self.TDev.get_array(prefix_corr, channels, sufix_corr, "K")
 
-        conv    = self.Cons.get_conv("C", "K")
+        conv = self.Cons.get_conv("C", "K")
         t_m = np.mean(tem_arr + cor_arr + conv, axis=0)
         t_s = np.std(tem_arr + cor_arr + conv, axis=0)
 
@@ -193,10 +226,10 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        f   = self.get_expansion()
-        t_mean  = np.full(self.no_of_meas_points, np.nan)
-        t_stdv  = np.full(self.no_of_meas_points, np.nan)
-        t_N     = np.full(self.no_of_meas_points, np.nan)
+        f = self.get_expansion()
+        t_mean = np.full(self.no_of_meas_points, np.nan)
+        t_stdv = np.full(self.no_of_meas_points, np.nan)
+        t_N = np.full(self.no_of_meas_points, np.nan)
 
         i_s = np.where(f == "f_s")[0]
         i_m = np.where(f == "f_m")[0]
@@ -223,7 +256,7 @@ class Cal(Se3):
             t_stdv[i_l] = t_s[i_l]
             t_N[i_l] = N
 
-        res.store("Temperature" ,"before", t_mean , "K", t_stdv, t_N)
+        res.store("Temperature", "before", t_mean, "K", t_stdv, t_N)
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
@@ -237,8 +270,9 @@ class Cal(Se3):
         :type: class
         """
 
-        t_mean, t_stdv, t_N = self.temperature(list(range(1001, 1031)) + list(range(2001, 2029)), "_after")
-        res.store("Temperature","after", t_mean , "K", t_stdv, t_N)
+        t_mean, t_stdv, t_N = self.temperature(
+            list(range(1001, 1031)) + list(range(2001, 2029)), "_after")
+        res.store("Temperature", "after", t_mean, "K", t_stdv, t_N)
 
     def temperature_room(self, res):
         """Calculates the temperature of the room.
@@ -248,5 +282,6 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_after")
-        res.store("Temperature","room", t_mean , "K", t_stdv, t_N)
+        t_mean, t_stdv, t_N = self.temperature(
+            list(range(2029, 2031)), "_after")
+        res.store("Temperature", "room", t_mean, "K", t_stdv, t_N)
