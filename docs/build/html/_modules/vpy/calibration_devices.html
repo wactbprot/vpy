@@ -168,6 +168,9 @@
         <span class="k">if</span> <span class="s1">&#39;Calibration&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;Calibration&#39;</span><span class="p">]</span>
 
+        <span class="k">if</span> <span class="s1">&#39;State&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;State&#39;</span><span class="p">]</span>
+
         <span class="k">if</span> <span class="s1">&#39;CalibrationObject&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="n">cob</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;CalibrationObject&#39;</span><span class="p">]</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">cob</span><span class="p">)</span>

@@ -192,6 +192,33 @@
 <em class="property">class </em><code class="descclassname">vpy.standard.se3.cal.</code><code class="descname">Cal</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.standard.se3.std.Se3" title="vpy.standard.se3.std.Se3"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.se3.std.Se3</span></code></a></p>
 <dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.check">
+<code class="descname">check</code><span class="sig-paren">(</span><em>res</em>, <em>chk</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the measured state values against a given
+min/max-list (stored in <code class="docutils literal"><span class="pre">vpy/standard/[.]/state.json</span></code>).
+Calculates a rating for each value. The range for
+this value is [0..9] where 0 is (mostly) best and 9 is (mostly) worst.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">res Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit) to pick the values from</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">chc Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit) to store the values in</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.get_expansion">
 <code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.get_expansion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an np.array containing
@@ -204,6 +231,27 @@ of the length: <code class="docutils literal"><span class="pre">self.no_of_meas_
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of expansion names</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.outgas_rate">
+<code class="descname">outgas_rate</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.outgas_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.outgas_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the outgasing rate of  dut-a,b,c u (vacuum branch
+with dut valves closed) and v (vessel only). If the pressure rise is
+uncorrelated the minimum outgasing rate of the vessel plus 20% is used as an
+replace value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
 </tr>
 </tbody>
 </table>
@@ -259,6 +307,43 @@ pick(quantity, type, unit)</td>
 <p class="first admonition-title">Todo</p>
 <p class="last">pressure_nd is alien here–&gt; move to the surface/scripts</p>
 </div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_state">
+<code class="descname">pressure_state</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.pressure_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>So far: a simple tarnsfer of measured values to
+Analysis section.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.temperatur_single">
+<code class="descname">temperatur_single</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.temperatur_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperatur_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the correction factor for each sensor and stores the result.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

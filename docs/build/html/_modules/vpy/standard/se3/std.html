@@ -163,7 +163,7 @@
 <span class="kn">from</span> <span class="nn">...device.cdg</span> <span class="k">import</span> <span class="n">InfCdg</span>
 <span class="kn">from</span> <span class="nn">...constants</span> <span class="k">import</span> <span class="n">Constants</span>
 <span class="kn">from</span> <span class="nn">...calibration_devices</span> <span class="k">import</span>  <span class="n">CalibrationObject</span>
-<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">AuxSe3</span>
+<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">AuxSe3</span><span class="p">,</span> <span class="n">OutGasRate</span>
 <span class="kn">from</span> <span class="nn">..standard</span> <span class="k">import</span> <span class="n">Standard</span>
 <span class="kn">from</span> <span class="nn">...device.cdg</span>  <span class="k">import</span> <span class="n">Cdg</span>
 
@@ -187,26 +187,29 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./vpy/standard/se3/aux_values.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">auxf</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">aux_val_conf</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">auxf</span><span class="p">)</span>
 
-        <span class="c1"># define model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">define_model</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./vpy/standard/se3/state.json&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">statef</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">state_check</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">statef</span><span class="p">)</span>
+
         <span class="c1"># measurement values</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span> <span class="o">=</span> <span class="n">Temperature</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span> <span class="o">=</span> <span class="n">Pressure</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span>  <span class="o">=</span> <span class="n">AuxSe3</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="s1">&#39;State&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OutGas</span> <span class="o">=</span> <span class="n">OutGasRate</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">))</span>
 
-        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;Calibration&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
+            <span class="c1"># define model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">define_model</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span>  <span class="o">=</span> <span class="n">Dmm</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;SE3_Temperature_Keithley&quot;</span><span class="p">))</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">FillDevs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_conf</span><span class="p">[</span><span class="s2">&quot;Pressure&quot;</span><span class="p">][</span><span class="s2">&quot;Fill&quot;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">FillDevs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InfCdg</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="s2">&quot;DevName&quot;</span><span class="p">])))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">FillDevs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">InfCdg</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="s2">&quot;DevName&quot;</span><span class="p">])))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 

@@ -18,13 +18,13 @@ class Cal(Se3):
         this value is [0..9] where 0 is (mostly) best and 9 is (mostly) worst.
 
         :param: res Class with methode
-        store(quantity, type, value, unit, [stdev], [N])) and
-        pick(quantity, type, unit) to pick the values from
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit) to pick the values from
         :type: class
 
         :param: chc Class with methode
-        store(quantity, type, value, unit, [stdev], [N])) and
-        pick(quantity, type, unit) to store the values in
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit) to store the values in
         :type: class
         """
         sc_dict = self.state_check
@@ -67,8 +67,8 @@ class Cal(Se3):
         replace value.
 
         :param: Class with methode
-        store(quantity, type, value, unit, [stdev], [N])) and
-        pick(quantity, type, unit)
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
         :type: class
         """
         R_min = 0.99
@@ -124,7 +124,7 @@ class Cal(Se3):
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
-            :type: class
+        :type: class
         """
         L = list(range(1001, 1031)) + list(range(2001, 2031)) + \
             list(range(3001, 3031))
@@ -137,11 +137,13 @@ class Cal(Se3):
     def pressure_state(self, res):
         """ So far: a simple tarnsfer of measured values to
         Analysis section.
+
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
-            :type: class
+        :type: class
         """
+
         res.store("Pressure", "1T_1-state", self.Pres.get_value("1T_1-state", "mbar"), "mbar")
         res.store("Pressure", "1T_2-state", self.Pres.get_value("1T_2-state", "mbar"), "mbar")
         res.store("Pressure", "1T_3-state", self.Pres.get_value("1T_3-state", "mbar"), "mbar")
@@ -169,7 +171,7 @@ class Cal(Se3):
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
-            :type: class
+        :type: class
         """
 
         V_5 = self.get_value("V_5", "cm^3")

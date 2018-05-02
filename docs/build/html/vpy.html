@@ -231,8 +231,8 @@
 Results of analysis.</p>
 <dl class="method">
 <dt id="vpy.analysis.Analysis.build_doc">
-<code class="descname">build_doc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis.build_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis.build_doc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Adds the analysis to the original doc and returns it.</p>
+<code class="descname">build_doc</code><span class="sig-paren">(</span><em>dest='Analysis'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis.build_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis.build_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges the analysis dict to the original doc and returns it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -243,6 +243,12 @@ Results of analysis.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.analysis.Analysis.make_writable">
+<code class="descname">make_writable</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis.make_writable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis.make_writable" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts array, nd.array etc. to json writable lists</p>
 </dd></dl>
 
 <dl class="method">
@@ -269,6 +275,12 @@ Results of analysis.</p>
 <code class="descname">store</code><span class="sig-paren">(</span><em>quant</em>, <em>t</em>, <em>v</em>, <em>u</em>, <em>sd=None</em>, <em>n=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis.store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis.store" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stores the result of a calculation in
 the analysis structure below the given quantity.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.analysis.Analysis.store_dict">
+<code class="descname">store_dict</code><span class="sig-paren">(</span><em>quant</em>, <em>d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis.store_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis.store_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends complete dicts to document</p>
 </dd></dl>
 
 </dd></dl>
@@ -561,8 +573,8 @@ numpy typed values.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.pkg_io.Io.get_state_meas_doc">
-<code class="descname">get_state_meas_doc</code><span class="sig-paren">(</span><em>name</em>, <em>doc_id=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_state_meas_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_state_meas_doc" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.pkg_io.Io.get_state_doc">
+<code class="descname">get_state_doc</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_state_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_state_doc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets and returns:</p>
 <blockquote>
 <div><ol class="loweralpha simple">
@@ -575,17 +587,11 @@ numpy typed values.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – name of the calibration standard</li>
-<li><strong>doc_id</strong> (<em>str</em>) – id of the document to get</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> (<em>str</em>) – name of the calibration standard</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">document</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">document</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
 </tr>
 </tbody>
 </table>
@@ -813,6 +819,12 @@ second offset is measured.</p>
 <code class="descname">get_val_by_time</code><span class="sig-paren">(</span><em>meastime</em>, <em>auxtime</em>, <em>timeunit</em>, <em>auxval</em>, <em>valunit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxValues.get_val_by_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxValues.get_val_by_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="vpy.values.OutGasRate">
+<em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">OutGasRate</code><span class="sig-paren">(</span><em>doc</em>, <em>quant='Measurement'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#OutGasRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.OutGasRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.values.Values" title="vpy.values.Values"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.Values</span></code></a></p>
 </dd></dl>
 
 <dl class="class">

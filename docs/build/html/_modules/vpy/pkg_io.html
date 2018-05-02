@@ -331,7 +331,7 @@
 
         <span class="k">return</span> <span class="n">doc</span></div>
 
-<div class="viewcode-block" id="Io.get_state_meas_doc"><a class="viewcode-back" href="../../vpy.html#vpy.pkg_io.Io.get_state_meas_doc">[docs]</a>    <span class="k">def</span> <span class="nf">get_state_meas_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">doc_id</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Io.get_state_doc"><a class="viewcode-back" href="../../vpy.html#vpy.pkg_io.Io.get_state_doc">[docs]</a>    <span class="k">def</span> <span class="nf">get_state_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Gets and returns:</span>
 
 <span class="sd">         a) a certain document with ```doc_id``` or</span>
@@ -341,20 +341,24 @@
 
 <span class="sd">        :param name: name of the calibration standard</span>
 <span class="sd">        :type name: str</span>
-<span class="sd">        :param doc_id: id of the document to get</span>
-<span class="sd">        :type doc_id: str</span>
+
 <span class="sd">        :returns: document</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">srv</span>  <span class="o">=</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
         <span class="n">db</span>   <span class="o">=</span> <span class="n">srv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
 
-        <span class="k">if</span> <span class="n">doc_id</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;try to get document </span><span class="si">{}</span><span class="s2"></span>
+<span class="s2">                          from database&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+            <span class="n">doc_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_doc_db</span><span class="p">(</span><span class="n">doc_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;standards&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;state_doc_view&#39;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
                 <span class="n">doc</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">doc</span></div>
 
