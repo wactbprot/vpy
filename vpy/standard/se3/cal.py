@@ -1,5 +1,6 @@
 import numpy as np
 import sympy as sym
+from datetime import datetime
 from .std import Se3
 
 
@@ -10,27 +11,149 @@ class Cal(Se3):
 
         self.log.debug("init func: {}".format(__name__))
 
-    def outgas_rate(self, res):
-        """ Calculates the outgasing rate of  dut-a,b,c
+    def check(self, res, chk):
+        """ Checks the measured state values against a given
+        min/max-list (stored in ``vpy/standard/[.]/state.json``).
+        Calculates a rating for each value. The range for
+        this value is [0..9] where 0 is (mostly) best and 9 is (mostly) worst.
 
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
+        :param: res Class with methode
+        store(quantity, type, value, unit, [stdev], [N])) and
+        pick(quantity, type, unit) to pick the values from
+        :type: class
+
+        :param: chc Class with methode
+        store(quantity, type, value, unit, [stdev], [N])) and
+        pick(quantity, type, unit) to store the values in
         :type: class
         """
-        m_abc = self.Pres.get_value("rise_abc_slope_x", "mbar/ms")
-        m_bc = self.Pres.get_value("rise_bc_slope_x", "mbar/ms")
-        m_c = self.Pres.get_value("rise_c_slope_x", "mbar/ms")
-        m_u = self.Pres.get_value("rise_u_slope_x", "mbar/ms")
+        sc_dict = self.state_check
+        amt = self.Time.get_value("amt", "ms")
+        dt =[]
+        for d in amt:
+            d = int(d)/1000.0
+            dt.append(datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
+
+
+        for quant in sc_dict:  # m ... Temperature ect.
+            for head in sc_dict[quant]:  # ... VesselBranch
+                if isinstance(sc_dict[quant][head], dict):
+                    dct = sc_dict[quant][head]
+
+                    val = res.pick(quant, dct['Type'], dct['Unit'])
+                    rnd_val = []
+                    rtn_val =[]
+                    min = dct['Min']
+                    max = dct['Max']
+
+                    v_vec = np.linspace(min, max, 10)
+                    r_vec = np.linspace(0, 9, 10)
+
+                    for v in val:
+                        rnd_val.append('{:0.3e}'.format(v))
+                        d = np.abs(v_vec - v)
+                        i = np.argmin(d)
+                        rtn_val.append(r_vec[i])
+
+                    dct['Value'] = rnd_val
+                    dct['Rating'] = rtn_val
+                    dct['Date'] = dt
+                    chk.store_dict(quant, dct)
+
+    def outgas_rate(self, res):
+        """ Calculates the outgasing rate of  dut-a,b,c u (vacuum branch
+        with dut valves closed) and v (vessel only). If the pressure rise is
+        uncorrelated the minimum outgasing rate of the vessel plus 20% is used as an
+        replace value.
+
+        :param: Class with methode
+        store(quantity, type, value, unit, [stdev], [N])) and
+        pick(quantity, type, unit)
+        :type: class
+        """
+        R_min = 0.99
+
+        sc_dict = self.state_check
+        m_min = sc_dict['OutGasRate']['Vessel']['Min']
+        m_max = sc_dict['OutGasRate']['Vessel']['Max']
+        m_med = m_min * (1 + 0.2)
+        conv = self.Cons.get_conv("ms", "s")
+
+        m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / conv
+        R_abc = self.OutGas.get_value("rise_abc_R", "1")
+        i = (R_abc < R_min)
+        if len(i) > 0:
+            m_abc[i] = m_med
+
+        m_bc = self.OutGas.get_value("rise_bc_slope_x", "mbar/ms") / conv
+        R_bc = self.OutGas.get_value("rise_bc_R", "1")
+        i = (R_bc < R_min)
+        if len(i) > 0:
+            m_bc[i] = m_med
+
+        m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / conv
+        R_c = self.OutGas.get_value("rise_c_R", "1")
+        i = (R_c < R_min)
+        if len(i) > 0:
+            m_c[i] = m_med
+
+        m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / conv
+        R_u = self.OutGas.get_value("rise_u_R", "1")
+        i = (R_u < R_min)
+        if len(i) > 0:
+            m_u[i] = m_med
+
+        m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / conv
+        R_v = self.OutGas.get_value("rise_base_R", "1")
+        i = (R_v < R_min)
+        if len(i) > 0:
+            m_v[i] = m_med
 
         m_b = m_bc - m_c
         m_a = m_abc - m_bc
-        
-        res.store("OutGasRate", "outgas_a",  m_a, "mbar/ms")
-        res.store("OutGasRate", "outgas_b",  m_b, "mbar/ms")
-        res.store("OutGasRate", "outgas_c",  m_c, "mbar/ms")
-        res.store("OutGasRate", "outgas",  m_u, "mbar/ms")
 
+        res.store("OutGasRate", "outgas_a",  m_a, "mbar/s")
+        res.store("OutGasRate", "outgas_b",  m_b, "mbar/s")
+        res.store("OutGasRate", "outgas_c",  m_c, "mbar/s")
+        res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
+        res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
+
+    def temperatur_single(self, res):
+        """ Adds the correction factor for each sensor and stores the result.
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            :type: class
+        """
+        L = list(range(1001, 1031)) + list(range(2001, 2031)) + \
+            list(range(3001, 3031))
+        for ch in L:
+            t_mean, t_stdv, t_N = self.temperature([ch], "state")
+            print(t_mean)
+
+            res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
+
+    def pressure_state(self, res):
+        """ So far: a simple tarnsfer of measured values to
+        Analysis section.
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            :type: class
+        """
+        res.store("Pressure", "1T_1-state", self.Pres.get_value("1T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "1T_2-state", self.Pres.get_value("1T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "1T_3-state", self.Pres.get_value("1T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "10T_1-state", self.Pres.get_value("10T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "10T_2-state", self.Pres.get_value("10T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "10T_3-state", self.Pres.get_value("10T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "100T_1-state", self.Pres.get_value("100T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "100T_2-state", self.Pres.get_value("100T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "100T_3-state", self.Pres.get_value("100T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "1000T_1-state", self.Pres.get_value("1000T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "1000T_2-state", self.Pres.get_value("1000T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "1000T_3-state", self.Pres.get_value("1000T_3-state", "mbar"), "mbar")
 
     def volume_add(self, res):
         """ Calculates additional volumes of dut-a,b,c branch of state
@@ -39,15 +162,16 @@ class Cal(Se3):
 
         .. math::
 
-                V_{add} = V_5 \\frac{p_{after}}{p_{before} - p_{after}}
+            V_{add} = V_5 \\frac{p_{after}}{p_{before} - p_{after}}
 
         Stores result under the path *Volume, add_x, cm^3*
 
         :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            :type: class
         """
+
         V_5 = self.get_value("V_5", "cm^3")
         p_before = self.Pres.get_value("add_vol_before", "mbar")
         p_before_a = self.Pres.get_value("add_vol_a_before", "mbar")
@@ -69,9 +193,9 @@ class Cal(Se3):
         V_c = V_add_abc - V_add - V_a - V_b
 
         V_add_bc = V_add + V_b + V_c
-        V_add_c = V_add  + V_c
+        V_add_c = V_add + V_c
 
-        res.store("Volume", "add_z",   V_add, "cm^3")
+        res.store("Volume", "add_branch",   V_add, "cm^3")
 
         res.store("Volume", "add_a",   V_add_a, "cm^3")
         res.store("Volume", "add_ab",  V_add_ab, "cm^3")

@@ -23,20 +23,9 @@ class Analysis(Document):
         the analysis structure below the given quantity.
         """
 
-        if "tolist" in dir(v):
-            v = copy.deepcopy(v)
-            v[np.where(np.isnan(v))] = 0.0
-            v = v.tolist()
-
-        if "tolist" in dir(sd):
-            sd = copy.deepcopy(sd)
-            sd[np.where(np.isnan(sd))] = 0.0
-            sd = sd.tolist()
-
-        if "tolist" in dir(n):
-            n = copy.deepcopy(n)
-            n[np.where(np.isnan(n))] = 0.0
-            n = n.tolist()
+        v =  self.make_writable(v)
+        n =  self.make_writable(n)
+        sd = self.make_writable(sd)
 
         o = {"Type":t, "Value":v, "Unit":u}
         if sd is not None:
@@ -49,6 +38,28 @@ class Analysis(Document):
 
         self.doc['Values'][quant].append(o)
         self.log.info("stored values of type {} in {}".format(t, quant))
+
+    def store_dict(self, quant, d):
+        """ Appends complete dicts to document
+        """
+        for e in d:
+            d[e] = self.make_writable(d[e])
+
+        if quant not in self.doc['Values']:
+            self.doc['Values'][quant] = []
+
+        self.doc['Values'][quant].append(d)
+
+    def make_writable(self, a):
+        """ converts array, nd.array etc. to json writable lists
+        """
+
+        if "tolist" in dir(a):
+            a = copy.deepcopy(a)
+            #a[np.where(np.isnan(a))] = None
+            a = a.tolist()
+
+        return a
 
     def pick(self, quant, val, unit):
         """Picks and returns an already calculated value.
@@ -73,17 +84,17 @@ class Analysis(Document):
 
         return ret
 
-    def build_doc(self):
-        """Adds the analysis to the original doc and returns it.
+    def build_doc(self, dest='Analysis'):
+        """Merges the analysis dict to the original doc and returns it.
 
         :returns: assembled dictionary
         :rtype: dict
         """
         if "Calibration" in self.org:
-            self.org['Calibration']['Analysis'] = self.doc
+            self.org['Calibration'][dest] = self.doc
         elif "State" in self.org:
-            self.org['State']['Analysis'] = self.doc
+            self.org['State'][dest] = self.doc
         else:
-            self.org['Analysis'] = self.doc
+            self.org[dest] = self.doc
 
         return self.org

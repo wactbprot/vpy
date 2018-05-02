@@ -15,7 +15,7 @@ def main():
     cal.pressure_cal(res)
     unc.total(res)
     p = res.pick("Pressure", "cal", "mbar")
-    u = res.pick("Uncertainty", "total", "1")*1.4
-    
+    u = res.pick("Uncertainty", "total", "1")
+
 if __name__ == "__main__":
     main()

@@ -6,7 +6,7 @@ from ...device.dmm import Dmm
 from ...device.cdg import InfCdg
 from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxSe3
+from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate
 from ..standard import Standard
 from ...device.cdg  import Cdg
 
@@ -30,26 +30,29 @@ class Se3(Standard):
         with open('./vpy/standard/se3/aux_values.json') as auxf:
             self.aux_val_conf = json.load(auxf)
 
-        # define model
-        self.define_model()
+        with open('./vpy/standard/se3/state.json') as statef:
+            self.state_check = json.load(statef)
+
         # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Time = Time(doc)
         self.Aux  = AuxSe3(doc)
 
+        if 'State' in doc:
+            self.OutGas = OutGasRate(doc)
+            self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
 
-        time = self.Time.get_value("amt_fill", "ms")
-        if time is None:
-            time = self.Time.get_value("amt", "ms")
+        if 'Calibration' in doc:
+            # define model
+            self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
+            self.define_model()
 
-        self.no_of_meas_points = len(time)
 
         self.TDev  = Dmm(doc, self.Cobj.get_by_name("SE3_Temperature_Keithley"))
-
         self.FillDevs = []
         for val in self.val_conf["Pressure"]["Fill"]:
-            self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(val["DevName"])))
+                self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(val["DevName"])))
 
         self.log.debug("init func: {}".format(__name__))
 

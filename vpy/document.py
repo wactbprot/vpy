@@ -147,13 +147,13 @@ class Document(object):
                     return np.array(np.float64(obj['Value']))
 
                 if isinstance(obj['Value'], list):
-                    return np.array(obj['Value'], dtype="f")
+                    return np.array(obj['Value'])
 
                 if isinstance(obj['Value'], float):
                     return np.array([obj['Value']], dtype="f")
 
                 if isinstance(obj['Value'], int):
-                    return np.array([obj['Value']], dtype="f")
+                    return np.array([obj['Value']], dtype="i")
 
         else:
             self.log.warn("Value of Type {} not found".format(val))

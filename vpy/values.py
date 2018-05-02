@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from .document import Document
 
+
 class Values(Document):
     """Values class implements special methodes for
     temperature, pressure ...
@@ -30,13 +31,21 @@ class Values(Document):
 
         self.log.debug("init func: {}".format(__name__))
 
+
 class Temperature(Values):
-    def __init__(self, doc, quant = "Measurement"):
+    def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Temperature', quant)
 
+
 class Pressure(Values):
-    def __init__(self, doc, quant = "Measurement"):
-        super().__init__(doc,'Pressure', quant)
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Pressure', quant)
+
+
+class OutGasRate(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'OutGasRate', quant)
+
 
 class Time(Values):
     def __init__(self, doc, quant="Measurement"):
@@ -55,9 +64,10 @@ class Time(Values):
         t = self.get_value(val, unit)
 
         if t is not None:
-            t = t-t[0]
+            t = t - t[0]
 
         return t
+
 
 class AuxValues(Document):
 
@@ -73,9 +83,6 @@ class AuxValues(Document):
 
         if 'AuxValues' in doc:
             super().__init__(doc['AuxValues'])
-
-
-
 
     def get_gas(self):
         if "Gas" in self.doc:
@@ -112,9 +119,9 @@ class AuxValues(Document):
         :type valunit: str
         """
 
-        N     = len(meastime)
-        ret   = np.full(N, np.nan)
-        time  = self.get_value(auxtime, timeunit)
+        N = len(meastime)
+        ret = np.full(N, np.nan)
+        time = self.get_value(auxtime, timeunit)
         value = self.get_value(auxval, valunit)
         if len(time) == len(value):
             i = 0
@@ -136,11 +143,12 @@ class AuxValues(Document):
             sys.exit(err)
 
     def get_val_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
-        return  self.get_by_time(meastime, auxtime, timeunit, auxval, valunit)
+        return self.get_by_time(meastime, auxtime, timeunit, auxval, valunit)
 
     def get_obj_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
         val = self.get_by_time(meastime, auxtime, timeunit, auxval, valunit)
-        return {"Type": auxval, "Value":  val, "Unit":valunit}
+        return {"Type": auxval, "Value":  val, "Unit": valunit}
+
 
 class AuxSe3(AuxValues):
     """AuxValues for SE3 Standard.
@@ -196,5 +204,6 @@ class AuxSe2(AuxValues):
 class AuxFrs5(AuxValues):
     """AuxValues for FRS5 Standard
     """
+
     def __init__(self, doc):
         super().__init__(doc)
