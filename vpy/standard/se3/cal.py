@@ -143,7 +143,7 @@ class Cal(Se3):
             pick(quantity, type, unit)
         :type: class
         """
-
+        # more dry pls
         res.store("Pressure", "1T_1-state", self.Pres.get_value("1T_1-state", "mbar"), "mbar")
         res.store("Pressure", "1T_2-state", self.Pres.get_value("1T_2-state", "mbar"), "mbar")
         res.store("Pressure", "1T_3-state", self.Pres.get_value("1T_3-state", "mbar"), "mbar")
