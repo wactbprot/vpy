@@ -70,7 +70,7 @@ relayServer
 To run a script by means of the ``relayServer``
 use a task like:
 
-.. code-block:: json
+.. code-block:: javascript
       {
         "Action": "EXECUTE",
         "TaskName": "eval_state",
