@@ -70,9 +70,10 @@ relayServer
 To run a script by means of the ``relayServer``
 use a task like:
 
-.. code-block:: javascript
-      {
-        "Action": "EXECUTE",
-        "TaskName": "eval_state",
-        "Cmd": "cd /usr/local/share/vpy/ && source bin/activate && python se3_eval_state_doc.py -s --log=e"
-      }
+.. code-block:: shell
+
+    >  {
+    >    "Action": "EXECUTE",
+    >    "TaskName": "eval_state",
+    >    "Cmd": "cd /usr/local/share/vpy/ && source bin/activate && python se3_eval_state_doc.py -s --log=e"
+    >  }
