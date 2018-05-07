@@ -130,7 +130,6 @@ class Cal(Se3):
             list(range(3001, 3031))
         for ch in L:
             t_mean, t_stdv, t_N = self.temperature([ch], "state")
-            print(t_mean)
 
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 

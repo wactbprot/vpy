@@ -6,6 +6,7 @@ import os
 import json
 import couchdb
 
+
 class Io(object):
     """docstring for Io."""
 
@@ -17,29 +18,27 @@ class Io(object):
         """
 
         parser = argparse.ArgumentParser()
-        ## --id
-        parser.add_argument("--id", type = str, nargs = 1,
-                            help = "id of the document to analyse")
-        ## --file
-        parser.add_argument("--file", type = str, nargs = 1,
-                            help = "file containing document to analyse")
-        ## --log
-        parser.add_argument("--log", type = str, nargs = 1,
-                            help = """kind of logging:
+        # --id
+        parser.add_argument("--id", type=str, nargs=1,
+                            help="id of the document to analyse")
+        # --file
+        parser.add_argument("--file", type=str, nargs=1,
+                            help="file containing document to analyse")
+        # --log
+        parser.add_argument("--log", type=str, nargs=1,
+                            help="""kind of logging:
                                       d ... debug
                                       i ... info (default)
                                       e .. error""")
-        parser.add_argument('-s', action='store_true'
-                            , help='save the results of calculation'
-                            , default=False)
+        parser.add_argument('-s', action='store_true',
+                            help='save the results of calculation', default=False)
 
-        self.args =  parser.parse_args()
+        self.args = parser.parse_args()
 
-        self.log  = self.logger(__name__)
+        self.log = self.logger(__name__)
         self.log.debug("init func: {}".format(__name__))
 
-
-        ## open and parse config file
+        # open and parse config file
         with open('./conf.json') as json_config_file:
             self.config = json.load(json_config_file)
 
@@ -59,7 +58,7 @@ class Io(object):
             self.log.info("""try to get document {}
                           from database""".format(self.args.id))
             docid = self.args.id[0]
-            doc   = self.get_doc_db(docid)
+            doc = self.get_doc_db(docid)
 
         if self.args.file:
             self.log.info("""try to get document {}
@@ -88,9 +87,9 @@ class Io(object):
                 doc = self.set_doc_db(doc)
 
             if self.args.file:
-                path_file_name  = self.args.file[0]
+                path_file_name = self.args.file[0]
                 path, file_name = os.path.split(path_file_name)
-                new_file_name   = "{}/new.{}".format(path, file_name)
+                new_file_name = "{}/new.{}".format(path, file_name)
 
                 self.log.info("""try writing doc to
                             new filename: {}""".format(new_file_name))
@@ -98,7 +97,6 @@ class Io(object):
                     json.dump(doc, f, indent=4, ensure_ascii=False)
         else:
             self.log.warn("Result is not saved (use -s param)")
-
 
     def get_doc_db(self, doc_id):
         """Gets the document from the database.
@@ -111,7 +109,7 @@ class Io(object):
         """
 
         srv = couchdb.Server(self.config['db']['url'])
-        db  = srv[self.config['db']['name']]
+        db = srv[self.config['db']['name']]
         doc = db.get(doc_id)
 
         if doc:
@@ -137,19 +135,19 @@ class Io(object):
         :type doc: dict
         """
         srv = couchdb.Server(self.config['db']['url'])
-        db  = srv[self.config['db']['name']]
+        db = srv[self.config['db']['name']]
         res = db.save(doc)
 
     def get_base_doc(self, name):
-        srv  = couchdb.Server(self.config['db']['url'])
-        db   = srv[self.config['db']['name']]
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['all_doc_view']
 
         doc = {
-                "Standard":{},
-                "Constants":{},
-                "CalibrationObject":[]
-              }
+            "Standard": {},
+            "Constants": {},
+            "CalibrationObject": []
+        }
         cob = {}
         val = {}
 
@@ -161,9 +159,10 @@ class Io(object):
                 doc["Constants"] = i.value["Constants"]
 
             if i.key == "CalibrationObject":
-                cob[ i.value["CalibrationObject"]["Sign"]] = i.value["CalibrationObject"]
+                cob[i.value["CalibrationObject"]["Sign"]
+                    ] = i.value["CalibrationObject"]
 
-            if i.key.startswith( "Result" ):
+            if i.key.startswith("Result"):
                 val[i.value["Sign"]] = i.value["Result"]
 
         for j in cob:
@@ -188,8 +187,8 @@ class Io(object):
         :returns: document
         :rtype: dict
         """
-        srv  = couchdb.Server(self.config['db']['url'])
-        db   = srv[self.config['db']['name']]
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
 
         if self.args.id:
             self.log.info("""try to get document {}
@@ -216,14 +215,16 @@ class Io(object):
         """
 
         logger = logging.getLogger()
-        fmt='%(asctime)s,%(msecs)03d %(hostname)s %(filename)s:%(lineno)s %(levelname)s %(message)s'
+        fmt = '%(asctime)s,%(msecs)03d %(hostname)s %(filename)s:%(lineno)s %(levelname)s %(message)s'
         if self.args.log:
             if self.args.log[0] == "d":
-                coloredlogs.install(fmt=fmt
-                , level="DEBUG", logger=logger)
+                coloredlogs.install(fmt=fmt, level="DEBUG", logger=logger)
 
             if self.args.log[0] == "i":
                 coloredlogs.install(fmt=fmt, level="INFO", logger=logger)
+
+            if self.args.log[0] == "e":
+                coloredlogs.install(fmt=fmt, level="ERROR", logger=logger)
 
         else:
             coloredlogs.install(fmt=fmt, level="DEBUG", logger=logger)
