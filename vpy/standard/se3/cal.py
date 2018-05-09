@@ -51,9 +51,14 @@ class Cal(Se3):
 
                     for v in val:
                         rnd_val.append('{:0.3e}'.format(v))
-                        d = np.abs(v_vec - v)
-                        i = np.argmin(d)
-                        rtn_val.append(r_vec[i])
+                        if v < min:
+                            rtn_val.append(0)
+                        elif v > max:
+                            rtn_val.append(9)
+                        else:
+                            d = np.abs(v_vec - v)
+                            i = np.argmin(d)
+                            rtn_val.append(r_vec[i])
 
                     dct['Value'] = rnd_val
                     dct['Rating'] = rtn_val
