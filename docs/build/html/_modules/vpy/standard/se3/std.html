@@ -163,7 +163,7 @@
 <span class="kn">from</span> <span class="nn">...device.cdg</span> <span class="k">import</span> <span class="n">InfCdg</span>
 <span class="kn">from</span> <span class="nn">...constants</span> <span class="k">import</span> <span class="n">Constants</span>
 <span class="kn">from</span> <span class="nn">...calibration_devices</span> <span class="k">import</span>  <span class="n">CalibrationObject</span>
-<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">AuxSe3</span><span class="p">,</span> <span class="n">OutGasRate</span>
+<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">AuxSe3</span><span class="p">,</span> <span class="n">OutGasRate</span><span class="p">,</span> <span class="n">Position</span>
 <span class="kn">from</span> <span class="nn">..standard</span> <span class="k">import</span> <span class="n">Standard</span>
 <span class="kn">from</span> <span class="nn">...device.cdg</span>  <span class="k">import</span> <span class="n">Cdg</span>
 
@@ -202,6 +202,7 @@
 
         <span class="k">if</span> <span class="s1">&#39;Calibration&#39;</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="c1"># define model</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Pos</span> <span class="o">=</span> <span class="n">Position</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">define_model</span><span class="p">()</span>
 
@@ -281,7 +282,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">val_arr</span> <span class="o">=</span> <span class="p">[</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;p_fill&#39;</span><span class="p">],</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_5&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_start&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;V_add&#39;</span><span class="p">],</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">val_dict</span><span class="p">[</span><span class="s1">&#39;T_before&#39;</span><span class="p">],</span>
@@ -326,7 +326,7 @@
         <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="n">f</span><span class="p">,</span>
         <span class="s1">&#39;p_fill&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">),</span>
         <span class="s1">&#39;V_start&#39;</span><span class="p">:</span><span class="n">V_start</span><span class="p">,</span>
-        <span class="s1">&#39;V_add&#39;</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;V_add&#39;</span><span class="p">:</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">),</span>
         <span class="s1">&#39;T_before&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
         <span class="s1">&#39;T_after&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">),</span>
         <span class="s1">&#39;rg&#39;</span><span class="p">:</span><span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;rg&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">),</span>

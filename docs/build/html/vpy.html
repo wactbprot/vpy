@@ -724,7 +724,7 @@ command line arguments:</p>
 <dt id="vpy.values.AuxSe2">
 <em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">AuxSe2</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.values.AuxValues" title="vpy.values.AuxValues"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.AuxValues</span></code></a></p>
-<p>AuxValues for SE3 Standard.</p>
+<p>AuxValues for SE2 Standard.</p>
 <dl class="method">
 <dt id="vpy.values.AuxSe2.get_expansion">
 <code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe2.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe2.get_expansion" title="Permalink to this definition">¶</a></dt>
@@ -753,9 +753,9 @@ is stored in AuxValues.Expansion</p>
 <dl class="method">
 <dt id="vpy.values.AuxSe3.get_expansion">
 <code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe3.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe3.get_expansion" title="Permalink to this definition">¶</a></dt>
-<dd><p>On the documents concerned with certain
-expansions ratios the name of the investigated :math: f
-is stored in AuxValues.Expansion</p>
+<dd><p>At documents concerned with certain
+expansions ratios  (e.g. expanson ratio measurements) the name of the
+investigated :math: f is stored in <code class="docutils literal"><span class="pre">AuxValues.Expansion</span></code></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -763,6 +763,24 @@ is stored in AuxValues.Expansion</p>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">name of the investigated expansion</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.values.AuxSe3.get_volume">
+<code class="descname">get_volume</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#AuxSe3.get_volume"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.AuxSe3.get_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns additional volumes prev. measured (state documents)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> – type of Volume (<code class="docutils literal"><span class="pre">abc</span></code>, <code class="docutils literal"><span class="pre">bc</span></code> or <code class="docutils literal"><span class="pre">c</span></code>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">name of the investigated expansion</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
 </tr>
 </tbody>
 </table>
@@ -824,6 +842,12 @@ second offset is measured.</p>
 <dl class="class">
 <dt id="vpy.values.OutGasRate">
 <em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">OutGasRate</code><span class="sig-paren">(</span><em>doc</em>, <em>quant='Measurement'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#OutGasRate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.OutGasRate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.values.Values" title="vpy.values.Values"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.Values</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="vpy.values.Position">
+<em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">Position</code><span class="sig-paren">(</span><em>doc</em>, <em>quant='Measurement'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#Position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.Position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.values.Values" title="vpy.values.Values"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.Values</span></code></a></p>
 </dd></dl>
 

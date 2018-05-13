@@ -168,7 +168,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Cal.check"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.check">[docs]</a>    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">chk</span><span class="p">):</span>
+<div class="viewcode-block" id="Cal.check_state"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.check_state">[docs]</a>    <span class="k">def</span> <span class="nf">check_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">chk</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Checks the measured state values against a given</span>
 <span class="sd">        min/max-list (stored in ``vpy/standard/[.]/state.json``).</span>
 <span class="sd">        Calculates a rating for each value. The range for</span>
@@ -208,20 +208,25 @@
 
                     <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="p">:</span>
                         <span class="n">rnd_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:0.3e}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-                        <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v_vec</span> <span class="o">-</span> <span class="n">v</span><span class="p">)</span>
-                        <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-                        <span class="n">rtn_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_vec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">:</span>
+                            <span class="n">rtn_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="nb">max</span><span class="p">:</span>
+                            <span class="n">rtn_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v_vec</span> <span class="o">-</span> <span class="n">v</span><span class="p">)</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+                            <span class="n">rtn_val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r_vec</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
                     <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rnd_val</span>
                     <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;Rating&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rtn_val</span>
                     <span class="n">dct</span><span class="p">[</span><span class="s1">&#39;Date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
                     <span class="n">chk</span><span class="o">.</span><span class="n">store_dict</span><span class="p">(</span><span class="n">quant</span><span class="p">,</span> <span class="n">dct</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Cal.outgas_rate"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.outgas_rate">[docs]</a>    <span class="k">def</span> <span class="nf">outgas_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+<div class="viewcode-block" id="Cal.outgas_state"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.outgas_state">[docs]</a>    <span class="k">def</span> <span class="nf">outgas_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calculates the outgasing rate of  dut-a,b,c u (vacuum branch</span>
 <span class="sd">        with dut valves closed) and v (vessel only). If the pressure rise is</span>
-<span class="sd">        uncorrelated the minimum outgasing rate of the vessel plus 20% is used as an</span>
-<span class="sd">        replace value.</span>
+<span class="sd">        uncorrelated the minimum outgasing rate of the vessel plus 20%</span>
+<span class="sd">        is used as an replace value.</span>
 
 <span class="sd">        :param: Class with methode</span>
 <span class="sd">            store(quantity, type, value, unit, [stdev], [N])) and</span>
@@ -275,7 +280,7 @@
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;OutGasRate&quot;</span><span class="p">,</span> <span class="s2">&quot;outgas_u&quot;</span><span class="p">,</span>  <span class="n">m_u</span><span class="p">,</span> <span class="s2">&quot;mbar/s&quot;</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;OutGasRate&quot;</span><span class="p">,</span> <span class="s2">&quot;outgas_v&quot;</span><span class="p">,</span>  <span class="n">m_v</span><span class="p">,</span> <span class="s2">&quot;mbar/s&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Cal.temperatur_single"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperatur_single">[docs]</a>    <span class="k">def</span> <span class="nf">temperatur_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+<div class="viewcode-block" id="Cal.temperatur_state"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.temperatur_state">[docs]</a>    <span class="k">def</span> <span class="nf">temperatur_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Adds the correction factor for each sensor and stores the result.</span>
 
 <span class="sd">        :param: Class with methode</span>
@@ -313,7 +318,7 @@
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;1000T_2-state&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;1000T_2-state&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">),</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;1000T_3-state&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;1000T_3-state&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">),</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Cal.volume_add"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.volume_add">[docs]</a>    <span class="k">def</span> <span class="nf">volume_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+<div class="viewcode-block" id="Cal.volume_state"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.volume_state">[docs]</a>    <span class="k">def</span> <span class="nf">volume_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Calculates additional volumes of dut-a,b,c branch of state</span>
 <span class="sd">        measurement documents.</span>
 
@@ -365,6 +370,38 @@
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span>   <span class="n">V_b</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span>
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span>   <span class="n">V_c</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Cal.volume_add"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.volume_add">[docs]</a>    <span class="k">def</span> <span class="nf">volume_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Builds an additional volume vector and stores it.</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pos</span><span class="o">.</span><span class="n">get_object</span><span class="p">(</span><span class="s2">&quot;Type&quot;</span><span class="p">,</span><span class="s2">&quot;dut_open&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;Value&quot;</span> <span class="ow">in</span> <span class="n">o</span><span class="p">:</span>
+            <span class="n">v_pos</span> <span class="o">=</span> <span class="n">o</span><span class="p">[</span><span class="s1">&#39;Value&#39;</span><span class="p">]</span>
+
+        <span class="n">i_abc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">v_pos</span> <span class="o">==</span> <span class="s2">&quot;abc&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">i_bc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">v_pos</span> <span class="o">==</span> <span class="s2">&quot;bc&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">i_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">v_pos</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_abc</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;At Point(s) </span><span class="si">{}</span><span class="s2">  dut-a,b and c are open &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_abc</span><span class="p">))</span>
+            <span class="n">vol</span><span class="p">[</span><span class="n">i_abc</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_volume</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_bc</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;At Point(s) </span><span class="si">{}</span><span class="s2">  dut-b and c are open &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_bc</span><span class="p">))</span>
+            <span class="n">vol</span><span class="p">[</span><span class="n">i_bc</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_volume</span><span class="p">(</span><span class="s2">&quot;bc&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;At Point(s) </span><span class="si">{}</span><span class="s2">  dut- c are open &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_c</span><span class="p">))</span>
+            <span class="n">vol</span><span class="p">[</span><span class="n">i_c</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_volume</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">)</span>
+
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span>   <span class="n">vol</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Cal.pressure_cal"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.pressure_cal">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculates the calibration pressure by means of defined model</span>
 
@@ -381,10 +418,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">temperature_before</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">temperature_after</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">real_gas_correction</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">gen_val_array</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume_add</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
-        <span class="n">p_cal</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">lambdify</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symb</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s2">&quot;numpy&quot;</span><span class="p">)(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">val_arr</span><span class="p">)</span>
+        <span class="n">p_fill</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">rg</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;rg&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
+        <span class="n">T_before</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
+        <span class="n">T_after</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
 
+        <span class="n">p_cal</span> <span class="o">=</span> <span class="n">p_fill</span><span class="o">/</span><span class="n">rg</span><span class="o">*</span><span class="n">T_after</span><span class="o">/</span><span class="n">T_before</span>
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Cal.get_expansion"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.get_expansion">[docs]</a>    <span class="k">def</span> <span class="nf">get_expansion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
