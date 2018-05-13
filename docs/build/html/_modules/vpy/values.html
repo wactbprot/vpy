@@ -321,7 +321,7 @@
         <span class="sd">&quot;&quot;&quot;At documents concerned with certain</span>
 <span class="sd">        expansions ratios  (e.g. expanson ratio measurements) the name of the</span>
 <span class="sd">        investigated :math: f is stored in ``AuxValues.Expansion``</span>
-<span class="sd">            </span>
+
 <span class="sd">        :returns: name of the investigated expansion</span>
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -344,6 +344,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="s2">&quot;Volume&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">doc</span><span class="p">:</span>
             <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;add_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span>
+        
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span></div></div>
 

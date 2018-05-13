@@ -449,8 +449,10 @@ like <code class="docutils literal"><span class="pre">ch_1001_before</span></cod
 <code class="docutils literal"><span class="pre">_before</span></code> is the sufix.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Different Types are in different rows. Different
-measurement points are in different columns.</p>
+<ul class="last simple">
+<li>types are in rows</li>
+<li>measurement points are in columns</li>
+</ul>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -475,15 +477,33 @@ measurement points are in different columns.</p>
 
 <dl class="method">
 <dt id="vpy.document.Document.get_expression">
-<code class="descname">get_expression</code><span class="sig-paren">(</span><em>val</em>, <em>unit</em>, <em>o=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_expression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_expression" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets an dict by means of get_object(),
-compares o.Unit with unit and returns
-sym.sympyfied Expression.</p>
+<code class="descname">get_expression</code><span class="sig-paren">(</span><em>t</em>, <em>unit</em>, <em>o=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_expression"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_expression" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an dict by means of <code class="docutils literal"><span class="pre">o=get_object()</span></code>,
+compares <code class="docutils literal"><span class="pre">o.Unit</span></code> with unit and returns
+sym.sympyfied expression.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> (<em>str</em>) – value for type key</li>
+<li><strong>unit</strong> (<em>str</em>) – unit of value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">expression</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">sym.sympyfied</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="vpy.document.Document.get_obj">
-<code class="descname">get_obj</code><span class="sig-paren">(</span><em>val</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_obj" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_obj</code><span class="sig-paren">(</span><em>t</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_obj"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_obj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abbreviation for the method <code class="docutils literal"><span class="pre">get_object</span></code>:
 searches an dict (o) by means of method <code class="docutils literal"><span class="pre">get_object</span></code>.
 Compares <code class="docutils literal"><span class="pre">o.Unit</span></code> with <code class="docutils literal"><span class="pre">unit</span></code> parameter and returns
@@ -512,28 +532,67 @@ Compares <code class="docutils literal"><span class="pre">o.Unit</span></code> w
 <dt id="vpy.document.Document.get_object">
 <code class="descname">get_object</code><span class="sig-paren">(</span><em>key</em>, <em>val</em>, <em>o=False</em>, <em>d=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursive  searches obj for
-‘’‘obj[key] == val’‘’ and returns obj</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.document.Document.get_value">
-<code class="descname">get_value</code><span class="sig-paren">(</span><em>val</em>, <em>unit</em>, <em>o=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets an dict by means of get_object(),
-compares o.Unit with unit and returns
-numpy typed values.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.document.Document.test">
-<code class="descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the test string ‘ok’</p>
+‘’obj[key] == val’’ and returns obj</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">ok</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>key</strong> (<em>str</em>) – key to search for</li>
+<li><strong>val</strong> (<em>str</em>) – val of key</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">res</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.document.Document.get_str">
+<code class="descname">get_str</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an dict by means of <code class="docutils literal"><span class="pre">o=get_object()</span></code>,
+returns numpy typed array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> (<em>str</em>) – value for type key</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">np.array</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">np.array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.document.Document.get_value">
+<code class="descname">get_value</code><span class="sig-paren">(</span><em>t</em>, <em>unit</em>, <em>o=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/document.html#Document.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.document.Document.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an dict by means of  <code class="docutils literal"><span class="pre">o=get_object()</span></code>,
+compares o.Unit with unit and returns
+numpy typed array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> (<em>str</em>) – value for type key</li>
+<li><strong>unit</strong> (<em>str</em>) – unit of value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">np.array</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
 </tr>
 </tbody>
 </table>

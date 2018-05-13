@@ -219,8 +219,27 @@ pick(quantity, type, unit) to store the values in</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.get_expansion">
-<code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.get_expansion" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.se3.cal.Cal.expansion">
+<code class="descname">expansion</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.expansion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a vector containing the expansion factors
+and stores it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.get_expansion_name">
+<code class="descname">get_expansion_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.get_expansion_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.get_expansion_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an np.array containing
 the expansion name (<code class="docutils literal"><span class="pre">f_s</span></code>, <code class="docutils literal"><span class="pre">f_m</span></code> or <code class="docutils literal"><span class="pre">f_l</span></code>)
 of the length: <code class="docutils literal"><span class="pre">self.no_of_meas_points`</span></code></p>
@@ -434,7 +453,25 @@ pick(quantity, type, unit)</td>
 <dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.volume_add">
 <code class="descname">volume_add</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.volume_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.volume_add" title="Permalink to this definition">¶</a></dt>
-<dd><p>Builds an additional volume vector and stores it.</p>
+<dd><p>Builds a vector containing the additional volume and stores it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.cal.Cal.volume_start">
+<code class="descname">volume_start</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.volume_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.volume_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a vector containing the start volume and stores it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -564,11 +601,6 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.std.Se3.get_expansion">
-<code class="descname">get_expansion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.get_expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.get_expansion" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="vpy.standard.se3.std.Se3.get_gas">
 <code class="descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.get_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.get_gas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the name of the calibration gas.</p>
@@ -586,12 +618,6 @@ pick(quantity, type, unit)</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.std.Se3.get_name">
-<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.get_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the name of the Standard.</p>
 </dd></dl>
 
 <dl class="attribute">
