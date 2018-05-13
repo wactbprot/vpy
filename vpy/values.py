@@ -46,6 +46,9 @@ class OutGasRate(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'OutGasRate', quant)
 
+class Position(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Position', quant)
 
 class Time(Values):
     def __init__(self, doc, quant="Measurement"):
@@ -158,10 +161,10 @@ class AuxSe3(AuxValues):
         super().__init__(doc)
 
     def get_expansion(self):
-        """On the documents concerned with certain
-        expansions ratios the name of the investigated :math: f
-        is stored in AuxValues.Expansion
-
+        """At documents concerned with certain
+        expansions ratios  (e.g. expanson ratio measurements) the name of the
+        investigated :math: f is stored in ``AuxValues.Expansion``
+            
         :returns: name of the investigated expansion
         :rtype: str
         """
@@ -174,9 +177,21 @@ class AuxSe3(AuxValues):
             self.log.info("Name of Expansion not available in AuxValues")
             return None
 
+    def get_volume(self, t):
+        """Returns additional volumes prev. measured (state documents)
+
+        :param t: type of Volume (``abc``, ``bc`` or ``c``)
+        :type doc: str
+        :returns: name of the investigated expansion
+        :rtype: str
+        """
+        if "Volume" in self.doc:
+            v = self.get_value("add_{}".format(t), "cm^3")
+        if v is not None:
+            return v
 
 class AuxSe2(AuxValues):
-    """AuxValues for SE3 Standard.
+    """AuxValues for SE2 Standard.
     """
 
     def __init__(self, doc):

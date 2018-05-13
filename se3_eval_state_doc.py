@@ -15,10 +15,10 @@ def main():
     cal = Cal(doc)
     res = Analysis(doc)
 
-    cal.volume_add(res)
+    cal.volume_state(res)
     cal.pressure_state(res)
-    cal.outgas_rate(res)
-    cal.temperatur_single(res)
+    cal.outgas_state(res)
+    cal.temperatur_state(res)
 
     chk = Analysis(res.build_doc())
     cal.check(res, chk)

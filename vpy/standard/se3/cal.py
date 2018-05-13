@@ -11,7 +11,7 @@ class Cal(Se3):
 
         self.log.debug("init func: {}".format(__name__))
 
-    def check(self, res, chk):
+    def check_state(self, res, chk):
         """ Checks the measured state values against a given
         min/max-list (stored in ``vpy/standard/[.]/state.json``).
         Calculates a rating for each value. The range for
@@ -60,11 +60,11 @@ class Cal(Se3):
                     dct['Date'] = dt
                     chk.store_dict(quant, dct)
 
-    def outgas_rate(self, res):
+    def outgas_state(self, res):
         """ Calculates the outgasing rate of  dut-a,b,c u (vacuum branch
         with dut valves closed) and v (vessel only). If the pressure rise is
-        uncorrelated the minimum outgasing rate of the vessel plus 20% is used as an
-        replace value.
+        uncorrelated the minimum outgasing rate of the vessel plus 20%
+        is used as an replace value.
 
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -118,7 +118,7 @@ class Cal(Se3):
         res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
         res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
 
-    def temperatur_single(self, res):
+    def temperatur_state(self, res):
         """ Adds the correction factor for each sensor and stores the result.
 
         :param: Class with methode
@@ -156,7 +156,7 @@ class Cal(Se3):
         res.store("Pressure", "1000T_2-state", self.Pres.get_value("1000T_2-state", "mbar"), "mbar")
         res.store("Pressure", "1000T_3-state", self.Pres.get_value("1000T_3-state", "mbar"), "mbar")
 
-    def volume_add(self, res):
+    def volume_state(self, res):
         """ Calculates additional volumes of dut-a,b,c branch of state
         measurement documents.
 
@@ -208,6 +208,38 @@ class Cal(Se3):
         res.store("Volume", "b",   V_b, "cm^3")
         res.store("Volume", "c",   V_c, "cm^3")
 
+    def volume_add(self, res):
+        """Builds an additional volume vector and stores it.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        vol = np.full(self.no_of_meas_points, None)
+        o = self.Pos.get_object("Type","dut_open")
+
+        if "Value" in o:
+            v_pos = o['Value']
+
+        i_abc = np.where(v_pos == "abc")[0]
+        i_bc = np.where(v_pos == "bc")[0]
+        i_c = np.where(v_pos == "c")[0]
+
+        if len(i_abc) > 0:
+            self.log.info("At Point(s) {}  dut-a,b and c are open ".format(i_abc))
+            vol[i_abc] = self.Aux.get_volume("abc")
+
+        if len(i_bc) > 0:
+            self.log.info("At Point(s) {}  dut-b and c are open ".format(i_bc))
+            vol[i_bc] = self.Aux.get_volume("bc")
+
+        if len(i_c) > 0:
+            self.log.info("At Point(s) {}  dut- c are open ".format(i_c))
+            vol[i_c] = self.Aux.get_volume("c")
+
+        res.store("Volume", "add",   vol, "cm^3")
+
     def pressure_cal(self, res):
         """Calculates the calibration pressure by means of defined model
 
@@ -224,10 +256,14 @@ class Cal(Se3):
         self.temperature_before(res)
         self.temperature_after(res)
         self.real_gas_correction(res)
-        self.gen_val_array(res)
+        self.volume_add(res)
 
-        p_cal = sym.lambdify(self.symb, self.model, "numpy")(*self.val_arr)
+        p_fill = res.pick("Pressure", "fill", "mbar")
+        rg = res.pick("Correction", "rg", "1")
+        T_before = res.pick("Temperature", "before", "K")
+        T_after = res.pick("Temperature", "after", "K")
 
+        p_cal = p_fill/rg*T_after/T_before
         res.store("Pressure", "cal", p_cal, self.unit)
 
     def get_expansion(self):

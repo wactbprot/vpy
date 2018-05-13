@@ -18,11 +18,16 @@
         ]
         },
 "Expansion":{
-    "Name":
-            {"Type":"name","Sim":["f_l"]}
+    "Name":{"Type":"name","Sim":["f_l"]}
         },
 "Time":{
-        "Offset":
-            {"Type":"offset_mt","Sim":[0.0],"Unit":"ms"}
+    "Offset":{"Type":"offset_mt","Sim":[0.0],"Unit":"ms"}
+        },
+"Volume":{
+    "DutA":{"Type":"add_a","Sim":[550],"Unit":"cm^3"},
+    "DutAB":{"Type":"add_ab","Sim":[550],"Unit":"cm^3"},
+    "DutABC":{"Type":"add_abc","Sim":[550],"Unit":"cm^3"},
+    "DutBC":{"Type":"add_bc","Sim":[550],"Unit":"cm^3"},
+    "DutC":{"Type":"add_c","Sim":[550],"Unit":"cm^3"}
     }
 }

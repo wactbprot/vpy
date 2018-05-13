@@ -3,6 +3,11 @@
         {"Type":"amt_fill","Sim":[1.0, 10.0, 20.0, 30.0, 40.0],"Unit":"ms"}
 
     },
+    "Position":{
+        "Dut":
+        {"Type":"dut_open","Sim":["abc","bc", "c", "bc", "abc"]}
+
+    },
     "Pressure":{
         "FillTarget":
         {"Type":"target-fill","Min":1.33e-1,"Max":1330,"Sim":[0.2, 1.0, 11.0, 110.0, 1000.0],"Unit":"mbar"},
@@ -60,7 +65,7 @@
     ],
     "Room":[
         {"DevName":"SE3_Temperature_Keithley","Type":"ch_2030_after","Min":22.0,"Max":24.0,"Sim":[23.0, 23.0, 23.0, 23.0, 23.0],"Unit":"C"},
-        {"DevName":"SE3_Temperature_Keithley","Type":"ch_2029_after","Min":22.0,"Max":24.0,"Sim":[23.0, 23.0, 23.0, 23.0, 23.0],"Unit":"C"}    
+        {"DevName":"SE3_Temperature_Keithley","Type":"ch_2029_after","Min":22.0,"Max":24.0,"Sim":[23.0, 23.0, 23.0, 23.0, 23.0],"Unit":"C"}
     ],
     "Vessel":[
         {"DevName":"SE3_Temperature_Keithley","Type":"ch_1001_after","Min":22.0,"Max":24.0,"Sim":[23.0, 23.0, 23.0, 23.0, 23.0],"Unit":"C"},

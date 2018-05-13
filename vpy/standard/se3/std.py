@@ -6,7 +6,7 @@ from ...device.dmm import Dmm
 from ...device.cdg import InfCdg
 from ...constants import Constants
 from ...calibration_devices import  CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate
+from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position
 from ..standard import Standard
 from ...device.cdg  import Cdg
 
@@ -45,6 +45,7 @@ class Se3(Standard):
 
         if 'Calibration' in doc:
             # define model
+            self.Pos = Position(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
             self.define_model()
 
@@ -124,7 +125,6 @@ class Se3(Standard):
         self.val_arr = [
                     self.val_dict['f'],
                     self.val_dict['p_fill'],
-                    self.val_dict['V_5'],
                     self.val_dict['V_start'],
                     self.val_dict['V_add'],
                     self.val_dict['T_before'],
@@ -169,7 +169,7 @@ class Se3(Standard):
         'f': f,
         'p_fill':res.pick("Pressure", "fill", self.unit),
         'V_start':V_start,
-        'V_add': res.pick("Volume", "add", "1"),
+        'V_add': res.pick("Volume", "add", "cm^3"),
         'T_before':res.pick("Temperature", "before", "K"),
         'T_after':res.pick("Temperature", "after", "K"),
         'rg':res.pick("Correction", "rg", "1"),

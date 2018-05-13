@@ -57,7 +57,7 @@ class Sim(object):
         self.doc['Values']    = self.collect(valfile)
         self.doc['AuxValues'] = self.collect(auxvalfile)
 
-        return copy.deepcopy(self.doc)
+        return {"Calibration":copy.deepcopy(self.doc)}
 
 if __name__ == "__main__":
     build()
