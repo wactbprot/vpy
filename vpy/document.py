@@ -34,13 +34,15 @@ class Document(object):
         ``[1001, ..., 1030]`` is the ``iter_list`` and
         ``_before`` is the sufix.
 
-        .. note:: Different Types are in different rows. Different
-                  measurement points are in different columns.
+        .. note::
+            * types are in rows
+            * measurement points are in columns
 
         :param prefix: prefix of the type
         :type doc: str
         :param iter_list: list to iterate over
         :type iter_list: list
+
         :param sufix: sufix of the type
         :type sufix: str
 
@@ -82,7 +84,7 @@ class Document(object):
         obj = self.get_object("Type", t)
         if obj is not None:
             val = self.get_value(t, unit, obj)
-            obj['Value'] = val
+            obj["Value"] = val
             ret = obj
         else:
             self.log.warn("Type {} not found".format(t))
@@ -92,7 +94,16 @@ class Document(object):
     def get_expression(self, t, unit, o=False):
         """Gets an dict by means of ``o=get_object()``,
         compares ``o.Unit`` with unit and returns
-        sym.sympyfied Expression.
+        sym.sympyfied expression.
+
+        :param t: value for type key
+        :type t: str
+
+        :param unit: unit of value
+        :type unit: str
+
+        :returns: expression
+        :rtype: sym.sympyfied
         """
         ret = None
         if o:
@@ -101,13 +112,13 @@ class Document(object):
             obj = self.get_object("Type", t)
 
         if obj:
-            if 'Unit' in  obj:
+            if "Unit" in  obj:
                 if obj["Unit"] == unit:
-                    if 'Expression' in obj:
-                        ret = sym.sympify(obj['Expression'])
+                    if "Expression" in obj:
+                        ret = sym.sympify(obj["Expression"])
 
-                    if 'Value' in obj:
-                        ret = sym.sympify(obj['Value'])
+                    if "Value" in obj:
+                        ret = sym.sympify(obj["Value"])
                     else:
                         errmsg = "Unit is {} not {}".format(obj["Unit"], unit)
                         self.log.error(errmsg)
@@ -120,18 +131,33 @@ class Document(object):
     def get_str(self, t):
         """Gets an dict by means of ``o=get_object()``,
         returns numpy typed array.
+
+        :param t: value for type key
+        :type t: str
+
+        :returns: np.array
+        :rtype: np.array
         """
 
         obj = self.get_object("Type", t)
 
-        if 'Value' in obj:
-            if isinstance(obj['Value'], list):
-                return np.array(obj['Value'])
+        if "Value" in obj:
+            if isinstance(obj["Value"], list):
+                return np.array(obj["Value"])
 
     def get_value(self, t, unit, o=False):
         """Gets an dict by means of  ``o=get_object()``,
         compares o.Unit with unit and returns
         numpy typed array.
+
+        :param t: value for type key
+        :type t: str
+
+        :param unit: unit of value
+        :type unit: str
+
+        :returns: np.array
+        :rtype: np.array
         """
 
         ret = None
@@ -141,26 +167,26 @@ class Document(object):
             obj = self.get_object("Type", t)
 
         if obj:
-            if 'Unit' in  obj:
+            if "Unit" in  obj:
                 if obj["Unit"] == unit:
                     self.log.debug("unit of Type: {} is {}".format(t, unit))
                 else:
-                    errmsg="Unit is {} not {}".format(obj['Unit'], unit)
+                    errmsg="Unit is {} not {}".format(obj["Unit"], unit)
                     self.log.error(errmsg)
                     sys.exit(errmsg)
 
-            if 'Value' in obj:
-                if isinstance(obj['Value'], str):
-                    ret = np.array(np.float64(obj['Value']))
+            if "Value" in obj:
+                if isinstance(obj["Value"], str):
+                    ret = np.array(np.float64(obj["Value"]))
 
-                if isinstance(obj['Value'], list):
-                    ret = np.array(obj['Value'])
+                if isinstance(obj["Value"], list):
+                    ret = np.array(obj["Value"])
 
-                if isinstance(obj['Value'], float):
-                    ret = np.array([obj['Value']], dtype="f")
+                if isinstance(obj["Value"], float):
+                    ret = np.array([obj["Value"]], dtype="f")
 
-                if isinstance(obj['Value'], int):
-                    ret = np.array([obj['Value']], dtype="i")
+                if isinstance(obj["Value"], int):
+                    ret = np.array([obj["Value"]], dtype="i")
 
         else:
             self.log.warn("Value of Type {} not found".format(t))
@@ -170,6 +196,15 @@ class Document(object):
     def get_object(self, key, val, o=False, d=0):
         """Recursive  searches obj for
         ''obj[key] == val'' and returns obj
+
+        :param key: key to search for
+        :type key: str
+
+        :param val: val of key
+        :type val: str
+
+        :returns: res
+        :rtype: dict
         """
         # self.log.debug("recursion level is: {}".format(d))
         if o:
