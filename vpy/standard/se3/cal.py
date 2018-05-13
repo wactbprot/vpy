@@ -213,33 +213,60 @@ class Cal(Se3):
         res.store("Volume", "b",   V_b, "cm^3")
         res.store("Volume", "c",   V_c, "cm^3")
 
-    def volume_add(self, res):
-        """Builds an additional volume vector and stores it.
+    def volume_start(self, res):
+        """Builds a vector containing the start volume and stores it.
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
         """
+
+        vol = np.full(self.no_of_meas_points, None)
+        f_name  = self.get_expansion_name()
+
+        i_s    = np.where(f_name == "f_s")
+        i_m    = np.where(f_name == "f_m")
+        i_l    = np.where(f_name == "f_l")
+
+        if np.shape(i_s)[1] > 0:
+            vol[i_s] = self.get_value("V_s","cm^3")
+        if np.shape(i_m)[1] > 0:
+            vol[i_m] = self.get_value("V_m","cm^3")
+        if np.shape(i_l)[1] > 0:
+            vol[i_l] = self.get_value("V_l","cm^3")
+
+        res.store("Volume", "start",   vol, "cm^3")
+
+    def volume_add(self, res):
+        """Builds a vector containing the additional volume and stores it.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
         vol = np.full(self.no_of_meas_points, None)
         o = self.Pos.get_object("Type","dut_open")
 
         if "Value" in o:
-            v_pos = o['Value']
+            v_pos = np.array(o['Value'])
 
-        i_abc = np.where(v_pos == "abc")[0]
-        i_bc = np.where(v_pos == "bc")[0]
-        i_c = np.where(v_pos == "c")[0]
 
-        if len(i_abc) > 0:
+        i_abc = np.where(v_pos == "abc")
+        i_bc = np.where(v_pos == "bc")
+        i_c = np.where(v_pos == "c")
+
+        if np.shape(i_abc)[1] > 0:
             self.log.info("At Point(s) {}  dut-a,b and c are open ".format(i_abc))
             vol[i_abc] = self.Aux.get_volume("abc")
 
-        if len(i_bc) > 0:
+        if np.shape(i_bc)[1] > 0:
             self.log.info("At Point(s) {}  dut-b and c are open ".format(i_bc))
             vol[i_bc] = self.Aux.get_volume("bc")
 
-        if len(i_c) > 0:
+        if np.shape(i_c)[1] > 0:
             self.log.info("At Point(s) {}  dut- c are open ".format(i_c))
             vol[i_c] = self.Aux.get_volume("c")
 
@@ -262,16 +289,22 @@ class Cal(Se3):
         self.temperature_after(res)
         self.real_gas_correction(res)
         self.volume_add(res)
+        self.volume_start(res)
+        self.expansion(res)
 
         p_fill = res.pick("Pressure", "fill", "mbar")
         rg = res.pick("Correction", "rg", "1")
+        f = res.pick("Expansion", "uncorr", "1")
         T_before = res.pick("Temperature", "before", "K")
         T_after = res.pick("Temperature", "after", "K")
+        V_add = res.pick("Volume", "add", "cm^3")
+        V_start = res.pick("Volume", "start", "cm^3")
+        print(V_add)
+        p_cal = p_fill/rg*T_after/T_before/(1.0/f+V_add/V_start)
 
-        p_cal = p_fill/rg*T_after/T_before
         res.store("Pressure", "cal", p_cal, self.unit)
 
-    def get_expansion(self):
+    def get_expansion_name(self):
         """Returns an np.array containing
         the expansion name (``f_s``, ``f_m`` or ``f_l``)
         of the length: ``self.no_of_meas_points```
@@ -283,6 +316,34 @@ class Cal(Se3):
         f = self.Aux.get_expansion()
         if f is not None:
             return np.full(self.no_of_meas_points, f)
+
+    def expansion(self, res):
+        """Builds a vector containing the expansion factors
+        and stores it.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        f  = np.full(self.no_of_meas_points, None)
+        f_name  = self.get_expansion_name()
+        i_s    = np.where(f_name == "f_s")
+        i_m    = np.where(f_name == "f_m")
+        i_l    = np.where(f_name == "f_l")
+
+        if np.shape(i_s)[1] > 0:
+            f[i_s]       = self.get_value("f_s","1")
+
+        if np.shape(i_m)[1] > 0:
+            f[i_m]       = self.get_value("f_m","1")
+
+        if np.shape(i_l)[1] > 0:
+            f[i_l]       = self.get_value("f_l","1")
+
+        res.store("Expansion", "uncorr", f, "1")
+
 
     def pressure_nd(self, res):
         """Stores the differential pressure of the zero
@@ -392,30 +453,30 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        f = self.get_expansion()
+        f_name = self.get_expansion_name()
         t_mean = np.full(self.no_of_meas_points, np.nan)
         t_stdv = np.full(self.no_of_meas_points, np.nan)
         t_N = np.full(self.no_of_meas_points, np.nan)
 
-        i_s = np.where(f == "f_s")[0]
-        i_m = np.where(f == "f_m")[0]
-        i_l = np.where(f == "f_l")[0]
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
 
-        if len(i_s) > 0:
+        if np.shape(i_s)[1] > 0:
             self.log.info("Points {}  belong to f_s".format(i_s))
             t_m, t_s, N = self.temperature(list(range(3001, 3004)))
             t_mean[i_s] = t_m[i_s]
             t_stdv[i_s] = t_s[i_s]
             t_N[i_s] = N
 
-        if len(i_m) > 0:
+        if np.shape(i_m)[1] > 0:
             self.log.info("Points {}  belong to f_m".format(i_m))
             t_m, t_s, N = self.temperature(list(range(3004, 3014)))
             t_mean[i_m] = t_m[i_m]
             t_stdv[i_m] = t_s[i_m]
             t_N[i_m] = N
 
-        if len(i_l) > 0:
+        if np.shape(i_l)[1] > 0:
             self.log.info("Points {}  belong to f_l".format(i_l))
             t_m, t_s, N = self.temperature(list(range(3014, 3031)))
             t_mean[i_l] = t_m[i_l]

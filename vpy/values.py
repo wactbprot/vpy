@@ -164,7 +164,7 @@ class AuxSe3(AuxValues):
         """At documents concerned with certain
         expansions ratios  (e.g. expanson ratio measurements) the name of the
         investigated :math: f is stored in ``AuxValues.Expansion``
-            
+
         :returns: name of the investigated expansion
         :rtype: str
         """
@@ -187,6 +187,7 @@ class AuxSe3(AuxValues):
         """
         if "Volume" in self.doc:
             v = self.get_value("add_{}".format(t), "cm^3")
+        
         if v is not None:
             return v
 

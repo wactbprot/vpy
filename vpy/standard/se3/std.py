@@ -83,6 +83,8 @@ class Se3(Standard):
 
         :type: class
         """
+        self.model_unit = "mbar"
+
         f         = sym.Symbol('f')
         p_fill    = sym.Symbol('p_fill')
         V_start   = sym.Symbol('V_start')
@@ -143,53 +145,16 @@ class Se3(Standard):
             pick(quantity, type, unit)
         :type: class
         """
-        self.model_unit = "mbar"
-
-        V_start = np.full(self.no_of_meas_points, np.nan)
-        f       = np.full(self.no_of_meas_points, np.nan)
-        f_name  = self.get_expansion()
-
-        idxs    = np.where(f_name == "f_s")
-        if np.shape(idxs)[1] > 0:
-            V_start[idxs] = self.get_value("V_s","cm^3")
-            f[idxs]       = self.get_value("f_s","1")
-
-        idxm    = np.where(f_name == "f_m")
-        if np.shape(idxm)[1] > 0:
-            V_start[idxm] = self.get_value("V_m","cm^3")
-            f[idxm]       = self.get_value("f_m","1")
-
-
-        idxl    = np.where(f_name == "f_l")
-        if np.shape(idxl)[1] > 0:
-            V_start[idxl] = self.get_value("V_l","cm^3")
-            f[idxl]       = self.get_value("f_l","1")
 
         self.val_dict = {
-        'f': f,
+        'f': res.pick("Expansion", "uncorr","1"),
         'p_fill':res.pick("Pressure", "fill", self.unit),
-        'V_start':V_start,
+        'V_start':res.pick("Volume", "start", "cm^3"),
         'V_add': res.pick("Volume", "add", "cm^3"),
         'T_before':res.pick("Temperature", "before", "K"),
         'T_after':res.pick("Temperature", "after", "K"),
         'rg':res.pick("Correction", "rg", "1"),
         }
-
-    def get_expansion(self):
-
-        f = self.Aux.get_expansion()
-
-        if f is None:
-            pass # get expansion from values
-        else:
-            f = np.full(self.no_of_meas_points, f)
-
-        return f
-
-    def get_name(self):
-        """Returns the name of the Standard.
-        """
-        return self.name
 
     def get_gas(self):
         """Returns the name of the calibration gas.

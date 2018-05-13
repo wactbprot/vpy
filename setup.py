@@ -42,7 +42,7 @@ setup(
                       'sympy',
                       'sphinx',
                       'sphinx_rtd_theme',
-                     ],
+                      ],
     extras_require={
         'dev': ['sphinx',
                 'sphinx_rtd_theme',
