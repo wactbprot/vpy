@@ -248,11 +248,7 @@ class Cal(Se3):
         """
 
         vol = np.full(self.no_of_meas_points, None)
-        o = self.Pos.get_object("Type","dut_open")
-
-        if "Value" in o:
-            v_pos = np.array(o['Value'])
-
+        v_pos = self.Pos.get_str("dut_open")
 
         i_abc = np.where(v_pos == "abc")
         i_bc = np.where(v_pos == "bc")
