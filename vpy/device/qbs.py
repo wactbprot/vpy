@@ -25,5 +25,5 @@ class Qbs(Device):
         """
 
         e_expr = self.get_expression("e", "%")
-        f      = sym.lambdify(sym.Symbol('p'), e_expr, "numpy")
+        f = sym.lambdify(sym.Symbol('p'), e_expr, "numpy")
         return f(p)

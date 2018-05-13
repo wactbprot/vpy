@@ -16,10 +16,10 @@ if __name__ == "__main__":
 
     doc = io.load_doc()
     if doc:
-        res        = Analysis(doc)
-        se2_calc   =  Se2Calc(doc)
+        res = Analysis(doc)
+        se2_calc = Se2Calc(doc)
 
-        frs_calc   = FrsCalc(doc)
+        frs_calc = FrsCalc(doc)
         frs_uncert = FrsUncert(doc)
 
         frs_calc.temperature(res)
@@ -27,27 +27,33 @@ if __name__ == "__main__":
         frs_calc.pressure_cal(res)
         frs_uncert.total(res)
 
-        se2_calc.temperature_before(res)
-        se2_calc.temperature_after(res)
-        se2_calc.pressure_nd(res)
-        se2_calc.pressure_fill(res)
-        se2_calc.real_gas_correction(res)
-        se2_calc.time(res)
+        # ---------------------------------
+        ##
+        # script funktioniert nicht mehr
+        # TDevAdd u.ä. entfernt ...
+        ##
+        # ---------------------------------
+        # se2_calc.temperature_before(res)
+        # se2_calc.temperature_after(res)
+        # se2_calc.pressure_nd(res)
+        # se2_calc.pressure_fill(res)
+        # se2_calc.real_gas_correction(res)
+        # se2_calc.time(res)
 
-        rg   = res.pick("Correction", "rg", "1")
-        p_0  = res.pick("Pressure", "fill", "mbar")
-        p_1  = res.pick("Pressure", "frs5", "mbar")
-        p_nd = res.pick("Pressure", "nd", "mbar")
-        T_0  = res.pick("Temperature", "before", "K")
-        T_1  = res.pick("Temperature", "after", "K")
+        # rg   = res.pick("Correction", "rg", "1")
+        # p_0  = res.pick("Pressure", "fill", "mbar")
+        # p_1  = res.pick("Pressure", "frs5", "mbar")
+        # p_nd = res.pick("Pressure", "nd", "mbar")
+        # T_0  = res.pick("Temperature", "before", "K")
+        # T_1  = res.pick("Temperature", "after", "K")
 
-        cor_tem  =  T_0 / T_1
+        # cor_tem  =  T_0 / T_1
 
-        f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
-        
-        res.store("Correction", "temperature_expansion", cor_tem, "1")
-        res.store("Expansion", "f_1", f, "1")
-        log.info("expansion factors are: {}".format(f))
-        log.info("mean expansion factor is: {}".format(np.nanmean(f)))
-        log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
-        io.save_doc(res.build_doc())
+        # f        = (p_1 - p_nd)/(p_0 * rg) * cor_tem
+
+        # res.store("Correction", "temperature_expansion", cor_tem, "1")
+        # res.store("Expansion", "f_1", f, "1")
+        # log.info("expansion factors are: {}".format(f))
+        # log.info("mean expansion factor is: {}".format(np.nanmean(f)))
+        # log.info("standard deviation of mean value: {}".format(np.nanstd(f)/np.nanmean(f)/np.sqrt(len(f))))
+        # io.save_doc(res.build_doc())
