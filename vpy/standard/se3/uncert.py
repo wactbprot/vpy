@@ -79,7 +79,7 @@ class Uncert(Se3):
         """
         conf_temp = self.val_conf["Temperature"]
 
-        f   = self.get_expansion()
+        f   = self.get_expansion_name()
         i_l = np.where(f == "f_l")
         i_m = np.where(f == "f_m")
         i_s = np.where(f == "f_s")
@@ -152,7 +152,7 @@ class Uncert(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        f   = self.get_expansion()
+        f   = self.get_expansion_name()
         V = np.full(self.no_of_meas_points, np.nan)
 
         i_l = np.where(f == "f_l")

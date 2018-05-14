@@ -295,50 +295,10 @@ class Cal(Se3):
         T_after = res.pick("Temperature", "after", "K")
         V_add = res.pick("Volume", "add", "cm^3")
         V_start = res.pick("Volume", "start", "cm^3")
-        print(V_add)
+
         p_cal = p_fill/rg*T_after/T_before/(1.0/f+V_add/V_start)
 
         res.store("Pressure", "cal", p_cal, self.unit)
-
-    def get_expansion_name(self):
-        """Returns an np.array containing
-        the expansion name (``f_s``, ``f_m`` or ``f_l``)
-        of the length: ``self.no_of_meas_points```
-
-        :returns: array of expansion names
-        :rtype: np.array of strings
-        """
-
-        f = self.Aux.get_expansion()
-        if f is not None:
-            return np.full(self.no_of_meas_points, f)
-
-    def expansion(self, res):
-        """Builds a vector containing the expansion factors
-        and stores it.
-
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-
-        f  = np.full(self.no_of_meas_points, None)
-        f_name  = self.get_expansion_name()
-        i_s    = np.where(f_name == "f_s")
-        i_m    = np.where(f_name == "f_m")
-        i_l    = np.where(f_name == "f_l")
-
-        if np.shape(i_s)[1] > 0:
-            f[i_s]       = self.get_value("f_s","1")
-
-        if np.shape(i_m)[1] > 0:
-            f[i_m]       = self.get_value("f_m","1")
-
-        if np.shape(i_l)[1] > 0:
-            f[i_l]       = self.get_value("f_l","1")
-
-        res.store("Expansion", "uncorr", f, "1")
 
 
     def pressure_nd(self, res):
