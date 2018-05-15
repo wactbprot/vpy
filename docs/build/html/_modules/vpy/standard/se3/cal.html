@@ -452,50 +452,10 @@
         <span class="n">T_after</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
         <span class="n">V_add</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;add&quot;</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span>
         <span class="n">V_start</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Volume&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;cm^3&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">V_add</span><span class="p">)</span>
+
         <span class="n">p_cal</span> <span class="o">=</span> <span class="n">p_fill</span><span class="o">/</span><span class="n">rg</span><span class="o">*</span><span class="n">T_after</span><span class="o">/</span><span class="n">T_before</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="n">f</span><span class="o">+</span><span class="n">V_add</span><span class="o">/</span><span class="n">V_start</span><span class="p">)</span>
 
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.get_expansion_name"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.get_expansion_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_expansion_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns an np.array containing</span>
-<span class="sd">        the expansion name (``f_s``, ``f_m`` or ``f_l``)</span>
-<span class="sd">        of the length: ``self.no_of_meas_points```</span>
-
-<span class="sd">        :returns: array of expansion names</span>
-<span class="sd">        :rtype: np.array of strings</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_expansion</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.expansion"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.expansion">[docs]</a>    <span class="k">def</span> <span class="nf">expansion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Builds a vector containing the expansion factors</span>
-<span class="sd">        and stores it.</span>
-
-<span class="sd">        :param: Class with methode</span>
-<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
-<span class="sd">                pick(quantity, type, unit)</span>
-<span class="sd">        :type: class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">f</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">f_name</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_expansion_name</span><span class="p">()</span>
-        <span class="n">i_s</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f_name</span> <span class="o">==</span> <span class="s2">&quot;f_s&quot;</span><span class="p">)</span>
-        <span class="n">i_m</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f_name</span> <span class="o">==</span> <span class="s2">&quot;f_m&quot;</span><span class="p">)</span>
-        <span class="n">i_l</span>    <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f_name</span> <span class="o">==</span> <span class="s2">&quot;f_l&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">i_s</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">f</span><span class="p">[</span><span class="n">i_s</span><span class="p">]</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;f_s&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">i_m</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">f</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;f_m&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">i_l</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">f</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;f_l&quot;</span><span class="p">,</span><span class="s2">&quot;1&quot;</span><span class="p">)</span>
-
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Expansion&quot;</span><span class="p">,</span> <span class="s2">&quot;uncorr&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Cal.pressure_nd"><a class="viewcode-back" href="../../../../vpy.standard.se3.html#vpy.standard.se3.cal.Cal.pressure_nd">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_nd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>

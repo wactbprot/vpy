@@ -157,6 +157,7 @@
   <h1>Source code for vpy.standard.se2.cal</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sym</span>
+<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span>
 <span class="kn">from</span> <span class="nn">.std</span> <span class="k">import</span> <span class="n">Se2</span>
 
 <div class="viewcode-block" id="Cal"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal">[docs]</a><span class="k">class</span> <span class="nc">Cal</span><span class="p">(</span><span class="n">Se2</span><span class="p">):</span>
@@ -166,46 +167,23 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span> <span class="o">=</span> <span class="n">Temperature</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span> <span class="o">=</span> <span class="n">Pressure</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span> <span class="o">=</span> <span class="n">AuxSe2</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-
-        <span class="c1">#self.no_of_meas_points = len(self.Time.get_value(&quot;amt_fill&quot;, &quot;ms&quot;))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Cal.time"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.time">[docs]</a>    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates  the time axis</span>
-
-<span class="sd">        :param: Class with methode</span>
-<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
-<span class="sd">                pick(quantity, type, unit)</span>
-<span class="sd">        :type: class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">)</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_rmt</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">conv</span>
-
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="s2">&quot;rmt&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Cal.get_expansion"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.get_expansion">[docs]</a>    <span class="k">def</span> <span class="nf">get_expansion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns an np.array containing</span>
-<span class="sd">        the expansion name (``f_s``, ``f_m`` or ``f_l``)</span>
-<span class="sd">        of the length: ``self.no_of_meas_points```</span>
+        <span class="sd">&quot;&quot;&quot;Returns an np.array</span>
+
 
 <span class="sd">        :returns: array of expansion names</span>
 <span class="sd">        :rtype: np.array of strings</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_expansion</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
+        <span class="k">pass</span></div>
 
 
-<div class="viewcode-block" id="Cal.pressure_fill"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.pressure_fill">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the mean value of the filling pressure</span>
+<div class="viewcode-block" id="Cal.pressure_cal"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.pressure_cal">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple translation foem Measurement to Analysis</span>
 
-<span class="sd">        ..todo::</span>
-<span class="sd">                rm magic number /100. in get error corr</span>
-
-<span class="sd">        Stores result under the path *Pressure, fill, mbar*</span>
 
 <span class="sd">        :param: Class with methode</span>
 <span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
@@ -213,127 +191,9 @@
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;kPa&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">p_cal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;p_cal&quot;</span><span class="p">,</span> <span class="s2">&quot; mbar&quot;</span><span class="p">)</span>
 
-        <span class="n">p_fill</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="s2">&quot;kPa&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">conv</span>
-        <span class="n">meas_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_fill&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
-        <span class="n">p_fill_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span><span class="o">.</span><span class="n">get_val_by_time</span><span class="p">(</span>
-            <span class="n">meas_time</span><span class="p">,</span> <span class="s2">&quot;offset_mt&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">,</span> <span class="s2">&quot;fill_offset&quot;</span><span class="p">,</span> <span class="s2">&quot;kPa&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="n">conv</span>
-
-        <span class="n">p_fill_uncorr</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_fill</span> <span class="o">-</span> <span class="n">p_fill_offset</span><span class="p">)</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Qbs</span><span class="o">.</span><span class="n">get_error_correction</span><span class="p">(</span><span class="n">p_fill_uncorr</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">,</span> <span class="s2">&quot;%&quot;</span><span class="p">)</span> <span class="o">/</span> <span class="mf">100.</span>
-        <span class="n">p_fill_corr</span> <span class="o">=</span> <span class="n">p_fill_uncorr</span> <span class="o">/</span> <span class="p">(</span><span class="n">e</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span>
-
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Error&quot;</span><span class="p">,</span> <span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;fill_offset&quot;</span><span class="p">,</span> <span class="n">p_fill_offset</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;fill&quot;</span><span class="p">,</span> <span class="n">p_fill_corr</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_before"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.temperature_before">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_before</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the temperature of the starting volumes.</span>
-
-<span class="sd">        Stores result under the path  *Temperature, before, K*</span>
-
-<span class="sd">        :param: Class with methode</span>
-<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
-<span class="sd">                pick(quantity, type, unit)</span>
-<span class="sd">        :type: class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_expansion</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;expansion name vector is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
-
-        <span class="n">i_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;f_1&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">i_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;f_2&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">i_5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span> <span class="o">==</span> <span class="s2">&quot;f_5&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">i_1</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_volume_1</span><span class="p">()[</span><span class="n">i_1</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_1</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">i_2</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_volume_2</span><span class="p">()[</span><span class="n">i_2</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_2&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_2</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_5</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">t</span><span class="p">[</span><span class="n">i_5</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_volume_5</span><span class="p">()[</span><span class="n">i_5</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Points </span><span class="si">{}</span><span class="s2">  belong to f_5&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_5</span><span class="p">))</span>
-
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;before&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_after"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.temperature_after">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculates the temperature of the end volume.</span>
-<span class="sd">        Stores result under the path *Temperature, after, K*</span>
-
-<span class="sd">        :param: Class with methode</span>
-<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
-<span class="sd">                pick(quantity, type, unit)</span>
-<span class="sd">        :type: class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temperature_vessel</span><span class="p">()</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;after&quot;</span><span class="p">,</span> <span class="n">tem</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_volume_2"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.temperature_volume_2">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_volume_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (0.1l) volume. The used  sensor is:</span>
-
-<span class="sd">        *channel 101*</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">chs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">102</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;keithley_T_before_ch&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_keithleych&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">t_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">t_mean</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_volume_1"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.temperature_volume_1">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_volume_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (0.1l) volume. The used  sensors are:</span>
-
-<span class="sd">        *channel 101*</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">chs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">102</span><span class="p">,</span> <span class="mi">104</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;keithley_T_before_ch&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_keithleych&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">t_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">t_mean</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_volume_5"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.temperature_volume_5">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_volume_5</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of the medium (1l) volume. The used  sensors are:</span>
-
-<span class="sd">        *channel 101 ... 105*</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">chs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="mi">105</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;keithley_T_before_ch&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_keithleych&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">t_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">t_mean</span></div>
-
-<div class="viewcode-block" id="Cal.temperature_vessel"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.temperature_vessel">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_vessel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Temperature of 100l vessel. The used  sensors are:</span>
-
-<span class="sd">        *ch 105 .. 110*</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">chs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">111</span><span class="p">))</span>
-        <span class="n">tem_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;keithley_T_after_ch&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">cor_arr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">TDev</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="s2">&quot;corr_keithleych&quot;</span><span class="p">,</span> <span class="n">chs</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;K&quot;</span><span class="p">)</span>
-
-        <span class="n">t_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">tem_arr</span> <span class="o">+</span> <span class="n">cor_arr</span> <span class="o">+</span> <span class="n">conv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="n">t_mean</span></div></div>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

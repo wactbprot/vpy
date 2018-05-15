@@ -158,9 +158,9 @@ class Io(object):
 
         :param doc: document containing measurement data
         :type doc: dict
-        :param base_doc: document containing data about standard constants
-                        CalibrationObjects
-        :type doc: dict
+
+        :param base_doc: document containing data about standard constants CalibrationObjects
+        :type base_doc: dict
 
         :returns: updated calibration document
         :rtype: dict

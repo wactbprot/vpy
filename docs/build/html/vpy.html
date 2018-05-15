@@ -611,7 +611,21 @@ numpy typed array.</p>
 <dl class="method">
 <dt id="vpy.pkg_io.Io.get_base_doc">
 <code class="descname">get_base_doc</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_base_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_base_doc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Gets the latest standard related documents from the given
+database and combines it to one document.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – name of the standard e.g. <code class="docutils literal"><span class="pre">se2</span></code> or <code class="docutils literal"><span class="pre">se3</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">updated calibration document</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="vpy.pkg_io.Io.get_doc_db">
@@ -693,6 +707,30 @@ command line arguments:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>doc</strong> (<em>dict</em>) – document</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.update_cal_doc">
+<code class="descname">update_cal_doc</code><span class="sig-paren">(</span><em>doc</em>, <em>base_doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.update_cal_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.update_cal_doc" title="Permalink to this definition">¶</a></dt>
+<dd><p>More or less a merge between <code class="docutils literal"><span class="pre">doc</span></code> and <code class="docutils literal"><span class="pre">base_doc</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>doc</strong> (<em>dict</em>) – document containing measurement data</li>
+<li><strong>base_doc</strong> (<em>dict</em>) – document containing data about standard constants CalibrationObjects</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">updated calibration document</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
 </tr>
 </tbody>
 </table>

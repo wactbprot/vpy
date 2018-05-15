@@ -219,43 +219,6 @@ pick(quantity, type, unit) to store the values in</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.expansion">
-<code class="descname">expansion</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.expansion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Builds a vector containing the expansion factors
-and stores it.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
-store(quantity, type, value, unit, [stdev], [N])) and
-pick(quantity, type, unit)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="vpy.standard.se3.cal.Cal.get_expansion_name">
-<code class="descname">get_expansion_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.get_expansion_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.get_expansion_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an np.array containing
-the expansion name (<code class="docutils literal"><span class="pre">f_s</span></code>, <code class="docutils literal"><span class="pre">f_m</span></code> or <code class="docutils literal"><span class="pre">f_l</span></code>)
-of the length: <code class="docutils literal"><span class="pre">self.no_of_meas_points`</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of expansion names</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array of strings</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="vpy.standard.se3.cal.Cal.outgas_state">
 <code class="descname">outgas_state</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/cal.html#Cal.outgas_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.cal.Cal.outgas_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the outgasing rate of  dut-a,b,c u (vacuum branch
@@ -552,6 +515,25 @@ The order of symbols must match the order in <code class="docutils literal"><spa
 </dd></dl>
 
 <dl class="method">
+<dt id="vpy.standard.se3.std.Se3.expansion">
+<code class="descname">expansion</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.expansion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.expansion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a vector containing the expansion factors
+and stores it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.standard.se3.std.Se3.gen_val_array">
 <code class="descname">gen_val_array</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.gen_val_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.gen_val_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a array of values
@@ -595,6 +577,24 @@ store(quantity, type, value, unit, [stdev], [N])) and
 pick(quantity, type, unit)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.standard.se3.std.Se3.get_expansion_name">
+<code class="descname">get_expansion_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/se3/std.html#Se3.get_expansion_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.se3.std.Se3.get_expansion_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an np.array containing
+the expansion name (<code class="docutils literal"><span class="pre">f_s</span></code>, <code class="docutils literal"><span class="pre">f_m</span></code> or <code class="docutils literal"><span class="pre">f_l</span></code>)
+of the length: <code class="docutils literal"><span class="pre">self.no_of_meas_points`</span></code></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of expansion names</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">np.array of strings</td>
 </tr>
 </tbody>
 </table>
