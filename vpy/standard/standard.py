@@ -1,12 +1,11 @@
 import copy
 from ..document import Document
 from ..constants import Constants
-from ..calibration_devices import  CalibrationObject
+from ..calibration_devices import CalibrationObject
+
 
 class Standard(Document):
-    """Standard Class. Needs access to Constants, CalibrationObjects
-    and measurement values.
-    Provides the normals main measurand e.g. calibration pressure
+    """All standards need ``Constants`` and ``CalibrationObjects``
     """
 
     def __init__(self, doc, name):
@@ -38,16 +37,16 @@ class Standard(Document):
         """Real gas correction for already calculated filling pressure
         """
 
-        gas   = self.get_gas()
-        B     = self.Cons.get_value("virialCoeff_" + gas, "cm^3/mol")
-        T     = self.Cons.get_value("referenceTemperature", "K")
+        gas = self.get_gas()
+        B = self.Cons.get_value("virialCoeff_" + gas, "cm^3/mol")
+        T = self.Cons.get_value("referenceTemperature", "K")
 
         vconv = self.Cons.get_conv("m^3", "cm^3")
-        R     = self.Cons.get_value("R", "Pa m^3/mol/K") * vconv
+        R = self.Cons.get_value("R", "Pa m^3/mol/K") * vconv
 
         pconv = self.Cons.get_conv("mbar", "Pa")
-        p     = res.pick("Pressure", "fill", "mbar") * pconv
+        p = res.pick("Pressure", "fill", "mbar") * pconv
 
-        rg    = 1./(1. + p*B/(R*T))
+        rg = 1. / (1. + p * B / (R * T))
 
         res.store("Correction", "rg", rg, "1")

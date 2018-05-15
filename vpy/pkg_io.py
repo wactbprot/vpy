@@ -21,6 +21,12 @@ class Io(object):
         # --id
         parser.add_argument("--id", type=str, nargs=1,
                             help="id of the document to analyse")
+        # --id
+        parser.add_argument("--db", type=str, nargs=1,
+                            help="name of the database")
+        # --id
+        parser.add_argument("--srv", type=str, nargs=1,
+                            help="server url in the form: http://server:port")
         # --file
         parser.add_argument("--file", type=str, nargs=1,
                             help="file containing document to analyse")
@@ -48,6 +54,14 @@ class Io(object):
         else:
             self.save = False
 
+        if self.args.db:
+            self.config["db"]["name"] = self.args.db[0]
+            self.log.debug("use database {}".format(self.config["db"]["name"]))
+
+        if self.args.srv:
+            self.config["db"]["url"] = self.args.srv[0]
+            self.log.debug("use server {}".format(self.config["db"]["url"]))
+
     def load_doc(self):
         """Loads the document to analyse from the source
         given with the command line arguments
@@ -55,15 +69,16 @@ class Io(object):
         doc = None
 
         if self.args.id:
-            self.log.info("""try to get document {}
-                          from database""".format(self.args.id))
             docid = self.args.id[0]
+            self.log.info("""try to get document {}
+                          from database""".format(docid))
             doc = self.get_doc_db(docid)
 
         if self.args.file:
+            fname = self.args.file[0]
             self.log.info("""try to get document {}
-                          from file""".format(self.args.file))
-            with open(self.args.file[0]) as json_doc_file:
+                          from file""".format(fname))
+            with open(fname) as json_doc_file:
                 doc = json.load(json_doc_file)
 
         if doc:
@@ -138,7 +153,39 @@ class Io(object):
         db = srv[self.config['db']['name']]
         res = db.save(doc)
 
+    def update_cal_doc(self, doc, base_doc):
+        """More or less a merge between ``doc`` and ``base_doc``.
+
+        :param doc: document containing measurement data
+        :type doc: dict
+        :param base_doc: document containing data about standard constants
+                        CalibrationObjects
+        :type doc: dict
+
+        :returns: updated calibration document
+        :rtype: dict
+        """
+        ret = None
+        if "Calibration" in doc:
+            for k, v in base_doc.items():
+                doc["Calibration"][k] = v
+            ret = doc
+        else:
+            err_msg = "wrong data structure"
+            self.log.error(err_msg)
+            sys.exit(err_msg)
+        return ret
+
     def get_base_doc(self, name):
+        """Gets the latest standard related documents from the given
+        database and combines it to one document.
+
+        :param name: name of the standard e.g. ``se2`` or ``se3``
+        :type doc: str
+
+        :returns: updated calibration document
+        :rtype: dict
+        """
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['all_doc_view']

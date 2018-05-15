@@ -7,6 +7,9 @@
     "se3":{
         "all_doc_view":"se3_req/doc",
         "state_doc_view":"se3_req/state"
+    },
+    "se2":{
+        "all_doc_view":"se2_req/doc"
     }
   }
 }

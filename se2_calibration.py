@@ -5,26 +5,26 @@ from vpy.analysis import Analysis
 from vpy.standard.se2.cal import Cal
 from vpy.standard.se2.uncert import Uncert
 
+"""
+Example call:
+python se2_calibration.py --id 'cal-2018-se2-pn-0118_0001' --log d --db 'vl_db_corr' --srv 'http://i75422:5984'
+"""
 
 
 def main():
-    """
-    Example call:
-        python se2_calibration.py --id 'cal-2018-se2-kk-75016_0001' --log d
-    """
     io = Io()
-    doc = io.load_doc()
 
-        res = Analysis(doc)
-        cal = Calc(doc)
+    base_doc = io.get_base_doc("se2")
+    meas_doc = io.load_doc()
 
-        cal.temperature_before(res)
-        cal.temperature_after(res)
-        cal.pressure_fill(res)
-        cal.real_gas_correction(res)
-        cal.time(res)
+    doc = io.update_cal_doc(meas_doc, base_doc)
+    res = Analysis(doc)
+    cal = Cal(doc)
+    unc = Uncert(doc)
 
-        io.save_doc(res.build_doc())
+
+    cal.pressure_cal(res)
+    unc.temperature_vessel(res)
 
 if __name__ == "__main__":
     main()
