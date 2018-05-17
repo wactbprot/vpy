@@ -1,33 +1,40 @@
 import datetime
+import subprocess
 import copy
 import numpy as np
 from .document import Document
+
 
 class Analysis(Document):
     """Holds a deep copy of original document. Container for storing
     Results of analysis.
     """
+
     def __init__(self, doc):
         doc = copy.deepcopy(doc)
-        d   = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        o   = {"Date":[{
-                    "Type": "generated",
+        d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        githash = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
+        o = {"Date": [{
+            "Type": "generated",
                     "Value": d}],
-                    "Values":{}}
+             "Values": {},
+             "AnalysisProgram": "vpy",
+             "AnalysisGitHash": githash 
+             }
+
         super().__init__(o)
         self.org = doc
-        self.log.debug("init func: {}".format(__name__))
 
     def store(self, quant, t, v, u, sd=None, n=None):
         """Stores the result of a calculation in
         the analysis structure below the given quantity.
         """
 
-        v =  self.make_writable(v)
-        n =  self.make_writable(n)
+        v = self.make_writable(v)
+        n = self.make_writable(n)
         sd = self.make_writable(sd)
 
-        o = {"Type":t, "Value":v, "Unit":u}
+        o = {"Type": t, "Value": v, "Unit": u}
         if sd is not None:
             o['SdValue'] = sd
         if n is not None:
