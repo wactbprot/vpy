@@ -10,7 +10,8 @@ class TestDU(unittest.TestCase):
                ],
                'G': {'H': 'c', 'I': 'd'},
                'Meas':[
-                {'Type':'a', 'Value':[1,2,3], 'Unit':'s'}
+                {'Type':'a', 'Value':[1,2,3], 'Unit':'s'},
+                {'Type':'b', 'Value':['1','2','3'], 'Unit':'s'}
                 ]
                }
         self.Doc = Document(doc)
@@ -62,12 +63,20 @@ class TestDU(unittest.TestCase):
         self.assertEqual(res['C'], 'c')
 
     def test_get_value_1(self):
-        """nested obj in list
+        """Shold return a numpy vector
         """
         res = self.Doc.get_value('a', 's')
 
         self.assertTrue(type(res).__module__ == 'numpy')
         self.assertEqual(res[0], 1)
+
+    def test_get_value_2(self):
+        """Shold return a numpy vector
+        """
+        res = self.Doc.get_value('b', 's')
+
+        self.assertTrue(type(res).__module__ == 'numpy')
+        self.assertEqual(res[0], '1')
 
 
 
