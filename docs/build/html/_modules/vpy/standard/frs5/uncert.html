@@ -1,158 +1,200 @@
 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>vpy.standard.frs5.uncert &mdash; vpy 0.1.0 documentation</title>
-  
-
-  
-  
-  
-  
-
-  
-
-  
-  
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     
+    <title>vpy.standard.frs5.uncert &#8212; vpy 0.1.0 documentation</title>
 
-  
-
-  
-  
-    <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../../search.html"/>
-    <link rel="top" title="vpy 0.1.0 documentation" href="../../../../index.html"/>
-        <link rel="up" title="Module code" href="../../../index.html"/> 
-
-  
-  <script src="../../../../_static/js/modernizr.min.js"></script>
-
-</head>
-
-<body class="wy-body-for-nav" role="document">
-
-   
-  <div class="wy-grid-for-nav">
-
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../../../modules.html" class="icon icon-home"> vpy
-          
-
-          
+    <link rel="stylesheet" href="../../../../_static/tether-1.3.1/css/tether.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/bootstrap-4.0.0-alpha3/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/sphinxbootstrap4.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../_static/tether-1.3.1/js/tether.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/bootstrap-4.0.0-alpha3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../../../_static/sphinxbootstrap4.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head>
+  <body>
+  <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
+      <div class="row container-fluid">
+           <a class="navbar-brand hidden-xs-down" href="../../../../modules.html">
+                  vpy
           </a>
-
+          <span class="navbar-text pull-xs-left navbar-version hidden-xs-down"><b>0.1.0</b></span>
+          <button class="navbar-toggler hidden-sm-up pull-xs-right bar-button" type="button" data-toggle="collapse" data-target="#exCollapsingNavbar2">
+          &#9776;
+          </button>
+          <div class="hidden-xs-down">
+          <ul class="nav navbar-nav ">
           
+              <li class="nav-item dropdown" id="navbar-pages">
+                  <a class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
+                  <ul class="dropdown-menu">
+                  <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vpy.html">vpy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vpy.device.html">vpy.device package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.cdg">vpy.device.cdg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.device">vpy.device.device module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.dmm">vpy.device.dmm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.qbs">vpy.device.qbs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.srg">vpy.device.srg module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vpy.standard.html">vpy.standard package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.standard.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.standard.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.standard.html#module-vpy.standard.standard">vpy.standard.standard module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.analysis">vpy.analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.calibration_devices">vpy.calibration_devices module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.constants">vpy.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.document">vpy.document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.sim">vpy.sim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.values">vpy.values module</a></li>
+</ul>
+</li>
+</ul>
+
+                  </ul>
+              </li>
+          </ul>
+             
+<form class="form-inline pull-sm-right" action="../../../../search.html" method="get">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          </div>
+      </div>
+
+      <div class="row hidden-sm-up">
+          <div class="collapse navbar-toggleable-xs container" id="exCollapsingNavbar2">
+              <div class="container">
+             　　 <a class="navbar-brand" href="../../../../modules.html">
+                      vpy
+                  </a>
+              </div>
+              <ul class="nav navbar-nav">
+              </ul>
+              <div class="dropdown-divider"></div>
+              <div class="navbar-text">search<div>
+              
+<form class="form-inline pull-sm-right" action="../../../../search.html" method="get">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          </div>
+      </div>
+    </nav>
+  </div>
+
+    <div class="related container-fluid bg-faded" role="navigation" aria-label="related navigation">
+        <ol class="breadcrumb col-md-8">
+            <li class="breadcrumb-item"><a href="../../../../modules.html">vpy 0.1.0 documentation</a></li>
+                <li class="breadcrumb-item"><a href="../../../index.html"
+                       
+                         accesskey="U"
+                         class="active"
+                       >Module code</a></li>
+            <li class="breadcrumb-item active">vpy.standard.frs5.uncert</li>
+        </ol>
+       <div class="relation col-md-4">
+           <div class="pull-xs-right">
+               <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
+               </div>
+           </div>
+       </div>
+    </div>
+
+  <div class="main"> 
+      <div class="sphinxsidebar hidden-sm-down">
+        <div class="sphinxsidebarwrapper">          
+            <h4>Table Of Contents</h4>
             
             
-              <div class="version">
-                0.1.0
+              <div class="sidebartoctree">
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vpy.html">vpy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vpy.device.html">vpy.device package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.cdg">vpy.device.cdg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.device">vpy.device.device module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.dmm">vpy.device.dmm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.qbs">vpy.device.qbs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.device.html#module-vpy.device.srg">vpy.device.srg module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../../vpy.standard.html">vpy.standard package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.standard.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.standard.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../../vpy.standard.html#module-vpy.standard.standard">vpy.standard.standard module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.analysis">vpy.analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.calibration_devices">vpy.calibration_devices module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.constants">vpy.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.document">vpy.document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.sim">vpy.sim module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../vpy.html#module-vpy.values">vpy.values module</a></li>
+</ul>
+</li>
+</ul>
+
               </div>
             
           
-
-          
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+<div id="searchbox" style="display: none">
+    <form class="form search" action="../../../../search.html" method="get">
+      <input type="text" name="q" class="form-control" placeholder="Search..." />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
 </div>
 
-          
+<script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
+      </div> 
 
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../vpy.html">vpy package</a></li>
-</ul>
-
-            
-          
-        </div>
-      </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../../modules.html">vpy</a>
-        
-      </nav>
-
-
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
-  <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../../../modules.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-        
-      <li>vpy.standard.frs5.uncert</li>
-    
-    
-      <li class="wy-breadcrumbs-aside">
-        
-            
-        
-      </li>
-    
-  </ul>
-
-  
-  <hr/>
-</div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
             
   <h1>Source code for vpy.standard.frs5.uncert</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -536,67 +578,23 @@
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Uncertainty&quot;</span><span class="p">,</span> <span class="s2">&quot;u_ab&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">val</span><span class="o">/</span><span class="n">p</span><span class="p">),</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
-           </div>
-           <div class="articleComments">
-            
-           </div>
           </div>
-          <footer>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, wactbprot.
-
-    </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
-
-</footer>
-
         </div>
       </div>
-
-    </section>
-
+    </div>
+      <div class="clearer"></div>
+    </div>
   </div>
-  
-
-
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../../',
-            VERSION:'0.1.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
-  
-
-  
-  
-  <script type="text/javascript">
-      jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
-      });
-  </script>
-   
-
-</body>
+<footer class="footer">
+  <div class="container-fluid">
+    <div class="text-xs-left col-md-9 copyright">
+        <div>&copy; Copyright 2018, wactbprot.</div>
+      <div>Generated by <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.6.7 using <a href="https://github.com/myyasuda/sphinxbootstrap4theme">sphinxbootstrap4theme</a> 0.5.0.</div>
+    </div>
+    <div class="pull-xs-right">
+        <a href="#" class="btn btn-primary btn-sm" role="botton">Back to top</a>
+    </div>
+  </div>
+</footer>
+  </body>
 </html>

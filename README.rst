@@ -51,18 +51,23 @@ run script with database
 logging
 =======
 
-There are different log levels available:
+One can set different log levels:
+
+* INFO
+* DEBUG
+* ERROR
+
+in ``conf.json``.
+
+unit tests
+==========
+
+There is a unit test stub for ``documents.py``. Call with:
 
 .. code-block:: shell
-    > python se3_eval_state_doc.py --log=d
-    > python se3_eval_state_doc.py --log=i
-    > python se3_eval_state_doc.py --log=e
 
-with:
+    > python -m unittest vpy/test_document.py
 
-* i .. INFO
-* d .. DEBUG
-* e .. ERROR
 
 relayServer
 ============

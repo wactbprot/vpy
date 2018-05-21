@@ -1,15 +1,16 @@
 {
-  "db":{
-    "url":"http://localhost:5984",
-    "name": "vl_db"
-  },
-  "standards":{
-    "se3":{
-        "all_doc_view":"se3_req/doc",
-        "state_doc_view":"se3_req/state"
+    "loglevel": "DEBUG",
+    "db": {
+        "url": "http://localhost:5984",
+        "name": "vl_db"
     },
-    "se2":{
-        "all_doc_view":"se2_req/doc"
+    "standards": {
+        "se3": {
+            "all_doc_view": "se3_req/doc",
+            "state_doc_view": "se3_req/state"
+        },
+        "se2": {
+            "all_doc_view": "se2_req/doc"
+        }
     }
-  }
 }

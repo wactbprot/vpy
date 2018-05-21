@@ -1,5 +1,3 @@
-import logging
-import coloredlogs
 import argparse
 import sys
 import os
@@ -30,12 +28,7 @@ class Io(object):
         # --file
         parser.add_argument("--file", type=str, nargs=1,
                             help="file containing document to analyse")
-        # --log
-        parser.add_argument("--log", type=str, nargs=1,
-                            help="""kind of logging:
-                                      d ... debug
-                                      i ... info (default)
-                                      e .. error""")
+
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)
 
@@ -250,30 +243,3 @@ class Io(object):
             self.args.id = doc['_id']
 
         return doc
-
-    def logger(self, name):
-        """
-        Based on http://docs.python.org/howto/logging.html#configuring-logging
-
-        .. todo::
-
-                something is wrong here, double output on level=info!
-
-        """
-
-        logger = logging.getLogger()
-        fmt = '%(asctime)s,%(msecs)03d %(hostname)s %(filename)s:%(lineno)s %(levelname)s %(message)s'
-        if self.args.log:
-            if self.args.log[0] == "d":
-                coloredlogs.install(fmt=fmt, level="DEBUG", logger=logger)
-
-            if self.args.log[0] == "i":
-                coloredlogs.install(fmt=fmt, level="INFO", logger=logger)
-
-            if self.args.log[0] == "e":
-                coloredlogs.install(fmt=fmt, level="ERROR", logger=logger)
-
-        else:
-            coloredlogs.install(fmt=fmt, level="DEBUG", logger=logger)
-
-        return logger
