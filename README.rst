@@ -59,8 +59,8 @@ One can set different log levels:
 
 in ``conf.json``.
 
-unit tests
-==========
+unit tests and coverage
+=======================
 
 There is a unit test stub for ``documents.py``. Call with:
 
@@ -68,6 +68,13 @@ There is a unit test stub for ``documents.py``. Call with:
 
     > python -m unittest vpy/test_document.py
 
+Same with the coverage tool:
+
+.. code-block:: shell
+
+    > coverage run -m unittest vpy/test_document.py
+
+see .. _`documentation of coverage pkg`: https://coverage.readthedocs.io/en/coverage-4.5.1/
 
 relayServer
 ============
