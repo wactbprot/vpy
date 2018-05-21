@@ -139,7 +139,7 @@ class Cal(Se3):
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 
     def pressure_state(self, res):
-        """ So far: a simple tarnsfer of measured values to
+        """ So far: a simple transfer of measured values to
         Analysis section.
 
         :param: Class with methode
@@ -239,7 +239,7 @@ class Cal(Se3):
         res.store("Volume", "start",   vol, "cm^3")
 
     def volume_add(self, res):
-        """Builds a vector containing the additional volume and stores it.
+        """Builds up a vector containing the additional volume and stores it.
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
