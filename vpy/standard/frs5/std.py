@@ -3,8 +3,9 @@ import sympy as sym
 from ..standard import Standard
 from ...device.srg import Srg
 from ...constants import Constants
-from ...calibration_devices import  CalibrationObject
+from ...calibration_devices import CalibrationObject
 from ...values import Temperature, Pressure, Time, AuxFrs5
+
 
 class Frs5(Standard):
     """Calculation methods of large area piston gauge FRS5.
@@ -32,9 +33,8 @@ class Frs5(Standard):
                 p=\\frac{r_{ind}-r_0+u_b+u_{sys}}{r_{cal}-r_{cal 0}}\\
                  m_{cal}\\frac{g}{A_{eff}}\\frac{1}{corr_{rho}corr_{tem}}
     """
-    name  = "FRS5"
-    unit  = "mbar"
-
+    name = "FRS5"
+    unit = "mbar"
 
     def __init__(self, doc):
         super().__init__(doc, self.name)
@@ -45,7 +45,7 @@ class Frs5(Standard):
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Time = Time(doc)
-        self.Aux  = AuxFrs5(doc)
+        self.Aux = AuxFrs5(doc)
 
         # residua pressure device
         self.no_of_meas_points = len(self.Time.get_value("amt_frs5_ind", "ms"))
@@ -96,45 +96,47 @@ class Frs5(Standard):
 
         :type: class
         """
-        A          = sym.Symbol('A')
-        r          = sym.Symbol('r')
-        r_zc       = sym.Symbol('r_zc')
-        r_zc0      = sym.Symbol('r_zc0')
-        r_cal      = sym.Symbol('r_cal')
-        r_cal0     = sym.Symbol('r_cal0')
-        ub         = sym.Symbol('ub')
-        usys       = sym.Symbol('usys')
-        m_cal      = sym.Symbol('m_cal')
-        g          = sym.Symbol('g')
-        rho_frs    = sym.Symbol('rho_frs')
-        rho_gas    = sym.Symbol('rho_gas')
-        ab         = sym.Symbol('ab')
-        T          = sym.Symbol('T')
-        p_res      = sym.Symbol('p_res')
+        A = sym.Symbol('A')
+        r = sym.Symbol('r')
+        r_zc = sym.Symbol('r_zc')
+        r_zc0 = sym.Symbol('r_zc0')
+        r_cal = sym.Symbol('r_cal')
+        r_cal0 = sym.Symbol('r_cal0')
+        ub = sym.Symbol('ub')
+        usys = sym.Symbol('usys')
+        m_cal = sym.Symbol('m_cal')
+        g = sym.Symbol('g')
+        rho_frs = sym.Symbol('rho_frs')
+        rho_gas = sym.Symbol('rho_gas')
+        ab = sym.Symbol('ab')
+        T = sym.Symbol('T')
+        p_res = sym.Symbol('p_res')
 
         self.symb = (
-                    A,
-                    r,
-                    r_zc,
-                    r_zc0,
-                    r_cal,
-                    r_cal0,
-                    ub,
-                    usys,
-                    m_cal,
-                    g,
-                    rho_frs,
-                    rho_gas,
-                    ab,
-                    T,
-                    p_res,)
+            A,
+            r,
+            r_zc,
+            r_zc0,
+            r_cal,
+            r_cal0,
+            ub,
+            usys,
+            m_cal,
+            g,
+            rho_frs,
+            rho_gas,
+            ab,
+            T,
+            p_res,)
 
-        self.model_offset   = r_zc-r_zc0
-        self.model_buoyancy = 1.0/(1.0-rho_gas/rho_frs)
-        self.model_temp     = 1.0/(1.0+ab*(T-20.0))
-        self.model_conv     = m_cal/(r_cal-r_cal0)*g/A*self.model_buoyancy*self.model_temp
-        ## all together
-        self.model          = (r-self.model_offset+ub+usys)*self.model_conv+p_res
+        self.model_offset = r_zc - r_zc0
+        self.model_buoyancy = 1.0 / (1.0 - rho_gas / rho_frs)
+        self.model_temp = 1.0 / (1.0 + ab * (T - 20.0))
+        self.model_conv = m_cal / (r_cal - r_cal0) * \
+            g / A * self.model_buoyancy * self.model_temp
+        # all together
+        self.model = (r - self.model_offset + ub + usys) * \
+            self.model_conv + p_res
 
     def get_gas(self):
         """Returns the name of the calibration gas stored in *AuxValues*
@@ -147,7 +149,6 @@ class Frs5(Standard):
 
         self.log.warn("Default gas N2 used")
         return "N2"
-
 
     def gen_val_dict(self, res):
         """Reads in a dict of values
@@ -162,48 +163,48 @@ class Frs5(Standard):
         """
         self.model_unit = "Pa"
 
-        const_A        = self.get_value("A_eff","m^2"),
-        const_r_cal    = self.get_value("R_cal","lb"),
-        const_m_cal    = self.get_value("m_cal","kg"),
-        const_g        = self.get_value("g_frs","m/s^2"),
+        const_A = self.get_value("A_eff", "m^2"),
+        const_r_cal = self.get_value("R_cal", "lb"),
+        const_m_cal = self.get_value("m_cal", "kg"),
+        const_g = self.get_value("g_frs", "m/s^2"),
 
-        ## correction buoyancy  piston
-        const_rho_frs  = self.get_value("rho_frs", "kg/m^3"),
+        # correction buoyancy  piston
+        const_rho_frs = self.get_value("rho_frs", "kg/m^3"),
 
         ## Temperature in C
-        val_T          = res.pick("Temperature", "frs5", "C")
-        const_ab       = self.get_value("alpha_beta_frs", "1/C"),
+        val_T = res.pick("Temperature", "frs5", "C")
+        const_ab = self.get_value("alpha_beta_frs", "1/C"),
 
-        ## correction buoyancy  get info for gas
-        approx_p       = self.Pres.get_value("frs_p", "lb")*10.0 # mbar
-        gas            = self.get_gas()
-        conv_T         = self.Cons.get_conv("C", "K")
-        val_rho_gas    = self.Cons.get_gas_density(gas, approx_p, self.unit, val_T + conv_T , "K", "kg/m^3")
-        ##  get measure time for r_zc0
-        meas_time      = self.Time.get_value("amt_frs5_ind", "ms")
+        # correction buoyancy  get info for gas
+        approx_p = self.Pres.get_value("frs_p", "lb") * 10.0  # mbar
+        gas = self.get_gas()
+        conv_T = self.Cons.get_conv("C", "K")
+        val_rho_gas = self.Cons.get_gas_density(
+            gas, approx_p, self.unit, val_T + conv_T, "K", "kg/m^3")
+        # get measure time for r_zc0
+        meas_time = self.Time.get_value("amt_frs5_ind", "ms")
 
-
-        ## residual pressure in Pa
+        # residual pressure in Pa
         conv = self.Cons.get_conv(self.unit, "Pa")
-        val_p_res         = res.pick("Pressure", "frs5_res", self.unit)*conv
+        val_p_res = res.pick("Pressure", "frs5_res", self.unit) * conv
 
-        self.val_dict={
-                        'A':       np.full(self.no_of_meas_points, const_A ),
-                        'r':       self.Pres.get_value("frs_p", "lb"),
-                        'r_zc':    self.Pres.get_value("frs_zc_p", "lb"),
-                        'r_zc0':   self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb"),
-                        'r_cal':   np.full(self.no_of_meas_points, const_r_cal),
-                        'r_cal0':  np.full(self.no_of_meas_points, 0.0),
-                        'ub':      np.full(self.no_of_meas_points, 0.0),
-                        'usys':    np.full(self.no_of_meas_points, 0.0),
-                        'm_cal':   np.full(self.no_of_meas_points, const_m_cal),
-                        'g':       np.full(self.no_of_meas_points, const_g),
-                        'rho_frs': np.full(self.no_of_meas_points, const_rho_frs),
-                        'rho_gas': val_rho_gas ,
-                        'ab':      np.full(self.no_of_meas_points, const_ab),
-                        'T':       val_T,
-                        'p_res':   val_p_res,
-                        }
+        self.val_dict = {
+            'A':       np.full(self.no_of_meas_points, const_A),
+            'r':       self.Pres.get_value("frs_p", "lb"),
+            'r_zc':    self.Pres.get_value("frs_zc_p", "lb"),
+            'r_zc0':   self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb"),
+            'r_cal':   np.full(self.no_of_meas_points, const_r_cal),
+            'r_cal0':  np.full(self.no_of_meas_points, 0.0),
+            'ub':      np.full(self.no_of_meas_points, 0.0),
+            'usys':    np.full(self.no_of_meas_points, 0.0),
+            'm_cal':   np.full(self.no_of_meas_points, const_m_cal),
+            'g':       np.full(self.no_of_meas_points, const_g),
+            'rho_frs': np.full(self.no_of_meas_points, const_rho_frs),
+            'rho_gas': val_rho_gas,
+            'ab':      np.full(self.no_of_meas_points, const_ab),
+            'T':       val_T,
+            'p_res':   val_p_res,
+        }
 
         self.log.info("value dict genetated")
         self.log.debug(self.val_dict)
@@ -235,21 +236,21 @@ class Frs5(Standard):
         """
         self.gen_val_dict(res)
         self.val_arr = [
-                        self.val_dict['A'],
-                        self.val_dict['r'],
-                        self.val_dict['r_zc'],
-                        self.val_dict['r_zc0'],
-                        self.val_dict['r_cal'],
-                        self.val_dict['r_cal0'],
-                        self.val_dict['ub'],
-                        self.val_dict['usys'],
-                        self.val_dict['m_cal'],
-                        self.val_dict['g'],
-                        self.val_dict['rho_frs'],
-                        self.val_dict['rho_gas'],
-                        self.val_dict['ab'],
-                        self.val_dict['T'],
-                        self.val_dict['p_res'],
-                ]
+            self.val_dict['A'],
+            self.val_dict['r'],
+            self.val_dict['r_zc'],
+            self.val_dict['r_zc0'],
+            self.val_dict['r_cal'],
+            self.val_dict['r_cal0'],
+            self.val_dict['ub'],
+            self.val_dict['usys'],
+            self.val_dict['m_cal'],
+            self.val_dict['g'],
+            self.val_dict['rho_frs'],
+            self.val_dict['rho_gas'],
+            self.val_dict['ab'],
+            self.val_dict['T'],
+            self.val_dict['p_res'],
+        ]
         self.log.info("value array derived from dict_arr")
         self.log.debug(self.val_arr)

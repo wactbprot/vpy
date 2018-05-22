@@ -57,6 +57,14 @@ vpy\.pkg\_io module
     :undoc-members:
     :show-inheritance:
 
+vpy\.pkg\_log module
+--------------------
+
+.. automodule:: vpy.pkg_log
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 vpy\.sim module
 ---------------
 

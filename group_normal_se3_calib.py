@@ -12,12 +12,6 @@ The analysis of the FRS5 Pressure and DKM was made by R-script.
 
 """
 
-import coloredlogs
-import logging as log
-import numpy as np
-import argparse
-import sys
-
 from device.cdg import InfCdg
 from values import  Pressure
 from pkg_io import Io

@@ -34,9 +34,6 @@ class Io(object):
 
         self.args = parser.parse_args()
 
-        self.log = self.logger(__name__)
-        self.log.debug("init func: {}".format(__name__))
-
         # open and parse config file
         with open('./conf.json') as json_config_file:
             self.config = json.load(json_config_file)
@@ -49,11 +46,11 @@ class Io(object):
 
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
-            self.log.debug("use database {}".format(self.config["db"]["name"]))
+            print("use database {}".format(self.config["db"]["name"]))
 
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
-            self.log.debug("use server {}".format(self.config["db"]["url"]))
+            print("use server {}".format(self.config["db"]["url"]))
 
     def load_doc(self):
         """Loads the document to analyse from the source
@@ -63,23 +60,23 @@ class Io(object):
 
         if self.args.id:
             docid = self.args.id[0]
-            self.log.info("""try to get document {}
+            print("""try to get document {}
                           from database""".format(docid))
             doc = self.get_doc_db(docid)
 
         if self.args.file:
             fname = self.args.file[0]
-            self.log.info("""try to get document {}
+            print("""try to get document {}
                           from file""".format(fname))
             with open(fname) as json_doc_file:
                 doc = json.load(json_doc_file)
 
         if doc:
-            self.log.info("got doc, will return")
+            print("got doc, will return")
             return doc
         else:
             err_msg = "document not found"
-            self.log.error(err_msg)
+            print(err_msg)
             sys.exit(err_msg)
 
     def save_doc(self, doc):
@@ -91,7 +88,7 @@ class Io(object):
         """
         if self.save:
             if self.args.id:
-                self.log.info("try writing doc to database")
+                print("try writing doc to database")
                 doc = self.set_doc_db(doc)
 
             if self.args.file:
@@ -99,7 +96,7 @@ class Io(object):
                 path, file_name = os.path.split(path_file_name)
                 new_file_name = "{}/new.{}".format(path, file_name)
 
-                self.log.info("""try writing doc to
+                print("""try writing doc to
                             new filename: {}""".format(new_file_name))
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
@@ -124,14 +121,14 @@ class Io(object):
             if "error" in doc:
                 err_msg = """database returns
                           with error: {}""".format(doc['error'])
-                self.log.error(err_msg)
+                print(err_msg)
                 sys.exit(err_msg)
             else:
-                self.log.info("""got document from database """)
+                print("""got document from database """)
         else:
             err_msg = """document with id {}
                       not found""".format(doc_id)
-            self.log.error(err_msg)
+            print(err_msg)
             sys.exit(err_msg)
 
         return doc
@@ -165,7 +162,7 @@ class Io(object):
             ret = doc
         else:
             err_msg = "wrong data structure"
-            self.log.error(err_msg)
+            print(err_msg)
             sys.exit(err_msg)
         return ret
 
@@ -231,7 +228,7 @@ class Io(object):
         db = srv[self.config['db']['name']]
 
         if self.args.id:
-            self.log.info("""try to get document {}
+            print("""try to get document {}
                           from database""".format(self.args.id))
             doc_id = self.args.id[0]
             doc = self.get_doc_db(doc_id)
