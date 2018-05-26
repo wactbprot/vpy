@@ -59,8 +59,8 @@ One can set different log levels:
 
 in ``conf.json``.
 
-unit tests and coverage
-=======================
+unit tests, coverage and pre commit hook
+========================================
 
 There is a unit test stub for ``documents.py``. Call with:
 
