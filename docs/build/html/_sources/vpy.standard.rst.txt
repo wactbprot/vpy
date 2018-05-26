@@ -11,6 +11,7 @@ Subpackages
 
 .. toctree::
 
+    vpy.standard.dkm_ppc4
     vpy.standard.frs5
     vpy.standard.se2
     vpy.standard.se3

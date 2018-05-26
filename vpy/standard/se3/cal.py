@@ -269,9 +269,8 @@ class Cal(Se3):
         res.store("Volume", "add",   vol, "cm^3")
 
     def pressure_cal(self, res):
-        """Calculates the calibration pressure by means of defined model
-
-        Stores result under the path *Pressure, cal, mbar*
+        """Calculates the calibration pressure nand stores the
+        result under the path *Pressure, cal, mbar*
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and

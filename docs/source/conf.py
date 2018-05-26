@@ -89,10 +89,6 @@ todo_include_todos = True
 # a list of builtin themes.
 #
 #html_theme = 'classic'
-import sphinxbootstrap4theme
-
-html_theme = 'sphinxbootstrap4theme'
-html_theme_path = [sphinxbootstrap4theme.get_path()]
 
 # Html logo in navbar.
 # Fit in the navbar at the height of image is 37 px.
@@ -101,9 +97,9 @@ html_theme_path = [sphinxbootstrap4theme.get_path()]
 
 
 #html_theme = 'groundwork'
-#import sphinx_rtd_theme
-#html_theme = "sphinx_rtd_theme"
-#html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 #html_theme = "nature"
 #html_theme_options = {
