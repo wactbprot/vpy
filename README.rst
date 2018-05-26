@@ -72,7 +72,7 @@ Same with the coverage tool:
 
 .. code-block:: shell
 
-    > coverage run -m unittest vpy/test_document.py
+    > coverage run --source vpy -m unittest vpy/test_document.py
 
 see .. _`documentation of coverage pkg`: https://coverage.readthedocs.io/en/coverage-4.5.1/
 

@@ -1,4 +1,5 @@
 import unittest
+import numpy as np
 from .document import Document
 
 class TestDU(unittest.TestCase):
@@ -10,8 +11,11 @@ class TestDU(unittest.TestCase):
                ],
                'G': {'H': 'c', 'I': 'd'},
                'Meas':[
-                {'Type':'a', 'Value':[1,2,3], 'Unit':'s'},
-                {'Type':'b', 'Value':['1','2','3'], 'Unit':'s'}
+                {'Type':'a', 'Value':[1, 2, 3], 'Unit':'s'},
+                {'Type':'b', 'Value':['1', '2', '3'], 'Unit':'s'},
+                {'Type':'b_1', 'Value':['1', '2', '3'], 'Unit':'s'},
+                {'Type':'b_2', 'Value':['1', '2', '3'], 'Unit':'s'},
+                {'Type':'b_3', 'Value':['1', '2', '3'], 'Unit':'s'}
                 ]
                }
         self.Doc = Document(doc)
@@ -71,13 +75,31 @@ class TestDU(unittest.TestCase):
         self.assertEqual(res[0], 1)
 
     def test_get_value_2(self):
-        """Shold return a numpy vector
+        """Shold return a numpy vector of numbers
         """
         res = self.Doc.get_value('b', 's')
 
         self.assertTrue(type(res).__module__ == 'numpy')
         self.assertEqual(res[0], '1')
 
+    def test_get_str_1(self):
+        """Shold return a numpy vector of strings
+        """
+        res = self.Doc.get_str('b')
+        self.assertTrue(type(res).__module__ == 'numpy')
+        self.assertEqual(res[0], '1')
+
+    def test_get_all_1(self):
+        """Should return the complete Document.
+        """
+        res = self.Doc.get_all()
+        self.assertEqual(res['A'], 'a')
+
+    def test_get_array_1(self):
+        """Should return the complete Document.
+        """
+        res = self.Doc.get_array("b_", (1,2,3), "", "s")
+        self.assertEqual(np.shape(res), (3, 3))
 
 
 if __name__ == '__main__':
