@@ -101,6 +101,11 @@ class TestDU(unittest.TestCase):
         res = self.Doc.get_array("b_", (1,2,3), "", "s")
         self.assertEqual(np.shape(res), (3, 3))
 
+    def test_get_obj_1(self):
+        """Should return the complete Document.
+        """
+        res = self.Doc.get_obj("b", "s")
+        self.assertEqual(res["Type"], 'b')
 
 if __name__ == '__main__':
     unittest.main()
