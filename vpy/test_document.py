@@ -1,8 +1,28 @@
 import unittest
 import numpy as np
+import sympy as sym
 from .document import Document
 
 class TestDU(unittest.TestCase):
+    """
+
+    Method	Checks
+    ==============
+
+    * assertEqual(a, b)	a == b
+    * assertNotEqual(a, b)	a != b
+    * assertTrue(x)	bool(x) is True
+    * assertFalse(x)	bool(x) is False
+    * assertIs(a, b)	a is b
+    * assertIsNot(a, b)	a is not b
+    * assertIsNone(x)	x is None
+    * assertIsNotNone(x)	x is not None
+    * assertIn(a, b)	a in b
+    * assertNotIn(a, b)	a not in b
+    * assertIsInstance(a, b)	isinstance(a, b)
+    * assertNotIsInstance(a, b)	not isinstance(a, b)
+
+    """
     def setUp(self):
         doc = {'A': 'a',
                'B': [
@@ -15,7 +35,9 @@ class TestDU(unittest.TestCase):
                 {'Type':'b', 'Value':['1', '2', '3'], 'Unit':'s'},
                 {'Type':'b_1', 'Value':['1', '2', '3'], 'Unit':'s'},
                 {'Type':'b_2', 'Value':['1', '2', '3'], 'Unit':'s'},
-                {'Type':'b_3', 'Value':['1', '2', '3'], 'Unit':'s'}
+                {'Type':'b_3', 'Value':['1', '2', '3'], 'Unit':'s'},
+                {'Type':'expr', 'Expression':'2*b', 'Unit':'s'}
+
                 ]
                }
         self.Doc = Document(doc)
@@ -102,10 +124,23 @@ class TestDU(unittest.TestCase):
         self.assertEqual(np.shape(res), (3, 3))
 
     def test_get_obj_1(self):
-        """Should return the complete Document.
+        """Should return the dict.
         """
         res = self.Doc.get_obj("b", "s")
         self.assertEqual(res["Type"], 'b')
+
+    def test_get_obj_2(self):
+        """Should return None.
+        """
+        res = self.Doc.get_obj("x", "s")
+        self.assertIsNone(res)
+
+    def test_get_expression_1(self):
+        """Should return a sympy Expression
+        """
+
+        res = self.Doc.get_expression("expr","s")
+        self.assertTrue(type(res).__module__ == 'sympy.core.mul')
 
 if __name__ == '__main__':
     unittest.main()

@@ -3,7 +3,6 @@ import sympy as sym
 from datetime import datetime
 from .std import Se3
 
-
 class Cal(Se3):
 
     def __init__(self, doc):

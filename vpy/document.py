@@ -117,12 +117,13 @@ class Document(object):
 
                     if "Value" in obj:
                         ret = sym.sympify(obj["Value"])
-                    else:
-                        errmsg = "Unit is {} not {}".format(obj["Unit"], unit)
-                        self.log.error(errmsg)
-                        sys.exit(errmsg)
                 else:
-                    self.log.error("Expression of Type {} not found".format(t))
+                    errmsg = "Unit is {} not {}".format(obj["Unit"], unit)
+                    self.log.error(errmsg)
+                    sys.exit(errmsg)
+
+        else:
+            self.log.error("Expression of Type {} not found".format(t))
 
         return ret
 
