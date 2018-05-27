@@ -1,4 +1,5 @@
 #!/bin/sh
 
-date > zz
-pwd > kk
+coverage run --source vpy -m unittest vpy/test_document.py
+coverage html
+cd docs && make html
