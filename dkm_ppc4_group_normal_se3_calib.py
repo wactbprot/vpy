@@ -1,7 +1,12 @@
 """
 Calculates the calibration pressure and
 the error interpolation of the indicated pressure
- cal-2018-dkm_ppc4-ik-4050_0001
+``cal-2018-dkm_ppc4-ik-4050_0001``
+
+The document
+cal-2017-dkm_ppc4-ik-4050_0001
+is a duplicate of
+cal-2017-frs5|dkm_ppc4-ik-4050_0002
 
 """
 
@@ -31,11 +36,8 @@ def main():
         cdg_doc = io.get_doc_db("cob-cdg-se3_{}".format(head))
         Cdg = InfCdg(doc, cdg_doc)
         p, e = Cdg.cal_error_interpol(p_ind - p_off, p_cal, "mbar")
-    
         Cdg.store_error_interpol(p, e, "mbar", "1")
         io.set_doc_db(Cdg.get_all())
-
-
 
 if __name__ == "__main__":
     main()
