@@ -274,12 +274,13 @@
 
                     <span class="k">if</span> <span class="s2">&quot;Value&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
                         <span class="n">ret</span> <span class="o">=</span> <span class="n">sym</span><span class="o">.</span><span class="n">sympify</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;Value&quot;</span><span class="p">])</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Unit is </span><span class="si">{}</span><span class="s2"> not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-                        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Expression of Type </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Unit is </span><span class="si">{}</span><span class="s2"> not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Expression of Type </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">ret</span></div>
 

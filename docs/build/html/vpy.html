@@ -228,7 +228,7 @@
 <dt id="vpy.analysis.Analysis">
 <em class="property">class </em><code class="descclassname">vpy.analysis.</code><code class="descname">Analysis</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/analysis.html#Analysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.analysis.Analysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.document.Document" title="vpy.document.Document"><code class="xref py py-class docutils literal"><span class="pre">vpy.document.Document</span></code></a></p>
-<p>Holds a deep copy of original document. Container for storing
+<p>Holds a deep copy of <code class="docutils literal"><span class="pre">document</span></code>. Container for storing
 Results of analysis.</p>
 <dl class="method">
 <dt id="vpy.analysis.Analysis.build_doc">
@@ -774,6 +774,20 @@ command line arguments:</p>
 <dt id="vpy.test_document.TestDU">
 <em class="property">class </em><code class="descclassname">vpy.test_document.</code><code class="descname">TestDU</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/test_document.html#TestDU"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.test_document.TestDU" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<ul class="simple">
+<li>assertEqual(a, b) a == b</li>
+<li>assertNotEqual(a, b)      a != b</li>
+<li>assertTrue(x)     bool(x) is True</li>
+<li>assertFalse(x)    bool(x) is False</li>
+<li>assertIs(a, b)    a is b</li>
+<li>assertIsNot(a, b) a is not b</li>
+<li>assertIsNone(x)   x is None</li>
+<li>assertIsNotNone(x)        x is not None</li>
+<li>assertIn(a, b)    a in b</li>
+<li>assertNotIn(a, b) a not in b</li>
+<li>assertIsInstance(a, b)    isinstance(a, b)</li>
+<li>assertNotIsInstance(a, b) not isinstance(a, b)</li>
+</ul>
 <dl class="method">
 <dt id="vpy.test_document.TestDU.setUp">
 <code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/test_document.html#TestDU.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.test_document.TestDU.setUp" title="Permalink to this definition">¶</a></dt>
@@ -792,9 +806,21 @@ command line arguments:</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="vpy.test_document.TestDU.test_get_expression_1">
+<code class="descname">test_get_expression_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/test_document.html#TestDU.test_get_expression_1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.test_document.TestDU.test_get_expression_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should return a sympy Expression</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.test_document.TestDU.test_get_obj_1">
 <code class="descname">test_get_obj_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/test_document.html#TestDU.test_get_obj_1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.test_document.TestDU.test_get_obj_1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Should return the complete Document.</p>
+<dd><p>Should return the dict.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.test_document.TestDU.test_get_obj_2">
+<code class="descname">test_get_obj_2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/test_document.html#TestDU.test_get_obj_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.test_document.TestDU.test_get_obj_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Should return None.</p>
 </dd></dl>
 
 <dl class="method">

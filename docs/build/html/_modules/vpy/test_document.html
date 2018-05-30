@@ -157,9 +157,29 @@
   <h1>Source code for vpy.test_document</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sym</span>
 <span class="kn">from</span> <span class="nn">.document</span> <span class="k">import</span> <span class="n">Document</span>
 
 <div class="viewcode-block" id="TestDU"><a class="viewcode-back" href="../../vpy.html#vpy.test_document.TestDU">[docs]</a><span class="k">class</span> <span class="nc">TestDU</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Method	Checks</span>
+<span class="sd">    ==============</span>
+
+<span class="sd">    * assertEqual(a, b)	a == b</span>
+<span class="sd">    * assertNotEqual(a, b)	a != b</span>
+<span class="sd">    * assertTrue(x)	bool(x) is True</span>
+<span class="sd">    * assertFalse(x)	bool(x) is False</span>
+<span class="sd">    * assertIs(a, b)	a is b</span>
+<span class="sd">    * assertIsNot(a, b)	a is not b</span>
+<span class="sd">    * assertIsNone(x)	x is None</span>
+<span class="sd">    * assertIsNotNone(x)	x is not None</span>
+<span class="sd">    * assertIn(a, b)	a in b</span>
+<span class="sd">    * assertNotIn(a, b)	a not in b</span>
+<span class="sd">    * assertIsInstance(a, b)	isinstance(a, b)</span>
+<span class="sd">    * assertNotIsInstance(a, b)	not isinstance(a, b)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="TestDU.setUp"><a class="viewcode-back" href="../../vpy.html#vpy.test_document.TestDU.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">doc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span>
                <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span>
@@ -172,7 +192,9 @@
                 <span class="p">{</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">:[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="s1">&#39;Unit&#39;</span><span class="p">:</span><span class="s1">&#39;s&#39;</span><span class="p">},</span>
                 <span class="p">{</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="s1">&#39;b_1&#39;</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">:[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="s1">&#39;Unit&#39;</span><span class="p">:</span><span class="s1">&#39;s&#39;</span><span class="p">},</span>
                 <span class="p">{</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="s1">&#39;b_2&#39;</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">:[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="s1">&#39;Unit&#39;</span><span class="p">:</span><span class="s1">&#39;s&#39;</span><span class="p">},</span>
-                <span class="p">{</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="s1">&#39;b_3&#39;</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">:[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="s1">&#39;Unit&#39;</span><span class="p">:</span><span class="s1">&#39;s&#39;</span><span class="p">}</span>
+                <span class="p">{</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="s1">&#39;b_3&#39;</span><span class="p">,</span> <span class="s1">&#39;Value&#39;</span><span class="p">:[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">],</span> <span class="s1">&#39;Unit&#39;</span><span class="p">:</span><span class="s1">&#39;s&#39;</span><span class="p">},</span>
+                <span class="p">{</span><span class="s1">&#39;Type&#39;</span><span class="p">:</span><span class="s1">&#39;expr&#39;</span><span class="p">,</span> <span class="s1">&#39;Expression&#39;</span><span class="p">:</span><span class="s1">&#39;2*b&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">:</span><span class="s1">&#39;s&#39;</span><span class="p">}</span>
+
                 <span class="p">]</span>
                <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Doc</span> <span class="o">=</span> <span class="n">Document</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
@@ -259,10 +281,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestDU.test_get_obj_1"><a class="viewcode-back" href="../../vpy.html#vpy.test_document.TestDU.test_get_obj_1">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_obj_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Should return the complete Document.</span>
+        <span class="sd">&quot;&quot;&quot;Should return the dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Doc</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;Type&quot;</span><span class="p">],</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestDU.test_get_obj_2"><a class="viewcode-back" href="../../vpy.html#vpy.test_document.TestDU.test_get_obj_2">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_obj_2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Should return None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Doc</span><span class="o">.</span><span class="n">get_obj</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsNone</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestDU.test_get_expression_1"><a class="viewcode-back" href="../../vpy.html#vpy.test_document.TestDU.test_get_expression_1">[docs]</a>    <span class="k">def</span> <span class="nf">test_get_expression_1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Should return a sympy Expression</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Doc</span><span class="o">.</span><span class="n">get_expression</span><span class="p">(</span><span class="s2">&quot;expr&quot;</span><span class="p">,</span><span class="s2">&quot;s&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">==</span> <span class="s1">&#39;sympy.core.mul&#39;</span><span class="p">)</span></div></div>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="n">unittest</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
