@@ -19,7 +19,7 @@ class Analysis(Document):
                     "Value": d}],
              "Values": {},
              "AnalysisProgram": "vpy",
-             "AnalysisGitHash": githash 
+             "AnalysisGitHash": githash
              }
 
         super().__init__(o)
@@ -86,6 +86,8 @@ class Analysis(Document):
             for d in doc:
                 if d['Type'] == val:
                     ret = self.get_value(val, unit, d)
+                    print("--##")
+                    print(ret)
         else:
             self.log.error("{} not in Values".format(quant))
 

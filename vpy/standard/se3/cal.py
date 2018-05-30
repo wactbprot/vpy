@@ -278,7 +278,7 @@ class Cal(Se3):
         :type: class
         """
 
-        self.define_model()
+        #self.define_model()
         self.pressure_fill(res)
         self.temperature_before(res)
         self.temperature_after(res)

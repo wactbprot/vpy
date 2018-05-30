@@ -88,7 +88,7 @@ class Constants(Document):
             sys.exit(errmsg)
 
 
-    def get_conv(self, f, t):
+    def get_conv(self, f, t, n=1):
         """Get the conversion factor from unit f to unit t.
 
         :param f: f from unit
@@ -96,6 +96,9 @@ class Constants(Document):
 
         :param t: t to unit
         :type t: str
+
+        :param n: length of array to return
+        :type n: int
 
         :returns: conversion factor
         :rtype: np.array of length 1
@@ -116,4 +119,4 @@ class Constants(Document):
                 self.log.error(errmsg)
                 sys.exit(errmsg)
 
-        return conv
+        return np.full(n, conv)
