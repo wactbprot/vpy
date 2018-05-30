@@ -144,6 +144,37 @@ class Document(object):
             if isinstance(obj["Value"], list):
                 return np.array(obj["Value"])
 
+    def get_value_full(self, t, unit, N):
+        """same as ``self.get_value`` but returns
+        an array of the length ``self.no_of_meas_points``
+
+        :param t: value for type key
+        :type t: str
+
+        :param unit: unit of value
+        :type unit: str
+
+        :param N: number of values to return
+        :type N: int
+
+        :returns: np.array
+        :rtype: np.array
+        """
+        ret = None
+        val = self.get_value(t, unit)
+        if val is not None:
+            if np.shape(val) == (1,):
+                ret = np.full(N, val)
+            else:
+                errmsg="more than one value"
+                self.log.error(errmsg)
+                sys.exit(errmsg)
+        else:
+            errmsg="value is empty"
+            self.log.error(errmsg)
+            sys.exit(errmsg)
+        return ret
+
     def get_value(self, t, unit, o=False):
         """Gets an dict by means of  ``o=get_object()``,
         compares o.Unit with unit and returns
@@ -175,21 +206,22 @@ class Document(object):
                     sys.exit(errmsg)
 
             if "Value" in obj:
+
                 if isinstance(obj["Value"], str):
-                    ret = np.array(np.float64(obj["Value"]))
+                    print("str")
+                    ret = np.asarray([np.float64(obj["Value"])], dtype="f")
 
                 if isinstance(obj["Value"], list):
-                    ret = np.array(obj["Value"])
+                    ret = np.asarray(obj["Value"])
 
                 if isinstance(obj["Value"], float):
-                    ret = np.array([obj["Value"]], dtype="f")
+                    ret = np.array([obj["Value"]])
 
                 if isinstance(obj["Value"], int):
-                    ret = np.array([obj["Value"]], dtype="i")
+                    ret = np.array([obj["Value"]])
 
         else:
             self.log.warn("Value of Type {} not found".format(t))
-
         return ret
 
     def get_object(self, key, val, o=False, d=0):
