@@ -86,8 +86,6 @@ class Analysis(Document):
             for d in doc:
                 if d['Type'] == val:
                     ret = self.get_value(val, unit, d)
-                    print("--##")
-                    print(ret)
         else:
             self.log.error("{} not in Values".format(quant))
 

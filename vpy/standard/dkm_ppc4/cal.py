@@ -22,21 +22,19 @@ class Cal(DkmPpc4):
         """
 
         self.temperature(res)
+        self.temperature_correction(res)
         self.pressure_res(res)
         self.mass_total(res)
 
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit)
-        t_piston = res.pick("Temperature", "dkmppc4", "C")
         m = res.pick("Mass", "total", "kg")
+        corr = res.pick("Correction", "temperature", "1")
 
         g = self.get_value("g_dkmppc4", "m/s^2")
-        ab = self.get_value("alpha_beta_dkmppc4", "1/C")
         A = self.get_value("A_0_dkmppc4", "m^2")
 
-        co = 1.0 + ab * (t_piston - 20.0)
-
         conv = self.Cons.get_conv("Pa", self.unit)
-        p_cal = g * m / (A * co) * conv + p_res
+        p_cal = g * m / (A * corr) * conv + p_res
 
         res.store("Pressure", "cal", p_cal, self.unit)
 
@@ -49,8 +47,8 @@ class Cal(DkmPpc4):
         :type: class
         """
 
-        p_res = self.Pres.get_value("dkmppc4_res", "mbar")
-        res.store("Pressure", "dkmppc4_res", p_res, "mbar")
+        p_res = self.Pres.get_value("dkmppc4_res", self.unit)
+        res.store("Pressure", "dkmppc4_res", p_res, self.unit)
 
     def mass_total(self, res):
         """Transfers the total mass applied to the piston.
@@ -76,3 +74,17 @@ class Cal(DkmPpc4):
 
         t_piston = self.Temp.get_value("dkmppc4", "C")
         res.store("Temperature", "dkmppc4", t_piston, "C")
+
+    def temperature_correction(self, res):
+        """Calculates the correction of the effective area.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        ab = self.get_value("alpha_beta_dkmppc4", "1/C")
+        t_piston = res.pick("Temperature", "dkmppc4", "C")
+        corr = 1.0 + ab * (t_piston - 20.0)
+
+        res.store("Correction", "temperature", corr, "1")

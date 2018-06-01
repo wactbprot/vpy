@@ -206,9 +206,7 @@ class Document(object):
                     sys.exit(errmsg)
 
             if "Value" in obj:
-
                 if isinstance(obj["Value"], str):
-                    print("str")
                     ret = np.asarray([np.float64(obj["Value"])], dtype="f")
 
                 if isinstance(obj["Value"], list):
