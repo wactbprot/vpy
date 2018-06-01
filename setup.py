@@ -40,6 +40,7 @@ setup(
                       'numpy',
                       'scipy',
                       'sympy',
+                      'matplotlib',
                       'sphinx',
                       'sphinx_rtd_theme',
                       ],

@@ -7,7 +7,8 @@
     "standards": {
         "se3": {
             "all_doc_view": "se3_req/doc",
-            "state_doc_view": "se3_req/state"
+            "state_doc_view": "se3_req/state",
+            "hist_data": "se3_req/group_normal_hist"
         },
         "se2": {
             "all_doc_view": "se2_req/doc"

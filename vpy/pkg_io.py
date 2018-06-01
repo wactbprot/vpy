@@ -218,8 +218,8 @@ class Io(object):
 
         containing the additional volume outgasing rate ect.
 
-        :param name: name of the calibration standard
-        :type name: str
+        :param std: name of the calibration standard
+        :type std: str
 
         :returns: document
         :rtype: dict
@@ -233,10 +233,32 @@ class Io(object):
             doc_id = self.args.id[0]
             doc = self.get_doc_db(doc_id)
         else:
-            view = self.config['standards'][name]['state_doc_view']
+            view = self.config['standards'][std]['state_doc_view']
             for item in db.view(view):
                 doc = item.value
 
             self.args.id = doc['_id']
 
         return doc
+
+
+    def get_hist_data(self, std):
+        """Gets and returns an array
+        containing history data
+
+        :param std: name of the calibration standard
+        :type std: str
+
+        :returns: document
+        :rtype: dict
+        """
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        dat = {}
+
+        view = self.config['standards'][std]['hist_data']
+        for item in db.view(view):
+            dat[item.key] = item.value
+
+
+        return dat
