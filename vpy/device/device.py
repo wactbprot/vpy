@@ -23,8 +23,8 @@ class Device(Document):
             """
             u_arr = []
             N     = np.shape(meas)[0]
-            if "Uncertainty" in self.doc:
-                u_dict = self.doc["Uncertainty"]
+            if self.uncert_dict is not None:
+                u_dict = self.uncert_dict
                 for u_i in u_dict:
                     u   = np.full(N, np.nan)
                     idx = np.full(N, True)
@@ -63,6 +63,7 @@ class Device(Document):
                                 u = (u+conv)*meas
                             else:
                                 u = u*meas*conv
+
                     u_arr.append(u)
 
                 u = np.sqrt(np.nansum(np.power(u_arr, 2), axis=0))

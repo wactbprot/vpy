@@ -33,12 +33,12 @@ def main():
             ]
     col = {}
     j = -1
-    plt.figure(num=None, figsize=(14, 10), facecolor='w', edgecolor='k')
+    plt.figure(num=None, figsize=(15, 10), facecolor='w', edgecolor='k')
     for d in dat:
         dev_name = dat[d]["Name"]
         dev_fullscale = dat[d]["FullScale"]
         dat_date = dat[d]["Date"]
-
+        u = None
         if dev_name in devices:
             i = devices.index(dev_name)
             for o in dat[d]["Interpol"]:
@@ -46,19 +46,25 @@ def main():
                     p = o["Value"]
                 if o["Type"] == "e":
                     e = o["Value"]
+                if o["Type"] == "u":
+                    u = o["Value"]
 
             idx = "{}_{}".format(dat_date, dev_fullscale)
             if idx not in col:
                 j = j+1
                 col[idx] = j
+            c = "C{}".format(col[idx])
 
-            plt.semilogx(p, e, marker = markers[i], color = "C{}".format(col[idx]))
+            if u is not None:
+                plt.errorbar(p, e, yerr=u, color=c, capsize=5, linestyle=":")
+
+            plt.semilogx(p, e, marker = markers[i], markersize=5, color = c, linestyle=":")
             labels.append( "{} at {}".format(dev_name, dat_date))
 
     plt.title("SE3 group normal")
     plt.xlabel(r'$p_{ind}$ in mbar')
     plt.ylabel(r'$e$ (relative)')
-    plt.legend(labels, ncol=4, borderaxespad=0.)
+    plt.legend(labels, ncol=4)
     plt.grid()
     plt.savefig("group_normal_hist.pdf")
     plt.show()

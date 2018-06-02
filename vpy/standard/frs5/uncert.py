@@ -99,50 +99,48 @@ class Uncert(Frs5):
         with the same order as in ``define_models``. For the calculation
         of the gas density, the Frs reading is multiplyed by 10 which gives a
         suffucient approximation for the pressure.
-        
+
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
         """
         self.model_unit = "Pa"
-        const_A = self.get_value("A_eff", "m^2"),
-        const_r_cal = self.get_value("R_cal", "lb"),
-        const_m_cal = self.get_value("m_cal", "kg"),
-        const_g = self.get_value("g_frs", "m/s^2"),
-        # correction buoyancy  piston
-        const_rho_frs = self.get_value("rho_frs", "kg/m^3"),
-        ## Temperature in C
-        val_T = res.pick("Temperature", "frs5", "C")
-        const_ab = self.get_value("alpha_beta_frs", "1/C"),
+        N = self.no_of_meas_points
+
+        gas = self.get_gas()
+
+        conv_p = self.Cons.get_conv(self.unit, self.model_unit)
+        conv_T = self.Cons.get_conv("C", "K")
+
+        T = res.pick("Temperature", "frs5", "C")
+
+        meas_time = self.Time.get_value("amt_meas", "ms")
+
         # correction buoyancy  get info for gas
         approx_p = self.Pres.get_value("frs_p", "lb") * 10.0  # mbar
-        gas = self.get_gas()
-        conv_T = self.Cons.get_conv("C", "K")
-        val_rho_gas = self.Cons.get_gas_density(
-            gas, approx_p, self.unit, val_T + conv_T, "K", "kg/m^3")
-        # get measure time for r_zc0
-        meas_time = self.Time.get_value("amt_frs5_ind", "ms")
-        # residual pressure in Pa
-        conv = self.Cons.get_conv(self.unit, "Pa")
-        val_p_res = res.pick("Pressure", "frs5_res", self.unit) * conv
+
+        val_rho_gas = self.Cons.get_gas_density(gas, approx_p, self.unit,
+                                                T + conv_T, "K", "kg/m^3")
+
         self.val_dict = {
-            'A':       np.full(self.no_of_meas_points, const_A),
+            'A':       self.get_value_full("A_eff", "m^2", N),
             'r':       self.Pres.get_value("frs_p", "lb"),
             'r_zc':    self.Pres.get_value("frs_zc_p", "lb"),
             'r_zc0':   self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb"),
-            'r_cal':   np.full(self.no_of_meas_points, const_r_cal),
+            'r_cal':   self.get_value_full("R_cal", "lb", N),
             'r_cal0':  np.full(self.no_of_meas_points, 0.0),
             'ub':      np.full(self.no_of_meas_points, 0.0),
             'usys':    np.full(self.no_of_meas_points, 0.0),
-            'm_cal':   np.full(self.no_of_meas_points, const_m_cal),
-            'g':       np.full(self.no_of_meas_points, const_g),
-            'rho_frs': np.full(self.no_of_meas_points, const_rho_frs),
+            'm_cal':   self.get_value_full("m_cal", "kg", N),
+            'g':       self.get_value_full("g_frs", "m/s^2", N),
+            'rho_frs': self.get_value_full("rho_frs", "kg/m^3", N),
             'rho_gas': val_rho_gas,
-            'ab':      np.full(self.no_of_meas_points, const_ab),
-            'T':       val_T,
-            'p_res':   val_p_res,
+            'ab':      self.get_value_full("alpha_beta_frs", "1/C", N),
+            'T':       T,
+            'p_res':   res.pick("Pressure", "frs5_res", self.unit) * conv_p,
         }
+
         self.log.info("value dict genetated")
         self.log.debug(self.val_dict)
 
