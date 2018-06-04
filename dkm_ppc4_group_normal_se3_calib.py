@@ -13,6 +13,8 @@ cal-2017-frs5|dkm_ppc4-ik-4050_0002
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.dkm_ppc4.cal import Cal
+from vpy.standard.dkm_ppc4.uncert import Uncert
+
 from vpy.device.cdg import InfCdg
 
 def main():
@@ -22,11 +24,14 @@ def main():
     res = Analysis(doc)
 
     cal = Cal(doc)
+    uncert = Uncert(doc)
     cal.pressure_cal(res)
-    heads = ["100T_1","100T_2","100T_3"
-        #,"1000T_1","1000T_2","1000T_3"
+    uncert.total(res)
+    heads = [#"100T_1","100T_2","100T_3",
+        "1000T_1","1000T_2","1000T_3"
             ]
     p_cal = res.pick("Pressure", "cal", "mbar")
+    u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", "1")
     m_time = cal.Time.get_value("amt_meas", "ms")
 
     for head in heads:
@@ -34,11 +39,15 @@ def main():
         p_off = cal.Aux.get_val_by_time(
             m_time, "offset_mt", "ms", "{}-ind_offset".format(head), "mbar")
         p_ind = cal.Pres.get_value("{}-ind".format(head), "mbar")
-
         cdg_doc = io.get_doc_db("cob-cdg-se3_{}".format(head))
-        Cdg = InfCdg(doc, cdg_doc)
-        p, e = Cdg.cal_error_interpol(p_ind - p_off, p_cal, "mbar")
-        print(e)
+        cdg = InfCdg(doc, cdg_doc)
+        p, e, u = cdg.cal_interpol( p_cal, p_ind - p_off, u_std)
+        u_cdg = cdg.get_total_uncert(p, "mbar", "mbar")/p
+
+        cdg.store_interpol(p, e, (u**2 + u_cdg**2)**0.5,  "mbar", "1", "1")
+
+        io.set_doc_db(cdg.get_all())
+
         #Cdg.store_error_interpol(p, e, "mbar", "1")
         #io.set_doc_db(Cdg.get_all())
 
