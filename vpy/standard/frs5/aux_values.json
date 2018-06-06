@@ -1,0 +1,14 @@
+{
+  "Time":{
+      "Offset":
+        {"Type":"offset_mt","Sim":[0.9],"Unit":"ms"}
+
+    },
+  "Pressure":{
+      "InitialZeroCheck":
+        {"Type":"frs_zc0_p","Min":0.024,"Max":0.026,"Sim":[0.025],"Unit":"lb"},
+      "SRGRes":
+        {"Type":"frs_res_off","Min":1e-8,"Max":1e-4,"Sim":[2e-6],"Unit":"DCR"}
+  },
+  "Gas":"N2"
+}

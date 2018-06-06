@@ -49,10 +49,10 @@ class Frs5(Standard):
 
         # residua pressure device
         amt = self.Time.get_value("amt_meas", "ms")
-        
+
         self.no_of_meas_points = len(amt)
 
-        self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS55_4019"))
+        self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS5_4019"))
 
         self.log.debug("init func: {}".format(__name__))
 

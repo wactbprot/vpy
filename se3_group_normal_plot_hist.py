@@ -1,3 +1,4 @@
+import numpy as np
 from vpy.pkg_io import Io
 import matplotlib.pyplot as plt
 def main():
@@ -18,18 +19,18 @@ def main():
             "v",
             "<"]
     devices = [
-             "1T_1"    ,
-             "1T_2"   ,
-             "1T_3"   ,
-             "10T_1"  ,
-             "10T_2"  ,
-             "10T_3"  ,
-             "100T_1" ,
-             "100T_2" ,
-             "100T_3" ,
-             "1000T_1",
-             "1000T_2",
-             "1000T_3"
+             "1T_1"
+            , "1T_2"
+            , "1T_3"
+            , "10T_1"
+            , "10T_2"
+            , "10T_3"
+            ,"100T_1"
+            ,"100T_2"
+            ,"100T_3"
+            ,"1000T_1"
+            ,"1000T_2"
+            ,"1000T_3"
             ]
     col = {}
     j = -1
@@ -48,6 +49,7 @@ def main():
                     e = o["Value"]
                 if o["Type"] == "u":
                     u = o["Value"]
+                    u = u/np.full(len(u), 2.0)
 
             idx = "{}_{}".format(dat_date, dev_fullscale)
             if idx not in col:
