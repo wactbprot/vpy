@@ -13,9 +13,27 @@ class Sim(object):
         o = {}
         for m in d: #m ... Temperature ect.
             o[m] = []
-            for n in d[m]: # n... 100TFill
-                if isinstance(d[m][n], list):
-                    for v in d[m][n]:
+
+            if isinstance(d[m], str): # z.B Gas:N2
+                o[m] = d[m]
+            else:
+                for n in d[m]: # n... 100TFill
+                    if isinstance(d[m][n], list):
+                        for v in d[m][n]:
+                            e = {}
+                            if "Type" in v:
+                                e["Type"] = v["Type"]
+
+                            if "Sim" in v:
+                                e["Value"] = v["Sim"]
+
+                            if "Unit" in v:
+                                e["Unit"] = v["Unit"]
+
+                            o[m].append(e)
+
+                    if isinstance(d[m][n], dict):
+                        v = d[m][n]
 
                         e = {}
                         if "Type" in v:
@@ -28,21 +46,6 @@ class Sim(object):
                             e["Unit"] = v["Unit"]
 
                         o[m].append(e)
-
-                if isinstance(d[m][n], dict):
-                    v = d[m][n]
-
-                    e = {}
-                    if "Type" in v:
-                        e["Type"] = v["Type"]
-
-                    if "Sim" in v:
-                        e["Value"] = v["Sim"]
-
-                    if "Unit" in v:
-                        e["Unit"] = v["Unit"]
-
-                    o[m].append(e)
 
         return o
 

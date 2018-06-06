@@ -12,6 +12,9 @@
         },
         "se2": {
             "all_doc_view": "se2_req/doc"
+        },
+         "frs5": {
+            "all_doc_view": "frs5_req/doc"
         }
     }
 }
