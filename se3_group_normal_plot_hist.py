@@ -1,3 +1,4 @@
+import numpy as np
 from vpy.pkg_io import Io
 import matplotlib.pyplot as plt
 def main():
@@ -48,6 +49,7 @@ def main():
                     e = o["Value"]
                 if o["Type"] == "u":
                     u = o["Value"]
+                    u = u/np.full(len(u), 2.0)
 
             idx = "{}_{}".format(dat_date, dev_fullscale)
             if idx not in col:

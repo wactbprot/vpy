@@ -45,7 +45,6 @@ def main():
         u_cdg = cdg.get_total_uncert(p, "mbar", "mbar")/p
 
         cdg.store_interpol(p, e, (u**2 + u_cdg**2)**0.5,  "mbar", "1", "1")
-
         io.set_doc_db(cdg.get_all())
 
         #Cdg.store_error_interpol(p, e, "mbar", "1")

@@ -109,6 +109,8 @@ class Cdg(Device):
 
         p_cal_cut, p_ind_cut = self.cut_values(p_cal, p_ind)
         p_cal_cut, uncert_cut = self.cut_values(p_cal, uncert)
+
+
         f_error = self.interp_function(p_ind_cut, p_ind_cut / p_cal_cut - 1.0)
         f_uncert = self.interp_function(p_ind_cut, uncert_cut)
         p_ind_cut_nice = self.get_nice_vals(p_ind_cut)
@@ -118,14 +120,15 @@ class Cdg(Device):
         return p_ind_cut_nice, error_nice, uncert_nice
 
     def cut_values(self, p, s):
-        i = np.where(p < self.max_p_mbar)[0][-1]
-        j = np.where(p > self.min_p_mbar)[0][0]
-        return p[j:i], s[j:i]
+        i = np.argmin(abs(p -self.max_p_mbar))
+        j = np.argmin(abs(p -self.min_p_mbar))
+        return p[j:i+1], s[j:i+1]
 
     def get_nice_vals(self, x):
         ls = np.logspace(-5, 3, num=80)
         x_max = np.max(x)
         x_min = np.min(x)
+
         i = np.where(ls > x_min)[0][0]
         j = np.where(ls < x_max)[0][-1]
 

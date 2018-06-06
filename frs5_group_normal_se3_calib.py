@@ -47,10 +47,11 @@ def main():
 
 
         p, e, u = cdg.cal_interpol( p_cal, p_ind - p_off, u_std)
+
         u_cdg = cdg.get_total_uncert(p, "mbar", "mbar")/p
 
         cdg.store_interpol(p, e, (u**2 + u_cdg**2)**0.5,  "mbar", "1", "1")
-        
+
         io.set_doc_db(cdg.get_all())
 
 if __name__ == "__main__":
