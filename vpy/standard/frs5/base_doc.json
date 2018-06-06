@@ -48,7 +48,7 @@
         ],
         "Date": {
             "Type": "updated",
-            "Value": "2012-03-15"
+            "Value": "2018-06-06"
         },
         "Defaults": {
             "@host": "e75491",
@@ -65,14 +65,11 @@
             "Producer": "Furness Controls, Bexhill on Sea, East Sussex, TN39 3LJ, UK",
             "CalibrationIntervall": "60",
             "MeasuredQuantity": "P",
-            "Calibration": "0187 PTB 05",
-            "Comment": "Veröffentlichung bei Metrologia 46(2009) S.389-396 ",
-            "LocationBuilding": "Foe-Bau"
+            "Comment": "Veröffentlichung bei Metrologia 46(2009) S.389-396 "
         },
         "Task": [
             {
                 "TaskName": "read_out",
-                "LogPriority": "3",
                 "Comment": "Auslese Waage ",
                 "Action": "TCP",
                 "Host": "@host",
