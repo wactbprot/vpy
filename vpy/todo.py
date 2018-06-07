@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from .document import Document
+from .values import Pressure, Temperature
 
 class ToDo(Document):
     """Initialisation of ToDo class.
@@ -17,7 +18,17 @@ class ToDo(Document):
         if 'ToDo' in doc:
             doc = doc['ToDo']
 
-        if 'Pressure' in doc:
-            super().__init__(doc['Pressure'])
+        if "Values" in doc:
+            if 'Pressure' in doc["Values"]:
+                self.Pres = Pressure(doc["Values"])
+                # delete pressure
+                doc.pop('Pressure', None)
+
+            if 'Temperature' in doc:
+                self.Temp = Temperature(doc["Values"])
+                # delete pressure
+                doc.pop('Temperature', None)
+
+        super().__init__(doc)
 
         self.log.debug("init func: {}".format(__name__))
