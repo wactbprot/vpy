@@ -35,7 +35,7 @@ class Cal(Se2):
         :type: class
         """
 
-        # p_todo = self.ToDo.get_value("target", "mbar")
+        p_todo = self.ToDo.Pres.get_value("target", "mbar")
         p_cal = self.Pres.get_value("p_cal", " mbar")
         p_cor = self.Pres.get_value("p_cor", " mbar")
 
