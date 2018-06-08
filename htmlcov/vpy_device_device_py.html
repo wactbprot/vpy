@@ -132,17 +132,18 @@
 <p id="n63" class="stm mis"><a href="#n63">63</a></p>
 <p id="n64" class="pln"><a href="#n64">64</a></p>
 <p id="n65" class="stm mis"><a href="#n65">65</a></p>
-<p id="n66" class="stm mis"><a href="#n66">66</a></p>
-<p id="n67" class="pln"><a href="#n67">67</a></p>
-<p id="n68" class="stm mis"><a href="#n68">68</a></p>
-<p id="n69" class="pln"><a href="#n69">69</a></p>
-<p id="n70" class="stm mis"><a href="#n70">70</a></p>
+<p id="n66" class="pln"><a href="#n66">66</a></p>
+<p id="n67" class="stm mis"><a href="#n67">67</a></p>
+<p id="n68" class="pln"><a href="#n68">68</a></p>
+<p id="n69" class="stm mis"><a href="#n69">69</a></p>
+<p id="n70" class="pln"><a href="#n70">70</a></p>
 <p id="n71" class="stm mis"><a href="#n71">71</a></p>
 <p id="n72" class="stm mis"><a href="#n72">72</a></p>
-<p id="n73" class="pln"><a href="#n73">73</a></p>
-<p id="n74" class="stm mis"><a href="#n74">74</a></p>
-<p id="n75" class="pln"><a href="#n75">75</a></p>
-<p id="n76" class="stm mis"><a href="#n76">76</a></p>
+<p id="n73" class="stm mis"><a href="#n73">73</a></p>
+<p id="n74" class="pln"><a href="#n74">74</a></p>
+<p id="n75" class="stm mis"><a href="#n75">75</a></p>
+<p id="n76" class="pln"><a href="#n76">76</a></p>
+<p id="n77" class="stm mis"><a href="#n77">77</a></p>
 
             </td>
             <td class="text">
@@ -171,8 +172,8 @@
 <p id="t23" class="pln"><span class="str">            """</span><span class="strut">&nbsp;</span></p>
 <p id="t24" class="stm mis">            <span class="nam">u_arr</span> <span class="op">=</span> <span class="op">[</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
 <p id="t25" class="stm mis">            <span class="nam">N</span>     <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">shape</span><span class="op">(</span><span class="nam">meas</span><span class="op">)</span><span class="op">[</span><span class="num">0</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
-<p id="t26" class="stm mis">            <span class="key">if</span> <span class="str">"Uncertainty"</span> <span class="key">in</span> <span class="nam">self</span><span class="op">.</span><span class="nam">doc</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t27" class="stm mis">                <span class="nam">u_dict</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">doc</span><span class="op">[</span><span class="str">"Uncertainty"</span><span class="op">]</span><span class="strut">&nbsp;</span></p>
+<p id="t26" class="stm mis">            <span class="key">if</span> <span class="nam">self</span><span class="op">.</span><span class="nam">uncert_dict</span> <span class="key">is</span> <span class="key">not</span> <span class="key">None</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t27" class="stm mis">                <span class="nam">u_dict</span> <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">uncert_dict</span><span class="strut">&nbsp;</span></p>
 <p id="t28" class="stm mis">                <span class="key">for</span> <span class="nam">u_i</span> <span class="key">in</span> <span class="nam">u_dict</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t29" class="stm mis">                    <span class="nam">u</span>   <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">full</span><span class="op">(</span><span class="nam">N</span><span class="op">,</span> <span class="nam">np</span><span class="op">.</span><span class="nam">nan</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t30" class="stm mis">                    <span class="nam">idx</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">full</span><span class="op">(</span><span class="nam">N</span><span class="op">,</span> <span class="key">True</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -211,17 +212,18 @@
 <p id="t63" class="stm mis">                                <span class="nam">u</span> <span class="op">=</span> <span class="op">(</span><span class="nam">u</span><span class="op">+</span><span class="nam">conv</span><span class="op">)</span><span class="op">*</span><span class="nam">meas</span><span class="strut">&nbsp;</span></p>
 <p id="t64" class="pln">                            <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t65" class="stm mis">                                <span class="nam">u</span> <span class="op">=</span> <span class="nam">u</span><span class="op">*</span><span class="nam">meas</span><span class="op">*</span><span class="nam">conv</span><span class="strut">&nbsp;</span></p>
-<p id="t66" class="stm mis">                    <span class="nam">u_arr</span><span class="op">.</span><span class="nam">append</span><span class="op">(</span><span class="nam">u</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t67" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t68" class="stm mis">                <span class="nam">u</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">sqrt</span><span class="op">(</span><span class="nam">np</span><span class="op">.</span><span class="nam">nansum</span><span class="op">(</span><span class="nam">np</span><span class="op">.</span><span class="nam">power</span><span class="op">(</span><span class="nam">u_arr</span><span class="op">,</span> <span class="num">2</span><span class="op">)</span><span class="op">,</span> <span class="nam">axis</span><span class="op">=</span><span class="num">0</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t69" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t70" class="stm mis">                <span class="nam">idx</span> <span class="op">=</span> <span class="op">(</span><span class="nam">u</span> <span class="op">==</span> <span class="num">0.0</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t71" class="stm mis">                <span class="key">if</span> <span class="nam">len</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span> <span class="op">></span> <span class="num">0</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t72" class="stm mis">                    <span class="nam">u</span><span class="op">[</span><span class="nam">idx</span><span class="op">]</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">nan</span><span class="strut">&nbsp;</span></p>
-<p id="t73" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t74" class="stm mis">                <span class="key">return</span> <span class="nam">u</span><span class="strut">&nbsp;</span></p>
-<p id="t75" class="pln">            <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t76" class="stm mis">                <span class="nam">sys</span><span class="op">.</span><span class="nam">exit</span><span class="op">(</span><span class="str">"No uncertainty dict available"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t66" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t67" class="stm mis">                    <span class="nam">u_arr</span><span class="op">.</span><span class="nam">append</span><span class="op">(</span><span class="nam">u</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t68" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t69" class="stm mis">                <span class="nam">u</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">sqrt</span><span class="op">(</span><span class="nam">np</span><span class="op">.</span><span class="nam">nansum</span><span class="op">(</span><span class="nam">np</span><span class="op">.</span><span class="nam">power</span><span class="op">(</span><span class="nam">u_arr</span><span class="op">,</span> <span class="num">2</span><span class="op">)</span><span class="op">,</span> <span class="nam">axis</span><span class="op">=</span><span class="num">0</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t70" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t71" class="stm mis">                <span class="nam">idx</span> <span class="op">=</span> <span class="op">(</span><span class="nam">u</span> <span class="op">==</span> <span class="num">0.0</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t72" class="stm mis">                <span class="key">if</span> <span class="nam">len</span><span class="op">(</span><span class="nam">idx</span><span class="op">)</span> <span class="op">></span> <span class="num">0</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t73" class="stm mis">                    <span class="nam">u</span><span class="op">[</span><span class="nam">idx</span><span class="op">]</span> <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">nan</span><span class="strut">&nbsp;</span></p>
+<p id="t74" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t75" class="stm mis">                <span class="key">return</span> <span class="nam">u</span><span class="strut">&nbsp;</span></p>
+<p id="t76" class="pln">            <span class="key">else</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t77" class="stm mis">                <span class="nam">sys</span><span class="op">.</span><span class="nam">exit</span><span class="op">(</span><span class="str">"No uncertainty dict available"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 
             </td>
         </tr>
@@ -232,7 +234,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
-            created at 2018-05-26 16:12
+            created at 2018-06-08 16:43
         </p>
     </div>
 </div>

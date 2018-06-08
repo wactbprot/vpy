@@ -85,7 +85,7 @@ class Document(object):
             obj["Value"] = val
             ret = obj
         else:
-            self.log.warn("Type {} not found".format(t))
+            self.log.warning("Type {} not found".format(t))
 
         return ret
 
@@ -219,7 +219,7 @@ class Document(object):
                     ret = np.array([obj["Value"]])
 
         else:
-            self.log.warn("Value of Type {} not found".format(t))
+            self.log.warning("Value of Type {} not found".format(t))
         return ret.astype(np.float)
 
     def get_object(self, key, val, o=False, d=0):

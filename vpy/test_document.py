@@ -102,7 +102,7 @@ class TestDU(unittest.TestCase):
         res = self.Doc.get_value('b', 's')
 
         self.assertTrue(type(res).__module__ == 'numpy')
-        self.assertEqual(res[0], '1')
+        self.assertEqual(res[0], 1.0)
 
     def test_get_str_1(self):
         """Shold return a numpy vector of strings
