@@ -57,28 +57,28 @@ class ToDo(Document):
 
         self.log.debug("init func: {}".format(__name__))
 
-        def get_average_index(self, b, unit):
-            """Generates and returns a numpy array containing
-            the indices of measurement points which belong to a
-            certain target pressure.
+    def make_average_index(self, cal, unit):
+        """Generates and returns a numpy array containing
+        the indices of measurement points which belong to a
+        certain target pressure.
 
-            :param p: np array of values to compare
-            :type p: np.array
+        :param cal: np array of values to group
+        :type cal: np.array
 
-            :param unit: unit of p
-            :type unit: str
+        :param unit: unit of cal
+        :type unit: str
 
-            :returns: array of arrays of indices
-            :rtype: np.array
-            """
+        :returns: array of arrays of indices
+        :rtype: np.array
+        """
 
-            a = self.Pres.get_value("target", unit)
-            r = []
-            for i in range(0, len(a) - 1):
-                rr = []
-                for j in range(0, len(b) - 1):
-                    if abs(b[j] / a[i] - 1) < self.max_dev:
-                        rr.append(j)
-                r.append(rr)
+        target = self.Pres.get_value("target", unit)
+        r = []
+        for i in range(0, len(target) - 1):
+            rr = []
+            for j in range(0, len(cal) - 1):
+                if abs(cal[j] / target[i] - 1) < self.max_dev:
+                    rr.append(j)
+            r.append(rr)
 
-            return np.asarray(r)
+        self.average_index = np.asarray(r)

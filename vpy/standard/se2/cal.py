@@ -35,15 +35,19 @@ class Cal(Se2):
         :type: class
         """
 
-        p_todo = self.ToDo.Pres.get_value("target", "mbar")
         p_cal = self.Pres.get_value("p_cal", " mbar")
-        p_cor = self.Pres.get_value("p_cor", " mbar")
-
-        key = self.Pres.round_to_n(p_cal, 2)
-
-        p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]
-
-        p_cor = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cor).groupby(key)]
-
         res.store("Pressure", "cal", p_cal, "mbar")
-        res.store("Pressure", "cor", p_cor, "mbar")
+
+
+    def pressure_ind(self, res):
+        """Simple translation from Measurement to Analysis
+
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        p_cor = self.Pres.get_value("p_cor", " mbar")
+        res.store("Pressure", "ind", p_cor, "mbar")
