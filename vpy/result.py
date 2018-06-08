@@ -4,7 +4,7 @@ import copy
 import numpy as np
 from .document import Document
 
-class Results(Document):
+class Result(Document):
     """Holds a deep copy of ``document``. Container for storing
     Results of analysis.
     """
@@ -21,8 +21,10 @@ class Results(Document):
         super().__init__(o)
         self.org = doc
 
-    def make_error_table(self):
-        pass
+    def make_error_table(self, res^):
+        p_cal = res.pick("Pressure", "cal", "mbar")
+        av_idx = self.ToDo.get_average_index(p_cal, "mbar")
+        
 
     def make_sigma_formula(self):
         pass
@@ -32,4 +34,3 @@ class Results(Document):
 
     def make_sens_table(self):
         pass
-

@@ -9,6 +9,10 @@ class ToDo(Document):
     :param doc: doc ToDo to search and extract
     :type doc: dict
     """
+    head_cell = {'cal' : "{\\(p_{cal}\\)}",
+            'ind' : "{\\(p_{ind}\\)}",
+            "uncertTotal_rel" :"{\\(U(k=2)\\)}"
+            }
 
     def __init__(self, doc):
 
@@ -28,6 +32,17 @@ class ToDo(Document):
                 self.Temp = Temperature(doc["Values"])
                 # delete pressure
                 doc.pop('Temperature', None)
+
+        if 'Table' in doc:
+            doc = doc['Table']
+            for m in doc:# m .. z.B. Pressure
+                for entr in doc[m]: # entr .. z.B. {Type: cal, Unit: mbar}
+                    if entr['Type'] in self.head_cell:
+                        entr['HeadCell'] = self.head_cell[ entr['Type'] ]
+                    else:
+                        pass
+                        #sys.exit('missing head cell entry')
+            print(doc)
 
         self.max_dev = 0.1
         # print(a)
