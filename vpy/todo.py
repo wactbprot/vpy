@@ -45,17 +45,10 @@ class ToDo(Document):
                         pass
                         #sys.exit('missing head cell entry')
 
-
         self.max_dev = 0.1
         super().__init__(doc)
-
-        # print(a)
-        # print(b)
-        # print(r)
-        # print([np.take(b, i).tolist() for i in r])
-
-
         self.log.debug("init func: {}".format(__name__))
+
 
     def make_average_index(self, cal, unit):
         """Generates and returns a numpy array containing
@@ -74,11 +67,11 @@ class ToDo(Document):
 
         target = self.Pres.get_value("target", unit)
         r = []
-        for i in range(0, len(target) - 1):
+        for i in range(0, len(target)):
             rr = []
-            for j in range(0, len(cal) - 1):
+            for j in range(0, len(cal)):
                 if abs(cal[j] / target[i] - 1) < self.max_dev:
                     rr.append(j)
             r.append(rr)
 
-        self.average_index = np.asarray(r)
+        self.average_index = r

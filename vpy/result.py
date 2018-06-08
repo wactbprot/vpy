@@ -37,10 +37,44 @@ class Result(Document):
         :returns: array of arrays of indices
         :rtype: np.array
         """
+        flatten = lambda l: [item for sublist in l for item in sublist]        
 
         p_ind = ana.pick("Pressure", "ind", "mbar")
         p_cal = ana.pick("Pressure", "cal", "mbar")
-        idx = self.ToDo.make_average_index(p_cal, "mbar")
+        error = (p_ind-p_cal)/p_cal
+        self.ToDo.make_average_index(p_cal, "mbar")
+        idx = self.ToDo.average_index
+        print(idx)
+        # coarse filtering
+        r = []
+        for i in idx:
+            rr = []
+            for j in i:
+                # only accept indicies with error[j] < 100%
+                if abs(error[j]) < 1:
+                    rr.append(j)
+            r.append(rr)
+        idx = r
+        print(idx)
+        # refinement
+        r = []
+        for i in range(0, len(idx)):
+            s = 1
+            if i > 1:
+                s = i
+            if i > len(idx) - 3:
+                s = len(idx) - 2
+            # collect neighbors
+            ref = np.take(error, flatten(idx[s-1 : s+1])).tolist()
+            rr = []
+            for j in range(0, len(idx[i])):
+                # only accept indicies if error[idx[i][j]] deviates less than 3*sigma from neighbors
+                if abs(np.mean(ref)-error[idx[i][j]]) < 3*np.std(ref):
+                    rr.append(idx[i][j])
+            r.append(rr)
+        idx = r
+        print(idx)
+        self.average_final_index = idx
 
 
     def make_error_table(self, res):
