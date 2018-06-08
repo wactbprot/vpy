@@ -375,8 +375,8 @@
 
 <span class="sd">        containing the additional volume outgasing rate ect.</span>
 
-<span class="sd">        :param name: name of the calibration standard</span>
-<span class="sd">        :type name: str</span>
+<span class="sd">        :param std: name of the calibration standard</span>
+<span class="sd">        :type std: str</span>
 
 <span class="sd">        :returns: document</span>
 <span class="sd">        :rtype: dict</span>
@@ -390,13 +390,35 @@
             <span class="n">doc_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">doc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_doc_db</span><span class="p">(</span><span class="n">doc_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;standards&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;state_doc_view&#39;</span><span class="p">]</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;standards&#39;</span><span class="p">][</span><span class="n">std</span><span class="p">][</span><span class="s1">&#39;state_doc_view&#39;</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
                 <span class="n">doc</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="s1">&#39;_id&#39;</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">doc</span></div></div>
+        <span class="k">return</span> <span class="n">doc</span></div>
+
+
+<div class="viewcode-block" id="Io.get_hist_data"><a class="viewcode-back" href="../../vpy.html#vpy.pkg_io.Io.get_hist_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_hist_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">std</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets and returns an array</span>
+<span class="sd">        containing history data</span>
+
+<span class="sd">        :param std: name of the calibration standard</span>
+<span class="sd">        :type std: str</span>
+
+<span class="sd">        :returns: document</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">srv</span> <span class="o">=</span> <span class="n">couchdb</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">][</span><span class="s1">&#39;url&#39;</span><span class="p">])</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">srv</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;db&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;standards&#39;</span><span class="p">][</span><span class="n">std</span><span class="p">][</span><span class="s1">&#39;hist_data&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">view</span><span class="p">):</span>
+            <span class="n">dat</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">value</span>
+
+
+        <span class="k">return</span> <span class="n">dat</span></div></div>
 </pre></div>
 
            </div>

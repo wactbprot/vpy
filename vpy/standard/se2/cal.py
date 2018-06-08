@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd
+import pandas as pd # lohnt sich das?
 import sympy as sym
 from ...values import Temperature, Pressure
 from .std import Se2
@@ -44,7 +44,6 @@ class Cal(Se2):
         p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]
 
         p_cor = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cor).groupby(key)]
-       
+
         res.store("Pressure", "cal", p_cal, "mbar")
         res.store("Pressure", "cor", p_cor, "mbar")
-

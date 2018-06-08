@@ -12,17 +12,15 @@ class ToDo(Document):
 
     def __init__(self, doc):
 
-        doc1 = doc
-
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
         if 'ToDo' in doc:
             doc = doc['ToDo']
 
-        if "Values" in doc:
-            if 'Pressure' in doc["Values"]:
-                self.Pres = Pressure(doc["Values"])
+        if 'Values' in doc:
+            if 'Pressure' in doc['Values']:
+                self.Pres = Pressure(doc['Values'])
                 # delete pressure
                 doc.pop('Pressure', None)
 
@@ -31,19 +29,7 @@ class ToDo(Document):
                 # delete pressure
                 doc.pop('Temperature', None)
 
-        self.Pres2 = Pressure(doc1['Measurement'])
-    
-        a = self.Pres.get_value("target", "mbar").astype(np.float)
-        b = self.Pres2.get_value("p_cal", " mbar")
-        r = []
-        for i in range(0, len(a)-1):
-            rr = []
-            for j in range(0, len(b)-1):                
-                if abs(b[j]/a[i]-1) < 0.1:
-                    rr.append(j)    
-            r.append(rr)
-        self.AvrIndexList = r
-
+        self.max_dev = 0.1
         # print(a)
         # print(b)
         # print(r)
@@ -53,3 +39,28 @@ class ToDo(Document):
 
         self.log.debug("init func: {}".format(__name__))
 
+        def get_average_index(self, b, unit):
+            """Generates and returns a numpy array containing
+            the indices of measurement points which belong to a
+            certain target pressure.
+
+            :param p: np array of values to compare
+            :type p: np.array
+
+            :param unit: unit of p
+            :type unit: str
+
+            :returns: array of arrays of indices
+            :rtype: np.array
+            """
+
+            a = self.Pres.get_value("target", unit)
+            r = []
+            for i in range(0, len(a)-1):
+                rr = []
+                for j in range(0, len(b)-1):
+                    if abs(b[j]/a[i]-1) < self.max_dev:
+                        rr.append(j)
+                r.append(rr)
+
+            return np.asarray(r)

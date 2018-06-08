@@ -156,6 +156,7 @@
             
   <h1>Source code for vpy.standard.se2.cal</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span> <span class="c1"># lohnt sich das?</span>
 <span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sym</span>
 <span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span>
 <span class="kn">from</span> <span class="nn">.std</span> <span class="k">import</span> <span class="n">Se2</span>
@@ -191,9 +192,18 @@
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="n">p_todo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ToDo</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;target&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
         <span class="n">p_cal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;p_cal&quot;</span><span class="p">,</span> <span class="s2">&quot; mbar&quot;</span><span class="p">)</span>
+        <span class="n">p_cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;p_cor&quot;</span><span class="p">,</span> <span class="s2">&quot; mbar&quot;</span><span class="p">)</span>
 
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div></div>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">round_to_n</span><span class="p">(</span><span class="n">p_cal</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">p_cal</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">p_cal</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+
+        <span class="n">p_cor</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">p_cor</span><span class="p">)</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">key</span><span class="p">)]</span>
+
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cor&quot;</span><span class="p">,</span> <span class="n">p_cor</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

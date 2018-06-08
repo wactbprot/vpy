@@ -25,4 +25,12 @@ vpy\.standard\.dkm\_ppc4\.std module
     :undoc-members:
     :show-inheritance:
 
+vpy\.standard\.dkm\_ppc4\.uncert module
+---------------------------------------
+
+.. automodule:: vpy.standard.dkm_ppc4.uncert
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
