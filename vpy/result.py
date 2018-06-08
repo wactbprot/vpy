@@ -21,10 +21,10 @@ class Result(Document):
         super().__init__(o)
         self.org = doc
 
-    def make_error_table(self, res^):
+    def make_error_table(self, res):
         p_cal = res.pick("Pressure", "cal", "mbar")
         av_idx = self.ToDo.get_average_index(p_cal, "mbar")
-        
+
 
     def make_sigma_formula(self):
         pass

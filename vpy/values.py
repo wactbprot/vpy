@@ -40,10 +40,13 @@ class Values(Document):
             r.append(round(x * factor) / factor)
         return np.asarray(r)
 
+class Mass(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Mass', quant)
+
 class Temperature(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Temperature', quant)
-
 
 class Pressure(Values):
     def __init__(self, doc, quant="Measurement"):
@@ -195,7 +198,7 @@ class AuxSe3(AuxValues):
         """
         if "Volume" in self.doc:
             v = self.get_value("add_{}".format(t), "cm^3")
-        
+
         if v is not None:
             return v
 
@@ -224,9 +227,15 @@ class AuxSe2(AuxValues):
             self.log.info("Name of Expansion not available in AuxValues")
             return None
 
-
 class AuxFrs5(AuxValues):
     """AuxValues for FRS5 Standard
+    """
+
+    def __init__(self, doc):
+        super().__init__(doc)
+
+class AuxDkmPpc4(AuxValues):
+    """AuxValues for DKM_PPC4 Standard
     """
 
     def __init__(self, doc):

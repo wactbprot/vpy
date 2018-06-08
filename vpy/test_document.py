@@ -6,7 +6,7 @@ from .document import Document
 class TestDU(unittest.TestCase):
     """
 
-    Method	Checks
+    Method Checks
     ==============
 
     * assertEqual(a, b)	a == b
