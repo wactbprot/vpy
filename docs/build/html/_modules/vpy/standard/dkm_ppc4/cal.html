@@ -179,21 +179,19 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">temperature</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">temperature_correction</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pressure_res</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mass_total</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 
         <span class="n">p_res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4_res&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">t_piston</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Mass&quot;</span><span class="p">,</span> <span class="s2">&quot;total&quot;</span><span class="p">,</span> <span class="s2">&quot;kg&quot;</span><span class="p">)</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span>
 
         <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;g_dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;m/s^2&quot;</span><span class="p">)</span>
-        <span class="n">ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;alpha_beta_dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;1/C&quot;</span><span class="p">)</span>
         <span class="n">A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;A_0_dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;m^2&quot;</span><span class="p">)</span>
 
-        <span class="n">co</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">ab</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_piston</span> <span class="o">-</span> <span class="mf">20.0</span><span class="p">)</span>
-
         <span class="n">conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cons</span><span class="o">.</span><span class="n">get_conv</span><span class="p">(</span><span class="s2">&quot;Pa&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
-        <span class="n">p_cal</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">co</span><span class="p">)</span> <span class="o">*</span> <span class="n">conv</span> <span class="o">+</span> <span class="n">p_res</span>
+        <span class="n">p_cal</span> <span class="o">=</span> <span class="n">g</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">corr</span><span class="p">)</span> <span class="o">*</span> <span class="n">conv</span> <span class="o">+</span> <span class="n">p_res</span>
 
         <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="n">p_cal</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
 
@@ -206,8 +204,8 @@
 <span class="sd">        :type: class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">p_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;dkmppc4_res&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4_res&quot;</span><span class="p">,</span> <span class="n">p_res</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+        <span class="n">p_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;dkmppc4_res&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4_res&quot;</span><span class="p">,</span> <span class="n">p_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Cal.mass_total"><a class="viewcode-back" href="../../../../vpy.standard.dkm_ppc4.html#vpy.standard.dkm_ppc4.cal.Cal.mass_total">[docs]</a>    <span class="k">def</span> <span class="nf">mass_total</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Transfers the total mass applied to the piston.</span>
@@ -232,7 +230,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">t_piston</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4&quot;</span><span class="p">,</span> <span class="n">t_piston</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span></div></div>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4&quot;</span><span class="p">,</span> <span class="n">t_piston</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cal.temperature_correction"><a class="viewcode-back" href="../../../../vpy.standard.dkm_ppc4.html#vpy.standard.dkm_ppc4.cal.Cal.temperature_correction">[docs]</a>    <span class="k">def</span> <span class="nf">temperature_correction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculates the correction of the effective area.</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;alpha_beta_dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;1/C&quot;</span><span class="p">)</span>
+        <span class="n">t_piston</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;dkmppc4&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+        <span class="n">corr</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">ab</span> <span class="o">*</span> <span class="p">(</span><span class="n">t_piston</span> <span class="o">-</span> <span class="mf">20.0</span><span class="p">)</span>
+
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Correction&quot;</span><span class="p">,</span> <span class="s2">&quot;temperature&quot;</span><span class="p">,</span> <span class="n">corr</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

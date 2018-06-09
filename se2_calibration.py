@@ -22,6 +22,7 @@ def main():
 
     # Berechnungen-Klasse leitet vom Standard se2 ab
     cal = Cal(doc)
+    print(cal.ToDo.Pres.get_value("target", "mbar"))
     # Unsicherheits-Klasse leitet auch vom Standard se2 ab
     unc = Uncert(doc)
 

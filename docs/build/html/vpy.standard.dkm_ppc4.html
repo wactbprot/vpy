@@ -110,8 +110,10 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document">vpy.document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_log">vpy.pkg_log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.result">vpy.result module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.sim">vpy.sim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.todo">vpy.todo module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values">vpy.values module</a></li>
 </ul>
 </li>
@@ -267,6 +269,24 @@ pick(quantity, type, unit)</td>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="vpy.standard.dkm_ppc4.cal.Cal.temperature_correction">
+<code class="descname">temperature_correction</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/dkm_ppc4/cal.html#Cal.temperature_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.dkm_ppc4.cal.Cal.temperature_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the correction of the effective area.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -310,6 +330,34 @@ state measurements <code class="docutils literal"><span class="pre">amt</span></
 <dt id="vpy.standard.dkm_ppc4.std.DkmPpc4.unit">
 <code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.dkm_ppc4.std.DkmPpc4.unit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.dkm_ppc4.uncert">
+<span id="vpy-standard-dkm-ppc4-uncert-module"></span><h2>vpy.standard.dkm_ppc4.uncert module<a class="headerlink" href="#module-vpy.standard.dkm_ppc4.uncert" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.standard.dkm_ppc4.uncert.Uncert">
+<em class="property">class </em><code class="descclassname">vpy.standard.dkm_ppc4.uncert.</code><code class="descname">Uncert</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/dkm_ppc4/uncert.html#Uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.dkm_ppc4.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.dkm_ppc4.std.DkmPpc4" title="vpy.standard.dkm_ppc4.std.DkmPpc4"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.dkm_ppc4.std.DkmPpc4</span></code></a></p>
+<dl class="method">
+<dt id="vpy.standard.dkm_ppc4.uncert.Uncert.total">
+<code class="descname">total</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/dkm_ppc4/uncert.html#Uncert.total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.dkm_ppc4.uncert.Uncert.total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the total uncertainty.
+sympy derives the sensitivity coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Type:</th><td class="field-body">class</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

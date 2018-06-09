@@ -207,7 +207,7 @@ class Document(object):
 
             if "Value" in obj:
                 if isinstance(obj["Value"], str):
-                    ret = np.asarray([np.float64(obj["Value"])], dtype="f")
+                    ret = np.asarray([np.float64(obj["Value"])])
 
                 if isinstance(obj["Value"], list):
                     ret = np.asarray(obj["Value"])
@@ -220,7 +220,8 @@ class Document(object):
 
         else:
             self.log.warning("Value of Type {} not found".format(t))
-        return ret
+
+        return ret.astype(np.float)
 
     def get_object(self, key, val, o=False, d=0):
         """Recursive  searches obj for

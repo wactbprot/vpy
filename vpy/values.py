@@ -31,14 +31,22 @@ class Values(Document):
 
         self.log.debug("init func: {}".format(__name__))
 
-
-class Temperature(Values):
-    def __init__(self, doc, quant="Measurement"):
-        super().__init__(doc, 'Temperature', quant)
+    def round_to_n(self, a, n):
+        r=[]
+        for x in a:
+            if not x: return 0
+            power = -int(np.floor(np.log10(abs(x)))) + (n - 1)
+            factor = (10 ** power)
+            r.append(round(x * factor) / factor)
+        return np.asarray(r)
 
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Mass', quant)
+
+class Temperature(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Temperature', quant)
 
 class Pressure(Values):
     def __init__(self, doc, quant="Measurement"):
@@ -229,5 +237,6 @@ class AuxFrs5(AuxValues):
 class AuxDkmPpc4(AuxValues):
     """AuxValues for DKM_PPC4 Standard
     """
+
     def __init__(self, doc):
         super().__init__(doc)

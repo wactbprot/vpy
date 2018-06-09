@@ -186,16 +186,24 @@
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 
-
-<div class="viewcode-block" id="Temperature"><a class="viewcode-back" href="../../vpy.html#vpy.values.Temperature">[docs]</a><span class="k">class</span> <span class="nc">Temperature</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">quant</span><span class="o">=</span><span class="s2">&quot;Measurement&quot;</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;Temperature&#39;</span><span class="p">,</span> <span class="n">quant</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Values.round_to_n"><a class="viewcode-back" href="../../vpy.html#vpy.values.Values.round_to_n">[docs]</a>    <span class="k">def</span> <span class="nf">round_to_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">r</span><span class="o">=</span><span class="p">[]</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="p">:</span> <span class="k">return</span> <span class="mi">0</span>
+            <span class="n">power</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))))</span> <span class="o">+</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="n">power</span><span class="p">)</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">factor</span><span class="p">)</span> <span class="o">/</span> <span class="n">factor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div></div>
 
 <div class="viewcode-block" id="Mass"><a class="viewcode-back" href="../../vpy.html#vpy.values.Mass">[docs]</a><span class="k">class</span> <span class="nc">Mass</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">quant</span><span class="o">=</span><span class="s2">&quot;Measurement&quot;</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;Mass&#39;</span><span class="p">,</span> <span class="n">quant</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Temperature"><a class="viewcode-back" href="../../vpy.html#vpy.values.Temperature">[docs]</a><span class="k">class</span> <span class="nc">Temperature</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">quant</span><span class="o">=</span><span class="s2">&quot;Measurement&quot;</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="s1">&#39;Temperature&#39;</span><span class="p">,</span> <span class="n">quant</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Pressure"><a class="viewcode-back" href="../../vpy.html#vpy.values.Pressure">[docs]</a><span class="k">class</span> <span class="nc">Pressure</span><span class="p">(</span><span class="n">Values</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">quant</span><span class="o">=</span><span class="s2">&quot;Measurement&quot;</span><span class="p">):</span>
@@ -386,6 +394,7 @@
 <div class="viewcode-block" id="AuxDkmPpc4"><a class="viewcode-back" href="../../vpy.html#vpy.values.AuxDkmPpc4">[docs]</a><span class="k">class</span> <span class="nc">AuxDkmPpc4</span><span class="p">(</span><span class="n">AuxValues</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;AuxValues for DKM_PPC4 Standard</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
 </pre></div>

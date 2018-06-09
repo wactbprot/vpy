@@ -205,9 +205,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">Aux</span> <span class="o">=</span> <span class="n">AuxFrs5</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
         <span class="c1"># residua pressure device</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_frs5_ind&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">))</span>
+        <span class="n">amt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Time</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;amt_meas&quot;</span><span class="p">,</span> <span class="s2">&quot;ms&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span> <span class="o">=</span> <span class="n">Srg</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;FRS55_4019&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_of_meas_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">amt</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ResDev</span> <span class="o">=</span> <span class="n">Srg</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Cobj</span><span class="o">.</span><span class="n">get_by_name</span><span class="p">(</span><span class="s2">&quot;FRS5_4019&quot;</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
 

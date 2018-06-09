@@ -1,6 +1,7 @@
 import copy
 from ..document import Document
 from ..constants import Constants
+from ..todo import ToDo
 from ..calibration_devices import CalibrationObject
 
 
@@ -15,6 +16,9 @@ class Standard(Document):
 
         if 'Calibration' in doc:
             doc = doc['Calibration']
+
+        if "ToDo" in doc:
+            self.ToDo = ToDo(doc)
 
         if 'State' in doc:
             doc = doc['State']

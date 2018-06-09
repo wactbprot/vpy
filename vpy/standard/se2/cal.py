@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd # lohnt sich das?
 import sympy as sym
 from ...values import Temperature, Pressure
 from .std import Se2
@@ -35,5 +36,18 @@ class Cal(Se2):
         """
 
         p_cal = self.Pres.get_value("p_cal", " mbar")
-
         res.store("Pressure", "cal", p_cal, "mbar")
+
+
+    def pressure_ind(self, res):
+        """Simple translation from Measurement to Analysis
+
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        p_cor = self.Pres.get_value("p_cor", " mbar")
+        res.store("Pressure", "ind", p_cor, "mbar")

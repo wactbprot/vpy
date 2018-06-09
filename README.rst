@@ -62,17 +62,19 @@ in ``conf.json``.
 unit tests, coverage and pre commit hook
 ========================================
 
-There is a unit test stub for ``documents.py``. Call with:
+There is a unit test stub for ``documents.py`` and ``todo.py``. Call with:
 
 .. code-block:: shell
 
-    > python -m unittest vpy/test_document.py
+    > python -m unittest vpy/test_*.py
 
-Same with the coverage tool:
+Same with the code coverage tool:
 
 .. code-block:: shell
 
-    > coverage run --source vpy -m unittest vpy/test_document.py
+    > coverage run --source vpy -m unittest vpy/test_*.py
+    > coverage html
+    > firefox htmcovindex.html
 
 see .. _`documentation of coverage pkg`: https://coverage.readthedocs.io/en/coverage-4.5.1/
 
