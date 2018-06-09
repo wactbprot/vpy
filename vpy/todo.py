@@ -10,10 +10,15 @@ class ToDo(Document):
     :param doc: doc ToDo to search and extract
     :type doc: dict
     """
-    head_cell = {'cal': "{\\(p_{cal}\\)}",
-                 'ind': "{\\(p_{ind}\\)}",
-                 "uncertTotal_rel": "{\\(U(k=2)\\)}"
-                 }
+    head_cell_proto = {'error': {'cal': "{\\(p_{cal}\\)}",
+                                 'ind': "{\\(p_{ind}\\)}",
+                                 "uncertTotal_rel": "{\\(U(k=2)\\)}"
+                                 },
+                       'sens': {'cal': "{\\(p_{cal}\\)}",
+                                'ind': "{\\(i_{coll}\\)}",
+                                "uncertTotal_rel": "{\\(U(k=2)\\)}"
+                                },
+                       }
 
     def __init__(self, doc):
 
@@ -22,6 +27,15 @@ class ToDo(Document):
 
         if 'ToDo' in doc:
             doc = doc['ToDo']
+
+        if 'Type' in doc:
+            self.type = doc['Type']
+            if self.type in self.head_cell_proto:
+                self.head_cell = self.head_cell_proto[self.type]
+            else:
+                errmsg = 'unknown todo type'
+                self.log.error(errmsg)
+                sys.exit(errmsg)
 
         if 'Values' in doc:
             if 'Pressure' in doc['Values']:
@@ -40,11 +54,10 @@ class ToDo(Document):
                 for entr in tbl[m]:  # entr .. z.B. {Type: cal, Unit: mbar}
                     if entr['Type'] in self.head_cell:
                         entr['HeadCell'] = self.head_cell[entr['Type']]
-                        entr['UnitCell'] = entr['Unit'] # in case of specials
+                        entr['UnitCell'] = entr['Unit']  # in case of specials
                     else:
                         pass
                         #sys.exit('missing head cell entry')
-
 
         self.max_dev = 0.1
         super().__init__(doc)
@@ -53,7 +66,6 @@ class ToDo(Document):
         # print(b)
         # print(r)
         # print([np.take(b, i).tolist() for i in r])
-
 
         self.log.debug("init func: {}".format(__name__))
 

@@ -3,7 +3,7 @@ import numpy as np
 import sympy as sym
 from .document import Document
 
-class TestDU(unittest.TestCase):
+class TestDocument(unittest.TestCase):
     """
 
     Method Checks

@@ -4,7 +4,7 @@ import sympy as sym
 from .todo import ToDo
 
 
-class TestDU(unittest.TestCase):
+class TestToDo(unittest.TestCase):
 
     def setUp(self):
         doc = {
@@ -78,10 +78,10 @@ class TestDU(unittest.TestCase):
         self.ToDo = ToDo(doc)
 
     def test_average_index_1(self):
-        """flat obj
+        """
         """
         pcal = np.array([.1, 1, 2])
         self.ToDo.make_average_index(pcal, "mbar")
         res = self.ToDo.average_index
-        
+
         self.assertTrue(len(res) is 16)
