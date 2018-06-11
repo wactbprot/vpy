@@ -74,7 +74,7 @@ class Result(Document):
             r.append(rr)
         idx = r
         print(idx)
-        self.average_final_index = idx
+        self.average_index = idx
 
 
     def make_error_table(self, res):
