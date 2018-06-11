@@ -22,20 +22,20 @@ class Cdg(Device):
         self.doc = dev
 
         if "CalibrationObject" in dev:
-            cob_dev = dev['CalibrationObject']
+            dev = dev['CalibrationObject']
 
-        if "Uncertainty" in cob_dev:
-            self.uncert_dict = cob_dev["Uncertainty"]
+        if "Uncertainty" in dev:
+            self.uncert_dict = dev["Uncertainty"]
 
-        if "Setup" in cob_dev:
-            dev_setup = cob_dev['Setup']
+        if "Setup" in dev:
+            dev_setup = dev['Setup']
             if "TypeHead" in dev_setup:
                 th = dev_setup['TypeHead']
                 if th is not None:
                     self.max_p_mbar = self.max_typehead_mbar[th]
                     self.min_p_mbar = self.max_p_mbar / 10.0**self.usable_decades
 
-        if "Interpol" in cob_dev:
+        if "Interpol" in dev:
             self.interpol_x = self.get_value("p_ind", self.unit)
             self.interpol_y = self.get_value("e", "1")
             self.interpol_min = np.min(self.interpol_x)

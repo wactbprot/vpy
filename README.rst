@@ -80,6 +80,12 @@ see .. _`documentation of coverage pkg`: https://coverage.readthedocs.io/en/cove
 
 The tests run a pre commit hook. The folder for that script is ``./hooks``.
 
+visual feedback
+===============
+
+The switch ``-s`` sets the member variable ``self.io.plot`` to ``True``.
+
+
 relayServer
 ============
 

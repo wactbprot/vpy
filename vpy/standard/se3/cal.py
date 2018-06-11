@@ -332,12 +332,13 @@ class Cal(Se3):
         aux_conf_time = self.aux_val_conf["Time"]["Offset"]
         val_conf = self.val_conf["Pressure"]["Fill"]
 
+
         val_conf_targ = self.val_conf["Pressure"]["FillTarget"]
         aux_conf = self.aux_val_conf["Pressure"]["Offset"]
 
+
         fill_time = self.Time.get_value(val_conf_time["Type"],
                                         val_conf_time["Unit"])
-
         fill_target = self.Pres.get_value(val_conf_targ["Type"],
                                           val_conf_targ["Unit"])
 

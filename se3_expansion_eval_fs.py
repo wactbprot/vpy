@@ -41,10 +41,7 @@ def main():
         se3_calc.temperature_before(res)
         se3_calc.temperature_after(res)
         se3_calc.temperature_room(res)
-        se3_calc.get_add_ratio(res)
         se3_calc.pressure_fill(res)
-
-        se3_calc.pressure_nd(res)
         se3_calc.real_gas_correction(res)
 
         # se3 uncert
@@ -54,6 +51,11 @@ def main():
         se3_uncert.pressure_fill(res)
         se3_uncert.temperature_after(res)
         se3_uncert.temperature_before(res)
+
+        ## null indicator:
+        ## ..next..
+
+
 
         rg = res.pick("Correction", "rg", "1")
         p_0 = res.pick("Pressure", "fill", "mbar")
