@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd # lohnt sich das?
 import sympy as sym
 from ...values import Temperature, Pressure
 from .std import Se2

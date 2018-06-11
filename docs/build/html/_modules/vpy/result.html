@@ -160,6 +160,7 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">.document</span> <span class="k">import</span> <span class="n">Document</span>
+<span class="kn">from</span> <span class="nn">.todo</span> <span class="k">import</span> <span class="n">ToDo</span>
 
 <div class="viewcode-block" id="Result"><a class="viewcode-back" href="../../vpy.html#vpy.result.Result">[docs]</a><span class="k">class</span> <span class="nc">Result</span><span class="p">(</span><span class="n">Document</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Holds a deep copy of ``document``. Container for storing</span>
@@ -175,12 +176,67 @@
              <span class="s2">&quot;Values&quot;</span><span class="p">:</span> <span class="p">{}</span>
              <span class="p">}</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">ToDo</span> <span class="o">=</span> <span class="n">ToDo</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">org</span> <span class="o">=</span> <span class="n">doc</span>
 
+<div class="viewcode-block" id="Result.reject_outliers_index"><a class="viewcode-back" href="../../vpy.html#vpy.result.Result.reject_outliers_index">[docs]</a>    <span class="k">def</span> <span class="nf">reject_outliers_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ana</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates and returns a numpy array containing</span>
+<span class="sd">        the indices of measurement points which belong to a</span>
+<span class="sd">        certain target pressure.</span>
+
+<span class="sd">        :param cal: np array of values to group</span>
+<span class="sd">        :type cal: np.array</span>
+
+<span class="sd">        :param unit: unit of cal</span>
+<span class="sd">        :type unit: str</span>
+
+<span class="sd">        :returns: array of arrays of indices</span>
+<span class="sd">        :rtype: np.array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">flatten</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">l</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span>        
+
+        <span class="n">p_ind</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;ind&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">p_cal</span> <span class="o">=</span> <span class="n">ana</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_ind</span><span class="o">-</span><span class="n">p_cal</span><span class="p">)</span><span class="o">/</span><span class="n">p_cal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ToDo</span><span class="o">.</span><span class="n">make_average_index</span><span class="p">(</span><span class="n">p_cal</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ToDo</span><span class="o">.</span><span class="n">average_index</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="c1"># coarse filtering</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">idx</span><span class="p">:</span>
+            <span class="n">rr</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+                <span class="c1"># only accept indicies with error[j] &lt; 100%</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">error</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">rr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="c1"># refinement</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span>
+            <span class="c1"># collect neighbors</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">flatten</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">s</span><span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">]))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">rr</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+                <span class="c1"># only accept indicies if error[idx[i][j]] deviates less than 3*sigma from neighbors</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="o">-</span><span class="n">error</span><span class="p">[</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]])</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ref</span><span class="p">):</span>
+                    <span class="n">rr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rr</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">average_index</span> <span class="o">=</span> <span class="n">idx</span></div>
+
+
 <div class="viewcode-block" id="Result.make_error_table"><a class="viewcode-back" href="../../vpy.html#vpy.result.Result.make_error_table">[docs]</a>    <span class="k">def</span> <span class="nf">make_error_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="n">p_cal</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">pick</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;cal&quot;</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span>
-        <span class="n">av_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ToDo</span><span class="o">.</span><span class="n">get_average_index</span><span class="p">(</span><span class="n">p_cal</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+        <span class="n">av_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ToDo</span><span class="o">.</span><span class="n">make_average_index</span><span class="p">(</span><span class="n">p_cal</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Result.make_sigma_formula"><a class="viewcode-back" href="../../vpy.html#vpy.result.Result.make_sigma_formula">[docs]</a>    <span class="k">def</span> <span class="nf">make_sigma_formula</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

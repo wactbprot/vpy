@@ -89,6 +89,14 @@ vpy\.test\_document module
     :undoc-members:
     :show-inheritance:
 
+vpy\.test\_todo module
+----------------------
+
+.. automodule:: vpy.test_todo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 vpy\.todo module
 ----------------
 
