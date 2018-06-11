@@ -6,34 +6,37 @@ import couchdb
 
 
 class Io(object):
-    """docstring for Io."""
+    """Class Io should handle all the input
+    output issues of the pkg.
+    """
 
     def __init__(self):
         """
         Parses the command line argumets.
-        Gets the configuration out of the file: *config.json*.
-        Provides database
+        Gets the configuration out of the file: ``config.json``.
+        Traverse database commandline options to ``self.config``
         """
 
         parser = argparse.ArgumentParser()
         # --id
         parser.add_argument("--id", type=str, nargs=1,
                             help="id of the document to analyse")
-        # --id
+        # --db
         parser.add_argument("--db", type=str, nargs=1,
                             help="name of the database")
-        # --id
+        # --srv
         parser.add_argument("--srv", type=str, nargs=1,
                             help="server url in the form: http://server:port")
         # --file
         parser.add_argument("--file", type=str, nargs=1,
                             help="file containing document to analyse")
-
+        # -p plot
+        parser.add_argument('-p', action='store_true',
+                    help='provide visual feedback of calculation', default=False)
+        # -s save
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)
 
-        parser.add_argument('-p', action='plot_true',
-                            help='provide visual feedback of calculation', default=False)
 
         self.args = parser.parse_args()
 
@@ -46,6 +49,12 @@ class Io(object):
             self.save = True
         else:
             self.save = False
+
+        # provide visual feedback
+        if self.args.p:
+            self.plot = True
+        else:
+            self.plot = False
 
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]

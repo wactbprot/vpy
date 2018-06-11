@@ -1,6 +1,7 @@
 import sys
 import copy
 from .pkg_log import Log
+from .pkg_io import Io
 import numpy as np
 import sympy as sym
 
@@ -13,7 +14,9 @@ class Document(object):
         :type doc: dict
         """
         self.doc = copy.deepcopy(doc)
+        self.io = Io()
         self.log = Log().logger(__name__)
+        self.log.debug("variable plot has value: {}".format(self.io.plot))
 
     def get_all(self):
         """Returns the entire document
