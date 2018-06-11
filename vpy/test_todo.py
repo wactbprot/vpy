@@ -80,8 +80,8 @@ class TestToDo(unittest.TestCase):
     def test_average_index_1(self):
         """
         """
-        pcal = np.array([.1, 1, 2])
+        pcal = np.array([0.01, 0.0109, 0.0099])
         self.ToDo.make_average_index(pcal, "mbar")
-        res = self.ToDo.average_index
-
-        self.assertTrue(len(res) is 16)
+        self.assertEqual(len(self.ToDo.average_index), 16)
+        self.assertEqual(len(self.ToDo.average_index[0]), 3)
+        self.assertEqual(len(self.ToDo.average_index[1]), 0)
