@@ -32,6 +32,9 @@ class Io(object):
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)
 
+        parser.add_argument('-p', action='plot_true',
+                            help='provide visual feedback of calculation', default=False)
+
         self.args = parser.parse_args()
 
         # open and parse config file
