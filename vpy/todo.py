@@ -28,14 +28,15 @@ class ToDo(Document):
         if 'ToDo' in doc:
             doc = doc['ToDo']
 
+        super().__init__(doc)
+
         if 'Type' in doc:
             self.type = doc['Type']
             if self.type in self.head_cell_proto:
                 self.head_cell = self.head_cell_proto[self.type]
             else:
                 errmsg = 'unknown todo type'
-                self.log.error(errmsg)
-                sys.exit(errmsg)
+                self.log.warning(errmsg)
 
         if 'Values' in doc:
             if 'Pressure' in doc['Values']:
@@ -60,7 +61,6 @@ class ToDo(Document):
                         #sys.exit('missing head cell entry')
 
         self.max_dev = 0.1
-        super().__init__(doc)
         self.log.debug("init func: {}".format(__name__))
 
 

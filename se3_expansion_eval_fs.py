@@ -1,3 +1,12 @@
+"""
+Evaluation of small expansion ratio f_s
+measurement.
+
+run:
+
+$[vpy]> python se3_expansion_eval_fs.py --id "cal-2017-se3|frs5-vg-1001_0007"
+"""
+
 import sys
 import numpy as np
 from vpy.pkg_io import Io
@@ -6,14 +15,11 @@ from vpy.standard.frs5.cal import Cal as FrsCalc
 from vpy.standard.frs5.uncert import Uncert as FrsUncert
 from vpy.standard.se3.cal import Cal as Se3Calc
 from vpy.standard.se3.uncert import Uncert as Se3Uncert
-#from vpy.standard.se3.uncert import Uncert as FrsUncert
+
 
 
 def main():
     io = Io()
-    log = io.logger(__name__)
-    log.info("start logging")
-
     doc = io.load_doc()
 
     if doc:

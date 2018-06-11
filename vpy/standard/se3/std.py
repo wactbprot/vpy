@@ -37,7 +37,8 @@ class Se3(Standard):
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Time = Time(doc)
-        self.Aux  = AuxSe3(doc)
+        self.Aux = AuxSe3(doc)
+        self.Pos = Position(doc)
 
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
@@ -45,7 +46,6 @@ class Se3(Standard):
 
         if 'Calibration' in doc:
             # define model
-            self.Pos = Position(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
             self.define_model()
 

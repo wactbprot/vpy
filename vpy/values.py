@@ -28,10 +28,17 @@ class Values(Document):
 
         if name in doc:
             super().__init__(doc[name])
-
-        self.log.debug("init func: {}".format(__name__))
+            self.log.debug("init func: {}".format(__name__))
 
     def round_to_n(self, a, n):
+        """ Rounds the numbers in array ``a`` to ``n``
+        significant digits
+
+        ..todo::
+            discuss the return value for ``not x``:
+            suggestion: ``np.nan``
+
+        """
         r=[]
         for x in a:
             if not x: return 0
