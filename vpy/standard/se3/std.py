@@ -194,7 +194,7 @@ class Se3(Standard):
         :type: class
         """
 
-        f  = np.full(self.no_of_meas_points, None)
+        f  = np.full(self.no_of_meas_points, np.nan)
         f_name  = self.get_expansion_name()
         i_s    = np.where(f_name == "f_s")
         i_m    = np.where(f_name == "f_m")

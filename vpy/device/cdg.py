@@ -24,9 +24,6 @@ class Cdg(Device):
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']
 
-        if "Uncertainty" in dev:
-            self.uncert_dict = dev["Uncertainty"]
-
         if "Setup" in dev:
             dev_setup = dev['Setup']
             if "TypeHead" in dev_setup:

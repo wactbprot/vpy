@@ -221,7 +221,7 @@ class Cal(Se3):
         :type: class
         """
 
-        vol = np.full(self.no_of_meas_points, None)
+        vol = np.full(self.no_of_meas_points, np.nan)
         f_name  = self.get_expansion_name()
 
         i_s    = np.where(f_name == "f_s")
@@ -246,24 +246,27 @@ class Cal(Se3):
         :type: class
         """
 
-        vol = np.full(self.no_of_meas_points, None)
-        v_pos = self.Pos.get_str("dut_open")
+        vol = np.full(self.no_of_meas_points, 0.0)
+        if "get_str" in self.Pos.__dict__:
+            v_pos = self.Pos.get_str("dut_open")
+            i_abc = np.where(v_pos == "abc")
+            i_bc = np.where(v_pos == "bc")
+            i_c = np.where(v_pos == "c")
 
-        i_abc = np.where(v_pos == "abc")
-        i_bc = np.where(v_pos == "bc")
-        i_c = np.where(v_pos == "c")
+            if np.shape(i_abc)[1] > 0:
+                self.log.info("At Point(s) {}  dut-a,b and c are open ".format(i_abc))
+                vol[i_abc] = self.Aux.get_volume("abc")
 
-        if np.shape(i_abc)[1] > 0:
-            self.log.info("At Point(s) {}  dut-a,b and c are open ".format(i_abc))
-            vol[i_abc] = self.Aux.get_volume("abc")
+            if np.shape(i_bc)[1] > 0:
+                self.log.info("At Point(s) {}  dut-b and c are open ".format(i_bc))
+                vol[i_bc] = self.Aux.get_volume("bc")
 
-        if np.shape(i_bc)[1] > 0:
-            self.log.info("At Point(s) {}  dut-b and c are open ".format(i_bc))
-            vol[i_bc] = self.Aux.get_volume("bc")
-
-        if np.shape(i_c)[1] > 0:
-            self.log.info("At Point(s) {}  dut- c are open ".format(i_c))
-            vol[i_c] = self.Aux.get_volume("c")
+            if np.shape(i_c)[1] > 0:
+                self.log.info("At Point(s) {}  dut- c are open ".format(i_c))
+                vol[i_c] = self.Aux.get_volume("c")
+        else:
+            self.log.warning("""assume doc is not a regular calibration,
+                            use additional volume 0.0""")
 
         res.store("Volume", "add",   vol, "cm^3")
 
@@ -298,24 +301,6 @@ class Cal(Se3):
 
         res.store("Pressure", "cal", p_cal, self.unit)
 
-
-    def pressure_nd(self, res):
-        """Stores the differential pressure of the zero
-         under the path  *Pressure, nd, mbar*
-
-        .. todo::
-
-            pressure_nd is alien here--> move to the surface/scripts
-
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-        p_nd_off = self.Pres.get_value("nd_offset", "mbar")
-        p_nd_ind = self.Pres.get_value("nd_ind", "mbar")
-
-        res.store("Pressure", "nd", p_nd_ind - p_nd_off, "mbar")
 
     def pressure_fill(self, res):
         """Calculates the singel and mean value of the filling pressure
@@ -365,10 +350,7 @@ class Cal(Se3):
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
             ldevname = FillDev.get_name().lower()
-            res.store("Pressure", "{}-fill".format(ldevname),
-                      p_corr, val["Unit"])
-            res.store("Pressure", "{}-fill_offset".format(ldevname),
-                      off, val["Unit"])
+
 
         p_mean = np.nanmean(cor_arr, axis=0)
 
@@ -377,7 +359,7 @@ class Cal(Se3):
 
         p_std = np.nanstd(cor_arr, axis=0)
         n = np.apply_along_axis(cnt_nan, 0, cor_arr)
-
+        print(p_mean)
         res.store("Pressure", "fill", p_mean, val["Unit"], p_std, n)
 
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):

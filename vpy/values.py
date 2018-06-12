@@ -28,7 +28,7 @@ class Values(Document):
 
         if name in doc:
             super().__init__(doc[name])
-            self.log.debug("init func: {}".format(__name__))
+            
 
     def round_to_n(self, a, n):
         """ Rounds the numbers in array ``a`` to ``n``

@@ -113,7 +113,7 @@ class Io(object):
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
         else:
-            self.log.warn("Result is not saved (use -s param)")
+            print("Result is not saved (use -s param)")
 
     def get_doc_db(self, doc_id):
         """Gets the document from the database.

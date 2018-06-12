@@ -26,8 +26,6 @@ class Constants(Document):
         if 'Constants' in doc:
             super().__init__(doc['Constants'])
 
-        self.log.debug("init func: {}".format(__name__))
-
     def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
 

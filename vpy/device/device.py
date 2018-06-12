@@ -8,10 +8,13 @@ class Device(Document):
     """
 
     def __init__(self, doc, dev):
+        self.Const = Constants(doc)
+
+        if "Uncertainty" in dev:
+            self.uncert_dict = dev["Uncertainty"]
+
         super().__init__(dev)
 
-        self.Const = Constants(doc)
-        self.log.debug("init func: {}".format(__name__))
 
     def get_total_uncert(self, meas, unit, runit):
             """ Collects all Uncertainty contrib for the given
@@ -23,7 +26,7 @@ class Device(Document):
             """
             u_arr = []
             N     = np.shape(meas)[0]
-            if self.uncert_dict is not None:
+            if "uncert_dict" in self.__dict__:
                 u_dict = self.uncert_dict
                 for u_i in u_dict:
                     u   = np.full(N, np.nan)
