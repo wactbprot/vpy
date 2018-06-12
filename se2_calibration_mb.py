@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 import pandas as pd
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
@@ -69,6 +70,7 @@ def main():
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
     print([1,2,3,4])
+    plt.show()
 
 if __name__ == "__main__":
     main()
