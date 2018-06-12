@@ -43,7 +43,7 @@ class Result(Document):
         point itself).
         remarks: using the standard deviation of the neighbors is unsatisfactory
         because one may end up with a small value by chance. Probably it is
-        better to use a threshhold that is decreasing with increasing pressure
+        better to use a threshold that is decreasing with increasing pressure
         values. Another problem is that iterating over empty lists aborts the
         program.
 
@@ -105,6 +105,25 @@ class Result(Document):
                 break
             idx = r
         self.average_index = idx
+
+    def offset_uncert(self, ana):
+        """Generates and returns a numpy array containing
+        the indices of measurement points which belong to a
+        certain target pressure.
+
+        :param cal: np array of values to group
+        :type cal: np.array
+
+        :param unit: unit of cal
+        :type unit: str
+
+        :returns: array of arrays of indices
+        :rtype: np.array
+        """
+
+        p_off = ana.pick("Pressure", "offset", "mbar")
+
+        pass
 
 
     def make_error_table(self, res):

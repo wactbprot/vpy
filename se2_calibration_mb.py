@@ -35,8 +35,11 @@ def main():
     ## Bsp. Berechn. Kalibrierdruck, Unsicherh.
     cal.pressure_cal(ana)
     cal.pressure_ind(ana)
+    cal.pressure_offset(ana)
+    cal.measurement_time(ana)
     unc.temperature_vessel(ana)
     res.reject_outliers_index(ana)
+    res.offset_uncert(ana)
 
     def u_PTB_rel(p):
         return np.piecewise(p, [p <= 0.00027, p <= 0.003, p <= 0.0073, p <= 0.09, p <= 10, p <= 80,  80 < p],
