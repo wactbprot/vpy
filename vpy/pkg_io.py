@@ -12,11 +12,17 @@ class Io(object):
 
     def __init__(self):
         """
-        Parses the command line argumets.
         Gets the configuration out of the file: ``config.json``.
+        """
+        # open and parse config file
+        with open('./conf.json') as json_config_file:
+            self.config = json.load(json_config_file)
+
+    def eval_args(self):
+        """
+        Parses the command line argumets.
         Traverse database commandline options to ``self.config``
         """
-
         parser = argparse.ArgumentParser()
         # --id
         parser.add_argument("--id", type=str, nargs=1,
@@ -39,10 +45,6 @@ class Io(object):
 
 
         self.args = parser.parse_args()
-
-        # open and parse config file
-        with open('./conf.json') as json_config_file:
-            self.config = json.load(json_config_file)
 
         # save doc
         if self.args.s:
