@@ -47,12 +47,6 @@ class Result(Document):
         values. Another problem is that iterating over empty lists aborts the
         program.
 
-        :param cal: np array of values to group
-        :type cal: np.array
-
-        :param unit: unit of cal
-        :type unit: str
-
         :returns: array of arrays of indices
         :rtype: np.array
         """
@@ -100,30 +94,27 @@ class Result(Document):
                 ax.semilogx(np.take(p_cal, self.flatten(idx)).tolist(), np.take(error, self.flatten(idx)).tolist(),'o', label="after refinement!")
                 handles, labels = ax.get_legend_handles_labels()
                 ax.legend(handles, labels, loc=3)
-                plt.show()
+                #plt.show()
             if idx == r:
                 break
             idx = r
         self.average_index = idx
 
-    def offset_uncert(self, ana):
-        """Generates and returns a numpy array containing
-        the indices of measurement points which belong to a
-        certain target pressure.
+    def make_offset_uncert(self, ana):
+        """Collects the pressure offsets of the main measurement only and
+        calculates their standard deviation.
 
-        :param cal: np array of values to group
-        :type cal: np.array
-
-        :param unit: unit of cal
-        :type unit: str
-
-        :returns: array of arrays of indices
-        :rtype: np.array
+        :returns: standard uncertainty of offsets
+        :rtype: float
         """
 
         p_off = ana.pick("Pressure", "offset", "mbar")
+        mtime = ana.pick("Time","Date","date").tolist()
+        occurrences = [[i, mtime.count(i)] for i in list(set(mtime))]
+        max_occurrences = sorted(occurrences, key = lambda j: j[1])[-1][0]
+        p_off_max_group = [p_off[i] for i in range(len(mtime)) if mtime[i]==max_occurrences]
 
-        pass
+        self.offset_uncert = np.std(p_off_max_group)
 
 
     def make_error_table(self, res):

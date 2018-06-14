@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 import pandas as pd
 from vpy.pkg_io import Io
@@ -14,6 +15,7 @@ from vpy.todo import ToDo
 Bsp. Aufruf:
 python se2_calibration_mb.py --id "cal-2018-se2-pn-0118_0001" --db "vl_db_corr" --srv "http://i75422:5984"
 python se2_calibration_mb.py --id "cal-2018-se2-kk-75001_0001" --db "vl_db" --srv "http://a73434:5984"
+python se2_calibration_mb.py --id "cal-2018-se2-kk-75012_0001" --db "vl_db" --srv "http://a73434:5984"
 """
 
 def main():
@@ -40,7 +42,7 @@ def main():
     cal.measurement_time(ana)
     unc.temperature_vessel(ana)
     res.reject_outliers_index(ana)
-    res.offset_uncert(ana)
+    res.make_offset_uncert(ana)
 
     def u_PTB_rel(p):
         return np.piecewise(p, [p <= 0.00027, p <= 0.003, p <= 0.0073, p <= 0.09, p <= 10, p <= 80,  80 < p],
@@ -52,16 +54,10 @@ def main():
     # key = self.Pres.round_to_n(p_cal, 2)
     # p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]
 
-    # print(doc)
-    print(ana.pick("Pressure","cal","mbar"))
     print(pd.Series(ana.pick("Pressure","cal","mbar")))
     print(pd.DataFrame(ana.pick("Pressure","cal","mbar")).head())
     print("*******")
     p_cal = ana.pick("Pressure","cal","mbar")
-    print(np.std(p_cal))
-    print(np.mean(p_cal))
-    print(np.random.rand(2,3))
-    print("*******")
     print(u_PTB_rel(0.001))
     print(p_cal)
     print(u_PTB_rel(p_cal))
@@ -70,11 +66,9 @@ def main():
     print(ana.pick("Pressure","cal","mbar"))
     print(ana.pick("Pressure","ind","mbar"))
     print(Values.round_to_n(1,[3,4,5,0.1],1))
-    # print([np.take(b, i).tolist() for i in r])
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
-    print([1,2,3,4])
-    plt.show()
+    print(res.offset_uncert)
 
 if __name__ == "__main__":
     main()
