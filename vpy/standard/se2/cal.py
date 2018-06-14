@@ -1,10 +1,6 @@
 import numpy as np
 import sympy as sym
-<<<<<<< HEAD
 from ...values import Temperature, Pressure, Date
-=======
-from ...values import Temperature, Pressure, Time
->>>>>>> 42aa63841f1bb5d4a8b0ed801e611333d00d612b
 from .std import Se2
 
 class Cal(Se2):
@@ -14,12 +10,7 @@ class Cal(Se2):
 
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
-<<<<<<< HEAD
         self.Date = Date(doc)
-=======
-        self.t = Time(doc)
-
->>>>>>> 42aa63841f1bb5d4a8b0ed801e611333d00d612b
         self.log.debug("init func: {}".format(__name__))
 
 
@@ -79,5 +70,5 @@ class Cal(Se2):
         :type: class
         """
 
-        time = self.t.get_value("Date", None)
-        res.store("Time", "t", time, None)
+        time = self.Date.get_str("Date")
+        res.store("Time", "Date", time, None)

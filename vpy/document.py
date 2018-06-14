@@ -16,6 +16,7 @@ class Document(object):
         self.doc = copy.deepcopy(doc)
         self.io = Io()
         self.log = Log().logger(__name__)
+        self.io.eval_args()
 
     def get_all(self):
         """Returns the entire document

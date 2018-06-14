@@ -66,6 +66,9 @@ class Io(object):
             self.config["db"]["url"] = self.args.srv[0]
             print("use server {}".format(self.config["db"]["url"]))
 
+    def save_plot(self, plot):
+        pass
+    
     def load_doc(self):
         """Loads the document to analyse from the source
         given with the command line arguments

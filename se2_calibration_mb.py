@@ -19,6 +19,7 @@ python se2_calibration_mb.py --id "cal-2018-se2-kk-75001_0001" --db "vl_db" --sr
 def main():
     io = Io()
     # holt Messdaten aus --db
+    io.eval_args()
     meas_doc = io.load_doc()
     # holt Konstanten ect. aus --db
     base_doc = io.get_base_doc("se2")

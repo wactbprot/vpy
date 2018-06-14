@@ -105,12 +105,13 @@ class Date(Values):
         
         """
         val = self.get_str(t)
-        old_loc = locale.getlocale(locale.LC_TIME)[0]
-        locale.setlocale(locale.LC_TIME, "de_DE")
+        old_loc = locale.getlocale(locale.LC_TIME)
+        print(old_loc)
+        #locale.setlocale(locale.LC_TIME, "de_DE")
         d = [ time.strptime(i, '%a, %b %d, %Y') for i in val]
-        locale.setlocale(locale.LC_TIME, old_loc)
+        #locale.setlocale(locale.LC_TIME, old_loc)
 
-        return d.
+        return d
 
 class AuxValues(Document):
 
