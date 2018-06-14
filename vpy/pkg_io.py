@@ -71,17 +71,20 @@ class Io(object):
 
     def save_plot(self, plot):
         """The plan is:
-        * save the plot in a temporary file
-        * upload to a database document with a id based on param --id
-            (cal-2018-... replaced by plt-2018-...)
+            * save the plot in a temporary file
+            * upload to a database document with a id based on param --id (cal-2018-... replaced by plt-2018-...)
 
         .. todo::
             There seems to be no api to access ``plot.title`` in
             order to have a nice name for the plot. Solutions:
+
             * add a ``timestamp``
             * add a function name
             * both
             * name as param of ``save_plot``
+
+        :param plot: matplotlib plot
+        :type plot: class
         """
 
         if "savefig" in dir(plot):
@@ -89,7 +92,8 @@ class Io(object):
             f.name = f.name+".pdf"
             plot.savefig(f.name)
             print("plot saved as {}".format(f.name))
-
+        else:
+            pass
 
     def load_doc(self):
         """Loads the document to analyse from the source

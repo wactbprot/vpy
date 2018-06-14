@@ -208,9 +208,9 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="vpy.standard.se2.html">vpy.standard.se2 package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#vpy-standard-se2-cal-module">vpy.standard.se2.cal module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#module-vpy.standard.se2.cal">vpy.standard.se2.cal module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#module-vpy.standard.se2.std">vpy.standard.se2.std module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#vpy-standard-se2-uncert-module">vpy.standard.se2.uncert module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.se2.html#module-vpy.standard.se2.uncert">vpy.standard.se2.uncert module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="vpy.standard.se3.html">vpy.standard.se3 package</a><ul>
@@ -648,6 +648,13 @@ an array of the length <code class="docutils literal"><span class="pre">self.no_
 <p>Class Io should handle all the input
 output issues of the pkg.</p>
 <dl class="method">
+<dt id="vpy.pkg_io.Io.eval_args">
+<code class="descname">eval_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.eval_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.eval_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line argumets.
+Traverse database commandline options to <code class="docutils literal"><span class="pre">self.config</span></code></p>
+</dd></dl>
+
+<dl class="method">
 <dt id="vpy.pkg_io.Io.get_base_doc">
 <code class="descname">get_base_doc</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.get_base_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.get_base_doc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the latest standard related documents from the given
@@ -741,9 +748,41 @@ given with the command line arguments</p>
 <dd><p>Saves the document. The location depends on
 command line arguments:</p>
 <ul class="simple">
-<li><em>–id</em>: back do databes</li>
+<li><em>–id</em>: back do database</li>
 <li><em>–file</em>: new.&lt;filename&gt;</li>
 </ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.pkg_io.Io.save_plot">
+<code class="descname">save_plot</code><span class="sig-paren">(</span><em>plot</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_io.html#Io.save_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_io.Io.save_plot" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>The plan is:</dt>
+<dd><ul class="first last simple">
+<li>save the plot in a temporary file</li>
+<li>upload to a database document with a id based on param –id (cal-2018-… replaced by plt-2018-…)</li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p>There seems to be no api to access <code class="docutils literal"><span class="pre">plot.title</span></code> in
+order to have a nice name for the plot. Solutions:</p>
+<ul class="last simple">
+<li>add a <code class="docutils literal"><span class="pre">timestamp</span></code></li>
+<li>add a function name</li>
+<li>both</li>
+<li>name as param of <code class="docutils literal"><span class="pre">save_plot</span></code></li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plot</strong> (<em>class</em>) – matplotlib plot</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -797,7 +836,7 @@ command line arguments:</p>
 <dt id="vpy.pkg_log.Log.logger">
 <code class="descname">logger</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/pkg_log.html#Log.logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.pkg_log.Log.logger" title="Permalink to this definition">¶</a></dt>
 <dd><p>Based on <a class="reference external" href="http://docs.python.org/howto/logging.html#configuring-logging">http://docs.python.org/howto/logging.html#configuring-logging</a></p>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-2">
 <p class="first admonition-title">Todo</p>
 <p class="last">something is wrong here, double output on level=info!</p>
 </div>
@@ -814,6 +853,24 @@ command line arguments:</p>
 <dd><p>Bases: <a class="reference internal" href="#vpy.document.Document" title="vpy.document.Document"><code class="xref py py-class docutils literal"><span class="pre">vpy.document.Document</span></code></a></p>
 <p>Holds a deep copy of <code class="docutils literal"><span class="pre">document</span></code>. Container for storing
 Results of analysis.</p>
+<dl class="method">
+<dt id="vpy.result.Result.flatten">
+<code class="descname">flatten</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/result.html#Result.flatten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.result.Result.flatten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flattens a list of lists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>l</strong> – list of lists</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="vpy.result.Result.make_error_table">
 <code class="descname">make_error_table</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/result.html#Result.make_error_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.result.Result.make_error_table" title="Permalink to this definition">¶</a></dt>
@@ -835,11 +892,43 @@ Results of analysis.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="vpy.result.Result.reject_outliers_index">
-<code class="descname">reject_outliers_index</code><span class="sig-paren">(</span><em>ana</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/result.html#Result.reject_outliers_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.result.Result.reject_outliers_index" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.result.Result.offset_uncert">
+<code class="descname">offset_uncert</code><span class="sig-paren">(</span><em>ana</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/result.html#Result.offset_uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.result.Result.offset_uncert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates and returns a numpy array containing
 the indices of measurement points which belong to a
 certain target pressure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cal</strong> (<em>np.array</em>) – np array of values to group</li>
+<li><strong>unit</strong> (<em>str</em>) – unit of cal</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">array of arrays of indices</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">np.array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="vpy.result.Result.reject_outliers_index">
+<code class="descname">reject_outliers_index</code><span class="sig-paren">(</span><em>ana</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/result.html#Result.reject_outliers_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.result.Result.reject_outliers_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the list of indices of measurement points belonging to a
+certain target pressure and rejects outliers by comparing each
+measurement value to the mean value of the neighbors (without the
+point itself).
+remarks: using the standard deviation of the neighbors is unsatisfactory
+because one may end up with a small value by chance. Probably it is
+better to use a threshold that is decreasing with increasing pressure
+values. Another problem is that iterating over empty lists aborts the
+program.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1198,6 +1287,34 @@ second offset is measured.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="vpy.values.Date">
+<em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">Date</code><span class="sig-paren">(</span><em>doc</em>, <em>quant='Measurement'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#Date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.values.Values" title="vpy.values.Values"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.Values</span></code></a></p>
+<dl class="method">
+<dt id="vpy.values.Date.parse_labview_date">
+<code class="descname">parse_labview_date</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#Date.parse_labview_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.Date.parse_labview_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses dates generated by LabView with the form:
+<code class="docutils literal"><span class="pre">Mi,</span> <span class="pre">Mai</span> <span class="pre">30,</span> <span class="pre">2018</span></code>
+To match such a date <code class="docutils literal"><span class="pre">locale.getlocale()</span></code> has to be <code class="docutils literal"><span class="pre">de_DE</span></code></p>
+<dl class="docutils">
+<dt>..todo::</dt>
+<dd>Does not work on windows system:  This:
+<code class="docutils literal"><span class="pre">locale.setlocale(locale.LC_TIME,</span> <span class="pre">&quot;&quot;)</span></code>
+works on unix; on windows too?(see <a class="reference external" href="https://www.python-forum.de/viewtopic.php?t=9906">https://www.python-forum.de/viewtopic.php?t=9906</a>)</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> (<em>str</em>) – name of the Type (e.g. amt_fill)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="vpy.values.Mass">
 <em class="property">class </em><code class="descclassname">vpy.values.</code><code class="descname">Mass</code><span class="sig-paren">(</span><em>doc</em>, <em>quant='Measurement'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#Mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.Mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.values.Values" title="vpy.values.Values"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.Values</span></code></a></p>
@@ -1233,15 +1350,15 @@ second offset is measured.</p>
 <dd><p>Bases: <a class="reference internal" href="#vpy.values.Values" title="vpy.values.Values"><code class="xref py py-class docutils literal"><span class="pre">vpy.values.Values</span></code></a></p>
 <dl class="method">
 <dt id="vpy.values.Time.get_rmt">
-<code class="descname">get_rmt</code><span class="sig-paren">(</span><em>val</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#Time.get_rmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.Time.get_rmt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the relative measurement</p>
+<code class="descname">get_rmt</code><span class="sig-paren">(</span><em>t</em>, <em>u</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/values.html#Time.get_rmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.values.Time.get_rmt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the relative measurement.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val</strong> (<em>str</em>) – val of the Type (e.g. amt_fill)</li>
-<li><strong>unit</strong> (<em>str</em>) – expected unit of the Type (e.g. ms)</li>
+<li><strong>t</strong> (<em>str</em>) – name of the Type (e.g. amt_fill)</li>
+<li><strong>u</strong> (<em>str</em>) – expected unit of the Type (e.g. ms)</li>
 </ul>
 </td>
 </tr>

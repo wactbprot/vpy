@@ -167,13 +167,12 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialisation of Document class.</span>
 
-<span class="sd">        :param doc: doc document to search and extract</span>
+<span class="sd">        :param doc: doc document to search and extract from</span>
 <span class="sd">        :type doc: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">doc</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">io</span> <span class="o">=</span> <span class="n">Io</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">Log</span><span class="p">()</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-        
 
 <div class="viewcode-block" id="Document.get_all"><a class="viewcode-back" href="../../vpy.html#vpy.document.Document.get_all">[docs]</a>    <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the entire document</span>

@@ -157,7 +157,7 @@
   <h1>Source code for vpy.standard.se2.cal</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">sympy</span> <span class="k">as</span> <span class="nn">sym</span>
-<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span>
+<span class="kn">from</span> <span class="nn">...values</span> <span class="k">import</span> <span class="n">Temperature</span><span class="p">,</span> <span class="n">Pressure</span><span class="p">,</span> <span class="n">Date</span>
 <span class="kn">from</span> <span class="nn">.std</span> <span class="k">import</span> <span class="n">Se2</span>
 
 <div class="viewcode-block" id="Cal"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal">[docs]</a><span class="k">class</span> <span class="nc">Cal</span><span class="p">(</span><span class="n">Se2</span><span class="p">):</span>
@@ -167,13 +167,10 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">Temp</span> <span class="o">=</span> <span class="n">Temperature</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span> <span class="o">=</span> <span class="n">Pressure</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;init func: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="vm">__name__</span><span class="p">))</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">Date</span> <span class="o">=</span> <span class="n">Date</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Cal.get_expansion"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.get_expansion">[docs]</a>    <span class="k">def</span> <span class="nf">get_expansion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns an np.array</span>
-
 
 <span class="sd">        :returns: array of expansion names</span>
 <span class="sd">        :rtype: np.array of strings</span>
@@ -183,7 +180,6 @@
 
 <div class="viewcode-block" id="Cal.pressure_cal"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.pressure_cal">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_cal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simple translation foem Measurement to Analysis</span>
-
 
 <span class="sd">        :param: Class with methode</span>
 <span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
@@ -198,7 +194,6 @@
 <div class="viewcode-block" id="Cal.pressure_ind"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.pressure_ind">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_ind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Simple translation from Measurement to Analysis</span>
 
-
 <span class="sd">        :param: Class with methode</span>
 <span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
 <span class="sd">                pick(quantity, type, unit)</span>
@@ -206,7 +201,32 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">p_cor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;p_cor&quot;</span><span class="p">,</span> <span class="s2">&quot; mbar&quot;</span><span class="p">)</span>
-        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;ind&quot;</span><span class="p">,</span> <span class="n">p_cor</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div></div>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;ind&quot;</span><span class="p">,</span> <span class="n">p_cor</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Cal.pressure_offset"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.pressure_offset">[docs]</a>    <span class="k">def</span> <span class="nf">pressure_offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple translation from Measurement to Analysis</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">p_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pres</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;p_offset&quot;</span><span class="p">,</span> <span class="s2">&quot; mbar&quot;</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Pressure&quot;</span><span class="p">,</span> <span class="s2">&quot;offset&quot;</span><span class="p">,</span> <span class="n">p_off</span><span class="p">,</span> <span class="s2">&quot;mbar&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Cal.measurement_time"><a class="viewcode-back" href="../../../../vpy.standard.se2.html#vpy.standard.se2.cal.Cal.measurement_time">[docs]</a>    <span class="k">def</span> <span class="nf">measurement_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">res</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple translation from Measurement to Analysis</span>
+
+<span class="sd">        :param: Class with methode</span>
+<span class="sd">                store(quantity, type, value, unit, [stdev], [N])) and</span>
+<span class="sd">                pick(quantity, type, unit)</span>
+<span class="sd">        :type: class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">store</span><span class="p">(</span><span class="s2">&quot;Time&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
