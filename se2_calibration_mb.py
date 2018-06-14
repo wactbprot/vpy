@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 import pandas as pd
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
@@ -34,8 +35,11 @@ def main():
     ## Bsp. Berechn. Kalibrierdruck, Unsicherh.
     cal.pressure_cal(ana)
     cal.pressure_ind(ana)
+    cal.pressure_offset(ana)
+    cal.measurement_time(ana)
     unc.temperature_vessel(ana)
     res.reject_outliers_index(ana)
+    res.offset_uncert(ana)
 
     def u_PTB_rel(p):
         return np.piecewise(p, [p <= 0.00027, p <= 0.003, p <= 0.0073, p <= 0.09, p <= 10, p <= 80,  80 < p],
@@ -69,6 +73,7 @@ def main():
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
     print([1,2,3,4])
+    plt.show()
 
 if __name__ == "__main__":
     main()
