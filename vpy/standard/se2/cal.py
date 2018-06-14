@@ -11,8 +11,6 @@ class Cal(Se2):
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Date = Date(doc)
-        self.log.debug("init func: {}".format(__name__))
-
 
     def get_expansion(self):
         """Returns an np.array
@@ -70,5 +68,5 @@ class Cal(Se2):
         :type: class
         """
 
-        time = self.Date.get_str("Date")
-        res.store("Time", "Date", time, None)
+        time = self.t.get_value("Date", None)
+        res.store("Time", "t", time, None)

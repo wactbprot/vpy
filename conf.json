@@ -1,4 +1,5 @@
 {
+    "plot": true,
     "loglevel": "DEBUG",
     "db": {
         "url": "http://localhost:5984",

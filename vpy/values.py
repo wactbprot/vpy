@@ -100,16 +100,20 @@ class Date(Values):
         ``Mi, Mai 30, 2018``
         To match such a date ``locale.getlocale()`` has to be ``de_DE''
 
+        ..todo::
+            Does not work on windows system:  This:
+            ``locale.setlocale(locale.LC_TIME, "")
+            works on unix; on windows too?
+            (see https://www.python-forum.de/viewtopic.php?t=9906)
+
         :param t: name of the Type (e.g. amt_fill)
         :type t: str
-        
+
         """
         val = self.get_str(t)
         old_loc = locale.getlocale(locale.LC_TIME)
-        print(old_loc)
-        #locale.setlocale(locale.LC_TIME, "de_DE")
+        locale.setlocale(locale.LC_TIME, "")
         d = [ time.strptime(i, '%a, %b %d, %Y') for i in val]
-        #locale.setlocale(locale.LC_TIME, old_loc)
 
         return d
 

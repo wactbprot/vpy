@@ -3,7 +3,7 @@ import sys
 import os
 import json
 import couchdb
-
+import tempfile
 
 class Io(object):
     """Class Io should handle all the input
@@ -16,7 +16,10 @@ class Io(object):
         """
         # open and parse config file
         with open('./conf.json') as json_config_file:
-            self.config = json.load(json_config_file)
+            config = json.load(json_config_file)
+
+        self.plot = config["plot"]
+        self.config = config
 
     def eval_args(self):
         """
@@ -67,8 +70,27 @@ class Io(object):
             print("use server {}".format(self.config["db"]["url"]))
 
     def save_plot(self, plot):
-        pass
-    
+        """The plan is:
+        * save the plot in a temporary file
+        * upload to a database document with a id based on param --id
+            (cal-2018-... replaced by plt-2018-...)
+
+        .. todo::
+            There seems to be no api to access ``plot.title`` in
+            order to have a nice name for the plot. Solutions:
+            * add a ``timestamp``
+            * add a function name
+            * both
+            * name as param of ``save_plot``
+        """
+
+        if "savefig" in dir(plot):
+            f = tempfile.NamedTemporaryFile()
+            f.name = f.name+".pdf"
+            plot.savefig(f.name)
+            print("plot saved as {}".format(f.name))
+
+
     def load_doc(self):
         """Loads the document to analyse from the source
         given with the command line arguments
@@ -100,7 +122,7 @@ class Io(object):
         """Saves the document. The location depends on
         command line arguments:
 
-        * *--id*: back do databes
+        * *--id*: back do database
         * *--file*: new.<filename>
         """
         if self.save:
