@@ -18,6 +18,7 @@ from vpy.device.cdg import InfCdg
 
 def main():
     io = Io()
+    io.eval_args()
     doc = io.load_doc()
 
     res = Analysis(doc)
