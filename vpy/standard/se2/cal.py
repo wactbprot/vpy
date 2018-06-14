@@ -1,6 +1,6 @@
 import numpy as np
 import sympy as sym
-from ...values import Temperature, Pressure
+from ...values import Temperature, Pressure, Date
 from .std import Se2
 
 class Cal(Se2):
@@ -10,7 +10,7 @@ class Cal(Se2):
 
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
-
+        self.Date = Date(doc)
         self.log.debug("init func: {}".format(__name__))
 
 

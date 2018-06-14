@@ -25,6 +25,7 @@ from vpy.standard.se3.uncert import Uncert as Se3Uncert
 
 def main():
     io = Io()
+    io.eval_args()
     doc = io.load_doc()
 
     if doc:
@@ -77,6 +78,16 @@ def main():
         res.store("Uncertainty", "nd", np.abs(p_nd_ind  * u_nd_rel), "1")
         p_nd = res.pick("Pressure", "nd", "mbar")
 
+        u_1 = res.pick("Uncertainty", "p_fill", "1")
+        u_2 = res.pick("Uncertainty", "t_before", "1")
+        u_3 = res.pick("Uncertainty", "t_after", "1")
+        u_4 = res.pick("Uncertainty", "nd", "1")
+        u_5 = res.pick("Uncertainty", "frs5_total_rel", "1")
+
+        u_t = np.sqrt(u_1**2 + u_2**2 + u_3**2 + u_4**2+ u_5**2)
+        res.store("Uncertainty", "total", u_t, "1")
+
+        ## simple f_s check:
         p_after = (p_1 - p_nd)
 
         g_after = np.full(len(p_after), 0.0)
@@ -95,16 +106,6 @@ def main():
         print(f_s)
         print(u_ex)
         # nd uncert
-
-
-        u_1 = res.pick("Uncertainty", "p_fill", "1")
-        u_2 = res.pick("Uncertainty", "t_before", "1")
-        u_3 = res.pick("Uncertainty", "t_after", "1")
-        u_4 = res.pick("Uncertainty", "nd", "1")
-        u_5 = res.pick("Uncertainty", "frs5_total_rel", "1")
-
-        u_t = np.sqrt(u_1**2 + u_2**2 + u_3**2 + u_4**2+ u_5**2)
-        res.store("Uncertainty", "total", u_t, "1")
 
         u = 0
         for u_i in u_t:
