@@ -39,9 +39,6 @@ class Io(object):
         # --file
         parser.add_argument("--file", type=str, nargs=1,
                             help="file containing document to analyse")
-        # -p plot
-        parser.add_argument('-p', action='store_true',
-                    help='provide visual feedback of calculation', default=False)
         # -s save
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)
