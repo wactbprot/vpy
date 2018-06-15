@@ -1,4 +1,5 @@
 import sys
+import re
 import locale
 import numpy as np
 import time
@@ -100,20 +101,29 @@ class Date(Values):
         ``Mi, Mai 30, 2018``
         To match such a date ``locale.getlocale()`` has to be ``de_DE``
 
-        ..todo::
+        .. todo::
             Does not work on windows system:  This:
             ``locale.setlocale(locale.LC_TIME, "")``
-            works on unix; on windows too?(see https://www.python-forum.de/viewtopic.php?t=9906)
+            works on unix; on windows too?
+            (see https://www.python-forum.de/viewtopic.php?t=9906)
 
         :param t: name of the Type (e.g. amt_fill)
         :type t: str
         """
-        val = self.get_str(t)
-        old_loc = locale.getlocale(locale.LC_TIME)
         locale.setlocale(locale.LC_TIME, "")
-        d = [ time.mktime(time.strptime(i, '%a, %b %d, %Y')) for i in val]
+        val = self.get_str(t)
+        p = re.compile('^[A-Z]{1}[a-z]{1}, [A-Z]{1}[a-z]{2} [0-3]{1}[0-9]{1}, [0-9]{4}$')
+        r =[]
+        for i in val:
+           m = p.match(i)
+           if m:
+               t = time.mktime(time.strptime(i, '%a, %b %d, %Y'))
+           else:
+               t = np.nan
 
-        return d
+           r.append(t)
+
+        return np.asarray(r)
 
 class AuxValues(Document):
 

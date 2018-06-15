@@ -107,14 +107,14 @@
 <p id="n38" class="stm mis"><a href="#n38">38</a></p>
 <p id="n39" class="stm mis"><a href="#n39">39</a></p>
 <p id="n40" class="stm mis"><a href="#n40">40</a></p>
-<p id="n41" class="pln"><a href="#n41">41</a></p>
-<p id="n42" class="stm mis"><a href="#n42">42</a></p>
+<p id="n41" class="stm mis"><a href="#n41">41</a></p>
+<p id="n42" class="pln"><a href="#n42">42</a></p>
 <p id="n43" class="stm mis"><a href="#n43">43</a></p>
 <p id="n44" class="stm mis"><a href="#n44">44</a></p>
-<p id="n45" class="pln"><a href="#n45">45</a></p>
-<p id="n46" class="stm mis"><a href="#n46">46</a></p>
-<p id="n47" class="pln"><a href="#n47">47</a></p>
-<p id="n48" class="stm mis"><a href="#n48">48</a></p>
+<p id="n45" class="stm mis"><a href="#n45">45</a></p>
+<p id="n46" class="pln"><a href="#n46">46</a></p>
+<p id="n47" class="stm mis"><a href="#n47">47</a></p>
+<p id="n48" class="pln"><a href="#n48">48</a></p>
 <p id="n49" class="stm mis"><a href="#n49">49</a></p>
 <p id="n50" class="stm mis"><a href="#n50">50</a></p>
 <p id="n51" class="pln"><a href="#n51">51</a></p>
@@ -321,15 +321,15 @@
 <p id="t37" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">Temp</span> <span class="op">=</span> <span class="nam">Temperature</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t38" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">Pres</span> <span class="op">=</span> <span class="nam">Pressure</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t39" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">Time</span> <span class="op">=</span> <span class="nam">Time</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t40" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">Aux</span>  <span class="op">=</span> <span class="nam">AuxSe3</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t41" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t42" class="stm mis">        <span class="key">if</span> <span class="str">'State'</span> <span class="key">in</span> <span class="nam">doc</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t43" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">OutGas</span> <span class="op">=</span> <span class="nam">OutGasRate</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t44" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">no_of_meas_points</span> <span class="op">=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">Time</span><span class="op">.</span><span class="nam">get_value</span><span class="op">(</span><span class="str">"amt"</span><span class="op">,</span> <span class="str">"ms"</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t45" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t46" class="stm mis">        <span class="key">if</span> <span class="str">'Calibration'</span> <span class="key">in</span> <span class="nam">doc</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t47" class="pln">            <span class="com"># define model</span><span class="strut">&nbsp;</span></p>
-<p id="t48" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">Pos</span> <span class="op">=</span> <span class="nam">Position</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t40" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">Aux</span> <span class="op">=</span> <span class="nam">AuxSe3</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t41" class="stm mis">        <span class="nam">self</span><span class="op">.</span><span class="nam">Pos</span> <span class="op">=</span> <span class="nam">Position</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t42" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t43" class="stm mis">        <span class="key">if</span> <span class="str">'State'</span> <span class="key">in</span> <span class="nam">doc</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t44" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">OutGas</span> <span class="op">=</span> <span class="nam">OutGasRate</span><span class="op">(</span><span class="nam">doc</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t45" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">no_of_meas_points</span> <span class="op">=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">Time</span><span class="op">.</span><span class="nam">get_value</span><span class="op">(</span><span class="str">"amt"</span><span class="op">,</span> <span class="str">"ms"</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t46" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t47" class="stm mis">        <span class="key">if</span> <span class="str">'Calibration'</span> <span class="key">in</span> <span class="nam">doc</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t48" class="pln">            <span class="com"># define model</span><span class="strut">&nbsp;</span></p>
 <p id="t49" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">no_of_meas_points</span> <span class="op">=</span> <span class="nam">len</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">Time</span><span class="op">.</span><span class="nam">get_value</span><span class="op">(</span><span class="str">"amt_fill"</span><span class="op">,</span> <span class="str">"ms"</span><span class="op">)</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t50" class="stm mis">            <span class="nam">self</span><span class="op">.</span><span class="nam">define_model</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t51" class="pln"><span class="strut">&nbsp;</span></p>
@@ -478,7 +478,7 @@
 <p id="t194" class="pln"><span class="str">        :type: class</span><span class="strut">&nbsp;</span></p>
 <p id="t195" class="pln"><span class="str">        """</span><span class="strut">&nbsp;</span></p>
 <p id="t196" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t197" class="stm mis">        <span class="nam">f</span>  <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">full</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">no_of_meas_points</span><span class="op">,</span> <span class="key">None</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t197" class="stm mis">        <span class="nam">f</span>  <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">full</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">no_of_meas_points</span><span class="op">,</span> <span class="nam">np</span><span class="op">.</span><span class="nam">nan</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t198" class="stm mis">        <span class="nam">f_name</span>  <span class="op">=</span> <span class="nam">self</span><span class="op">.</span><span class="nam">get_expansion_name</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t199" class="stm mis">        <span class="nam">i_s</span>    <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">where</span><span class="op">(</span><span class="nam">f_name</span> <span class="op">==</span> <span class="str">"f_s"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t200" class="stm mis">        <span class="nam">i_m</span>    <span class="op">=</span> <span class="nam">np</span><span class="op">.</span><span class="nam">where</span><span class="op">(</span><span class="nam">f_name</span> <span class="op">==</span> <span class="str">"f_m"</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -504,7 +504,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.5.1</a>,
-            created at 2018-06-08 16:43
+            created at 2018-06-15 11:13
         </p>
     </div>
 </div>
