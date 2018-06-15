@@ -16,9 +16,9 @@ setup(
     version='0.1.0',
     description='Analysis of measurement results stored in couchdb documents',
     long_description=long_description,
-    url='https://github.com/wactbprot/vpy',
-    author='Wact B. Prot',
-    author_email='wactbprot@gmail.com',
+    url='https://a75436.berlin.ptb.de/vaclab/vpy',
+    author='Thomas Bock, Matthias Bernien',
+    author_email='thomas.bock@ptb.de, matthias.bernien@ptb.de',
     license='MIT',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -34,6 +34,7 @@ setup(
     packages=find_packages(exclude=['docs',
                                     'tests',
                                     'test_doc',
+                                    'htmlcov'
                                     ]),
     install_requires=['couchdb',
                       'coloredlogs',
@@ -41,8 +42,6 @@ setup(
                       'scipy',
                       'sympy',
                       'matplotlib',
-                      'sphinx',
-                      'sphinx_rtd_theme',
                       ],
     extras_require={
         'dev': ['sphinx',
