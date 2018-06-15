@@ -111,7 +111,7 @@ class Date(Values):
         val = self.get_str(t)
         old_loc = locale.getlocale(locale.LC_TIME)
         locale.setlocale(locale.LC_TIME, "")
-        d = [ time.strptime(i, '%a, %b %d, %Y') for i in val]
+        d = [ time.mktime(time.strptime(i, '%a, %b %d, %Y')) for i in val]
 
         return d
 
