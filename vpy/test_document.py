@@ -42,6 +42,11 @@ class TestDocument(unittest.TestCase):
                }
         self.Doc = Document(doc)
 
+    def test_log(self):
+        """Should provide log functionality
+        """
+        self.assertTrue("log" in dir(self.Doc))
+
     def test_get_object_1(self):
         """flat obj
         """
@@ -138,9 +143,5 @@ class TestDocument(unittest.TestCase):
     def test_get_expression_1(self):
         """Should return a sympy Expression
         """
-
         res = self.Doc.get_expression("expr","s")
         self.assertTrue(type(res).__module__ == 'sympy.core.mul')
-
-if __name__ == '__main__':
-    unittest.main()

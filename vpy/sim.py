@@ -1,23 +1,24 @@
 import copy
 import json
 
+
 class Sim(object):
 
     def __init__(self, name):
         self.name = name
 
-    def collect(self,f):
+    def collect(self, f):
         with open(f) as jf:
             d = json.load(jf)
 
         o = {}
-        for m in d: #m ... Temperature ect.
+        for m in d:  # m ... Temperature ect.
             o[m] = []
 
-            if isinstance(d[m], str): # z.B Gas:N2
+            if isinstance(d[m], str):  # z.B Gas:N2
                 o[m] = d[m]
             else:
-                for n in d[m]: # n... 100TFill
+                for n in d[m]:  # n... 100TFill
                     if isinstance(d[m][n], list):
                         for v in d[m][n]:
                             e = {}
@@ -54,13 +55,14 @@ class Sim(object):
         with open('./vpy/standard/{}/base_doc.json'.format(self.name)) as jf:
             self.doc = json.load(jf)
 
-        valfile    = "./vpy/standard/{}/values.json".format(self.name)
+        valfile = "./vpy/standard/{}/values.json".format(self.name)
         auxvalfile = "./vpy/standard/{}/aux_values.json".format(self.name)
 
-        self.doc['Values']    = self.collect(valfile)
+        self.doc['Values'] = self.collect(valfile)
         self.doc['AuxValues'] = self.collect(auxvalfile)
 
-        return {"Calibration":copy.deepcopy(self.doc)}
+        return {"Calibration": copy.deepcopy(self.doc)}
+
 
 if __name__ == "__main__":
     build()

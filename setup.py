@@ -42,6 +42,7 @@ setup(
                       'scipy',
                       'sympy',
                       'matplotlib',
+                      'pandas',
                       ],
     extras_require={
         'dev': ['sphinx',
