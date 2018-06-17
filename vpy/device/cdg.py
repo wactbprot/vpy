@@ -24,6 +24,9 @@ class Cdg(Device):
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']
 
+        if "Name" in dev:
+            self.name = dev["Name"]
+
         if "Setup" in dev:
             dev_setup = dev['Setup']
             if "TypeHead" in dev_setup:
@@ -38,10 +41,9 @@ class Cdg(Device):
             self.interpol_min = np.min(self.interpol_x)
             self.interpol_max = np.max(self.interpol_x)
 
-        self.log.debug("init func: {}".format(__name__))
 
-    def get_name(self):
-        return self.doc['Name']
+
+
 
     def store_interpol(self, p, e, u, p_unit, e_unit, u_unit):
         """Stores a dict containing ``p .. pressure``, ``e .. error`` and

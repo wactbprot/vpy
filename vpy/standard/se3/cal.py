@@ -3,6 +3,7 @@ import sympy as sym
 from datetime import datetime
 from .std import Se3
 
+
 class Cal(Se3):
 
     def __init__(self, doc):
@@ -28,11 +29,10 @@ class Cal(Se3):
         """
         sc_dict = self.state_check
         amt = self.Time.get_value("amt", "ms")
-        dt =[]
+        dt = []
         for d in amt:
-            d = int(d)/1000.0
+            d = int(d) / 1000.0
             dt.append(datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
-
 
         for quant in sc_dict:  # m ... Temperature ect.
             for head in sc_dict[quant]:  # ... VesselBranch
@@ -41,7 +41,7 @@ class Cal(Se3):
 
                     val = res.pick(quant, dct['Type'], dct['Unit'])
                     rnd_val = []
-                    rtn_val =[]
+                    rtn_val = []
                     min = dct['Min']
                     max = dct['Max']
 
@@ -147,18 +147,30 @@ class Cal(Se3):
         :type: class
         """
         # more dry pls
-        res.store("Pressure", "1T_1-state", self.Pres.get_value("1T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "1T_2-state", self.Pres.get_value("1T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "1T_3-state", self.Pres.get_value("1T_3-state", "mbar"), "mbar")
-        res.store("Pressure", "10T_1-state", self.Pres.get_value("10T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "10T_2-state", self.Pres.get_value("10T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "10T_3-state", self.Pres.get_value("10T_3-state", "mbar"), "mbar")
-        res.store("Pressure", "100T_1-state", self.Pres.get_value("100T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "100T_2-state", self.Pres.get_value("100T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "100T_3-state", self.Pres.get_value("100T_3-state", "mbar"), "mbar")
-        res.store("Pressure", "1000T_1-state", self.Pres.get_value("1000T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "1000T_2-state", self.Pres.get_value("1000T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "1000T_3-state", self.Pres.get_value("1000T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "1T_1-state",
+                  self.Pres.get_value("1T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "1T_2-state",
+                  self.Pres.get_value("1T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "1T_3-state",
+                  self.Pres.get_value("1T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "10T_1-state",
+                  self.Pres.get_value("10T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "10T_2-state",
+                  self.Pres.get_value("10T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "10T_3-state",
+                  self.Pres.get_value("10T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "100T_1-state",
+                  self.Pres.get_value("100T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "100T_2-state",
+                  self.Pres.get_value("100T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "100T_3-state",
+                  self.Pres.get_value("100T_3-state", "mbar"), "mbar")
+        res.store("Pressure", "1000T_1-state",
+                  self.Pres.get_value("1000T_1-state", "mbar"), "mbar")
+        res.store("Pressure", "1000T_2-state",
+                  self.Pres.get_value("1000T_2-state", "mbar"), "mbar")
+        res.store("Pressure", "1000T_3-state",
+                  self.Pres.get_value("1000T_3-state", "mbar"), "mbar")
 
     def volume_state(self, res):
         """ Calculates additional volumes of dut-a,b,c branch of state
@@ -222,18 +234,18 @@ class Cal(Se3):
         """
 
         vol = np.full(self.no_of_meas_points, np.nan)
-        f_name  = self.get_expansion_name()
+        f_name = self.get_expansion_name()
 
-        i_s    = np.where(f_name == "f_s")
-        i_m    = np.where(f_name == "f_m")
-        i_l    = np.where(f_name == "f_l")
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
 
         if np.shape(i_s)[1] > 0:
-            vol[i_s] = self.get_value("V_s","cm^3")
+            vol[i_s] = self.get_value("V_s", "cm^3")
         if np.shape(i_m)[1] > 0:
-            vol[i_m] = self.get_value("V_m","cm^3")
+            vol[i_m] = self.get_value("V_m", "cm^3")
         if np.shape(i_l)[1] > 0:
-            vol[i_l] = self.get_value("V_l","cm^3")
+            vol[i_l] = self.get_value("V_l", "cm^3")
 
         res.store("Volume", "start",   vol, "cm^3")
 
@@ -254,11 +266,13 @@ class Cal(Se3):
             i_c = np.where(v_pos == "c")
 
             if np.shape(i_abc)[1] > 0:
-                self.log.info("At Point(s) {}  dut-a,b and c are open ".format(i_abc))
+                self.log.info(
+                    "At Point(s) {}  dut-a,b and c are open ".format(i_abc))
                 vol[i_abc] = self.Aux.get_volume("abc")
 
             if np.shape(i_bc)[1] > 0:
-                self.log.info("At Point(s) {}  dut-b and c are open ".format(i_bc))
+                self.log.info(
+                    "At Point(s) {}  dut-b and c are open ".format(i_bc))
                 vol[i_bc] = self.Aux.get_volume("bc")
 
             if np.shape(i_c)[1] > 0:
@@ -296,14 +310,12 @@ class Cal(Se3):
         V_add = res.pick("Volume", "add", "cm^3")
         V_start = res.pick("Volume", "start", "cm^3")
 
-        p_cal = p_fill/rg*T_after/T_before/(1.0/f+V_add/V_start)
+        p_cal = p_fill / rg * T_after / T_before / (1.0 / f + V_add / V_start)
 
         res.store("Pressure", "cal", p_cal, self.unit)
 
     def pressure_fill(self, res):
-        """Calculates the singel and mean value of the filling pressure
-        by means data in values.json
-
+        """Calculates the  mean value of the filling pressure.
         Stores result under the path *Pressure, fill, mbar*
 
         :param: Class with methode
@@ -311,44 +323,30 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        val_conf_time = self.val_conf["Time"]["Fill"]
-        aux_conf_time = self.aux_val_conf["Time"]["Offset"]
-        val_conf = self.val_conf["Pressure"]["Fill"]
 
 
-        val_conf_targ = self.val_conf["Pressure"]["FillTarget"]
-        aux_conf = self.aux_val_conf["Pressure"]["Offset"]
+        fill_time = self.Time.get_value("amt_fill", "ms")
+        fill_target = self.Pres.get_value("target-fill", "mbar")
 
-
-        fill_time = self.Time.get_value(val_conf_time["Type"],
-                                        val_conf_time["Unit"])
-        fill_target = self.Pres.get_value(val_conf_targ["Type"],
-                                          val_conf_targ["Unit"])
-
-        N = len(val_conf)
+        N = len(self.fill_types)
         M = self.no_of_meas_points
 
         cor_arr = []
         for i in range(N):
             FillDev = self.FillDevs[i]
-
+            self.log.debug("Working on filling pressure of device {}".format(FillDev.name))
             p_corr = np.full(self.no_of_meas_points, np.nan)
-            val = val_conf[i]
-            aux = aux_conf[i]
 
-            ind = self.Pres.get_value(val["Type"], val["Unit"])
-            off = self.Aux.get_val_by_time(fill_time, aux_conf_time["Type"],
-                                           aux_conf_time["Unit"],
-                                           aux["Type"],
-                                           aux["Unit"])
+            ind = self.Pres.get_value(self.fill_types[i], "mbar")
+            off = self.Aux.get_val_by_time(
+                fill_time, "offset_mt", "ms", self.offset_types[i], "mbar")
+
             p = ind - off
             e = FillDev.get_error_interpol(
                 p, self.unit, fill_target, self.unit)
 
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
-            ldevname = FillDev.get_name().lower()
-
 
         p_mean = np.nanmean(cor_arr, axis=0)
 
@@ -357,7 +355,8 @@ class Cal(Se3):
 
         p_std = np.nanstd(cor_arr, axis=0)
         n = np.apply_along_axis(cnt_nan, 0, cor_arr)
-        res.store("Pressure", "fill", p_mean, val["Unit"], p_std, n)
+
+        res.store("Pressure", "fill", p_mean, "mbar", p_std, n)
 
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
         tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")
