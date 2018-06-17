@@ -280,7 +280,6 @@ class Cal(Se3):
         :type: class
         """
 
-        #self.define_model()
         self.pressure_fill(res)
         self.temperature_before(res)
         self.temperature_after(res)
@@ -300,7 +299,6 @@ class Cal(Se3):
         p_cal = p_fill/rg*T_after/T_before/(1.0/f+V_add/V_start)
 
         res.store("Pressure", "cal", p_cal, self.unit)
-
 
     def pressure_fill(self, res):
         """Calculates the singel and mean value of the filling pressure
@@ -359,7 +357,6 @@ class Cal(Se3):
 
         p_std = np.nanstd(cor_arr, axis=0)
         n = np.apply_along_axis(cnt_nan, 0, cor_arr)
-        print(p_mean)
         res.store("Pressure", "fill", p_mean, val["Unit"], p_std, n)
 
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):

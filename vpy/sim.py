@@ -7,10 +7,8 @@ class Sim(object):
     def __init__(self, name):
         self.name = name
 
-    def collect(self, f):
-        with open(f) as jf:
-            d = json.load(jf)
-
+    def collect(self, d):
+        
         o = {}
         for m in d:  # m ... Temperature ect.
             o[m] = []
@@ -50,18 +48,22 @@ class Sim(object):
 
         return o
 
+    def get_json(self, fname):
+
+        with open(fname) as jf:
+            return json.load(jf)
+
     def build(self):
 
-        with open('./vpy/standard/{}/base_doc.json'.format(self.name)) as jf:
-            self.doc = json.load(jf)
+        fname_base_doc = './vpy/standard/{}/base_doc.json'.format(self.name)
+        fname_val = "./vpy/standard/{}/values.json".format(self.name)
+        fname_auxval = "./vpy/standard/{}/aux_values.json".format(self.name)
 
-        valfile = "./vpy/standard/{}/values.json".format(self.name)
-        auxvalfile = "./vpy/standard/{}/aux_values.json".format(self.name)
+        doc = self.get_json(fname_base_doc)
+        doc['Values'] = self.collect(self.get_json(fname_val))
+        doc['AuxValues'] = self.collect(self.get_json(fname_auxval))
 
-        self.doc['Values'] = self.collect(valfile)
-        self.doc['AuxValues'] = self.collect(auxvalfile)
-
-        return {"Calibration": copy.deepcopy(self.doc)}
+        return {"Calibration": doc}
 
 
 if __name__ == "__main__":
