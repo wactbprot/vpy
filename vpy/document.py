@@ -1,6 +1,7 @@
 import sys
 import copy
 from .pkg_log import Log
+from .pkg_io import Io
 import numpy as np
 import sympy as sym
 
@@ -9,10 +10,11 @@ class Document(object):
     def __init__(self, doc):
         """Initialisation of Document class.
 
-        :param doc: doc document to search and extract
+        :param doc: doc document to search and extract from
         :type doc: dict
         """
         self.doc = copy.deepcopy(doc)
+        self.io = Io()
         self.log = Log().logger(__name__)
 
     def get_all(self):
@@ -85,7 +87,7 @@ class Document(object):
             obj["Value"] = val
             ret = obj
         else:
-            self.log.warn("Type {} not found".format(t))
+            self.log.warning("Type {} not found".format(t))
 
         return ret
 
@@ -117,12 +119,13 @@ class Document(object):
 
                     if "Value" in obj:
                         ret = sym.sympify(obj["Value"])
-                    else:
-                        errmsg = "Unit is {} not {}".format(obj["Unit"], unit)
-                        self.log.error(errmsg)
-                        sys.exit(errmsg)
                 else:
-                    self.log.error("Expression of Type {} not found".format(t))
+                    errmsg = "Unit is {} not {}".format(obj["Unit"], unit)
+                    self.log.error(errmsg)
+                    sys.exit(errmsg)
+
+        else:
+            self.log.error("Expression of Type {} not found".format(t))
 
         return ret
 
@@ -142,6 +145,37 @@ class Document(object):
         if "Value" in obj:
             if isinstance(obj["Value"], list):
                 return np.array(obj["Value"])
+
+    def get_value_full(self, t, unit, N):
+        """same as ``self.get_value`` but returns
+        an array of the length ``self.no_of_meas_points``
+
+        :param t: value for type key
+        :type t: str
+
+        :param unit: unit of value
+        :type unit: str
+
+        :param N: number of values to return
+        :type N: int
+
+        :returns: np.array
+        :rtype: np.array
+        """
+        ret = None
+        val = self.get_value(t, unit)
+        if val is not None:
+            if np.shape(val) == (1,):
+                ret = np.full(N, val)
+            else:
+                errmsg="more than one value"
+                self.log.error(errmsg)
+                sys.exit(errmsg)
+        else:
+            errmsg="value is empty"
+            self.log.error(errmsg)
+            sys.exit(errmsg)
+        return ret
 
     def get_value(self, t, unit, o=False):
         """Gets an dict by means of  ``o=get_object()``,
@@ -175,21 +209,21 @@ class Document(object):
 
             if "Value" in obj:
                 if isinstance(obj["Value"], str):
-                    ret = np.array(np.float64(obj["Value"]))
+                    ret = np.asarray([np.float64(obj["Value"])])
 
                 if isinstance(obj["Value"], list):
-                    ret = np.array(obj["Value"])
+                    ret = np.asarray(obj["Value"])
 
                 if isinstance(obj["Value"], float):
-                    ret = np.array([obj["Value"]], dtype="f")
+                    ret = np.array([obj["Value"]])
 
                 if isinstance(obj["Value"], int):
-                    ret = np.array([obj["Value"]], dtype="i")
+                    ret = np.array([obj["Value"]])
 
         else:
-            self.log.warn("Value of Type {} not found".format(t))
+            self.log.warning("Value of Type {} not found".format(t))
 
-        return ret
+        return ret.astype(np.float)
 
     def get_object(self, key, val, o=False, d=0):
         """Recursive  searches obj for

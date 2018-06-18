@@ -3,46 +3,60 @@ import sys
 import os
 import json
 import couchdb
-
+import tempfile
 
 class Io(object):
-    """docstring for Io."""
+    """Class Io should handle all the input
+    output issues of the pkg.
+    """
 
     def __init__(self):
         """
-        Parses the command line argumets.
-        Gets the configuration out of the file: *config.json*.
-        Provides database
+        Gets the configuration out of the file: ``config.json``.
         """
+        # open and parse config file
+        with open('./conf.json') as json_config_file:
+            config = json.load(json_config_file)
 
+        self.plot = config["plot"]
+        self.config = config
+
+    def eval_args(self):
+        """
+        Parses the command line argumets.
+        Traverse database commandline options to ``self.config``
+        """
         parser = argparse.ArgumentParser()
         # --id
         parser.add_argument("--id", type=str, nargs=1,
                             help="id of the document to analyse")
-        # --id
+        # --db
         parser.add_argument("--db", type=str, nargs=1,
                             help="name of the database")
-        # --id
+        # --srv
         parser.add_argument("--srv", type=str, nargs=1,
                             help="server url in the form: http://server:port")
         # --file
         parser.add_argument("--file", type=str, nargs=1,
                             help="file containing document to analyse")
-
+        # -s save
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)
 
-        self.args = parser.parse_args()
 
-        # open and parse config file
-        with open('./conf.json') as json_config_file:
-            self.config = json.load(json_config_file)
+        self.args = parser.parse_args()
 
         # save doc
         if self.args.s:
             self.save = True
         else:
             self.save = False
+
+        # provide visual feedback
+        if self.args.p:
+            self.plot = True
+        else:
+            self.plot = False
 
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
@@ -51,6 +65,32 @@ class Io(object):
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
             print("use server {}".format(self.config["db"]["url"]))
+
+    def save_plot(self, plot):
+        """The plan is:
+            * save the plot in a temporary file
+            * upload to a database document with a id based on param --id (cal-2018-... replaced by plt-2018-...)
+
+        .. todo::
+            There seems to be no api to access ``plot.title`` in
+            order to have a nice name for the plot. Solutions:
+
+            * add a ``timestamp``
+            * add a function name
+            * both
+            * name as param of ``save_plot``
+
+        :param plot: matplotlib plot
+        :type plot: class
+        """
+
+        if "savefig" in dir(plot):
+            f = tempfile.NamedTemporaryFile()
+            f.name = f.name+".pdf"
+            plot.savefig(f.name)
+            print("plot saved as {}".format(f.name))
+        else:
+            pass
 
     def load_doc(self):
         """Loads the document to analyse from the source
@@ -83,7 +123,7 @@ class Io(object):
         """Saves the document. The location depends on
         command line arguments:
 
-        * *--id*: back do databes
+        * *--id*: back do database
         * *--file*: new.<filename>
         """
         if self.save:
@@ -101,7 +141,7 @@ class Io(object):
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
         else:
-            self.log.warn("Result is not saved (use -s param)")
+            print("Result is not saved (use -s param)")
 
     def get_doc_db(self, doc_id):
         """Gets the document from the database.
@@ -218,8 +258,8 @@ class Io(object):
 
         containing the additional volume outgasing rate ect.
 
-        :param name: name of the calibration standard
-        :type name: str
+        :param std: name of the calibration standard
+        :type std: str
 
         :returns: document
         :rtype: dict
@@ -233,10 +273,32 @@ class Io(object):
             doc_id = self.args.id[0]
             doc = self.get_doc_db(doc_id)
         else:
-            view = self.config['standards'][name]['state_doc_view']
+            view = self.config['standards'][std]['state_doc_view']
             for item in db.view(view):
                 doc = item.value
 
             self.args.id = doc['_id']
 
         return doc
+
+
+    def get_hist_data(self, std):
+        """Gets and returns an array
+        containing history data
+
+        :param std: name of the calibration standard
+        :type std: str
+
+        :returns: document
+        :rtype: dict
+        """
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        dat = {}
+
+        view = self.config['standards'][std]['hist_data']
+        for item in db.view(view):
+            dat[item.key] = item.value
+
+
+        return dat

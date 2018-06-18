@@ -113,8 +113,11 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document">vpy.document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_log">vpy.pkg_log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.result">vpy.result module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.sim">vpy.sim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_todo">vpy.test_todo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.todo">vpy.todo module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values">vpy.values module</a></li>
 </ul>
 </li>
@@ -195,17 +198,15 @@
 <em class="property">class </em><code class="descclassname">vpy.device.cdg.</code><code class="descname">Cdg</code><span class="sig-paren">(</span><em>doc</em>, <em>dev</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal"><span class="pre">vpy.device.device.Device</span></code></a></p>
 <dl class="method">
-<dt id="vpy.device.cdg.Cdg.cal_error_interpol">
-<code class="descname">cal_error_interpol</code><span class="sig-paren">(</span><em>pind</em>, <em>pcal</em>, <em>unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.cal_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.cal_error_interpol" title="Permalink to this definition">¶</a></dt>
-<dd><div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">implement expected unit of the return value</p>
-</div>
+<dt id="vpy.device.cdg.Cdg.cal_interpol">
+<code class="descname">cal_interpol</code><span class="sig-paren">(</span><em>p_cal</em>, <em>p_ind</em>, <em>uncert</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.cal_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.cal_interpol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a interpolation vector for the relative
+error of indication and the uncertainty</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="vpy.device.cdg.Cdg.cut_values">
-<code class="descname">cut_values</code><span class="sig-paren">(</span><em>pcal</em>, <em>pind</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.cut_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.cut_values" title="Permalink to this definition">¶</a></dt>
+<code class="descname">cut_values</code><span class="sig-paren">(</span><em>p</em>, <em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.cut_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.cut_values" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -213,7 +214,7 @@
 <code class="descname">get_error_interpol</code><span class="sig-paren">(</span><em>p_interpol</em>, <em>unit_interpol</em>, <em>p_target=None</em>, <em>unit_target=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.get_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.get_error_interpol" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the interpolation error at the points where:</p>
 <p>(p_target &gt; self.interpol_min) &amp; (p_target &lt; self.interpol_max)</p>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <p class="last">implement expected unit of the return value</p>
 </div>
@@ -240,9 +241,11 @@
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="vpy.device.cdg.Cdg.store_error_interpol">
-<code class="descname">store_error_interpol</code><span class="sig-paren">(</span><em>p</em>, <em>e</em>, <em>punit</em>, <em>eunit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.store_error_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.store_error_interpol" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="vpy.device.cdg.Cdg.store_interpol">
+<code class="descname">store_interpol</code><span class="sig-paren">(</span><em>p</em>, <em>e</em>, <em>u</em>, <em>p_unit</em>, <em>e_unit</em>, <em>u_unit</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/device/cdg.html#Cdg.store_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.device.cdg.Cdg.store_interpol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a dict containing <code class="docutils literal"><span class="pre">p</span> <span class="pre">..</span> <span class="pre">pressure</span></code>, <code class="docutils literal"><span class="pre">e</span> <span class="pre">..</span> <span class="pre">error</span></code> and
+<code class="docutils literal"><span class="pre">u</span> <span class="pre">..</span> <span class="pre">uncertainty</span></code></p>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="vpy.device.cdg.Cdg.unit">
@@ -283,7 +286,7 @@ self.Const and self.Dev, nothing more</p>
 <dd><p>Collects all Uncertainty contrib for the given
 measurant (m). Calculates the quadratic sum and returns
 a np.array of the length as m.</p>
-<div class="admonition-todo admonition" id="index-2">
+<div class="admonition-todo admonition" id="index-1">
 <p class="first admonition-title">Todo</p>
 <p class="last">Test Expression branch</p>
 </div>

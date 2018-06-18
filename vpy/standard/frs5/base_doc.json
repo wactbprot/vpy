@@ -1,0 +1,839 @@
+{
+    "Standard": {
+        "Name": "FRS5",
+        "Sign": "4018",
+        "Constants": [
+            {
+                "Type": "R_cal",
+                "Value": "2.290311",
+                "Unit": "lb",
+                "Comment": "Reading bei aufgelegter m_cal"
+            },
+            {
+                "Type": "m_cal",
+                "Value": "1.038867",
+                "Unit": "kg",
+                "Comment": "Masse Kalibrierstück"
+            },
+            {
+                "Type": "A_eff",
+                "Value": "0.00453467",
+                "Unit": "m^2",
+                "Comment": "effektive Kolbenfläche N2 "
+            },
+            {
+                "Type": "rho_frs",
+                "Value": "7920",
+                "Unit": "kg/m^3",
+                "Comment": "Dichte Kolben- Zylinder"
+            },
+            {
+                "Type": "rho_gas",
+                "Value": "0",
+                "Unit": "kg/m^3",
+                "Comment": "Dichte Gas 0; wird in Unsicherheit wie Metrologia 46(2009) p.389-396 berücksichtigt"
+            },
+            {
+                "Type": "alpha_beta_frs",
+                "Value": "0.000004",
+                "Unit": "1/C",
+                "Comment": "Ausdehnungskoeffizient"
+            },
+            {
+                "Type": "g_frs",
+                "Value": 9.8127103,
+                "Unit": "m/s^2",
+                "Comment": "http://a73435.berlin.ptb.de:81/2015/03/05/erdbeschleunigung-in-unseren-laboren/ "
+            }
+        ],
+        "Date": {
+            "Type": "updated",
+            "Value": "2018-06-06"
+        },
+        "Defaults": {
+            "@host": "e75491",
+            "@port": "10004",
+            "@acc": "TCP",
+            "@CR": "\r",
+            "@repeat": 60,
+            "@waittime": 100,
+            "@token": "frs_zc0_p",
+            "@exchpath": "frs5"
+        },
+        "Device": {
+            "Serial": "0402211",
+            "Producer": "Furness Controls, Bexhill on Sea, East Sussex, TN39 3LJ, UK",
+            "CalibrationIntervall": "60",
+            "MeasuredQuantity": "P",
+            "Comment": "Veröffentlichung bei Metrologia 46(2009) S.389-396 "
+        },
+        "Task": [
+            {
+                "TaskName": "read_out",
+                "Comment": "Auslese Waage ",
+                "Action": "TCP",
+                "Host": "@host",
+                "Port": "@port",
+                "Repeat": "@repeat",
+                "Fallback": [
+                    {
+                        "Type": "@token",
+                        "Value": null,
+                        "Unit": "lb"
+                    },
+                    {
+                        "Type": "sd_@token",
+                        "Value": null,
+                        "Unit": "lb"
+                    },
+                    {
+                        "Type": "N_@token",
+                        "Value": null,
+                        "Unit": "1"
+                    }
+                ],
+                "Wait": "@waittime",
+                "Value": "",
+                "DocPath": "@docpath",
+                "PostProcessing": [
+                    "var _NoOfSkip = 10,",
+                    "_vec = _x.map(_.extractFRS),",
+                    "_N = _vec.length,",
+                    "_redvec = _vec.splice(_NoOfSkip - 1 , _N - 1), ",
+                    "_res =  _.vlStat(_.checkNumArr(_redvec).Arr),",
+                    "Result=[",
+                    "_.vlRes('@token',_res.mv,'lb', '', _res.sd,_res.N)];",
+                    "RawData = _x;",
+                    "ToExchange={",
+                    "'@exchpath.Caption':'FRS5',",
+                    "'@exchpath.Type':'@token',",
+                    "'@exchpath.Value':_res.mv,",
+                    "'@exchpath.SdValue':_res.sd,",
+                    "'@exchpath.N':_res.N,",
+                    "'@exchpath.Unit':'lb'};"
+                ]
+            }
+        ],
+        "Uncertainty": [
+            {
+                "Type": "u_r",
+                "Value": "8.66e-6",
+                "Unit": "lb",
+                "Comment": "aus 1. Bericht zur FRS5"
+            },
+            {
+                "Type": "u_ub",
+                "Expression": "0.002/453.59+5.0e-6*r",
+                "Unit": "lb",
+                "Comment": "aus 1. Bericht zur FRS5"
+            },
+            {
+                "Type": "u_usys",
+                "Expression": "1.0e-5*r",
+                "Unit": "lb",
+                "Comment": "aus 1. Bericht zur FRS5"
+            },
+            {
+                "Type": "u_r_zc0",
+                "Value": "2.0e-5",
+                "Unit": "lb",
+                "Comment": "sind die beobachteten 2e-4mbar Temperaturdrift, Streuung, nichterfassbare Nullpkt.str."
+            },
+            {
+                "Type": "u_r_zc",
+                "Value": "2.0e-5",
+                "Unit": "lb",
+                "Comment": "sind die beobachteten 2e-4mbar Temperaturdrift, Streuung, nichterfassbare Nullpkt.str."
+            },
+            {
+                "Type": "u_A",
+                "Value": "1.05e-7",
+                "Unit": "m^2",
+                "Comment": "(k=1) aus Kalibschein 0187PTB05"
+            },
+            {
+                "Type": "u_p_res_N2",
+                "Expression": "7.2e-2*p_res",
+                "Unit": "Pa",
+                "Comment": "aus Kalib.-schein QS 05/05"
+            },
+            {
+                "Type": "u_p_res_He",
+                "Expression": "7.043e-13*(p)^3+6.976e-10*(p)^2+3.0e-5*(p)+6.579e-4",
+                "Unit": "Pa",
+                "Comment": "Schätzwert aus Messungen f. Dr. Fellmuth JAN07 für He"
+            },
+            {
+                "Type": "u_m_cal",
+                "Value": "2.e-6",
+                "Unit": "kg",
+                "Comment": "aus Kalib.-schein QS 05/05"
+            },
+            {
+                "Type": "u_rho_frs",
+                "Value": "50.0",
+                "Unit": "kg/m^3",
+                "Comment": "aus Kalib.-schein QS 05/05"
+            },
+            {
+                "Type": "u_rho_gas",
+                "Expression": "M/T/R*p/2.",
+                "Unit": "kg/m^3",
+                "Comment": "Abschätzung: Hälfte der Dichte des gemessenen Drucks"
+            },
+            {
+                "Type": "u_g",
+                "Value": "4e-8",
+                "Unit": "1",
+                "Comment": "http://a73435.berlin.ptb.de:81/2015/03/05/erdbeschleunigung-in-unseren-laboren/"
+            },
+            {
+                "Type": "u_r_cal",
+                "Value": "2e-6",
+                "Unit": "lb",
+                "Comment": " aus Kalibschein 0187PTB05"
+            },
+            {
+                "Type": "u_r_cal0",
+                "Value": "1e-6",
+                "Unit": "lb",
+                "Comment": " aus Kalibschein 0187PTB05"
+            },
+            {
+                "Type": "u_ab",
+                "Value": "4.62e-7",
+                "Unit": "1/K",
+                "Comment": " aus Kalibschein 0187PTB05"
+            },
+            {
+                "Type": "u_t",
+                "Value": "0.2",
+                "Unit": "C",
+                "Comment": " aus Kalibschein 0187PTB05"
+            },
+            {
+                "Type": "u_frs5_1",
+                "Value": "5.544e-10",
+                "Unit": "1",
+                "Comment": "Angabe entspricht Varianz; s. FRS5_Unsicherheit#Herleitung_der_Unsicherheit_der_FRS"
+            },
+            {
+                "Type": "u_frs5_2",
+                "Value": "1.0798e-8",
+                "Unit": "1/Pa^3/2",
+                "Comment": "quadratisch; s. FRS5_Unsicherheit#Herleitung_der_Unsicherheit_der_FRS "
+            },
+            {
+                "Type": "u_frs5_3",
+                "Value": "0.0001732695941654803",
+                "Unit": "Pa^2",
+                "Comment": "quadratisch; s. FRS5_Unsicherheit#Herleitung_der_Unsicherheit_der_FRS "
+            }
+        ],
+        "History": {
+            "2017-11": "Unsicherheiten u_frs5_1 bis _3 sind deprecated, vpy rechnet (sympy) alles neu ",
+            "2011-02-01": "Wurde am angelegt und soll zukünftig über node.js ausgelesen werden.",
+            "2016-09": "Expansionsmessungen an SE1"
+        }
+    },
+    "Constants": {
+        "Date": {
+            "Type": "update",
+            "Value": "2017-01-02"
+        },
+        "Values": [
+            {
+                "Type": "referenceTemperature",
+                "Value": 296.15,
+                "Unit": "K",
+                "Comment": "reference Temperatur"
+            },
+            {
+                "Type": "absoluteTemperature",
+                "Value": 273.15,
+                "Unit": "K",
+                "Comment": "absolute Temperatur"
+            },
+            {
+                "Type": "standardPressure",
+                "Value": 101.3,
+                "Unit": "kPa",
+                "Comment": "standard atmo pressure"
+            },
+            {
+                "Type": "standardVolumen",
+                "Value": 24450,
+                "Unit": "cm^3",
+                "Comment": "Standard Volumen bei 25C"
+            },
+            {
+                "Type": "molWeight_N2",
+                "Value": 0.0280134,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight nitrogen"
+            },
+            {
+                "Type": "molWeight_Ne",
+                "Value": 0.020179,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight neon"
+            },
+            {
+                "Type": "molWeight_H2",
+                "Value": 0.00201588,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight hydrogen"
+            },
+            {
+                "Type": "molWeight_He",
+                "Value": 0.0040026,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight helium"
+            },
+            {
+                "Type": "molWeight_D2",
+                "Value": 0.0040029,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight deuterium; von http://www.linde-gase.de/datenblatt/db_deuterium_stabiles-wasserstoff-isotop.pdf"
+            },
+            {
+                "Type": "molWeight_CO",
+                "Value": 0.02801,
+                "Unit": "kg/mol",
+                "Comment": "Kohlenmonoxid; von http://www.linde-gase.de/datenblatt/db_kohlenmonoxid_4.7.pdf"
+            },
+            {
+                "Type": "molWeight_Ar",
+                "Value": 0.039948,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight argon"
+            },
+            {
+                "Type": "molWeight_Kr",
+                "Value": 0.0838,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight krypton"
+            },
+            {
+                "Type": "molWeight_Xe",
+                "Value": 0.13129,
+                "Unit": "kg/mol",
+                "Comment": "molecular weight xenon"
+            },
+            {
+                "Type": "visc_H2",
+                "Value": 8.8e-06,
+                "Unit": "Pa s",
+                "Comment": "Wutz, 10.Auflage 2010, S.844"
+            },
+            {
+                "Type": "visc_He",
+                "Value": 1.97e-05,
+                "Unit": "Pa s",
+                "Comment": "Wutz, 10.Auflage 2010, S.844,k.A. bei Kestin et al."
+            },
+            {
+                "Type": "visc_D2",
+                "Value": 1.231e-05,
+                "Unit": "Pa s",
+                "Comment": "A. van Itterbeek, Miss A. Claes,Physica,Volume 5, Issue 10, December 1938, Pages 938-944"
+            },
+            {
+                "Type": "visc_N2",
+                "Value": 1.71e-05,
+                "Unit": "Pa s",
+                "Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+            },
+            {
+                "Type": "visc_Ne",
+                "Value": 3.13e-05,
+                "Unit": "Pa s",
+                "Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+            },
+            {
+                "Type": "visc_Kr",
+                "Value": 2.46e-05,
+                "Unit": "Pa s",
+                "Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+            },
+            {
+                "Type": "visc_Xe",
+                "Value": 2.23e-05,
+                "Unit": "Pa s",
+                "Comment": "https://de.wikibooks.org/wiki/Tabellensammlung_Chemie/_Dynamische_Viskosität_gasförmiger_Stoffe"
+            },
+            {
+                "Type": "visc_CO",
+                "Value": 1.76e-05,
+                "Unit": "Pa s",
+                "Comment": "Wutz, 10.Auflage 2010, S.844, bei Kestin et al stehen abs. identische Werte bei N2 und CO"
+            },
+            {
+                "Type": "visc_Ar",
+                "Value": 2.239e-05,
+                "Unit": "Pa s",
+                "Comment": "viscosity argon;Quelle: Kestin et al.,J. Phys. Chem Ref. Data, Vol. 13,No 1 1984"
+            },
+            {
+                "Type": "virialCoeff_H2",
+                "Value": 14.7,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_D2",
+                "Value": 13.4,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_He",
+                "Value": 11.7,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_Ne",
+                "Value": 11.2,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_N2",
+                "Value": -5.1,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_CO",
+                "Value": -8.8,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_Ar",
+                "Value": -16.5,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_H2O",
+                "Value": -1200,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_CO2",
+                "Value": -126.5,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_O2",
+                "Value": -16.9,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_Kr",
+                "Value": -52.7,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "virialCoeff_Xe",
+                "Value": -136.5,
+                "Unit": "cm^3/mol",
+                "Comment": "Werte f. 296K;Wutz, 10.Auflage 2010, S.845"
+            },
+            {
+                "Type": "R",
+                "Value": 8.3145,
+                "Unit": "Pa m^3/mol/K",
+                "Comment": "molare Gaskonstante"
+            },
+            {
+                "Type": "Kb",
+                "Value": 1.380655e-23,
+                "Unit": "J/K",
+                "Comment": "K-Boltzmann, PTB-News 2/2011; rel. Uns. 8*10^(-6)"
+            },
+            {
+                "Type": "u",
+                "Value": 1.6605e-27,
+                "Unit": "kg",
+                "Comment": "atomic mass unit"
+            },
+            {
+                "Type": "g",
+                "Value": 9.812695,
+                "Unit": "m/s^2",
+                "Comment": "Mittelwert der beiden TU-Werte der Schwerebeschleunigung"
+            }
+        ],
+        "Uncertainty": [
+            {
+                "Type": "u_g",
+                "Value": 2.1e-07,
+                "Unit": 1,
+                "Comment": "relative Unsicherheit der beiden TU-Werte der Schwerebeschleunigung; berechnet aus: (Differenz der beiden Werte)/12^0.5 + quadr. addierte Unsicherheiten der beiden Werte"
+            },
+            {
+                "Type": "u_Kb",
+                "Value": 4e-06,
+                "Unit": 1,
+                "Comment": "1/2 der Angabe aus den PTB-Mitteilungen 2/2011"
+            }
+        ],
+        "Conversion": [
+            {
+                "Type": "C_2_K",
+                "Value": 273.15,
+                "Unit": "K/C",
+                "Comment": "conversion C to K"
+            },
+            {
+                "Type": "sccm_2_mbarl/s",
+                "Value": 0.0169,
+                "Unit": "mbarl/s/sscm",
+                "Comment": "http://www.vacuumtechnology.com/PRODUCTS/LEAKS/LEAK_Files/LeakUnitConversion.shtml"
+            },
+            {
+                "Type": "m^3/s_2_l/s",
+                "Value": 1000,
+                "Unit": "l/m^3",
+                "Comment": "conversion from m^3/s to l/s"
+            },
+            {
+                "Type": "01T_V_2_mbar",
+                "Value": 0.0133322368,
+                "Unit": "mbar/Pa",
+                "Comment": "conversion 10Torr, Volt to mbar"
+            },
+            {
+                "Type": "1000T_V_2_mbar",
+                "Value": 133.322368,
+                "Unit": "mbar/Pa",
+                "Comment": "conversion 10Torr, Volt to mbar"
+            },
+            {
+                "Type": "Pa_2_mbar",
+                "Value": 0.01,
+                "Unit": "mbar/Pa",
+                "Comment": "conversion Pa to mbar"
+            },
+            {
+                "Type": "kPa_2_mbar",
+                "Value": 10,
+                "Unit": "mbar/kPa",
+                "Comment": "conversion kPa to mbar"
+            },
+            {
+                "Type": "kPa_2_Pa",
+                "Value": 1000,
+                "Unit": "Pa/kPa",
+                "Comment": "conversion kPa to Pa"
+            },
+            {
+                "Type": "mbar_2_Pa",
+                "Value": 100,
+                "Unit": "Pa/mbar",
+                "Comment": "conversion mbar to Pa"
+            },
+            {
+                "Type": "Torr_2_mbar",
+                "Value": 1.33322368,
+                "Unit": "mbar/Torr",
+                "Comment": "conversion Torr to mbar"
+            },
+            {
+                "Type": "mbarl/s_2_Pam^3/s",
+                "Value": 0.1,
+                "Unit": "Pam^3/mbarl",
+                "Comment": "conversion mbar l/s to Pa m^3/s"
+            },
+            {
+                "Type": "Pam^3/mol/K_2_mbarl/mol/K",
+                "Value": 10,
+                "Unit": "Pam^3/mbarl",
+                "Comment": "conversion Pa m^3/mol/K to mbar l/mol/K "
+            },
+            {
+                "Type": "l_2_cm^3",
+                "Value": 1000,
+                "Unit": "cm^3/l",
+                "Comment": "conversion l to cm^3"
+            },
+            {
+                "Type": "m^3_2_l",
+                "Value": 1000,
+                "Unit": "m^3/l",
+                "Comment": "conversion m^3 to l (bzw. dm^3)"
+            },
+            {
+                "Type": "m^3_2_cm^3",
+                "Value": 1000000,
+                "Unit": "cm^3/m^3",
+                "Comment": "conversion m^3 to cm^3"
+            },
+            {
+                "Type": "mm^3_2_l",
+                "Value": 1e-06,
+                "Unit": "l/mm^3",
+                "Comment": "conversion mm^3 to l"
+            },
+            {
+                "Type": "ml_2_cm^3",
+                "Value": 1,
+                "Unit": "1",
+                "Comment": "ml = cm^3"
+            },
+            {
+                "Type": "m^2_2_cm^2",
+                "Value": 10000,
+                "Unit": "1",
+                "Comment": "1m^2 = 10000cm^2"
+            },
+            {
+                "Type": "mm_2_m",
+                "Value": 0.001,
+                "Unit": "1",
+                "Comment": "1m = 1000mm"
+            },
+            {
+                "Type": "m_2_mm",
+                "Value": 1000,
+                "Unit": "1",
+                "Comment": "1m = 1000mm"
+            },
+            {
+                "Type": "ms_2_s",
+                "Value": 0.001,
+                "Unit": "s/ms",
+                "Comment": "1ms = 1e-3s"
+            },
+            {
+                "Type": "s_2_min",
+                "Value": 0.01666666667,
+                "Unit": "min/s",
+                "Comment": "1min = 60s"
+            },
+            {
+                "Type": "ms_2_h",
+                "Value": 2.777778e-07,
+                "Unit": "h/ms",
+                "Comment": "1h = 1/3600.000ms"
+            },
+            {
+                "Type": "min_2_h",
+                "Value": 0.01666666667,
+                "Unit": "h/min",
+                "Comment": "1h = 60min"
+            },
+            {
+                "Type": "mA_2_A",
+                "Value": 0.001,
+                "Unit": "1",
+                "Comment": "1mA = 1e-3A"
+            },
+            {
+                "Type": "A_2_mA",
+                "Value": 1000,
+                "Unit": "1",
+                "Comment": "1A = 1000mA"
+            },
+            {
+                "Type": "g/cm^3_2_kg/m^3",
+                "Value": 1000,
+                "Unit": "kg/m^3/g/cm^3",
+                "Comment": ""
+            }
+        ]
+    },
+    "CalibrationObject": [
+        {
+            "Standard": "FRS5",
+            "Name": "FRS5_DMM",
+            "Sign": ".",
+            "Type": "DMM",
+            "Device": {
+                "SN": "0100855",
+                "Type": "PM 2535",
+                "Producer": "Phillips",
+                "UsedFor": "T"
+            },
+            "Constant": [
+                {
+                    "Type": "useDev",
+                    "From": "293.15",
+                    "To": "300.15",
+                    "RangeUnit": "K",
+                    "Comment": "Gültigkeitsbereich"
+                }
+            ],
+            "Date": {
+                "Type": "generated",
+                "Value": "2015-09-08"
+            },
+            "Defaults": {
+                "@acc": "VXI11",
+                "@host": "e75416",
+                "@device": "gpib0,12",
+                "@docpath": "Calibration.Measurement.Values.Temperature",
+                "@CR": "\n"
+            },
+            "Owner": {
+                "Name": "PTB AG7.54"
+            },
+            "Task": [
+                {
+                    "TaskName": "is_ready",
+                    "Comment": "Testet ob das Gerät ansprechbar ist",
+                    "Action": "@acc",
+                    "Host": "@host",
+                    "Device": "@device",
+                    "LogPriority": "3",
+                    "Value": "*ID ?",
+                    "PostProcessing": [
+                        "var ToExchange={'@exchpath':_x == 'PM25350 S04'};"
+                    ]
+                },
+                {
+                    "TaskName": "device_ini",
+                    "Comment": "Initialisierung des Messgeräts",
+                    "Action": "@acc",
+                    "Host": "@host",
+                    "Device": "@device",
+                    "LogPriority": "3",
+                    "Values": {
+                        "meastemp": "FNC TDC",
+                        "measvolt": "FNC VDC"
+                    },
+                    "PostProcessing": [
+                        "var ToExchange={'@exchpath':_x.length > 0};"
+                    ]
+                },
+                {
+                    "TaskName": "read_temp",
+                    "Comment": "VXI-Kommunikation:",
+                    "Action": "@acc",
+                    "Host": "@host",
+                    "Repeat": "10",
+                    "Wait": "3000",
+                    "LogPriority": "3",
+                    "DocPath": "@docpath",
+                    "Device": "@device",
+                    "Value": "X",
+                    "Fallback": {
+                        "Result": [
+                            {
+                                "Type": "frs5",
+                                "Unit": "C",
+                                "Value": null,
+                                "SdValue": null,
+                                "N": null
+                            }
+                        ]
+                    },
+                    "PostProcessing": [
+                        "var _vec=_x.map(_.extractPM2535Temp),",
+                        "_res = _.vlStat(_.checkNumArr(_vec).Arr),",
+                        "temp=_res,",
+                        "Result=[_.vlRes('frs5',_res.mv,'C','',_res.sd,_res.N)];"
+                    ]
+                }
+            ],
+            "Uncertainty": [
+                {
+                    "Type": "phillips_u1",
+                    "Value": "0.015",
+                    "Unit": "K",
+                    "Comment": "Uns. des Temperaturnormals"
+                },
+                {
+                    "Type": "phillips_u2",
+                    "Value": "0.000029",
+                    "Unit": "K",
+                    "Comment": "Digitalisierung"
+                },
+                {
+                    "Type": "phillips_u3",
+                    "Value": "0.02",
+                    "Unit": "K",
+                    "Comment": "Gradient ueber Al-Block, (Abschätzung)"
+                },
+                {
+                    "Type": "phillips_u4",
+                    "Value": "0.0",
+                    "Unit": "K",
+                    "Comment": "Temperaturabh. der Korrektur"
+                },
+                {
+                    "Type": "phillips_u5",
+                    "Value": "0.2",
+                    "Unit": "K",
+                    "Comment": "Langzeitstab. pro Jahr (war 0.3 auf 2a) gleicher Sensor wie CE3"
+                },
+                {
+                    "Type": "phillips_u6",
+                    "Value": "0.08",
+                    "Unit": "K",
+                    "Comment": "experimentelle Streuung bei der Kalib."
+                }
+            ],
+            "History": {
+                "2015-09-08": "als PM in DB angelegt"
+            },
+            "Class": "DMM"
+        },
+        {
+            "Name": "FRS5_4019",
+            "Type": "SRG",
+            "Class": "SRG",
+            "Standard": "FRS5",
+            "Sign": "4019",
+            "Owner": {
+                "Name": "PTB AG7.54"
+            },
+            "Setup": {
+                "Unit": "DCR"
+            },
+            "Device": {
+                "Producer": "Labor",
+                "Type": "Eigenbau",
+                "SN": "ohne"
+            },
+            "Constants": [
+                {
+                    "Type": "d",
+                    "Unit": "m",
+                    "Value": "4.762e-3"
+                },
+                {
+                    "Comment": "rotor density",
+                    "Type": "rho",
+                    "Unit": "kg/m3",
+                    "Value": "7.715e+3"
+                },
+                {
+                    "Comment": "viscosity during calibration",
+                    "Type": "mu",
+                    "Unit": "Pas",
+                    "Value": "0"
+                },
+                {
+                    "Comment": "aus QS 12/06",
+                    "Type": "sigma_eff_N2",
+                    "Unit": "1",
+                    "Value": "1.0413"
+                },
+                {
+                    "Comment": "aus QS 12/06",
+                    "Type": "sigma_eff_He",
+                    "Unit": "1",
+                    "Value": "1.0325"
+                }
+            ]
+        }
+    ]
+}

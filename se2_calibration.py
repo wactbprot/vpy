@@ -7,11 +7,12 @@ from vpy.standard.se2.uncert import Uncert
 
 """
 Bsp. Aufruf:
-python se2_calibration.py --id 'cal-2018-se2-pn-0118_0001' --log d --db 'vl_db_corr' --srv 'http://i75422:5984'
+python se2_calibration.py --id 'cal-2018-se2-kk-75001_0001' --db 'vl_db_corr' --srv 'http://i75422:5984'
 """
 
 def main():
     io = Io()
+    io.eval_args()
     # holt Messdaten aus --db
     meas_doc = io.load_doc()
     # holt Konstanten ect. aus --db
@@ -22,6 +23,8 @@ def main():
 
     # Berechnungen-Klasse leitet vom Standard se2 ab
     cal = Cal(doc)
+    print(cal.Date.parse_labview_date("Date"))
+    print(cal.ToDo.Pres.get_value("target", "mbar"))
     # Unsicherheits-Klasse leitet auch vom Standard se2 ab
     unc = Uncert(doc)
 

@@ -22,7 +22,7 @@ class Cal(Frs5):
 
         tem = self.Temp.get_obj("frs5", "C")
         gas = self.Aux.get_gas()
-        mt = self.Time.get_value("amt_frs5_ind", "ms")
+        mt = self.Time.get_value("amt_meas", "ms")
 
         off = self.Aux.get_obj_by_time(
             mt, "offset_mt", "ms", "frs_res_off", "DCR")
@@ -52,8 +52,21 @@ class Cal(Frs5):
 
     def pressure_cal(self, res):
         """Calculates the FRS5 calibration pressure from
-        lb indication. This is done by means of the standard
-        model (see std.define_model)
+        lb indication. The equation is:
+
+        .. math::
+                p=\\frac{r}{r_{cal}} m_{cal}\\frac{g}{A_{eff}}\\
+                \\frac{1}{corr_{rho}corr_{tem}} + p_{res}
+
+        with
+
+        .. math::
+                corr_{rho} = 1 - \\frac{\\rho_{gas}}{\\rho_{piston}}
+
+        and
+
+        .. math::
+                corr_{tem} = 1 + \\alpha \\beta (\\vartheta - 20)
 
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -61,33 +74,55 @@ class Cal(Frs5):
         :type: class
         """
 
-        self.define_model()
-        self.gen_val_array(res)
+        self.temperature(res)
+        self.pressure_res(res)
+        N = self.no_of_meas_points
+        A = self.get_value_full("A_eff", "m^2", N)
+        r_cal = self.get_value_full("R_cal", "lb", N)
+        m_cal = self.get_value_full("m_cal", "kg", N)
+        g = self.get_value_full("g_frs", "m/s^2", N)
 
-        conv = self.Cons.get_conv(self.model_unit, self.unit)
+        # correction buoyancy  piston
+        rho_frs = self.get_value_full("rho_frs", "kg/m^3", N)
+
+            ## Temperature in C
+        T = res.pick("Temperature", "frs5", "C")
+        ab = self.get_value_full("alpha_beta_frs", "1/C", N)
+
+        # correction buoyancy  get info for gas
+        approx_p = self.Pres.get_value("frs_p", "lb") * 10.0  # mbar
+        gas = self.get_gas()
+        conv_T = self.Cons.get_conv("C", "K")
+
+        rho_gas = self.Cons.get_gas_density(
+            gas, approx_p, "mbar", T + conv_T, "K", "kg/m^3")
+
+
+        # residual pressure in mbar
+        p_res = res.pick("Pressure", "frs5_res", self.unit)
+
+        # correction offset drift
+        # get measure time for r_zc0
+        meas_time = self.Time.get_value("amt_meas", "ms")
+
+        r_zc0 = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb")
+        r_zc = self.Pres.get_value("frs_zc_p", "lb")
+
+        r_0 = r_zc - r_zc0
 
         # correction buoyancy
-        f_buoyancy = sym.lambdify(self.symb, self.model_buoyancy, "numpy")
-        corr_rho = f_buoyancy(*self.val_arr)
+        corr_rho = 1.0 / (1.0 - rho_gas / rho_frs)
 
         # correction temperature
-        f_temp = sym.lambdify(self.symb, self.model_temp, "numpy")
-        corr_temp = f_temp(*self.val_arr)
+        corr_temp = 1.0 / (1.0 + ab * (T - 20.0))
 
-        # conversion lb to Pa
-        f_conv = sym.lambdify(self.symb, self.model_conv,
-                              "numpy")(*self.val_arr)
-
-        # offset pressure
-        r_0 = sym.lambdify(self.symb, self.model_offset,
-                           "numpy")(*self.val_arr)
-        p_0 = r_0 * f_conv * conv
-
-        # indication
-        r = sym.lambdify(self.symb, self.model, "numpy")(*self.val_arr)
-        p = r * conv
+        ## lp to Pa
+        conv = m_cal / r_cal * g / A * corr_rho * corr_temp
+        ## Pa to self.unit
+        conv_p = self.Cons.get_conv("Pa", self.unit, N)
+        r = self.Pres.get_value("frs_p", "lb")
+        p = (r - r_0) * conv * conv_p + p_res
 
         res.store("Correction", "buoyancy_frs5", corr_rho, "1")
         res.store("Correction", "temperature_frs5", corr_temp, "1")
-        res.store('Pressure', "frs5_off", p_0, self.unit)
         res.store('Pressure', "frs5", p, self.unit)

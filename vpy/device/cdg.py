@@ -19,8 +19,13 @@ class Cdg(Device):
 
         super().__init__(doc, dev)
 
+        self.doc = dev
+
         if "CalibrationObject" in dev:
             dev = dev['CalibrationObject']
+
+        if "Name" in dev:
+            self.name = dev["Name"]
 
         if "Setup" in dev:
             dev_setup = dev['Setup']
@@ -36,26 +41,34 @@ class Cdg(Device):
             self.interpol_min = np.min(self.interpol_x)
             self.interpol_max = np.max(self.interpol_x)
 
-        self.log.debug("init func: {}".format(__name__))
 
-    def get_name(self):
-        return self.doc['Name']
 
-    def store_error_interpol(self, p, e, punit, eunit):
+
+
+    def store_interpol(self, p, e, u, p_unit, e_unit, u_unit):
+        """Stores a dict containing ``p .. pressure``, ``e .. error`` and
+        ``u .. uncertainty``
+
+        """
 
         interpol = [{
             "Type": "p_ind",
-            "Unit": punit,
+            "Unit": p_unit,
             "Value": list(p)
         },
             {
             "Type": "e",
-            "Unit": eunit,
+            "Unit": e_unit,
             "Value": list(e)
+        },
+            {
+            "Type": "u",
+            "Unit": u_unit,
+            "Value": list(u)
         }]
 
         if "CalibrationObject" in self.doc:
-            self.doc['CalibrationObject']['Interpol'] = interpol
+            self.doc["CalibrationObject"]['Interpol'] = interpol
 
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
@@ -87,31 +100,34 @@ class Cdg(Device):
     def interp_function(self, x, y):
         return interp1d(x, y, kind="linear")
 
-    def cal_error_interpol(self, pind, pcal, unit):
+    def cal_interpol(self, p_cal, p_ind, uncert):
+        """Calculates a interpolation vector for the relative
+        error of indication and the uncertainty
+
         """
-        .. todo::
 
-                implement expected unit of the return value
-        """
-        if unit == self.unit:
-            pcal, pind = self.cut_values(pcal, pind)
-            x = pind
-            y = pind / pcal - 1.0
-            f = self.interp_function(x, y)
-            nx = self.get_nice_vals(x)
-            ny = f(nx)
+        p_cal_cut, p_ind_cut = self.cut_values(p_cal, p_ind)
+        p_cal_cut, uncert_cut = self.cut_values(p_cal, uncert)
 
-            return nx, ny
 
-    def cut_values(self, pcal, pind):
-        i = np.where(pcal < self.max_p_mbar)[0][-1]
-        j = np.where(pcal > self.min_p_mbar)[0][0]
-        return pcal[j:i], pind[j:i]
+        f_error = self.interp_function(p_ind_cut, p_ind_cut / p_cal_cut - 1.0)
+        f_uncert = self.interp_function(p_ind_cut, uncert_cut)
+        p_ind_cut_nice = self.get_nice_vals(p_ind_cut)
+        error_nice = f_error(p_ind_cut_nice)
+        uncert_nice = f_uncert(p_ind_cut_nice)
+
+        return p_ind_cut_nice, error_nice, uncert_nice
+
+    def cut_values(self, p, s):
+        i = np.argmin(abs(p -self.max_p_mbar))
+        j = np.argmin(abs(p -self.min_p_mbar))
+        return p[j:i+1], s[j:i+1]
 
     def get_nice_vals(self, x):
         ls = np.logspace(-5, 3, num=80)
         x_max = np.max(x)
         x_min = np.min(x)
+
         i = np.where(ls > x_min)[0][0]
         j = np.where(ls < x_max)[0][-1]
 

@@ -110,8 +110,11 @@
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document">vpy.document module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_log">vpy.pkg_log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.result">vpy.result module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.sim">vpy.sim module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_document">vpy.test_document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.test_todo">vpy.test_todo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.todo">vpy.todo module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values">vpy.values module</a></li>
 </ul>
 </li>
@@ -197,8 +200,16 @@
 <dt id="vpy.standard.frs5.cal.Cal.pressure_cal">
 <code class="descname">pressure_cal</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/cal.html#Cal.pressure_cal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.cal.Cal.pressure_cal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the FRS5 calibration pressure from
-lb indication. This is done by means of the standard
-model (see std.define_model)</p>
+lb indication. The equation is:</p>
+<div class="math">
+\[p=\frac{r}{r_{cal}} m_{cal}\frac{g}{A_{eff}}\
+\frac{1}{corr_{rho}corr_{tem}} + p_{res}\]</div>
+<p>with</p>
+<div class="math">
+\[corr_{rho} = 1 - \frac{\rho_{gas}}{\rho_{piston}}\]</div>
+<p>and</p>
+<div class="math">
+\[corr_{tem} = 1 + \alpha \beta (\vartheta - 20)\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -282,8 +293,37 @@ pick(quantity, type, unit)</td>
 \[p=\frac{r_{ind}-r_0+u_b+u_{sys}}{r_{cal}-r_{cal 0}}\
  m_{cal}\frac{g}{A_{eff}}\frac{1}{corr_{rho}corr_{tem}}\]</div>
 <dl class="method">
-<dt id="vpy.standard.frs5.std.Frs5.define_model">
-<code class="descname">define_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/std.html#Frs5.define_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.define_model" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.frs5.std.Frs5.get_gas">
+<code class="descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/std.html#Frs5.get_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.get_gas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the calibration gas stored in <em>AuxValues</em></p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">implementation of aux.gas needed</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vpy.standard.frs5.std.Frs5.name">
+<code class="descname">name</code><em class="property"> = 'FRS5'</em><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vpy.standard.frs5.std.Frs5.unit">
+<code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.frs5.uncert">
+<span id="vpy-standard-frs5-uncert-module"></span><h2>vpy.standard.frs5.uncert module<a class="headerlink" href="#module-vpy.standard.frs5.uncert" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vpy.standard.frs5.uncert.Uncert">
+<em class="property">class </em><code class="descclassname">vpy.standard.frs5.uncert.</code><code class="descname">Uncert</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.frs5.std.Frs5" title="vpy.standard.frs5.std.Frs5"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.frs5.std.Frs5</span></code></a></p>
+<dl class="method">
+<dt id="vpy.standard.frs5.uncert.Uncert.define_model">
+<code class="descname">define_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.define_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.define_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines symbols and model for FRS5.
 The order of symbols must match the order in <code class="docutils literal"><span class="pre">gen_val_arr</span></code>:</p>
 <ol class="arabic simple">
@@ -324,8 +364,8 @@ The order of symbols must match the order in <code class="docutils literal"><spa
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.frs5.std.Frs5.gen_val_array">
-<code class="descname">gen_val_array</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/std.html#Frs5.gen_val_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.gen_val_array" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.frs5.uncert.Uncert.gen_val_array">
+<code class="descname">gen_val_array</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.gen_val_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.gen_val_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a array of values
 with the same order as define_models symbols order:</p>
 <ol class="arabic simple">
@@ -360,8 +400,8 @@ pick(quantity, type, unit)</td>
 </dd></dl>
 
 <dl class="method">
-<dt id="vpy.standard.frs5.std.Frs5.gen_val_dict">
-<code class="descname">gen_val_dict</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/std.html#Frs5.gen_val_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.gen_val_dict" title="Permalink to this definition">¶</a></dt>
+<dt id="vpy.standard.frs5.uncert.Uncert.gen_val_dict">
+<code class="descname">gen_val_dict</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.gen_val_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.gen_val_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads in a dict of values
 with the same order as in <code class="docutils literal"><span class="pre">define_models</span></code>. For the calculation
 of the gas density, the Frs reading is multiplyed by 10 which gives a
@@ -380,35 +420,6 @@ pick(quantity, type, unit)</td>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="vpy.standard.frs5.std.Frs5.get_gas">
-<code class="descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/std.html#Frs5.get_gas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.get_gas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the name of the calibration gas stored in <em>AuxValues</em></p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">implementation of aux.gas needed</p>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="vpy.standard.frs5.std.Frs5.name">
-<code class="descname">name</code><em class="property"> = 'FRS5'</em><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="vpy.standard.frs5.std.Frs5.unit">
-<code class="descname">unit</code><em class="property"> = 'mbar'</em><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.unit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-vpy.standard.frs5.uncert">
-<span id="vpy-standard-frs5-uncert-module"></span><h2>vpy.standard.frs5.uncert module<a class="headerlink" href="#module-vpy.standard.frs5.uncert" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="vpy.standard.frs5.uncert.Uncert">
-<em class="property">class </em><code class="descclassname">vpy.standard.frs5.uncert.</code><code class="descname">Uncert</code><span class="sig-paren">(</span><em>doc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#vpy.standard.frs5.std.Frs5" title="vpy.standard.frs5.std.Frs5"><code class="xref py py-class docutils literal"><span class="pre">vpy.standard.frs5.std.Frs5</span></code></a></p>
 <dl class="method">
 <dt id="vpy.standard.frs5.uncert.Uncert.total">
 <code class="descname">total</code><span class="sig-paren">(</span><em>res</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/vpy/standard/frs5/uncert.html#Uncert.total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.total" title="Permalink to this definition">¶</a></dt>

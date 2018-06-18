@@ -26,8 +26,6 @@ class Constants(Document):
         if 'Constants' in doc:
             super().__init__(doc['Constants'])
 
-        self.log.debug("init func: {}".format(__name__))
-
     def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
 
@@ -88,7 +86,7 @@ class Constants(Document):
             sys.exit(errmsg)
 
 
-    def get_conv(self, f, t):
+    def get_conv(self, f, t, n=1):
         """Get the conversion factor from unit f to unit t.
 
         :param f: f from unit
@@ -96,6 +94,9 @@ class Constants(Document):
 
         :param t: t to unit
         :type t: str
+
+        :param n: length of array to return
+        :type n: int
 
         :returns: conversion factor
         :rtype: np.array of length 1
@@ -116,4 +117,4 @@ class Constants(Document):
                 self.log.error(errmsg)
                 sys.exit(errmsg)
 
-        return conv
+        return np.full(n, conv)

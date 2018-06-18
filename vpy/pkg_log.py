@@ -16,7 +16,7 @@ class Log(object):
     def logger(self, name):
         """
         Based on http://docs.python.org/howto/logging.html#configuring-logging
-        
+
         .. todo::
               something is wrong here, double output on level=info!
         """

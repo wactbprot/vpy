@@ -65,6 +65,14 @@ vpy\.pkg\_log module
     :undoc-members:
     :show-inheritance:
 
+vpy\.result module
+------------------
+
+.. automodule:: vpy.result
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 vpy\.sim module
 ---------------
 
@@ -77,6 +85,22 @@ vpy\.test\_document module
 --------------------------
 
 .. automodule:: vpy.test_document
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vpy\.test\_todo module
+----------------------
+
+.. automodule:: vpy.test_todo
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+vpy\.todo module
+----------------
+
+.. automodule:: vpy.todo
     :members:
     :undoc-members:
     :show-inheritance:

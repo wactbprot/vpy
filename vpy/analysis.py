@@ -6,7 +6,7 @@ from .document import Document
 
 
 class Analysis(Document):
-    """Holds a deep copy of original document. Container for storing
+    """Holds a deep copy of ``document``. Container for storing
     Results of analysis.
     """
 
@@ -19,7 +19,7 @@ class Analysis(Document):
                     "Value": d}],
              "Values": {},
              "AnalysisProgram": "vpy",
-             "AnalysisGitHash": githash 
+             "AnalysisGitHash": githash
              }
 
         super().__init__(o)
