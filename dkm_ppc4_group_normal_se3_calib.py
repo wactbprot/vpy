@@ -30,10 +30,10 @@ def main():
 
         cdg_doc = io.get_doc_db("cob-cdg-se3_{}".format(head))
         Cdg = InfCdg(doc, cdg_doc)
-        p, e = Cdg.cal_error_interpol(p_ind - p_off, p_cal, "mbar")
-    
-        Cdg.store_error_interpol(p, e, "mbar", "1")
-        io.set_doc_db(Cdg.get_all())
+        #p, e = Cdg.cal_error_interpol(p_ind - p_off, p_cal, "mbar")
+        print("p:{}  e:{}".format(p_cal,p_ind/p_cal-1))
+        #Cdg.store_error_interpol(p, e, "mbar", "1")
+        #io.set_doc_db(Cdg.get_all())
 
 
 

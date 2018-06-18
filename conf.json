@@ -2,7 +2,7 @@
     "loglevel": "DEBUG",
     "db": {
         "url": "http://localhost:5984",
-        "name": "vl_db"
+        "name": "vl_db_work"
     },
     "standards": {
         "se3": {
