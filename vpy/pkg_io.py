@@ -283,8 +283,9 @@ class Io(object):
 
 
     def get_hist_data(self, std):
-        """Gets and returns an array
-        containing history data
+        """Gets and returns an array containing history data.
+        Please use  the view ``se3_req/views/group_normal_hist/`` as a
+        template.
 
         :param std: name of the calibration standard
         :type std: str
@@ -298,7 +299,8 @@ class Io(object):
 
         view = self.config['standards'][std]['hist_data']
         for item in db.view(view):
-            dat[item.key] = item.value
+
+            dat[item.value["IdentString"]] = item.value
 
 
         return dat

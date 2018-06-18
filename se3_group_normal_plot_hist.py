@@ -70,5 +70,6 @@ def main():
     plt.grid()
     plt.savefig("group_normal_hist.pdf")
     plt.show()
+
 if __name__ == "__main__":
     main()

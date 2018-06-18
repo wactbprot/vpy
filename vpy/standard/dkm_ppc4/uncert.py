@@ -12,7 +12,9 @@ class Uncert(DkmPpc4):
 
     def total(self, res):
         """Calculates the total uncertainty.
-        sympy derives the sensitivity coefficients.
+
+        .. todo::
+            store uncertainty expression in database document 
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
