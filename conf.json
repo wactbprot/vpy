@@ -15,7 +15,10 @@
             "all_doc_view": "se2_req/doc"
         },
          "frs5": {
-            "all_doc_view": "frs5_req/doc"
+           "all_doc_view": "frs5_req/doc"
+        },
+        "dkm_ppc4":{
+          "all_doc_view": "dkm_ppc4_req/doc"          
         }
     }
 }

@@ -22,7 +22,7 @@ class Uncert(DkmPpc4):
         conv   = self.Cons.get_conv(self.unit, "Pa")
 
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit)
-        p_cal = res.pick("Pressure", "cal", self.unit)
+        p_cal = res.pick("Pressure", "dkm_ppc4", self.unit)
 
 
         p_res_pa = p_res*conv

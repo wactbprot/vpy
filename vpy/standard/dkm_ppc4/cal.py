@@ -9,8 +9,6 @@ class Cal(DkmPpc4):
     def __init__(self, doc):
         super().__init__(doc)
 
-        self.log.debug("init func: {}".format(__name__))
-
     def pressure_cal(self, res):
         """Calculates the calibration pressure and stores the
         result under the path *Pressure, cal, mbar*
@@ -36,7 +34,7 @@ class Cal(DkmPpc4):
         conv = self.Cons.get_conv("Pa", self.unit)
         p_cal = g * m / (A * corr) * conv + p_res
 
-        res.store("Pressure", "cal", p_cal, self.unit)
+        res.store("Pressure", "dkm_ppc4", p_cal, self.unit)
 
     def pressure_res(self, res):
         """Transfers the pressure above the piston.
