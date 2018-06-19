@@ -8,6 +8,7 @@ def main():
     dat = io.get_hist_data("se3")
     res = {}
     val = {}
+
     for d in dat:
         dev_name = dat[d]["Name"]
         dat_date = dat[d]["Date"]
