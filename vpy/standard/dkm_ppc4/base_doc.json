@@ -17,10 +17,22 @@
         ],
         "Uncertainty": [
             {
-                "Type": "u_dkm_3",
+                "Type": "u_lt",
                 "Value": 2e-05,
                 "Unit": "1",
                 "Comment": "Langzeitstabilität (Abschätzung aus Historie des B&H DKMs)"
+            },
+            {
+                "Type": "u_p_res",
+                "Expression": "0.2*p_res",
+                "Unit": "Pa",
+                "Comment": "Schätzwert: 20% der Anzeige"
+            },
+            {
+                "Type": "u_p_cal",
+                "Expression": "0.1+0.8e-5*p_cal",
+                "Unit": "Pa",
+                "Comment": "nach 30097PTB15, k=1"
             }
         ],
         "Constants": [

@@ -15,6 +15,7 @@ def main():
 
     cal.pressure_cal(res)
     unc.total(res)
+    
     p = res.pick("Pressure", "dkm_ppc4", "mbar")
     u = res.pick("Uncertainty", "dkm_ppc4_total_rel", "1")
 
