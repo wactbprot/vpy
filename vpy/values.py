@@ -75,17 +75,17 @@ class Time(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Time', quant)
 
-    def get_rmt(self, t, u):
+    def get_rmt(self, type, unit):
         """Returns the relative measurement.
 
-        :param t: name of the Type (e.g. amt_fill)
-        :type t: str
-        :param u: expected unit of the Type (e.g. ms)
-        :type u: str
+        :param type: name of the Type (e.g. amt_fill)
+        :type type: str
+        :param unit: expected unit of the Type (e.g. ms)
+        :type unit: str
         :returns: relative measure time
         :rtype: np.array | None
         """
-        val = self.get_value(t, u)
+        val = self.get_value(type, unit)
 
         if val is not None:
             val = val - val[0]

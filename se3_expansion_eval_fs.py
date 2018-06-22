@@ -13,8 +13,9 @@ import matplotlib.pyplot as plt
 
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
+from vpy.constants import Constants
 
-from vpy.values import Pressure, AuxValues
+from vpy.values import Pressure, AuxValues, Time
 
 from vpy.standard.frs5.cal import Cal as FrsCalc
 from vpy.standard.frs5.uncert import Uncert as FrsUncert
@@ -30,6 +31,7 @@ def main():
 
     if doc:
         res = Analysis(doc)
+        const = Constants(doc=doc)
         # FRS5:
         frs_calc = FrsCalc(doc)
         frs_uncert = FrsUncert(doc)
@@ -68,6 +70,8 @@ def main():
         ## null indicator:
         pres = Pressure(doc)
         auxval = AuxValues(doc)
+        time = Time(doc)
+
         p_nd_offset_before = auxval.get_value("nd_offset_before", "mbar")
         p_nd_offset_after = auxval.get_value("nd_offset_after", "mbar")
         p_nd_offset = (p_nd_offset_before + p_nd_offset_after )/2
@@ -78,16 +82,26 @@ def main():
         res.store("Uncertainty", "nd", np.abs(p_nd_ind  * u_nd_rel), "1")
         p_nd = res.pick("Pressure", "nd", "mbar")
 
+        # Unsicherheit Ausgasung:
+        p_rise_rate = 1e-10 #mbar/s
+        t = time.get_rmt("amt_meas", "ms")
+        conv = const.get_conv(from_unit="ms",to_unit="s")
+        p_rise = p_rise_rate * t * conv
+        u_p_rise = 0.2 # Druckanstieg 20% Unsicher
+
+        res.store("Uncertainty", "outgas",p_rise*u_p_rise/p_1 , "1")
+
         u_1 = res.pick("Uncertainty", "p_fill", "1")
         u_2 = res.pick("Uncertainty", "t_before", "1")
         u_3 = res.pick("Uncertainty", "t_after", "1")
         u_4 = res.pick("Uncertainty", "nd", "1")
-        u_5 = res.pick("Uncertainty", "frs5_total_rel", "1")
+        u_5 = res.pick("Uncertainty", "outgas", "1")
+        u_6 = res.pick("Uncertainty", "frs5_total_rel", "1")
 
-        u_t = np.sqrt(u_1**2 + u_2**2 + u_3**2 + u_4**2+ u_5**2)
+        u_t = np.sqrt(u_1**2 + u_2**2 + u_3**2 + u_4**2+ u_5**2+ u_6**2)
         res.store("Uncertainty", "total", u_t, "1")
 
-        ## simple f_s check:
+        print(u_t)
         p_after = (p_1 - p_nd)
 
         g_after = np.full(len(p_after), 0.0)
@@ -97,12 +111,20 @@ def main():
                 g_after[i] = p_after[i] / T_1[i]
                 g_before[i] = (p_0[i] * rg[i]) / T_0[i]
             else:
-                g_after[i] = p_after[i] / T_1[i]
+                # Ein Teil des nach dem 1. Schritt angestaute Gases strömt
+                # beim 2. Expasionsschritt zurück in das Startvolumen. Dies
+                # reduziert den Angestauten Druck um p_after*f_s was zur Korrektur
+                # (1.0-1.0e-4) führt
+                g_after[i] = p_after[i] *(1.0-1.0e-4)/ T_1[i]
                 #g_before[i] = (p_0[i] * rg[i]) / T_0[i] + g_before[i-1]
                 g_before[i] =  (g_before[i-1] * T_0[i-1] +  (p_0[i] * rg[i])) / T_0[i]
 
-        f_s = np.mean(g_after/g_before)
-        u_ex = np.std(g_after/g_before)/f_s
+
+        f = g_after/g_before
+        res.store("Expansion", "f_s", f, "1")
+        f_s = np.mean(f)
+        u_ex = np.std(f)/f_s
+        print(g_after/g_before)
         print(f_s)
         print(u_ex)
         # nd uncert

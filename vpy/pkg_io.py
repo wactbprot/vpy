@@ -52,12 +52,6 @@ class Io(object):
         else:
             self.save = False
 
-        # provide visual feedback
-        if self.args.p:
-            self.plot = True
-        else:
-            self.plot = False
-
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
             print("use database {}".format(self.config["db"]["name"]))

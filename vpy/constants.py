@@ -86,35 +86,35 @@ class Constants(Document):
             sys.exit(errmsg)
 
 
-    def get_conv(self, f, t, n=1):
+    def get_conv(self, from_unit, to_unit, N=1):
         """Get the conversion factor from unit f to unit t.
 
-        :param f: f from unit
-        :type f: str
+        :param from_unit:  from unit
+        :type from_unit: str
 
-        :param t: t to unit
-        :type t: str
+        :param to_unit: to to unit
+        :type to_unit: str
 
-        :param n: length of array to return
-        :type n: int
+        :param N: length of array to return
+        :type N: int
 
         :returns: conversion factor
         :rtype: np.array of length 1
         """
 
-        if f == t:
+        if from_unit == to_unit:
             self.log.debug("units are the same return 1")
             conv = np.array([1])
         else:
-            cstr = "{}_2_{}".format(f, t)
-            ustr = "{}/{}".format(t, f)
+            cstr = "{}_2_{}".format(from_unit, to_unit)
+            ustr = "{}/{}".format(to_unit, from_unit)
             conv = self.get_value(cstr, ustr)
 
             if conv is not None:
                 self.log.debug("search for: {} in {} found: {}".format(cstr, ustr, conv))
             else:
-                errmsg = "no conversion factor from {} to {}".format(f, t)
+                errmsg = "no conversion factor from {} to {}".format(from_unit, to_unit)
                 self.log.error(errmsg)
                 sys.exit(errmsg)
 
-        return np.full(n, conv)
+        return np.full(N, conv)
