@@ -3,10 +3,11 @@ import subprocess
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
-from .document import Document
+#from .document import Document
+from .analysis import Analysis
 from .todo import ToDo
 
-class Result(Document):
+class Result(Analysis):
     """Holds a deep copy of ``document``. Container for storing
     Results of analysis.
     """
@@ -124,10 +125,10 @@ class Result(Document):
         self.offset_uncert = np.std(p_off_max_group)
 
 
-    def make_error_table(self, res):
+    def make_error_table(self, ana):
 
-        cal = res.pick("Pressure", "cal", "mbar")
-        ind = res.pick("Pressure", "ind", "mbar")
+        cal = ana.pick("Pressure", "cal", "mbar")
+        ind = ana.pick("Pressure", "ind", "mbar")
         error = 100*(ind-cal)/cal
 
         av_idx = self.average_index
@@ -140,7 +141,11 @@ class Result(Document):
         u_ind_abs = np.sqrt((cal*self.repeat_rel(cal))**2+(self.offset_uncert/np.sqrt(n_avr))**2)
         k2 = 2*100*ind/cal*np.sqrt((u_ind_abs/ind)**2+self.u_PTB_rel(cal)**2)
 
-        pass
+        self.store("Pressure", "p_cal", cal, "mbar")
+        self.store("Pressure", "p_ind", ind, "mbar")
+        self.store("Error", "e", error, "%")
+        self.store("Uncertainty", "U", k2, "%")
+
 
 
     def make_sigma_formula(self):
