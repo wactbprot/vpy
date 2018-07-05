@@ -141,10 +141,12 @@ class Result(Analysis):
         u_ind_abs = np.sqrt((cal*self.repeat_rel(cal))**2+(self.offset_uncert/np.sqrt(n_avr))**2)
         k2 = 2*100*ind/cal*np.sqrt((u_ind_abs/ind)**2+self.u_PTB_rel(cal)**2)
 
-        self.store("Pressure", "p_cal", cal, "mbar")
-        self.store("Pressure", "p_ind", ind, "mbar")
-        self.store("Error", "e", error, "%")
-        self.store("Uncertainty", "U", k2, "%")
+        self.store("Table", "p_cal", cal, "mbar", dest=None)
+        self.store("Table", "p_ind", ind, "mbar", dest=None)
+        self.store("Table", "e", error, "%", dest=None)
+        self.store("Table", "U", k2, "%", dest=None)
+        a = self.build_doc("Result")
+        print(a['Calibration']['Result'])
 
 
 

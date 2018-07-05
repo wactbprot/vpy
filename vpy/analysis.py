@@ -25,7 +25,7 @@ class Analysis(Document):
         super().__init__(o)
         self.org = doc
 
-    def store(self, quant, t, v, u, sd=None, n=None):
+    def store(self, quant, t, v, u, sd=None, n=None, dest='Values'):
         """Stores the result of a calculation in
         the analysis structure below the given quantity.
         """
@@ -40,11 +40,16 @@ class Analysis(Document):
         if n is not None:
             o['N'] = n
 
-        if quant not in self.doc['Values']:
-            self.doc['Values'][quant] = []
-
-        self.doc['Values'][quant].append(o)
-        self.log.info("stored values of type {} in {}".format(t, quant))
+        if dest is not None:
+            if quant not in self.doc[dest]:
+                self.doc[dest][quant] = []
+            self.doc[dest][quant].append(o)
+            self.log.info("stored values of type {} in {}".format(t, quant))
+        else:
+            if quant not in self.doc:
+                self.doc[quant] = []
+            self.doc[quant].append(o)
+            self.log.info("stored values of type {} in {}".format(t, quant))
 
     def store_dict(self, quant, d):
         """ Appends complete dicts to document
