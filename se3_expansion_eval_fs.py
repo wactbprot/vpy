@@ -48,6 +48,7 @@ def main():
         se3_calc.temperature_room(res)
         se3_calc.pressure_fill(res)
         se3_calc.expansion(res)
+        se3_calc.time_meas(res)
         se3_calc.volume_start(res)
         se3_calc.volume_add(res)
         se3_calc.real_gas_correction(res)

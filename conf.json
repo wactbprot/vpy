@@ -3,7 +3,7 @@
     "loglevel": "DEBUG",
     "db": {
         "url": "http://localhost:5984",
-        "name": "vl_db_work"
+        "name": "vl_db"
     },
     "standards": {
         "se3": {
@@ -18,7 +18,7 @@
            "all_doc_view": "frs5_req/doc"
         },
         "dkm_ppc4":{
-          "all_doc_view": "dkm_ppc4_req/doc"          
+          "all_doc_view": "dkm_ppc4_req/doc"
         }
     }
 }

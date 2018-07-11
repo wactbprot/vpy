@@ -251,3 +251,17 @@ class Se3(Standard):
             f[i_l]=self.get_value("f_l", "1")
 
         res.store("Expansion", "uncorr", f, "1")
+
+    def time_meas(self, res):
+        """Builds a vector containing the measurement time.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        conv2s = self.Cons.get_conv(from_unit="ms", to_unit="s")
+        conv2min = self.Cons.get_conv(from_unit="s", to_unit="min")
+        t = self.Time.get_rmt("amt_meas", "ms")*conv2s *conv2min
+
+        res.store("Time", "meas", t, "min")
