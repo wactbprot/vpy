@@ -58,6 +58,10 @@ def main():
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
     print(res.offset_uncert)
+"""     print(len(res.pick("Pressure","p_cal","mbar")))
+    print(len(res.pick("Pressure","p_ind","mbar")))
+    print(len(res.pick("Error","e","%")))
+    print(len(res.pick("Uncertainty","U","%"))) """
 
 if __name__ == "__main__":
     main()
