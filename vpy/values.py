@@ -50,6 +50,14 @@ class Values(Document):
             r.append(round(x * factor) / factor)
         return np.asarray(r)
 
+    def round_uncertainty(self, val, unc):
+        """ Rounds the value ``val`` to the second significant digit
+        of its uncertainty ``unc`` and outputs a string 
+        """
+        power = int(np.floor(np.log10(abs(val)))) - int(np.floor(np.log10(abs(unc)))) + 2
+        if power < 0: return "ill defined"
+        return f"{val:.{power}}"
+    
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Mass', quant)

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 #from .document import Document
 from .analysis import Analysis
 from .todo import ToDo
+from .values import Values
 
 
 class Result(Analysis):
@@ -155,31 +156,39 @@ class Result(Analysis):
         k2 = 2 * 100 * ind / cal * \
             np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
 
+        #format output
+        cal_str = [f"{i:.4e}" for i in cal]
+        ind_str = [f"{i:.4e}" for i in ind]
+        error_str = [Values.round_uncertainty(1, error[i], k2[i]) for i in range(len(error))]
+        k2_str = [f"{i:.2}" for i in k2]
+ 
+        print(error_str)
+
         p_cal = {
             "Type": "cal",
             "Unit": "mbar",
-            "Value": cal,
+            "Value": cal_str,
             "HeadCell": self.head_cell["cal"],
             "UnitCell": self.unit_cell["mbar"]
             }
         p_ind_corr = {
             "Type": "ind_corr",
             "Unit": "mbar",
-            "Value": ind,
+            "Value": ind_str,
             "HeadCell": self.head_cell["ind_corr"],
             "UnitCell": self.unit_cell["mbar"]
             }
         e = {
             "Type": "relative",
             "Unit": "%",
-            "Value": error,
+            "Value": error_str,
             "HeadCell": self.head_cell["error"],
             "UnitCell": self.unit_cell["%"]
             }
         u  = {
             "Type": "uncertTotal_rel",
             "Unit": "%",
-            "Value": k2,
+            "Value": k2_str,
             "HeadCell": self.head_cell["uncertTotal_rel"],
             "UnitCell": self.unit_cell["%"]
             }
