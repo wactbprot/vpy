@@ -38,10 +38,10 @@ class Values(Document):
 
     def round_to_sig_dig(self, val, n):
         """ Rounds the value ``val`` to ``n`` significant digits
-        and outputs a string
+        and outputs a formated string
         """
         if n < 0: n = 0
-        if val == 0: return 0
+        if val == 0: return f"{0:.{n - 1}f}"
         else:
             val_power = int(np.floor(np.log10(abs(val))))
             power = - val_power + (n - 1)
@@ -63,9 +63,10 @@ class Values(Document):
 
     def round_to_uncertainty(self, val, unc, n):
         """ Rounds the value ``val`` to the ``n``th significant digit
-        of its uncertainty ``unc`` and outputs a string
+        of its uncertainty ``unc`` and outputs a formated string
         """
-        val_power = int(np.floor(np.log10(abs(val))))
+        if val == 0: val_power = 0
+        else: val_power = int(np.floor(np.log10(abs(val))))
         unc_power = int(np.floor(np.log10(abs(unc))))
         n = val_power - unc_power + n
         return self.round_to_sig_dig(val, n)

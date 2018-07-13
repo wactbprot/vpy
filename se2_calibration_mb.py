@@ -71,7 +71,8 @@ def main():
     print(val.round_to_sig_dig_array([123,456,789],2))
     print(val.round_to_uncertainty(a,0.097,2))
     print(val.round_to_uncertainty_array([123,456,789],[0.01,1,10],2))
-    val.round_to_uncertainty(789,10,2)
+    print(val.round_to_sig_dig(0,2))
+    print(val.round_to_uncertainty(0.,0.01,2))
     
 
 if __name__ == "__main__":
