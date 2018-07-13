@@ -16,47 +16,65 @@ class Values(Document):
     :type quant: str
     """
 
-    def __init__(self, doc, name, quant):
-        if 'Calibration' in doc:
-            doc = doc['Calibration']
+    def __init__(self, doc, name = None, quant = None):
+        
+        if name is None and quant is None:
+            super().__init__(doc)
+        else:
+            if 'Calibration' in doc:
+                doc = doc['Calibration']
 
-        if 'State' in doc:
-            doc = doc['State']
+            if 'State' in doc:
+                doc = doc['State']
 
-        if quant in doc:
-            doc = doc[quant]
+            if quant in doc:
+                doc = doc[quant]
 
-        if 'Values' in doc:
-            doc = doc['Values']
+            if 'Values' in doc:
+                doc = doc['Values']
 
-        if name in doc:
-            super().__init__(doc[name])
+            if name in doc:
+                super().__init__(doc[name])
 
-
-    def round_to_n(self, a, n):
-        """ Rounds the numbers in array ``a`` to ``n``
-        significant digits
-
-        ..todo::
-            discuss the return value for ``not x``:
-            suggestion: ``np.nan``
-
+    def round_to_sig_dig(self, val, n):
+        """ Rounds the value ``val`` to ``n`` significant digits
+        and outputs a string
         """
-        r=[]
-        for x in a:
-            if not x: return 0
-            power = -int(np.floor(np.log10(abs(x)))) + (n - 1)
+        if n < 0: n = 0
+        if val == 0: return 0
+        else:
+            val_power = int(np.floor(np.log10(abs(val))))
+            power = - val_power + (n - 1)
             factor = (10 ** power)
-            r.append(round(x * factor) / factor)
-        return np.asarray(r)
+            val = round(val * factor) / factor
+        if -3 <= val_power < 0: return f"{val:.{n - val_power - 1}f}"
+        if  0 <= val_power < 5:
+            n = n - val_power - 1
+            if n < 0: n = 0
+            return f"{val:.{n}f}"
+        n = n - 1
+        if n < 0: n = 0
+        return f"{val:.{n}e}"
 
-    def round_uncertainty(self, val, unc):
-        """ Rounds the value ``val`` to the second significant digit
-        of its uncertainty ``unc`` and outputs a string 
+    def round_to_sig_dig_array(self, val_arr, n):
+        """ Applies ``round_to_sig_dig`` to the array ``val_arr``
         """
-        power = int(np.floor(np.log10(abs(val)))) - int(np.floor(np.log10(abs(unc)))) + 2
-        if power < 0: return "ill defined"
-        return f"{val:.{power}}"
+        return np.asarray([self.round_to_sig_dig(i, n) for i in val_arr])
+
+    def round_to_uncertainty(self, val, unc, n):
+        """ Rounds the value ``val`` to the ``n``th significant digit
+        of its uncertainty ``unc`` and outputs a string
+        """
+        val_power = int(np.floor(np.log10(abs(val))))
+        unc_power = int(np.floor(np.log10(abs(unc))))
+        n = val_power - unc_power + n
+        return self.round_to_sig_dig(val, n)
+
+    def round_to_uncertainty_array(self, val_arr, unc_arr, n):
+        """ Applies ``round_to_uncertainty`` to the array of values ``val_arr``
+        using the array of uncertainties ``unc_arr``
+        """
+        return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n) for i in range(len(val_arr))])
     
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):

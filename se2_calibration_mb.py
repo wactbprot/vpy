@@ -29,6 +29,7 @@ def main():
     doc = io.update_cal_doc(meas_doc, base_doc)
     ana = Analysis(doc)
     res = Result(doc)
+    val = Values(doc)
 
     # Berechnungen-Klasse leitet vom Standard se2 ab
     cal = Cal(doc)
@@ -45,6 +46,7 @@ def main():
     res.make_offset_uncert(ana)
     res.make_error_table(ana)
 
+
     # key = self.Pres.round_to_n(p_cal, 2)
     # p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]
 
@@ -54,14 +56,24 @@ def main():
     print("*******")
     p_cal = ana.pick("Pressure","cal","mbar")
     print("*******")
-    print(Values.round_to_n(1,[3,4,5,0.1],1))
+    print(val.round_to_n([3,4,5,0.1],1))
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
     print(res.offset_uncert)
     io.save_doc(res.build_doc(dest="Result"))
+    print(5<3<5)
     a=np.pi**50
     print(a)
-    print(f"{a:10.2e}")
+    print(str(a))
+    print(str(a).split("."))
+    for i in range(-9,4): print(val.round_to_sig_dig(1234*10**i,2))
+    for i in range(-9,4): print(val.round_to_sig_dig(10234*10**i,2))
+    for i in range(-2,8): print(val.round_to_sig_dig(a,i))
+    print(val.round_to_sig_dig_array([123,456,789],2))
+    print(val.round_to_uncertainty(a,0.097,2))
+    print(val.round_to_uncertainty_array([123,456,789],[0.01,1,10],2))
+    val.round_to_uncertainty(789,10,2)
+    
 
 if __name__ == "__main__":
     main()

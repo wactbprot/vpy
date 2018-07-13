@@ -36,6 +36,7 @@ class Result(Analysis):
              }
 
         self.ToDo = ToDo(doc)
+        self.Val = Values(doc)
         super().__init__(doc, init_dict)
         self.org = copy.deepcopy(doc)
 
@@ -159,8 +160,8 @@ class Result(Analysis):
         #format output
         cal_str = [f"{i:.4e}" for i in cal]
         ind_str = [f"{i:.4e}" for i in ind]
-        error_str = [Values.round_uncertainty(1, error[i], k2[i]) for i in range(len(error))]
-        k2_str = [f"{i:.2}" for i in k2]
+        error_str = self.Val.round_to_uncertainty_array(error, k2, 2)
+        k2_str = self.Val.round_to_sig_dig_array(k2, 2)
  
         print(error_str)
 
