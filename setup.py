@@ -14,7 +14,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 setup(
     name='vpy',
     version='0.1.0',
-    description='Analysis of measurement results stored in couchdb documents',
+    description='Analysis of measurement results stored in couchdb documents.',
     long_description=long_description,
     url='https://a75436.berlin.ptb.de/vaclab/vpy',
     author='Thomas Bock, Matthias Bernien',
@@ -48,6 +48,7 @@ setup(
         'dev': ['sphinx',
                 'sphinx_rtd_theme',
                 'autopep8',
+                'PyUnitReport',
                 ],
     },
     package_data={
