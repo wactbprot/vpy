@@ -56,7 +56,6 @@ def main():
     print("*******")
     p_cal = ana.pick("Pressure","cal","mbar")
     print("*******")
-    print(val.round_to_n([3,4,5,0.1],1))
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
     print(res.offset_uncert)
