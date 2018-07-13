@@ -24,7 +24,7 @@ class Result(Analysis):
     unit_cell = {
         "1": "",
         "mbar": "mbar",
-        "%": "{\\(\\percent\\)}"
+        "%": "{\\(\\si{\\percent}\\)}"
         }
 
     def __init__(self, doc):
