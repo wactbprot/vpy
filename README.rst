@@ -27,7 +27,7 @@ docu gen
 
 .. code-block:: shell
 
-    > cd $HOME/vpy/docs
+    > cd vpy_docs
     > sphinx-apidoc -f -M -o source/ ../vpy
     > make html
 
