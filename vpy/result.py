@@ -105,15 +105,16 @@ class Result(Analysis):
                 r.append(rr)
             self.log.debug("average index: {}".format(s))
             self.log.debug("average index: {}".format(idx))
-            if self.io.plot == True:
+            if self.io.make_plot == True:
                 fig, ax = plt.subplots()
                 x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
                 ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
                 ax.semilogx(np.take(p_cal, self.flatten(idx)).tolist(), np.take(
                     error, self.flatten(idx)).tolist(), 'o', label="after refinement!")
                 handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc=3)
-                # plt.show()
+                ax.legend(handles, labels, loc=4)
+                plt.savefig("reject_outliers.pdf")
+                plt.clf()
             if idx == r:
                 break
             idx = r
@@ -201,6 +202,22 @@ class Result(Analysis):
 
         self.log.info("Result error table written")
 
+    def make_formula_section(self, ana):
+
+        form = {
+            "GasTemperature": "22.86",
+            "GasTemperatureUnit": "\\si{\\degreeCelsius}",
+            "ZeroUncertainty": "0.32e-07",
+            "ZeroUncertaintyUnit": "Pa",
+            "Evis": "0.1",
+            "EvisUnit": "\\si{\\percent}",
+            "GasTemperatureEvis": "296.01",
+            "GasTemperatureEvisUnit": "K"
+            }
+
+        self.store_dict(quant="Formula", d=form, dest=None)
+
+        self.log.info("Formula section written")
 
     def make_sigma_formula(self):
         pass

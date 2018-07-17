@@ -3,6 +3,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import pandas as pd
+import tempfile
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.result import Result
@@ -45,6 +46,7 @@ def main():
     res.reject_outliers_index(ana)
     res.make_offset_uncert(ana)
     res.make_error_table(ana)
+    res.make_formula_section(ana)
 
 
     # key = self.Pres.round_to_n(p_cal, 2)
@@ -73,7 +75,6 @@ def main():
     print(val.round_to_uncertainty_array([123,456,789],[0.01,1,10],2))
     print(val.round_to_sig_dig(0,2))
     print(val.round_to_uncertainty(0.,0.01,2))
-    
 
 if __name__ == "__main__":
     main()
