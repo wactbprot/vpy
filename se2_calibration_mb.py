@@ -38,6 +38,8 @@ def main():
     unc = Uncert(doc)
 
     ## Bsp. Berechn. Kalibrierdruck, Unsicherh.
+    cal.temperature_before(ana)
+    cal.temperature_room(ana)
     cal.pressure_cal(ana)
     cal.pressure_ind(ana)
     cal.pressure_offset(ana)

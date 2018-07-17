@@ -120,6 +120,7 @@ class Result(Analysis):
             idx = r
         self.average_index = idx
 
+
     def make_offset_uncert(self, ana):
         """Collects the pressure offsets of the main measurement only and
         calculates their standard deviation.
@@ -139,6 +140,7 @@ class Result(Analysis):
             len(mtime)) if mtime[i] == max_occurrences]
 
         self.offset_uncert = np.std(p_off_max_group)
+
 
     def make_error_table(self, ana):
 
@@ -202,11 +204,28 @@ class Result(Analysis):
 
         self.log.info("Result error table written")
 
+
     def make_formula_section(self, ana):
+
+        T_before = ana.pick("Temperature", "before", "C")
+        T_room = ana.pick("Temperature", "room", "C")
+        time = ana.pick("Time", "Date", "date")
+
+        sel = self.flatten(self.average_index) #indices of data points that are in results
+        T_before = np.take(T_before, sel)
+        T_room = np.take(T_room, sel)
+        time = np.take(time, sel)
+
+        print("here")
+        print(T_before)
+        print(T_room)
+        print(time)
 
         form = {
             "GasTemperature": "22.86",
             "GasTemperatureUnit": "\\si{\\degreeCelsius}",
+            "RoomTemperature": "22.91",
+            "RoomTemperatureUnit": "\\si{\\degreeCelsius}",
             "ZeroUncertainty": "0.32e-07",
             "ZeroUncertaintyUnit": "Pa",
             "Evis": "0.1",
@@ -227,3 +246,4 @@ class Result(Analysis):
 
     def make_sens_table(self):
         pass
+

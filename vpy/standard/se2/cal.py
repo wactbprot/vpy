@@ -20,9 +20,35 @@ class Cal(Se2):
         """
         pass
 
+    
+    def temperature_before(self, res):
+        """Simple translation from Measurement to Analysis
 
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        T_before = self.Temp.get_value("T_before", "C")
+        res.store("Temperature", "before", T_before, "C")
+
+
+    def temperature_room(self, res):
+        """Simple translation from Measurement to Analysis
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        T_room = self.Temp.get_value("T_room", "C")
+        res.store("Temperature", "room", T_room, "C")
+    
+    
     def pressure_cal(self, res):
-        """Simple translation foem Measurement to Analysis
+        """Simple translation from Measurement to Analysis
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
