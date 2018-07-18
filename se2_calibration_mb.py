@@ -48,6 +48,7 @@ def main():
     unc.temperature_vessel(ana)
     res.reject_outliers_index(ana)
     res.make_main_maesurement_index(ana)
+    res.make_pressure_range_index(ana)
     res.make_offset_uncert(ana)
     res.make_error_table(ana)
     res.make_formula_section(ana)

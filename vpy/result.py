@@ -51,6 +51,18 @@ class Result(Analysis):
         """
         return [item for sublist in l for item in sublist]
 
+
+    def gatherby(self, l, compare_function):
+        groups = {}
+        for x in l:
+            for y in groups:
+                if compare_function(x, y):
+                    groups[y].append(x)
+                    break
+            else: groups[x] = [x]
+        return list(groups.values())
+
+
     def u_PTB_rel(self, p_list):
         return np.asarray([np.piecewise(p, [p <= 0.00027, p <= 0.003, p <= 0.0073, p <= 0.09, p <= 10, p <= 80,  80 < p],
                                         [0.0014, 0.001, 0.00092, 0.00086, 0.00075, 0.00019, 0.00014]).tolist() for p in p_list])
@@ -138,18 +150,43 @@ class Result(Analysis):
         self.main_maesurement_index = idx
 
 
+    def make_pressure_range_index(self, ana):
+        """Collects indices of measurements with the same conversion factor.
+
+        :returns: list of lists of indices
+        :rtype: list
+        """
+
+        cf = ana.pick("Pressure", "cf", "")
+        idx = self.flatten(self.average_index)
+        r = {}
+
+        for i in idx:
+            for j in r:
+                if np.isclose(cf[i], cf[j], rtol=1.e-3):
+                    r[j].append(i)
+                    break
+            else: r[i] = [i]
+
+        self.pressure_range_index = list(r.values())
+
+
     def make_offset_uncert(self, ana):
-        """Collects the pressure offsets of the main measurement only and
-        calculates their standard deviation.
+        """Collects pressure offsets for each pressure range
+        calculates their standard deviation (separately).
 
         :returns: standard uncertainty of offsets
         :rtype: float
         """
 
         p_off = ana.pick("Pressure", "offset", "mbar")
-        p_off_max_group = np.take(p_off, self.main_maesurement_index)
+        cf = ana.pick("Pressure", "cf", "")
+        p_off = np.take(p_off, self.main_maesurement_index)
+        cf = np.take(cf, self.main_maesurement_index)
 
-        self.offset_uncert = np.std(p_off_max_group)
+        print("to be continued")
+
+        self.offset_uncert = np.std(p_off)
 
 
     def make_error_table(self, ana):
@@ -256,4 +293,3 @@ class Result(Analysis):
 
     def make_sens_table(self):
         pass
-
