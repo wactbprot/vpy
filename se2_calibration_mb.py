@@ -46,6 +46,7 @@ def main():
     cal.measurement_time(ana)
     unc.temperature_vessel(ana)
     res.reject_outliers_index(ana)
+    res.make_main_maesurement_index(ana)
     res.make_offset_uncert(ana)
     res.make_error_table(ana)
     res.make_formula_section(ana)
@@ -77,6 +78,7 @@ def main():
     print(val.round_to_uncertainty_array([123,456,789],[0.01,1,10],2))
     print(val.round_to_sig_dig(0,2))
     print(val.round_to_uncertainty(0.,0.01,2))
+    print(res.offset_uncert)
 
 if __name__ == "__main__":
     main()

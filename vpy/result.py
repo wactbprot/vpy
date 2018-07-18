@@ -121,6 +121,23 @@ class Result(Analysis):
         self.average_index = idx
 
 
+    def make_main_maesurement_index(self, ana):
+        """Collects indices of the main measurement in average_index.
+
+        :returns: list of indices
+        :rtype: list
+        """
+
+        idx = self.flatten(self.average_index)
+        mtime0 = ana.pick("Time", "Date", "date")
+        mtime = np.take(mtime0, idx).tolist()
+        occurrences = [[i, mtime.count(i)] for i in list(set(mtime))]
+        max_occurrence = sorted(occurrences, key=lambda j: j[1])[-1][0]
+        idx = [i for i in idx if mtime0[i] == max_occurrence]
+
+        self.main_maesurement_index = idx
+
+
     def make_offset_uncert(self, ana):
         """Collects the pressure offsets of the main measurement only and
         calculates their standard deviation.
@@ -128,16 +145,9 @@ class Result(Analysis):
         :returns: standard uncertainty of offsets
         :rtype: float
         """
+
         p_off = ana.pick("Pressure", "offset", "mbar")
-        p_off = self.flatten([np.take(p_off, i).tolist()
-                              for i in self.average_index])
-        mtime = ana.pick("Time", "Date", "date")
-        mtime = self.flatten([np.take(mtime, i).tolist()
-                              for i in self.average_index])
-        occurrences = [[i, mtime.count(i)] for i in list(set(mtime))]
-        max_occurrences = sorted(occurrences, key=lambda j: j[1])[-1][0]
-        p_off_max_group = [p_off[i] for i in range(
-            len(mtime)) if mtime[i] == max_occurrences]
+        p_off_max_group = np.take(p_off, self.main_maesurement_index)
 
         self.offset_uncert = np.std(p_off_max_group)
 
