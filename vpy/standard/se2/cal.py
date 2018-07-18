@@ -62,6 +62,7 @@ class Cal(Se2):
 
     def pressure_ind(self, res):
         """Simple translation from Measurement to Analysis
+           "ind" = "p_cor" != "p_ind"   !!!!
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -71,6 +72,23 @@ class Cal(Se2):
 
         p_cor = self.Pres.get_value("p_cor", " mbar")
         res.store("Pressure", "ind", p_cor, "mbar")
+
+
+    def pressure_conversion_factor(self, res):
+        """Simple translation from Measurement to Analysis
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        p_ind = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_ind"][0]["Value"])
+        p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
+        p_cor = self.Pres.get_value("p_cor", " mbar")
+        cf = p_cor / (p_ind - p_off)
+
+        res.store("Pressure", "cf", cf, "")
 
 
     def pressure_offset(self, res):
@@ -83,7 +101,11 @@ class Cal(Se2):
         """
 
         p_off = self.Pres.get_value("p_offset", " mbar")
+        cf = np.asarray([i for i in res.doc["Values"]["Pressure"] if i["Type"] == "cf"][0]["Value"])
+        p_off = p_off * cf
+
         res.store("Pressure", "offset", p_off, "mbar")
+
 
     def measurement_time(self, res):
         """Simple translation from Measurement to Analysis

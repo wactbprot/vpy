@@ -42,6 +42,7 @@ def main():
     cal.temperature_room(ana)
     cal.pressure_cal(ana)
     cal.pressure_ind(ana)
+    cal.pressure_conversion_factor(ana)
     cal.pressure_offset(ana)
     cal.measurement_time(ana)
     unc.temperature_vessel(ana)
@@ -50,7 +51,6 @@ def main():
     res.make_offset_uncert(ana)
     res.make_error_table(ana)
     res.make_formula_section(ana)
-
 
     # key = self.Pres.round_to_n(p_cal, 2)
     # p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]
