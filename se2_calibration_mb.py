@@ -51,6 +51,7 @@ def main():
     res.make_pressure_range_index(ana)
     res.make_error_table(ana)
     res.make_formula_section(ana)
+    res.fit_thermal_transpiration()
 
     # key = self.Pres.round_to_n(p_cal, 2)
     # p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]

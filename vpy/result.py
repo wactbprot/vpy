@@ -3,6 +3,7 @@ import subprocess
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
 #from .document import Document
 from .analysis import Analysis
 from .todo import ToDo
@@ -181,9 +182,9 @@ class Result(Analysis):
 
         av_idx = self.average_index
         n_avr = np.asarray([len(i) for i in av_idx])
-        cal = np.asarray([np.mean(np.take(cal, i)) for i in av_idx])
-        ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
-        error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
+        cal = self.cal = np.asarray([np.mean(np.take(cal, i)) for i in av_idx])
+        ind = self.ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
+        error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
 
         mm_idx = self.main_maesurement_index
         pr_idx = self.pressure_range_index
@@ -198,10 +199,8 @@ class Result(Analysis):
         self.offset_uncertainty = min(offset_unc)
 
         # digitizing error still missing
-        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal)) **
-                            2 + (offset_unc / np.sqrt(n_avr))**2)
-        k2 = 2 * 100 * ind / cal * \
-            np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
+        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + (offset_unc / np.sqrt(n_avr))**2)
+        k2 = self.k2 = 2 * 100 * ind / cal * np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
 
         #format output
         cal_str = [f"{i:.4e}" for i in cal]
@@ -292,6 +291,33 @@ class Result(Analysis):
         self.store_dict(quant="Formula", d=form, dest=None)
 
         self.log.info("Formula section written")
+
+
+    def fit_thermal_transpiration(self):
+
+        def model(p, a, b, c, d):
+            return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
+
+        para_val, covariance = curve_fit(model, self.cal, self.ind)
+        para_unc = np.sqrt(np.diag(covariance))
+
+        if self.io.make_plot == True:
+                fig, ax = plt.subplots()
+                x = self.cal
+                xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
+                ax.errorbar(self.cal, self.ind, self.k2, fmt='o', label="error")
+                ax.semilogx(xdata, model(xdata, *para_val), '-', label="model")
+                handles, labels = ax.get_legend_handles_labels()
+                ax.legend(handles, labels, loc=4)
+                para_names = ["a", "b", "c", "d"]
+                para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
+                para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
+                text = "\n".join([para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] for i in range(len(para_names))])
+                plt.title("d + 3.5 / (a p^2 + b p + c sqrt(p) + 1)")          
+                ax.annotate(text, xy=(0.6, 0.7), xycoords='figure fraction')
+                plt.savefig("fit_thermal_transpiration.pdf")
+                plt.clf()
+        
 
     def make_sigma_formula(self):
         pass
