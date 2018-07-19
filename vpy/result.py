@@ -193,6 +193,9 @@ class Result(Analysis):
             for j in i:
                 offset_unc[j] = unc
         offset_unc = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
+        # should outliers by rejected? e.g. forgot to switch
+        # measurement range for offset but switched for p_ind
+        self.offset_uncertainty = min(offset_unc)
 
         # digitizing error still missing
         u_ind_abs = np.sqrt((cal * self.repeat_rel(cal)) **
@@ -253,28 +256,36 @@ class Result(Analysis):
 
         T_before = ana.pick("Temperature", "before", "C")
         T_room = ana.pick("Temperature", "room", "C")
-        time = ana.pick("Time", "Date", "date")
 
-        sel = self.flatten(self.average_index) #indices of data points that are in results
-        T_before = np.take(T_before, sel)
-        T_room = np.take(T_room, sel)
-        time = np.take(time, sel)
+        mm_idx = self.main_maesurement_index
+        
+        T_before = np.take(T_before, mm_idx)
+        T_before_mean = np.mean(T_before)
+        T_before_unc = np.std(T_before)
+        T_before_mean_str = self.Val.round_to_uncertainty(T_before_mean, T_before_unc, 2)
+        T_before_unc_str = self.Val.round_to_sig_dig(T_before_unc, 2)
+        
+        T_room = np.take(T_room, mm_idx)
+        T_room_mean = np.mean(T_room)
+        T_room_unc = np.std(T_room)
+        T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
+        T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
 
-        # print("here")
-        # print(T_before)
-        # print(T_room)
-        # print(time)
+        zero_stability_str = self.Val.round_to_sig_dig(self.offset_uncertainty, 2)
 
         form = {
-            "GasTemperature": "22.86",
+            "GasTemperature": T_before_mean_str,
+            "GasTemperatureUncertainty": T_before_unc_str,
             "GasTemperatureUnit": "\\si{\\degreeCelsius}",
-            "RoomTemperature": "22.91",
+            "RoomTemperature": T_room_mean_str,
+            "RoomTemperatureUncertainty": T_room_unc_str,
             "RoomTemperatureUnit": "\\si{\\degreeCelsius}",
-            "ZeroUncertainty": "0.32e-07",
-            "ZeroUncertaintyUnit": "Pa",
+            "ZeroStability": zero_stability_str,
+            "ZeroStabilityUnit": "mbar",
             "Evis": "0.1",
             "EvisUnit": "\\si{\\percent}",
             "GasTemperatureEvis": "296.01",
+            "GasTemperatureEvisUncertainty": "0.28",
             "GasTemperatureEvisUnit": "K"
             }
 
