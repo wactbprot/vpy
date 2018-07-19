@@ -171,29 +171,13 @@ class Result(Analysis):
         self.pressure_range_index = list(r.values())
 
 
-    def make_offset_uncert(self, ana):
-        """Collects pressure offsets for each pressure range
-        calculates their standard deviation (separately).
-
-        :returns: standard uncertainty of offsets
-        :rtype: float
-        """
-
-        p_off = ana.pick("Pressure", "offset", "mbar")
-        cf = ana.pick("Pressure", "cf", "")
-        p_off = np.take(p_off, self.main_maesurement_index)
-        cf = np.take(cf, self.main_maesurement_index)
-
-        print("to be continued")
-
-        self.offset_uncert = np.std(p_off)
-
-
     def make_error_table(self, ana):
 
         cal = ana.pick("Pressure", "cal", "mbar")
         ind = ana.pick("Pressure", "ind", "mbar")
         error = 100 * (ind - cal) / cal
+
+        p_off = ana.pick("Pressure", "offset", "mbar")
 
         av_idx = self.average_index
         n_avr = np.asarray([len(i) for i in av_idx])
@@ -201,9 +185,18 @@ class Result(Analysis):
         ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
         error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
 
+        mm_idx = self.main_maesurement_index
+        pr_idx = self.pressure_range_index
+        offset_unc = [None] * len(p_off)
+        for i in pr_idx:
+            unc = np.std([p_off[j] for j in i if j in mm_idx])
+            for j in i:
+                offset_unc[j] = unc
+        offset_unc = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
+
         # digitizing error still missing
         u_ind_abs = np.sqrt((cal * self.repeat_rel(cal)) **
-                            2 + (self.offset_uncert / np.sqrt(n_avr))**2)
+                            2 + (offset_unc / np.sqrt(n_avr))**2)
         k2 = 2 * 100 * ind / cal * \
             np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
 
@@ -213,7 +206,11 @@ class Result(Analysis):
         error_str = self.Val.round_to_uncertainty_array(error, k2, 2)
         k2_str = self.Val.round_to_sig_dig_array(k2, 2)
  
-        print(error_str)
+        # print("error_table")
+        # print(cal_str)
+        # print(ind_str)
+        # print(error_str)
+        # print(k2_str)
 
         p_cal = {
             "Type": "cal",
@@ -263,10 +260,10 @@ class Result(Analysis):
         T_room = np.take(T_room, sel)
         time = np.take(time, sel)
 
-        print("here")
-        print(T_before)
-        print(T_room)
-        print(time)
+        # print("here")
+        # print(T_before)
+        # print(T_room)
+        # print(time)
 
         form = {
             "GasTemperature": "22.86",

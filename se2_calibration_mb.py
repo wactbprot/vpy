@@ -49,7 +49,6 @@ def main():
     res.reject_outliers_index(ana)
     res.make_main_maesurement_index(ana)
     res.make_pressure_range_index(ana)
-    res.make_offset_uncert(ana)
     res.make_error_table(ana)
     res.make_formula_section(ana)
 
@@ -64,7 +63,6 @@ def main():
     print("*******")
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
-    print(res.offset_uncert)
     io.save_doc(res.build_doc(dest="Result"))
     print(5<3<5)
     a=np.pi**50
@@ -79,7 +77,6 @@ def main():
     print(val.round_to_uncertainty_array([123,456,789],[0.01,1,10],2))
     print(val.round_to_sig_dig(0,2))
     print(val.round_to_uncertainty(0.,0.01,2))
-    print(res.offset_uncert)
 
 if __name__ == "__main__":
     main()

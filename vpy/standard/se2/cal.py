@@ -100,7 +100,7 @@ class Cal(Se2):
         :type: class
         """
 
-        p_off = self.Pres.get_value("p_offset", " mbar")
+        p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
         cf = np.asarray([i for i in res.doc["Values"]["Pressure"] if i["Type"] == "cf"][0]["Value"])
         p_off = p_off * cf
 
