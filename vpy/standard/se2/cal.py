@@ -56,7 +56,7 @@ class Cal(Se2):
         :type: class
         """
 
-        p_cal = self.Pres.get_value("p_cal", " mbar")
+        p_cal = self.Pres.get_value("p_cal", "mbar")
         res.store("Pressure", "cal", p_cal, "mbar")
 
 
@@ -102,7 +102,11 @@ class Cal(Se2):
 
         p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
         cf = np.asarray([i for i in res.doc["Values"]["Pressure"] if i["Type"] == "cf"][0]["Value"])
+        print("hide me:)")
         p_off = p_off * cf
+        print(p_off)
+        p_off = [0 if p_off[i] == 0 else p_off[i] * cf[i] for i in range(len(p_off))]
+        print(p_off)
 
         res.store("Pressure", "offset", p_off, "mbar")
 
@@ -116,5 +120,5 @@ class Cal(Se2):
         :type: class
         """
 
-        time = self.Date.parse_labview_date("Date")
+        time = self.Date.parse_labview_date()
         res.store("Time", "Date", time, "date")

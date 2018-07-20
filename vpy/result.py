@@ -177,7 +177,7 @@ class Result(Analysis):
         cal = ana.pick("Pressure", "cal", "mbar")
         ind = ana.pick("Pressure", "ind", "mbar")
         error = 100 * (ind - cal) / cal
-
+        
         p_off = ana.pick("Pressure", "offset", "mbar")
 
         av_idx = self.average_index
@@ -190,14 +190,21 @@ class Result(Analysis):
         pr_idx = self.pressure_range_index
         offset_unc = [None] * len(p_off)
         for i in pr_idx:
-            unc = np.std([p_off[j] for j in i if j in mm_idx])
+            print("hello")
+            print(av_idx)
+            print(pr_idx)
+            print(mm_idx)
+            print([p_off[j] for j in i if j in mm_idx and not np.isnan(p_off[j])])
+            unc = np.std([p_off[j] for j in i if j in mm_idx and not np.isnan(p_off[j])])
             for j in i:
                 offset_unc[j] = unc
         offset_unc = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
         # should outliers by rejected? e.g. forgot to switch
         # measurement range for offset but switched for p_ind
         self.offset_uncertainty = min(offset_unc)
-
+        print("bite me:)")
+        print(offset_unc)
+        
         # digitizing error still missing
         u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + (offset_unc / np.sqrt(n_avr))**2)
         k2 = self.k2 = 2 * 100 * ind / cal * np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
