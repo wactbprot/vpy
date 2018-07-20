@@ -53,14 +53,14 @@ class Result(Analysis):
         return [item for sublist in l for item in sublist]
 
 
-    def gatherby(self, l, compare_function):
+    def gatherby_idx(self, l, compare_function):
         groups = {}
-        for x in l:
-            for y in groups:
-                if compare_function(x, y):
-                    groups[y].append(x)
+        for i in range(len(l)):
+            for j in groups:
+                if compare_function(l[i], l[j]):
+                    groups[j].append(i)
                     break
-            else: groups[x] = [x]
+            else: groups[i] = [i]
         return list(groups.values())
 
 
@@ -195,7 +195,7 @@ class Result(Analysis):
             print(pr_idx)
             print(mm_idx)
             print([p_off[j] for j in i if j in mm_idx and not np.isnan(p_off[j])])
-            unc = np.std([p_off[j] for j in i if j in mm_idx and not np.isnan(p_off[j])])
+            unc = np.std([p_off[j] for j in i if j in mm_idx and np.isfinite(p_off[j])])
             for j in i:
                 offset_unc[j] = unc
         offset_unc = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])

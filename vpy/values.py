@@ -40,6 +40,7 @@ class Values(Document):
         """ Rounds the value ``val`` to ``n`` significant digits
         and outputs a formated string
         """
+        if not np.isfinite(val): return "nan"
         if n < 0: n = 0
         if val == 0: return f"{0:.{n - 1}f}"
         else:
@@ -65,6 +66,7 @@ class Values(Document):
         """ Rounds the value ``val`` to the ``n``th significant digit
         of its uncertainty ``unc`` and outputs a formated string
         """
+        if not np.isfinite(val) or not np.isfinite(unc) or unc == 0: return "nan"
         if val == 0: val_power = 0
         else: val_power = int(np.floor(np.log10(abs(val))))
         unc_power = int(np.floor(np.log10(abs(unc))))
