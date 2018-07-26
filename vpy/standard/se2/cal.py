@@ -21,7 +21,7 @@ class Cal(Se2):
         pass
 
     
-    def temperature_before(self, res):
+    def temperature_after(self, res):
         """Simple translation from Measurement to Analysis
 
         :param: Class with methode
@@ -30,8 +30,8 @@ class Cal(Se2):
         :type: class
         """
 
-        T_before = self.Temp.get_value("T_before", "C")
-        res.store("Temperature", "before", T_before, "C")
+        T_after = self.Temp.get_value("T_after", "C")
+        res.store("Temperature", "after", T_after, "C")
 
 
     def temperature_room(self, res):
@@ -102,11 +102,8 @@ class Cal(Se2):
 
         p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
         cf = np.asarray([i for i in res.doc["Values"]["Pressure"] if i["Type"] == "cf"][0]["Value"])
-        print("hide me:)")
         p_off = p_off * cf
-        print(p_off)
         p_off = [0 if p_off[i] == 0 else p_off[i] * cf[i] for i in range(len(p_off))]
-        print(p_off)
 
         res.store("Pressure", "offset", p_off, "mbar")
 

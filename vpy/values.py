@@ -142,9 +142,9 @@ class Date(Values):
         """
         locale.setlocale(locale.LC_TIME, "")
         val1 = self.get_str("Date")
-        val2 = self.get_all()["Time"]["Value"]
-        val = [val1[i] + "T" + val2[i] for i in range(len(val1))]
-        val = [time.mktime(time.strptime(i, "%Y-%m-%dT%H:%M  ")) for i in val]
+        #val2 = self.get_all()["Time"]["Value"]
+        #val = [val1[i] + "T" + val2[i] for i in range(len(val1))]
+        val = [time.mktime(time.strptime(i, "%Y-%m-%d")) for i in val1]
 
         # p = re.compile('^[A-Z]{1}[a-z]{1}, [A-Z]{1}[a-z]{2} [0-3]{1}[0-9]{1}, [0-9]{4}$')
         # r =[]

@@ -27,6 +27,27 @@ class Result(Analysis):
         "mbar": "mbar",
         "%": "{\\(\\si{\\percent}\\)}"
         }
+    unit = {
+        "mbar": "\\mbar",
+        "Pa": "\\mbar"
+        }
+    gas = {
+        "de": {
+            "Ar": "Argon",
+            "H2": "Wasserstoff",
+            "N2": "Stickstoff",
+            "Ne": "Neon",
+            "O2": "Sauerstoff"
+            },
+        "en": {
+            "Ar": "argon",
+            "H2": "hydrogen",
+            "N2": "nitrogen",
+            "Ne": "neon",
+            "O2": "oxygen"
+            }
+        }
+
 
     def __init__(self, doc):
 
@@ -92,6 +113,9 @@ class Result(Analysis):
         self.ToDo.make_average_index(p_cal, "mbar")
         idx = self.ToDo.average_index
         self.log.debug("average index: {}".format(idx))
+        # coarse filtering
+        idx = [[j for j in i if abs(error[j]) < 0.5] for i in idx]
+        # fine filtering
         while True:
             r = []
             ref_mean = [None] * len(idx)
@@ -112,8 +136,8 @@ class Result(Analysis):
                     ref = np.take(error, ref_idx0).tolist()
                     ref_mean[i] = np.mean(ref)
                     ref_std[i] = np.std(ref)
-                    # only accept indices if error[idx[i][j]] deviates either less than 5% or 10*sigma from neighbors
-                    if abs(ref_mean[i] - error[idx[i][j]]) < max(0.05, 10 * ref_std[i]):
+                    # only accept indices if error[idx[i][j]] deviates either less than 5% or 5*sigma from neighbors
+                    if abs(ref_mean[i] - error[idx[i][j]]) < max(0.05, 5* ref_std[i]):
                         rr.append(idx[i][j])
                 r.append(rr)
             self.log.debug("average index: {}".format(s))
@@ -125,7 +149,7 @@ class Result(Analysis):
                 ax.semilogx(np.take(p_cal, self.flatten(idx)).tolist(), np.take(
                     error, self.flatten(idx)).tolist(), 'o', label="after refinement!")
                 handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc=4)
+                ax.legend(handles, labels, loc=0)
                 plt.savefig("reject_outliers.pdf")
                 plt.clf()
             if idx == r:
@@ -260,16 +284,16 @@ class Result(Analysis):
 
     def make_formula_section(self, ana):
 
-        T_before = ana.pick("Temperature", "before", "C")
+        T_after = ana.pick("Temperature", "after", "C")
         T_room = ana.pick("Temperature", "room", "C")
 
         mm_idx = self.main_maesurement_index
         
-        T_before = np.take(T_before, mm_idx)
-        T_before_mean = np.mean(T_before)
-        T_before_unc = np.std(T_before)
-        T_before_mean_str = self.Val.round_to_uncertainty(T_before_mean, T_before_unc, 2)
-        T_before_unc_str = self.Val.round_to_sig_dig(T_before_unc, 2)
+        T_after = np.take(T_after, mm_idx)
+        T_after_mean = np.mean(T_after)
+        T_after_unc = np.std(T_after)
+        T_after_mean_str = self.Val.round_to_uncertainty(T_after_mean, T_after_unc, 2)
+        T_after_unc_str = self.Val.round_to_sig_dig(T_after_unc, 2)
         
         T_room = np.take(T_room, mm_idx)
         T_room_mean = np.mean(T_room)
@@ -279,20 +303,28 @@ class Result(Analysis):
 
         zero_stability_str = self.Val.round_to_sig_dig(self.offset_uncertainty, 2)
 
+        target = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Value"]
+        target_unit = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Unit"]
+        target_unit = self.unit[target_unit]
+        gas = self.org["Calibration"]["ToDo"]["Gas"]
+        language = self.org["Calibration"]["Customer"]["Lang"]
+        gas = self.gas[language][gas]
+
         form = {
-            "GasTemperature": T_before_mean_str,
-            "GasTemperatureUncertainty": T_before_unc_str,
-            "GasTemperatureUnit": "\\si{\\degreeCelsius}",
+            "GasTemperature": T_after_mean_str,
+            "GasTemperatureUncertainty": T_after_unc_str,
+            "MeasurementDate": "2018-07-19",
+            "PressureRangeBegin": target[0],
+            "PressureRangeEnd": target[-1],
+            "PressureRangeUnit": target_unit,
+            "GasSpecies": gas,
             "RoomTemperature": T_room_mean_str,
             "RoomTemperatureUncertainty": T_room_unc_str,
-            "RoomTemperatureUnit": "\\si{\\degreeCelsius}",
             "ZeroStability": zero_stability_str,
-            "ZeroStabilityUnit": "mbar",
+            "ZeroStabilityUnit": target_unit,
             "Evis": "0.1",
-            "EvisUnit": "\\si{\\percent}",
             "GasTemperatureEvis": "296.01",
-            "GasTemperatureEvisUncertainty": "0.28",
-            "GasTemperatureEvisUnit": "K"
+            "GasTemperatureEvisUncertainty": "0.28"
             }
 
         self.store_dict(quant="Formula", d=form, dest=None)
@@ -305,14 +337,14 @@ class Result(Analysis):
         def model(p, a, b, c, d):
             return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
 
-        para_val, covariance = curve_fit(model, self.cal, self.ind)
+        para_val, covariance = curve_fit(model, self.cal, self.error)
         para_unc = np.sqrt(np.diag(covariance))
 
         if self.io.make_plot == True:
                 fig, ax = plt.subplots()
                 x = self.cal
                 xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
-                ax.errorbar(self.cal, self.ind, self.k2, fmt='o', label="error")
+                ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
                 ax.semilogx(xdata, model(xdata, *para_val), '-', label="model")
                 handles, labels = ax.get_legend_handles_labels()
                 ax.legend(handles, labels, loc=4)
