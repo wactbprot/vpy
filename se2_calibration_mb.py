@@ -80,6 +80,12 @@ def main():
     print(val.round_to_uncertainty_array([123,456,789],[0.01,1,10],2))
     print(val.round_to_sig_dig(0,2))
     print(val.round_to_uncertainty(0.,0.01,2))
+    print(doc["Calibration"]["CustomerObject"]["Class"])
+    print(doc["Calibration"]["CustomerObject"]["Owner"]["Name"])
+    print(doc["Calibration"]["ToDo"]["Name"])
+    print(doc["Calibration"]["ToDo"]["Values"]["Pressure"]["Unit"])
+    print(doc["Calibration"]["ToDo"]["Type"])
+    print(val.unit_convert("%","mbar"))
 
 if __name__ == "__main__":
     main()

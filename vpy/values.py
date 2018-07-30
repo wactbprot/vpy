@@ -36,9 +36,36 @@ class Values(Document):
             if name in doc:
                 super().__init__(doc[name])
 
+    def unit_convert(self, a, b="1"):
+        """Returns conversion factor from unit a to unit b. Returns
+        conversion factor to SI units if no second argument is given.
+
+        :param a: initial unit
+        :type a: str
+        :param b: target unit
+        :type b: str
+        :returns: conversion factor
+        :rtype: float
+        """
+        to_SI = {
+            "1": 1,
+            "%": 0.01,
+            "mbar": 100,
+            "Pa": 1,
+            "Torr": 133.322
+            }
+        return to_SI[a]/to_SI[b]
+    
     def round_to_sig_dig(self, val, n):
         """ Rounds the value ``val`` to ``n`` significant digits
         and outputs a formated string
+
+        :param val: value to be rounded
+        :type val: float
+        :param n: number of significant digits
+        :type n: integer       
+        :returns: formated string
+        :rtype: str
         """
         if not np.isfinite(val): return "nan"
         if n < 0: n = 0
@@ -65,6 +92,15 @@ class Values(Document):
     def round_to_uncertainty(self, val, unc, n):
         """ Rounds the value ``val`` to the ``n``th significant digit
         of its uncertainty ``unc`` and outputs a formated string
+
+        :param val: value to be rounded
+        :type val: float
+        :param unc: uncertainty of the value
+        :type unc: float       
+        :param n: number of significant digits of uncertainty
+        :type n: integer       
+        :returns: formated string
+        :rtype: str
         """
         if not np.isfinite(val) or not np.isfinite(unc) or unc == 0: return "nan"
         if val == 0: val_power = 0

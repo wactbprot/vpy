@@ -36,15 +36,13 @@ class Result(Analysis):
             "Ar": "Argon",
             "H2": "Wasserstoff",
             "N2": "Stickstoff",
-            "Ne": "Neon",
-            "O2": "Sauerstoff"
+            "Ne": "Neon"
             },
         "en": {
             "Ar": "argon",
             "H2": "hydrogen",
             "N2": "nitrogen",
-            "Ne": "neon",
-            "O2": "oxygen"
+            "Ne": "neon"
             }
         }
 
