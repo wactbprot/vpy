@@ -29,7 +29,7 @@ class Result(Analysis):
         }
     unit = {
         "mbar": "\\mbar",
-        "Pa": "\\mbar"
+        "Pa": "\\Pa"
         }
     gas = {
         "de": {
@@ -349,9 +349,11 @@ class Result(Analysis):
                 para_names = ["a", "b", "c", "d"]
                 para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
                 para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
-                text = "\n".join([para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] for i in range(len(para_names))])
-                plt.title("d + 3.5 / (a p^2 + b p + c sqrt(p) + 1)")          
+                text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
+                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)          
                 ax.annotate(text, xy=(0.6, 0.7), xycoords='figure fraction')
+                plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+                plt.ylabel(r"$e\;(\%)$")
                 plt.savefig("fit_thermal_transpiration.pdf")
                 plt.clf()
         

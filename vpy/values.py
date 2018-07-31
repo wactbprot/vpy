@@ -36,10 +36,13 @@ class Values(Document):
             if name in doc:
                 super().__init__(doc[name])
 
-    def unit_convert(self, a, b="1"):
-        """Returns conversion factor from unit a to unit b. Returns
-        conversion factor to SI units if no second argument is given.
 
+    def unit_convert(self, val, a, b="1"):
+        """Returns value converted from unit a to unit b. Returns
+        value in SI units if no third argument is given.
+
+        :param val: value to be converted
+        :type a: float
         :param a: initial unit
         :type a: str
         :param b: target unit
@@ -48,14 +51,33 @@ class Values(Document):
         :rtype: float
         """
         to_SI = {
-            "1": 1,
-            "%": 0.01,
-            "mbar": 100,
-            "Pa": 1,
-            "Torr": 133.322
+            "1": val*1,
+            "%": val*0.01,
+            "C": val+273.15,
+            "K": val,
+            "mbar": val*100,
+            "Pa": val*1,
+            "Torr": val*133.322
             }
-        return to_SI[a]/to_SI[b]
+        val = to_SI[a]
+        to_target_unit = {
+            "1": val/1,
+            "%": val/0.01,
+            "C": val-273.15,
+            "K": val,
+            "mbar": val/100,
+            "Pa": val/1,
+            "Torr": val/133.322            
+            }        
+        return to_target_unit[b]
+
+
+    def unit_convert_array(self, val_arr, a, b="1"):
+        """ Applies ``unit_convert`` to array of values ``val_arr``
+        """
+        return np.asarray([self.unit_convert(i, a, b) for i in val_arr])
     
+
     def round_to_sig_dig(self, val, n):
         """ Rounds the value ``val`` to ``n`` significant digits
         and outputs a formated string
@@ -84,10 +106,12 @@ class Values(Document):
         if n < 0: n = 0
         return f"{val:.{n}e}"
 
+
     def round_to_sig_dig_array(self, val_arr, n):
         """ Applies ``round_to_sig_dig`` to the array ``val_arr``
         """
         return np.asarray([self.round_to_sig_dig(i, n) for i in val_arr])
+
 
     def round_to_uncertainty(self, val, unc, n):
         """ Rounds the value ``val`` to the ``n``th significant digit
@@ -109,11 +133,13 @@ class Values(Document):
         n = val_power - unc_power + n
         return self.round_to_sig_dig(val, n)
 
+
     def round_to_uncertainty_array(self, val_arr, unc_arr, n):
         """ Applies ``round_to_uncertainty`` to the array of values ``val_arr``
         using the array of uncertainties ``unc_arr``
         """
         return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n) for i in range(len(val_arr))])
+    
     
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):
