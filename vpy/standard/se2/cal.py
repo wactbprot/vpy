@@ -70,7 +70,7 @@ class Cal(Se2):
         :type: class
         """
 
-        p_cor = self.Pres.get_value("p_cor", " mbar")
+        p_cor = self.Pres.get_value("p_cor", "mbar")
         res.store("Pressure", "ind", p_cor, "mbar")
 
 
@@ -85,7 +85,7 @@ class Cal(Se2):
 
         p_ind = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_ind"][0]["Value"])
         p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
-        p_cor = self.Pres.get_value("p_cor", " mbar")
+        p_cor = self.Pres.get_value("p_cor", "mbar")
         cf = p_cor / (p_ind - p_off)
 
         res.store("Pressure", "cf", cf, "")
@@ -117,5 +117,5 @@ class Cal(Se2):
         :type: class
         """
 
-        time = self.Date.parse_labview_date()
+        time = self.Date.parse_labview_date2()
         res.store("Time", "Date", time, "date")

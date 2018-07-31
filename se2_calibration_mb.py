@@ -91,6 +91,7 @@ def main():
     print(val.unit_convert_array([1,2,3,4],"C"))
     print(val.unit_convert_array([1,2,3,4],"C","K"))
     print(val.unit_convert_array([1,2,3,4],"K","C"))
+    print(ana.pick("Time","Date","date"))
 
 if __name__ == "__main__":
     main()
