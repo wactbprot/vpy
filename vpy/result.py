@@ -224,11 +224,9 @@ class Result(Analysis):
         # should outliers by rejected? e.g. forgot to switch
         # measurement range for offset but switched for p_ind
         self.offset_uncertainty = min(offset_unc)
-        print("bite me:)")
-        print(offset_unc)
         
         # digitizing error still missing
-        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + (offset_unc / np.sqrt(n_avr))**2)
+        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + offset_unc**2)
         k2 = self.k2 = 2 * 100 * ind / cal * np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
 
         #format output

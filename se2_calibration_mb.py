@@ -79,10 +79,10 @@ def main():
     print(doc["Calibration"]["ToDo"]["Type"])
     print(val.unit_convert(5,"Torr","mbar"))
     print(val.unit_convert(5,"Torr"))
-    print(val.unit_convert_array([1,2,3,4],"Torr"))
-    print(val.unit_convert_array([1,2,3,4],"C"))
-    print(val.unit_convert_array([1,2,3,4],"C","K"))
-    print(val.unit_convert_array([1,2,3,4],"K","C"))
+    print(val.unit_convert(np.asarray([1,2,3,4]),"Torr"))
+    print(val.unit_convert(np.asarray([1,2,3,4]),"C"))
+    print(val.unit_convert(np.asarray([1,2,3,4]),"C","K"))
+    print(val.unit_convert(np.asarray([1,2,3,4]),"K","C"))
     print(ana.pick("Time","Date","date"))
 
 if __name__ == "__main__":

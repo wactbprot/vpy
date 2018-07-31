@@ -38,11 +38,11 @@ class Values(Document):
 
 
     def unit_convert(self, val, a, b="1"):
-        """Returns value converted from unit a to unit b. Returns
-        value in SI units if no third argument is given.
+        """Returns value (or numpy array of values) converted from unit a to unit b.
+        Returns value in SI units if no third argument is given.
 
-        :param val: value to be converted
-        :type a: float
+        :param val: value (or numpy array of values) to be converted
+        :type a: float (or numpy array of floats)
         :param a: initial unit
         :type a: str
         :param b: target unit
@@ -71,12 +71,6 @@ class Values(Document):
             }        
         return to_target_unit[b]
 
-
-    def unit_convert_array(self, val_arr, a, b="1"):
-        """ Applies ``unit_convert`` to array of values ``val_arr``
-        """
-        return np.asarray([self.unit_convert(i, a, b) for i in val_arr])
-    
 
     def round_to_sig_dig(self, val, n):
         """ Rounds the value ``val`` to ``n`` significant digits
