@@ -118,4 +118,4 @@ class Cal(Se2):
         """
 
         time = self.Date.parse_labview_date()
-        res.store("Time", "Date", time, "date")
+        res.store("Date", "measurement", time, "date")

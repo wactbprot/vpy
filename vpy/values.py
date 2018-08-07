@@ -205,16 +205,16 @@ class Date(Values):
         r =[]
         for i in val:
             if p1.match(i):
-                t = time.mktime(time.strptime(i, '%a, %b %d, %Y'))
+                t = time.strptime(i, '%a, %b %d, %Y')
             elif p2.match(i):
-                t = time.mktime(time.strptime(i, "%Y-%m-%d"))
+                t = time.strptime(i, "%Y-%m-%d")
             else:
                 t = np.nan
                 print("date conversion did not work out!")
 
-            r.append(t)
+            r.append(time.strftime("%Y-%m-%d", t))
 
-        return np.asarray(r)
+        return r
 
 
 class AuxValues(Document):
