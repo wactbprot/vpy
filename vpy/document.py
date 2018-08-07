@@ -65,31 +65,38 @@ class Document(object):
 
         return ret
 
-    def get_obj(self, t, unit):
-        """Abbreviation for the method ``get_object``:
-        searches an dict (o) by means of method ``get_object``.
-        Compares ``o.Unit`` with ``unit`` parameter and returns
-        *numpy* typed values by means of method ``get_value``.
+    def get_value_and_unit(self, type):
+        """Intended use for this method: **extracting values when unit is unknown**.
+        Searches ``dict`` by means of method ``get_object()`` and extracts the unit.
+        Uses ``get_value()`` to shape values.
 
-        :param val: val value of the key Type to search for
-        :type val: str
-        :param unit: unit expected unit of the returned result
-        :type unit: str
+        :param type: val value of the key Type to search for
+        :type type: str
 
-        :returns: dict with Type, Value, Unit keys
-        :rtype: {Type: str, Unit: str, Value: np.array}
+        :returns: values, unit
+        :rtype: np.array, str
         """
-        ret = None
+        value = None
+        unit = None
 
-        obj = self.get_object("Type", t)
+        obj = self.get_object("Type", type)
         if obj is not None:
-            val = self.get_value(t, unit, obj)
-            obj["Value"] = val
-            ret = obj
-        else:
-            self.log.warning("Type {} not found".format(t))
+            if "Unit" in obj:
+                unit = obj['Unit']
+                value = self.get_value(type, unit, obj)
+            else:
+                msg = "Missing Unit propertyfor Type: {}".format(type)
+                self.log.error(msg)
+                sys.exit(msg)
 
-        return ret
+        else:
+            msg = "Type {} not found".format(type)
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return value, unit
+
+
 
     def get_expression(self, t, unit, o=False):
         """Gets an dict by means of ``o=get_object()``,
@@ -225,7 +232,21 @@ class Document(object):
 
         return ret.astype(np.float)
 
-    def get_object(self, key, val, o=False, d=0):
+    def get_dict(self, key, value, o=False):
+        """ Wrapper methode for get_object with more healthy name.
+
+        :param key: key to search for
+        :type key: str
+
+        :param val: val of key
+        :type val: str
+
+        :returns: res
+        :rtype: dict
+        """
+        return self.get_object(key, value, o=False)
+
+    def get_object(self, key, value, o=False):
         """Recursive  searches obj for
         ''obj[key] == val'' and returns obj
 
@@ -238,25 +259,25 @@ class Document(object):
         :returns: res
         :rtype: dict
         """
-        # self.log.debug("recursion level is: {}".format(d))
+
         if o:
             obj = copy.deepcopy(o)
         else:
             obj = copy.deepcopy(self.doc)
 
         if isinstance(obj, dict):
-            if key in obj and obj[key] == val:
+            if key in obj and obj[key] == value:
                 return obj
             else:
                 for k, v in obj.items():
                     if isinstance(v, dict) or isinstance(v, list):
-                        res = self.get_object(key, val, v, d + 1)
+                        res = self.get_object(key, value, v)
                         if res is not None:
                             return res
 
         if isinstance(obj, list):
             for l in obj:
                 if isinstance(l, dict) or isinstance(l, list):
-                    res = self.get_object(key, val, l, d + 1)
+                    res = self.get_object(key, value, l)
                     if res is not None:
                         return res

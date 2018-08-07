@@ -128,20 +128,16 @@ class TestDocument(unittest.TestCase):
         res = self.Doc.get_array("b_", (1,2,3), "", "s")
         self.assertEqual(np.shape(res), (3, 3))
 
-    def test_get_obj_1(self):
-        """Should return the dict.
-        """
-        res = self.Doc.get_obj("b", "s")
-        self.assertEqual(res["Type"], 'b')
-
-    def test_get_obj_2(self):
-        """Should return None.
-        """
-        res = self.Doc.get_obj("x", "s")
-        self.assertIsNone(res)
 
     def test_get_expression_1(self):
         """Should return a sympy Expression
         """
         res = self.Doc.get_expression("expr","s")
         self.assertTrue(type(res).__module__ == 'sympy.core.mul')
+
+    def test_get_value_and_unit_1(self):
+        """Should return value and unit
+        """
+        val, unit = self.Doc.get_value_and_unit("a")
+        self.assertTrue(len(val) == 3)
+        self.assertTrue(unit == "s")

@@ -20,7 +20,8 @@ class Cal(Frs5):
         :type: class
         """
 
-        tem = self.Temp.get_obj("frs5", "C")
+        ## untestet methode call:
+        tem, tem_unit = self.Temp.get_value_and_unit("frs5")
         gas = self.Aux.get_gas()
         mt = self.Time.get_value("amt_meas", "ms")
 
@@ -28,7 +29,8 @@ class Cal(Frs5):
             mt, "offset_mt", "ms", "frs_res_off", "DCR")
         res_off = self.ResDev.pressure(off, tem, "mbar", gas)
 
-        ind = self.Pres.get_obj("frs_res_ind", "DCR")
+        ## untestet methode call:
+        ind, ind_unit = self.Pres.get_value_and_unit("frs_res_ind")
         res_ind = self.ResDev.pressure(ind, tem, "mbar", gas)
         p_res = res_ind - res_off
 
