@@ -165,23 +165,11 @@ class Result(Analysis):
         """
 
         idx = self.flatten(self.average_index)
-        mtime0 = ana.get_object("Type","measurement")["Value"]
-        print(mtime0)
-        mtime = np.take(mtime0, idx).tolist()
-        occurrences = [[i, mtime.count(i)] for i in list(set(mtime))]
+        mdate0 = ana.get_object("Type","measurement")["Value"]
+        mdate = np.take(mdate0, idx).tolist()
+        occurrences = [[i, mdate.count(i)] for i in list(set(mdate))]
         max_occurrence = sorted(occurrences, key=lambda j: j[1])[-1][0]
-        print(mtime0)
-        print(mtime)
-        print(occurrences)
-        print(max_occurrence)
-        idx = [i for i in idx if mtime0[i] == max_occurrence]
-
-        print("*here*")
-        print(occurrences)
-        print(idx)
-
-# [[1532037600.0, 25]]
-# [0, 3, 8, 4, 7, 9, 14, 10, 12, 16, 36, 17, 37, 38, 18, 39, 20, 22, 33, 25, 31, 26, 27, 28, 30]
+        idx = [i for i in idx if mdate0[i] == max_occurrence]
 
         self.main_maesurement_index = idx
 
@@ -295,8 +283,11 @@ class Result(Analysis):
 
         T_after = ana.pick("Temperature", "after", "C")
         T_room = ana.pick("Temperature", "room", "C")
+        mdate = ana.get_object("Type","measurement")["Value"]
 
         mm_idx = self.main_maesurement_index
+
+        mdate = np.take(mdate, mm_idx)[0]
         
         T_after = np.take(T_after, mm_idx)
         T_after_mean = np.mean(T_after)
@@ -322,7 +313,7 @@ class Result(Analysis):
         form = {
             "GasTemperature": T_after_mean_str,
             "GasTemperatureUncertainty": T_after_unc_str,
-            "MeasurementDate": "2018-07-19",
+            "MeasurementDate": mdate,
             "PressureRangeBegin": target[0],
             "PressureRangeEnd": target[-1],
             "PressureRangeUnit": target_unit,
