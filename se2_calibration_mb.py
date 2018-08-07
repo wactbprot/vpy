@@ -84,6 +84,8 @@ def main():
     print(val.unit_convert(np.asarray([1,2,3,4]),"C","K"))
     print(val.unit_convert(np.asarray([1,2,3,4]),"K","C"))
     print(ana.pick("Time","Date","date"))
+    print(cal.Cons.get_conv("mbar","Torr"))
+    print(val.get_object("Type", "p_fill"))
 
 if __name__ == "__main__":
     main()

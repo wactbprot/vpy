@@ -83,8 +83,8 @@ class Cal(Se2):
         :type: class
         """
 
-        p_ind = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_ind"][0]["Value"])
-        p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
+        p_ind = np.asarray(self.Pres.get_object("Type", "p_ind")["Value"])
+        p_off = np.asarray(self.Pres.get_object("Type", "p_offset")["Value"])
         p_cor = self.Pres.get_value("p_cor", "mbar")
         cf = p_cor / (p_ind - p_off)
 
@@ -100,8 +100,8 @@ class Cal(Se2):
         :type: class
         """
 
-        p_off = np.asarray([i for i in self.Pres.get_all() if i["Type"] == "p_offset"][0]["Value"])
-        cf = np.asarray([i for i in res.doc["Values"]["Pressure"] if i["Type"] == "cf"][0]["Value"])
+        p_off = np.asarray(self.Pres.get_object("Type", "p_offset")["Value"])
+        cf = np.asarray(res.get_object("Type", "cf")["Value"])
         p_off = p_off * cf
         p_off = [0 if p_off[i] == 0 else p_off[i] * cf[i] for i in range(len(p_off))]
 
