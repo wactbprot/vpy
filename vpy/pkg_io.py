@@ -18,7 +18,7 @@ class Io(object):
         with open('./conf.json') as json_config_file:
             config = json.load(json_config_file)
 
-        self.plot = config["plot"]
+        self.make_plot = config["plot"]["make"]
         self.config = config
 
     def eval_args(self):
