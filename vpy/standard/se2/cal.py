@@ -117,5 +117,5 @@ class Cal(Se2):
         :type: class
         """
 
-        time = self.Date.parse_labview_date2()
+        time = self.Date.parse_labview_date()
         res.store("Time", "Date", time, "date")

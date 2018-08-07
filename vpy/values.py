@@ -200,30 +200,21 @@ class Date(Values):
         locale.setlocale(locale.LC_TIME, "")
         val = self.get_str("Date")
 
-        p = re.compile('^[A-Z]{1}[a-z]{1}, [A-Z]{1}[a-z]{2} [0-3]{1}[0-9]{1}, [0-9]{4}$')
+        p1 = re.compile('^[A-Z]{1}[a-z]{1}, [A-Z]{1}[a-z]{2} [0-3]{1}[0-9]{1}, [0-9]{4}$')
+        p2 = re.compile('[0-9]{4}-[0-1]{1}[0-9]{1}-[0-3]{1}[0-9]{1}$')
         r =[]
         for i in val:
-           m = p.match(i)
-           if m:
-               t = time.mktime(time.strptime(i, '%a, %b %d, %Y'))
-           else:
-               t = np.nan
-               print("date conversion did not work out!")
+            if p1.match(i):
+                t = time.mktime(time.strptime(i, '%a, %b %d, %Y'))
+            elif p2.match(i):
+                t = time.mktime(time.strptime(i, "%Y-%m-%d"))
+            else:
+                t = np.nan
+                print("date conversion did not work out!")
 
-           r.append(t)
+            r.append(t)
 
         return np.asarray(r)
-
-
-    def parse_labview_date2(self):
-
-        locale.setlocale(locale.LC_TIME, "")
-        val1 = self.get_str("Date")
-        #val2 = self.get_all()["Time"]["Value"]
-        #val = [val1[i] + "T" + val2[i] for i in range(len(val1))]
-        val = [time.mktime(time.strptime(i, "%Y-%m-%d")) for i in val1]
-
-        return np.asarray(val)
 
 
 class AuxValues(Document):
