@@ -30,8 +30,9 @@ class Cal(Se2):
         :type: class
         """
 
-        T_after = self.Temp.get_value("T_after", "C")
-        res.store("Temperature", "after", T_after, "C")
+        T_after_val, T_after_unit = self.Temp.get_value_and_unit("T_after")
+        T_after_val = T_after_val + self.Cons.get_conv(T_after_unit, "C")
+        res.store("Temperature", "after", T_after_val, "C")
 
 
     def temperature_room(self, res):
@@ -43,8 +44,9 @@ class Cal(Se2):
         :type: class
         """
 
-        T_room = self.Temp.get_value("T_room", "C")
-        res.store("Temperature", "room", T_room, "C")
+        T_room_val, T_room_unit = self.Temp.get_value_and_unit("T_room")
+        T_room_val = T_room_val + self.Cons.get_conv(T_room_unit, "C")
+        res.store("Temperature", "room", T_room_val, "C")
     
     
     def pressure_cal(self, res):
@@ -56,8 +58,9 @@ class Cal(Se2):
         :type: class
         """
 
-        p_cal = self.Pres.get_value("p_cal", "mbar")
-        res.store("Pressure", "cal", p_cal, "mbar")
+        p_cal_val, p_cal_unit = self.Pres.get_value_and_unit("p_cal")
+        p_cal_val = p_cal_val * self.Cons.get_conv(p_cal_unit, "mbar")
+        res.store("Pressure", "cal", p_cal_val, "mbar")
 
 
     def pressure_ind(self, res):
@@ -70,8 +73,9 @@ class Cal(Se2):
         :type: class
         """
 
-        p_cor = self.Pres.get_value("p_cor", "mbar")
-        res.store("Pressure", "ind", p_cor, "mbar")
+        p_cor_val, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
+        p_cor_val = p_cor_val * self.Cons.get_conv(p_cor_unit, "mbar")
+        res.store("Pressure", "ind", p_cor_val, "mbar")
 
 
     def pressure_conversion_factor(self, res):
@@ -83,12 +87,12 @@ class Cal(Se2):
         :type: class
         """
 
-        p_ind = np.asarray(self.Pres.get_object("Type", "p_ind")["Value"])
-        p_off = np.asarray(self.Pres.get_object("Type", "p_offset")["Value"])
-        p_cor = self.Pres.get_value("p_cor", "mbar")
-        cf = p_cor / (p_ind - p_off)
+        p_ind_val, p_ind_unit = self.Pres.get_value_and_unit("p_ind")
+        p_off_val, _ = self.Pres.get_value_and_unit("p_offset")
+        p_cor_val = self.Pres.get_value("p_cor", "mbar")
+        cf = p_cor_val / (p_ind_val - p_off_val)
 
-        res.store("Pressure", "cf", cf, "")
+        res.store("Pressure", "cf", cf, "mbar/" + p_ind_unit)
 
 
     def pressure_offset(self, res):
@@ -100,12 +104,12 @@ class Cal(Se2):
         :type: class
         """
 
-        p_off = np.asarray(self.Pres.get_object("Type", "p_offset")["Value"])
-        cf = np.asarray(res.get_object("Type", "cf")["Value"])
-        p_off = p_off * cf
-        p_off = [0 if p_off[i] == 0 else p_off[i] * cf[i] for i in range(len(p_off))]
+        p_off_val, _ = self.Pres.get_value_and_unit("p_offset")
+        cf = res.get_object("Type", "cf")["Value"]
+        p_off_val = p_off_val * cf
+        p_off_val = [0 if p_off_val[i] == 0 else p_off_val[i] * cf[i] for i in range(len(p_off_val))]
 
-        res.store("Pressure", "offset", p_off, "mbar")
+        res.store("Pressure", "offset", p_off_val, "mbar")
 
 
     def measurement_time(self, res):

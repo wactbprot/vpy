@@ -181,7 +181,7 @@ class Result(Analysis):
         :rtype: list
         """
 
-        cf = ana.pick("Pressure", "cf", "")
+        cf = ana.get_object("Type","cf")["Value"]
         idx = self.flatten(self.average_index)
         r = {}
 
