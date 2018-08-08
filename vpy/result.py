@@ -115,6 +115,7 @@ class Result(Analysis):
         # coarse filtering
         idx = [[j for j in i if abs(error[j]) < 0.5] for i in idx]
         # fine filtering
+        k = 0
         while True:
             r = []
             ref_mean = [None] * len(idx)
@@ -139,21 +140,42 @@ class Result(Analysis):
                     if abs(ref_mean[i] - error[idx[i][j]]) < max(0.05, 5* ref_std[i]):
                         rr.append(idx[i][j])
                 r.append(rr)
+
             self.log.debug("average index: {}".format(s))
             self.log.debug("average index: {}".format(idx))
-            if self.io.make_plot == True:
-                fig, ax = plt.subplots()
-                x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
-                ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
-                ax.semilogx(np.take(p_cal, self.flatten(idx)).tolist(), np.take(
-                    error, self.flatten(idx)).tolist(), 'o', label="after refinement!")
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc=0)
-                plt.savefig("reject_outliers.pdf")
-                plt.clf()
+            
+            k = k + 1
             if idx == r:
                 break
             idx = r
+
+        if self.io.make_plot == True:
+            fig, ax = plt.subplots()
+            x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
+            ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
+            x = np.take(p_cal, self.flatten(idx)).tolist()
+            y = np.take(error, self.flatten(idx)).tolist()               
+            ax.semilogx(x, y, 'o', label="after refinement!")
+            point_label = self.flatten(idx)
+            for i in range(len(x)):
+                plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
+            handles, labels = ax.get_legend_handles_labels()
+            ax.legend(handles, labels, loc=0)
+            plt.title(str(k) + " mal durchlaufen")
+            plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+            plt.ylabel(r"$e\;(\%)$")
+            plt.savefig("reject_outliers.pdf")
+            plt.clf()
+            reject = []
+            while True:
+                r = input("Reject datapoint number: ")
+                if r == "":
+                    break
+                reject.append(r)     
+            print(idx)
+            idx = [[j for j in i if not str(j) in reject] for i in idx]
+            print(idx)
+
         self.average_index = idx
 
 

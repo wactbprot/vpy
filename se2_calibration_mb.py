@@ -48,7 +48,7 @@ def main():
     cal.pressure_offset(ana)
     cal.measurement_time(ana)
     unc.temperature_vessel(ana)
-    res.reject_outliers_index(ana)
+    res.reject_outliers_index(ana)    
     res.make_main_maesurement_index(ana)
     res.make_pressure_range_index(ana)
     res.make_error_table(ana)
