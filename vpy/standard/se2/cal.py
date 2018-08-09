@@ -89,10 +89,10 @@ class Cal(Se2):
 
         p_ind_val, p_ind_unit = self.Pres.get_value_and_unit("p_ind")
         p_off_val, _ = self.Pres.get_value_and_unit("p_offset")
-        p_cor_val = self.Pres.get_value("p_cor", "mbar")
+        p_cor_val, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
         cf = p_cor_val / (p_ind_val - p_off_val)
 
-        res.store("Pressure", "cf", cf, "mbar/" + p_ind_unit)
+        res.store("Pressure", "cf", cf, p_cor_unit + "/" + p_ind_unit)
 
 
     def pressure_offset(self, res):

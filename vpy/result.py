@@ -316,6 +316,7 @@ class Result(Analysis):
         T_after_unc = np.std(T_after)
         T_after_mean_str = self.Val.round_to_uncertainty(T_after_mean, T_after_unc, 2)
         T_after_unc_str = self.Val.round_to_sig_dig(T_after_unc, 2)
+        T_after_mean_K_str = self.Val.round_to_uncertainty(T_after_mean + 273.15, T_after_unc, 2)
         
         T_room = np.take(T_room, mm_idx)
         T_room_mean = np.mean(T_room)
@@ -344,9 +345,9 @@ class Result(Analysis):
             "RoomTemperatureUncertainty": T_room_unc_str,
             "ZeroStability": zero_stability_str,
             "ZeroStabilityUnit": target_unit,
-            "Evis": "0.1",
-            "GasTemperatureEvis": "296.01",
-            "GasTemperatureEvisUncertainty": "0.28"
+            "Evis": self.evis,
+            "GasTemperatureEvis": T_after_mean_K_str,
+            "GasTemperatureEvisUncertainty": T_after_unc_str
             }
 
         self.store_dict(quant="Formula", d=form, dest=None)
@@ -359,8 +360,17 @@ class Result(Analysis):
         def model(p, a, b, c, d):
             return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
 
-        para_val, covariance = curve_fit(model, self.cal, self.error)
+        para_val, covariance = curve_fit(model, self.cal, self.error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]))
+        residuals = model(self.cal, *para_val) - self.error
         para_unc = np.sqrt(np.diag(covariance))
+
+        viscous_idx = [i for i in range(len(self.error)) if 0.8 < self.cal[i] < max(self.cal)]
+        if len(viscous_idx) >= 4 and abs(np.mean(residuals[viscous_idx])) > 0.1:
+            #if the deviation is high and there are enough data points in the viscous regime
+            #take the mean of the smallest 3 values (excluding the one at highest pressure)
+            self.evis = np.mean(sorted(self.error[viscous_idx])[0:3])
+        else:
+            self.evis = model(100, *para_val)
 
         if self.io.make_plot == True:
                 fig, ax = plt.subplots()
@@ -374,8 +384,9 @@ class Result(Analysis):
                 para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
                 para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
                 text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
+                text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
                 plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)          
-                ax.annotate(text, xy=(0.6, 0.7), xycoords='figure fraction')
+                ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
                 plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
                 plt.ylabel(r"$e\;(\%)$")
                 plt.savefig("fit_thermal_transpiration.pdf")
