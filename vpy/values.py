@@ -84,20 +84,31 @@ class Values(Document):
         :rtype: str
         """
         if not np.isfinite(val): return "nan"
-        if n < 0: n = 0
-        if val == 0: return f"{0:.{n - 1}f}"
-        else:
-            val_power = int(np.floor(np.log10(abs(val))))
-            power = - val_power + (n - 1)
-            factor = (10 ** power)
-            val = round(val * factor) / factor
+        if val == 0:
+            if n < 1: n = 1
+            return f"{0:.{n - 1}f}"       
+        val_power = int(np.floor(np.log10(abs(val))))
+        power = - val_power + (n - 1)
+        factor = (10 ** power)
+        val = round(val * factor) / factor
+        if val == 0:
+            if 0 < n - val_power < 6:
+                return f"{0:.{n - val_power - 1}f}"
+            val_str = "0e"
+            if - n + val_power +1 < 0:
+                val_str = val_str + "-"
+            else:
+                 val_str = val_str + "+"
+            if abs(- n + val_power +1) < 10:
+                val_str = val_str + "0"
+            return val_str + str(abs(- n + val_power +1))
         if -3 <= val_power < 0: return f"{val:.{n - val_power - 1}f}"
         if  0 <= val_power < 5:
             n = n - val_power - 1
             if n < 0: n = 0
             return f"{val:.{n}f}"
         n = n - 1
-        if n < 0: n = 0
+        if n < 0: n = 0         
         return f"{val:.{n}e}"
 
 
@@ -125,6 +136,7 @@ class Values(Document):
         else: val_power = int(np.floor(np.log10(abs(val))))
         unc_power = int(np.floor(np.log10(abs(unc))))
         n = val_power - unc_power + n
+
         return self.round_to_sig_dig(val, n)
 
 

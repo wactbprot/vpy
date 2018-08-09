@@ -23,9 +23,9 @@ class TestValues(unittest.TestCase):
           ]}}}}}
         date = Date(doc)
         d = date.parse_labview_date()
-        self.assertEqual(d[0], 1527458400.0)
-        self.assertEqual(d[1], 1527544800.0)
-        self.assertEqual(d[2], 1527631200.0)
+        self.assertEqual(d[0], "2018-05-28")
+        self.assertEqual(d[1], "2018-05-29")
+        self.assertEqual(d[2], "2018-05-30")
         self.assertTrue(np.isnan(d[3]))
         self.assertTrue(np.isnan(d[4]))
 
@@ -40,8 +40,13 @@ class TestValues(unittest.TestCase):
 
       val = np.pi**50
       dig = [-2, -1, 0, 1, 2, 3, 4, 5, 6, 7]
-      res = ['1e+25', '1e+25', '1e+25', '7e+24', '7.2e+24', '7.20e+24', '7.203e+24', '7.2027e+24', '7.20267e+24', '7.202672e+24']
+      res = ['0e+27', '0e+26', '1e+25', '7e+24', '7.2e+24', '7.20e+24', '7.203e+24', '7.2027e+24', '7.20267e+24', '7.202672e+24']
       for i in range(len(dig)): self.assertEqual(v.round_to_sig_dig(val, dig[i]), res[i])
+
+      val = 4.65367515e-8
+      dig = [1, 0, -1, -2, -3, -4, -5, -6, -7, -8, -9, -10, -11, -20]
+      res = ['5e-08', '0e-07', '0e-06', '0e-05', '0.0000', '0.000', '0.00', '0.0', '0', '0e+01', '0e+02', '0e+03', '0e+04', '0e+13']
+      for i in range(len(dig)): self.assertEqual(v.round_to_sig_dig(val, dig[i]), res[i])        
 
 
 
