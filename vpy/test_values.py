@@ -26,8 +26,8 @@ class TestValues(unittest.TestCase):
         self.assertEqual(d[0], "2018-05-28")
         self.assertEqual(d[1], "2018-05-29")
         self.assertEqual(d[2], "2018-05-30")
-        self.assertTrue(np.isnan(d[3]))
-        self.assertTrue(np.isnan(d[4]))
+        self.assertEqual(d[3], "error")
+        self.assertEqual(d[4], "error")
 
 
     def test_round_to_sig_dig(self):

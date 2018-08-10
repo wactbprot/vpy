@@ -218,13 +218,12 @@ class Date(Values):
         for i in val:
             if p1.match(i):
                 t = time.strptime(i, '%a, %b %d, %Y')
+                r.append(time.strftime("%Y-%m-%d", t))
             elif p2.match(i):
-                t = time.strptime(i, "%Y-%m-%d")
+                r.append(i)
             else:
-                t = np.nan
+                r.append("error")
                 print("date conversion did not work out!")
-
-            r.append(time.strftime("%Y-%m-%d", t))
 
         return r
 
