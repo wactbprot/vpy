@@ -197,7 +197,9 @@ class Result(Analysis):
 
 
     def make_pressure_range_index(self, ana):
-        """Collects indices of measurements with the same conversion factor.
+        """Collects indices of measurements with the same conversion factor in r1.
+        Collects indices of measurements within the same decade of p_cal in r2.
+        Returns the one with smaller standard deviation in the low pressure range.
 
         :returns: list of lists of indices
         :rtype: list
@@ -205,16 +207,44 @@ class Result(Analysis):
 
         cf = ana.get_object("Type","cf")["Value"]
         idx = self.flatten(self.average_index)
-        r = {}
 
+        r1 = {}
         for i in idx:
-            for j in r:
-                if np.isclose(cf[i], cf[j], rtol=1.e-3):
-                    r[j].append(i)
+            for j in r1:
+                if np.isclose(cf[i], cf[j], rtol=1.e-3) and np.isfinite(cf[j]):
+                    r1[j].append(i)
                     break
-            else: r[i] = [i]
+            else: r1[i] = [i]
+        r1 = list(r1.values())
 
-        self.pressure_range_index = list(r.values())
+        p_cal = ana.pick("Pressure", "cal", "mbar")
+        p_off = ana.pick("Pressure", "offset", "mbar")
+        p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
+        r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(cf[j])] for i in sorted(list(set(p_cal_log10)))]
+        if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
+        if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
+
+        print("pressure ranges for offset stability")
+        print(r1)
+        print(r2)
+        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r1])
+        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r2])
+
+        if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
+        else: r = r2
+
+        if self.io.make_plot == True:
+            fig, ax = plt.subplots()
+            x = np.take(p_cal, idx)
+            y = np.take(p_off, idx)
+            ax.semilogx(x, y, 'o')
+            plt.title("offset stability")          
+            plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+            plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
+            plt.savefig("offset_stability.pdf")
+            plt.clf()
+
+        self.pressure_range_index = r
 
 
     def make_error_table(self, ana):
@@ -235,12 +265,7 @@ class Result(Analysis):
         pr_idx = self.pressure_range_index
         offset_unc = [None] * len(p_off)
         for i in pr_idx:
-            print("hello")
-            print(av_idx)
-            print(pr_idx)
-            print(mm_idx)
-            print([p_off[j] for j in i if j in mm_idx and not np.isnan(p_off[j])])
-            unc = np.std([p_off[j] for j in i if j in mm_idx and np.isfinite(p_off[j])])
+            unc = np.std([p_off[j] for j in i])
             for j in i:
                 offset_unc[j] = unc
         offset_unc = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
