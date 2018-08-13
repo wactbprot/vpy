@@ -4,6 +4,7 @@ import subprocess
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
+import lmfit
 from scipy.optimize import curve_fit
 #from .document import Document
 from .analysis import Analysis
@@ -417,6 +418,48 @@ class Result(Analysis):
                 plt.savefig("fit_thermal_transpiration.pdf")
                 plt.clf()
         
+
+    def fit_thermal_transpiration2(self):
+
+        def model1(p, a, b, c, d):
+            return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
+        
+        model = lmfit.Model(model1)
+        result = model.fit(self.error, p=self.cal, a=1, b=1, c=1, d=1)
+        lmfit.report_fit(result.params, min_correl=0.5)
+        
+        para_val = [result.params[i].value for i in result.params]
+        para_unc = [result.params[i].stderr for i in result.params]
+        residuals = result.residual
+
+        viscous_idx = [i for i in range(len(self.error)) if 0.8 < self.cal[i] < max(self.cal)]
+        if len(viscous_idx) >= 4 and abs(np.mean(residuals[viscous_idx])) > 0.1:
+            #if the deviation is high and there are enough data points in the viscous regime
+            #take the mean of the smallest 3 values (excluding the one at highest pressure)
+            self.evis = np.mean(sorted(self.error[viscous_idx])[0:3])
+        else:
+            self.evis = model1(100, *para_val)
+
+        if self.io.make_plot == True:
+                fig, ax = plt.subplots()
+                x = self.cal
+                xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
+                ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
+                ax.semilogx(xdata, model1(xdata, *para_val), '-', label="model")
+                handles, labels = ax.get_legend_handles_labels()
+                ax.legend(handles, labels, loc=4)
+                para_names = ["a", "b", "c", "d"]
+                para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
+                para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
+                text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
+                text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
+                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)          
+                ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
+                plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+                plt.ylabel(r"$e\;(\%)$")
+                plt.savefig("fit_thermal_transpiration.pdf")
+                plt.clf()
+
 
     def make_sigma_formula(self):
         pass
