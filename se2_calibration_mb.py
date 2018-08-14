@@ -51,6 +51,7 @@ def main():
     res.reject_outliers_index(ana)    
     res.make_main_maesurement_index(ana)
     res.make_pressure_range_index(ana)
+    res.make_offset_stability(ana)    
     res.make_error_table(ana)
     res.fit_thermal_transpiration2()
     res.make_formula_section(ana)

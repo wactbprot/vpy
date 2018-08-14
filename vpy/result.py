@@ -234,48 +234,66 @@ class Result(Analysis):
         if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
         else: r = r2
 
+        self.pressure_range_index = r
+
+
+    def make_offset_stability(self, ana):
+
+        # should outliers by rejected? e.g. forgot to switch
+        # measurement range for offset but switched for p_ind
+
+        pr_idx = self.pressure_range_index
+        av_idx = self.average_index
+        idx = self.flatten(av_idx)
+
+        p_cal = ana.pick("Pressure", "cal", "mbar")
+        p_off = ana.pick("Pressure", "offset", "mbar")
+
+        offset_unc = [None] * len(p_off)
+        for i in pr_idx:
+            unc = np.std([p_off[j] for j in i])
+            for j in i:
+                offset_unc[j] = unc
+        offset_unc = np.asarray(offset_unc)
+        self.offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
+   
         if self.io.make_plot == True:
             fig, ax = plt.subplots()
             x = np.take(p_cal, idx)
             y = np.take(p_off, idx)
+            y_err = np.take(offset_unc, idx)
+            ax.errorbar(x, y, y_err, fmt='o')
             ax.semilogx(x, y, 'o')
             plt.title("offset stability")          
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
-            plt.savefig("offset_stability.pdf")
+            plt.savefig("offset_stability_abs.pdf")
+            plt.cla()
+            y = np.take(p_off / p_cal * 100, idx)
+            y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
+            ax.errorbar(x, y, y_err, fmt='o')
+            ax.semilogx(x, y, 'o')
+            plt.title("offset stability")          
+            plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+            plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
+            plt.savefig("offset_stability_rel.pdf")
             plt.clf()
-
-        self.pressure_range_index = r
 
 
     def make_error_table(self, ana):
 
         cal = ana.pick("Pressure", "cal", "mbar")
         ind = ana.pick("Pressure", "ind", "mbar")
-        error = 100 * (ind - cal) / cal
-        
-        p_off = ana.pick("Pressure", "offset", "mbar")
+        error = 100 * (ind - cal) / cal        
 
         av_idx = self.average_index
         n_avr = np.asarray([len(i) for i in av_idx])
         cal = self.cal = np.asarray([np.mean(np.take(cal, i)) for i in av_idx])
         ind = self.ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
-        error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
+        error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])        
 
-        mm_idx = self.main_maesurement_index
-        pr_idx = self.pressure_range_index
-        offset_unc = [None] * len(p_off)
-        for i in pr_idx:
-            unc = np.std([p_off[j] for j in i])
-            for j in i:
-                offset_unc[j] = unc
-        offset_unc = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
-        # should outliers by rejected? e.g. forgot to switch
-        # measurement range for offset but switched for p_ind
-        self.offset_uncertainty = min(offset_unc)
-        
         # digitizing error still missing
-        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + offset_unc**2)
+        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + self.offset_uncertainty**2)
         k2 = self.k2 = 2 * 100 * ind / cal * np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
 
         #format output
@@ -283,12 +301,6 @@ class Result(Analysis):
         ind_str = [f"{i:.4e}" for i in ind]
         error_str = self.Val.round_to_uncertainty_array(error, k2, 2)
         k2_str = self.Val.round_to_sig_dig_array(k2, 2)
- 
-        # print("error_table")
-        # print(cal_str)
-        # print(ind_str)
-        # print(error_str)
-        # print(k2_str)
 
         p_cal = {
             "Type": "cal",
@@ -350,7 +362,7 @@ class Result(Analysis):
         T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
         T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
 
-        zero_stability_str = self.Val.round_to_sig_dig(self.offset_uncertainty, 2)
+        zero_stability_str = self.Val.round_to_sig_dig(min(self.offset_uncertainty), 2)
 
         target = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Value"]
         target_unit = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Unit"]
