@@ -17,9 +17,9 @@ class Result(Analysis):
     Results of analysis.
     """
     head_cell = {
-        "cal": "{\\(p_{cal}\\)}",
-        "ind": "{\\(p_{ind}\\)}",
-        "ind_corr": "{\\(p_{ind} - p_{r}\\)}",
+        "cal": "{\\(p_\\text{cal}\\)}",
+        "ind": "{\\(p_\\text{ind}\\)}",
+        "ind_corr": "{\\(p_\\text{ind} - p_\\text{r}\\)}",
         "uncertTotal_rel": "{\\(U(k=2)\\)}",
         "uncertTotal_abs": "{\\(U(k=2)\\)}",
         "error":"{\\(e\\)}",
@@ -388,7 +388,7 @@ class Result(Analysis):
             "GasTemperatureEvisUncertainty": T_after_unc_str
             }
 
-        self.store_dict(quant="Formula", d=form, dest=None)
+        self.store_dict(quant="Formula", d=form, dest=None, plain=True)
 
         self.log.info("Formula section written")
 

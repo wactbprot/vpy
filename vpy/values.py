@@ -86,7 +86,7 @@ class Values(Document):
         if not np.isfinite(val): return "nan"
         if val == 0:
             if n < 1: n = 1
-            return f"{0:.{n - 1}f}"       
+            return f"{0:.{n - 1}f}"
         val_power = int(np.floor(np.log10(abs(val))))
         power = - val_power + (n - 1)
         factor = (10 ** power)

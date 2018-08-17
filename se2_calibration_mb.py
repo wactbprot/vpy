@@ -53,7 +53,7 @@ def main():
     res.make_pressure_range_index(ana)
     res.make_offset_stability(ana)    
     res.make_error_table(ana)
-    res.fit_thermal_transpiration2()
+    res.fit_thermal_transpiration()
     res.make_formula_section(ana)
 
     # key = self.Pres.round_to_n(p_cal, 2)
