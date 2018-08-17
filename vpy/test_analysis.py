@@ -22,3 +22,27 @@ class TestAnalysis(unittest.TestCase):
         self.Ana.store("A", "b", [1], "u")
         v = self.Ana.pick("A", "b", "u")
         self.assertEqual(v[0], 1.)
+
+    def test_store_dict_1(self):
+        """store dict introduce array
+        """
+        d = {"b": [1], "u":"m"}
+        self.Ana.store_dict("D", d)
+        ana = self.Ana.get_all()
+        self.assertEqual(ana["Values"]["D"], [d])
+
+    def test_store_dict_2(self):
+        """store dict plain
+        """
+        d = {"b": [1], "u":"m"}
+        self.Ana.store_dict("D", d, plain=True)
+        ana = self.Ana.get_all()
+        self.assertEqual(ana["Values"]["D"], d)
+
+    def test_store_dict_3(self):
+        """store dict plain w/o destination
+        """
+        d = {"b": [1], "u":"m"}
+        self.Ana.store_dict("E", d, dest=None, plain=True)
+        ana = self.Ana.get_all()
+        self.assertEqual(ana["E"], d)

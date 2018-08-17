@@ -77,8 +77,10 @@ class Analysis(Document):
             self.doc[quant].append(o)
             self.log.info("stored values of type {}".format(type))
 
-    def store_dict(self, quant, d, dest='Values'):
+    def store_dict(self, quant, d, dest='Values', plain=False):
         """ Appends complete dicts to document under the given destination.
+
+
         :param quant: quant measurement quantity (Pressure, Temperature, ect)
         :type quant: str
 
@@ -87,19 +89,29 @@ class Analysis(Document):
 
         :param dest:  destination (default in Values)
         :type str: str
+
+        :param plain:  if True stores dict w/o creating an array
+        :type str: bool
+
         """
         if isinstance(d, dict):
             for e in d:
                 d[e] = self.make_writable(d[e])
 
-            if dest is not None:
-                if quant not in self.doc[dest]:
-                    self.doc[dest][quant] = []
-                self.doc[dest][quant].append(d)
+            if plain:
+                if dest is not None:
+                    self.doc[dest][quant] = d
+                else:
+                    self.doc[quant] = d
             else:
-                if quant not in self.doc:
-                    self.doc[quant] = []
-                self.doc[quant].append(d)
+                if dest is not None:
+                    if quant not in self.doc[dest]:
+                        self.doc[dest][quant] = []
+                    self.doc[dest][quant].append(d)
+                else:
+                    if quant not in self.doc:
+                        self.doc[quant] = []
+                    self.doc[quant].append(d)
         else:
             msg = "given value is not a dictionary"
             self.log.error(msg)
