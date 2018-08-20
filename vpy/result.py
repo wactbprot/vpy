@@ -4,13 +4,12 @@ import subprocess
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
-import lmfit
 from scipy.optimize import curve_fit
-#from .document import Document
 from .analysis import Analysis
 from .todo import ToDo
 from .values import Values
-
+# 
+#import lmfit # needed by self.fit_thermal_transpiration2()
 
 class Result(Analysis):
     """Holds a deep copy of ``document``. Container for storing
@@ -144,7 +143,7 @@ class Result(Analysis):
 
             self.log.debug("average index: {}".format(s))
             self.log.debug("average index: {}".format(idx))
-            
+
             k = k + 1
             if idx == r:
                 break
@@ -155,7 +154,7 @@ class Result(Analysis):
             x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
             ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
             x = np.take(p_cal, self.flatten(idx)).tolist()
-            y = np.take(error, self.flatten(idx)).tolist()               
+            y = np.take(error, self.flatten(idx)).tolist()
             ax.semilogx(x, y, 'o', label="after refinement!")
             point_label = self.flatten(idx)
             for i in range(len(x)):
@@ -172,7 +171,7 @@ class Result(Analysis):
                 r = input("Reject datapoint number: ")
                 if r == "":
                     break
-                reject.append(r)     
+                reject.append(r)
             print(idx)
             idx = [[j for j in i if not str(j) in reject] for i in idx]
             print(idx)
@@ -256,7 +255,7 @@ class Result(Analysis):
                 offset_unc[j] = unc
         offset_unc = np.asarray(offset_unc)
         self.offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
-   
+
         if self.io.make_plot == True:
             fig, ax = plt.subplots()
             x = np.take(p_cal, idx)
@@ -264,7 +263,7 @@ class Result(Analysis):
             y_err = np.take(offset_unc, idx)
             ax.errorbar(x, y, y_err, fmt='o')
             ax.semilogx(x, y, 'o')
-            plt.title("offset stability")          
+            plt.title("offset stability")
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
             plt.savefig("offset_stability_abs.pdf")
@@ -273,7 +272,7 @@ class Result(Analysis):
             y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
             ax.errorbar(x, y, y_err, fmt='o')
             ax.semilogx(x, y, 'o')
-            plt.title("offset stability")          
+            plt.title("offset stability")
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
             plt.savefig("offset_stability_rel.pdf")
@@ -284,13 +283,13 @@ class Result(Analysis):
 
         cal = ana.pick("Pressure", "cal", "mbar")
         ind = ana.pick("Pressure", "ind", "mbar")
-        error = 100 * (ind - cal) / cal        
+        error = 100 * (ind - cal) / cal
 
         av_idx = self.average_index
         n_avr = np.asarray([len(i) for i in av_idx])
         cal = self.cal = np.asarray([np.mean(np.take(cal, i)) for i in av_idx])
         ind = self.ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
-        error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])        
+        error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
 
         # digitizing error still missing
         u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + self.offset_uncertainty**2)
@@ -348,14 +347,14 @@ class Result(Analysis):
         mm_idx = self.main_maesurement_index
 
         mdate = np.take(mdate, mm_idx)[0]
-        
+
         T_after = np.take(T_after, mm_idx)
         T_after_mean = np.mean(T_after)
         T_after_unc = np.std(T_after)
         T_after_mean_str = self.Val.round_to_uncertainty(T_after_mean, T_after_unc, 2)
         T_after_unc_str = self.Val.round_to_sig_dig(T_after_unc, 2)
         T_after_mean_K_str = self.Val.round_to_uncertainty(T_after_mean + 273.15, T_after_unc, 2)
-        
+
         T_room = np.take(T_room, mm_idx)
         T_room_mean = np.mean(T_room)
         T_room_unc = np.std(T_room)
@@ -423,13 +422,13 @@ class Result(Analysis):
                 para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
                 text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
                 text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
-                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)          
+                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)
                 ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
                 plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
                 plt.ylabel(r"$e\;(\%)$")
                 plt.savefig("fit_thermal_transpiration.pdf")
                 plt.clf()
-        
+
 
     def fit_thermal_transpiration2(self):
 
@@ -475,7 +474,7 @@ class Result(Analysis):
                 para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
                 text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
                 text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
-                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)          
+                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)
                 ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
                 plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
                 plt.ylabel(r"$e\;(\%)$")
