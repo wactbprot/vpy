@@ -267,8 +267,9 @@ class Io(object):
             doc_id = self.args.id[0]
             doc = self.get_doc_db(doc_id)
         else:
-            view = self.config['standards'][std]['state_doc_view']
+            view = self.config['standards'][name]['state_doc_view']
             for item in db.view(view):
+                print(item.id)
                 doc = item.value
 
             self.args.id = doc['_id']

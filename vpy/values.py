@@ -17,10 +17,12 @@ class Values(Document):
     """
 
     def __init__(self, doc, name = None, quant = None):
-        
+
         if name is None and quant is None:
             super().__init__(doc)
         else:
+            print(name)
+            print(quant)
             if 'Calibration' in doc:
                 doc = doc['Calibration']
 
@@ -33,6 +35,7 @@ class Values(Document):
             if 'Values' in doc:
                 doc = doc['Values']
 
+                print(doc)
             if name in doc:
                 super().__init__(doc[name])
 
@@ -67,8 +70,8 @@ class Values(Document):
             "K": val,
             "mbar": val/100,
             "Pa": val/1,
-            "Torr": val/133.322            
-            }        
+            "Torr": val/133.322
+            }
         return to_target_unit[b]
 
 
@@ -79,7 +82,7 @@ class Values(Document):
         :param val: value to be rounded
         :type val: float
         :param n: number of significant digits
-        :type n: integer       
+        :type n: integer
         :returns: formated string
         :rtype: str
         """
@@ -108,7 +111,7 @@ class Values(Document):
             if n < 0: n = 0
             return f"{val:.{n}f}"
         n = n - 1
-        if n < 0: n = 0         
+        if n < 0: n = 0
         return f"{val:.{n}e}"
 
 
@@ -125,9 +128,9 @@ class Values(Document):
         :param val: value to be rounded
         :type val: float
         :param unc: uncertainty of the value
-        :type unc: float       
+        :type unc: float
         :param n: number of significant digits of uncertainty
-        :type n: integer       
+        :type n: integer
         :returns: formated string
         :rtype: str
         """
@@ -145,8 +148,8 @@ class Values(Document):
         using the array of uncertainties ``unc_arr``
         """
         return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n) for i in range(len(val_arr))])
-    
-    
+
+
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Mass', quant)
