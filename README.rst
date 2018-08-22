@@ -16,7 +16,7 @@ virtual env
 install dependencies
 ====================
 
-* python 3.6
+* python >=3.6
 * for the pandas installation the python header files are needed:
 
 .. code-block:: shell
