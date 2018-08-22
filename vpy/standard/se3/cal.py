@@ -74,7 +74,6 @@ class Cal(Se3):
         :type: class
         """
 
-        sc_dict = self.state_check
         conv = self.Cons.get_conv("ms", "s")
 
         m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / conv
@@ -100,7 +99,7 @@ class Cal(Se3):
         L = list(range(1001, 1031)) + list(range(2001, 2031)) + \
             list(range(3001, 3031))
         for ch in L:
-            t_mean, t_stdv, t_N = self.temperature([ch], "state")
+            t_mean, _, _ = self.temperature([ch], "state")
 
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 
@@ -296,7 +295,6 @@ class Cal(Se3):
         fill_target = self.Pres.get_value("target-fill", "mbar")
 
         N = len(self.fill_types)
-        M = self.no_of_meas_points
 
         cor_arr = []
         for i in range(N):
