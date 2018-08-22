@@ -100,8 +100,6 @@ class Se3(Standard):
           "VesselBranch":{"Type":"outgas_u", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11, "Description":"Outgasig rate of vessel and dut branch (all dut branches closed)"},
           "VesselDutABC":{"Type":"outgas_abc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-abc"},
           "VesselDutBC":{"Type":"outgas_bc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-bc"},
-          "VesselDutA":{"Type":"outgas_a", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-a"},
-          "VesselDutB":{"Type":"outgas_b", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-b"},
           "VesselDutC":{"Type":"outgas_c", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-c"},
         },
         "Temperature":{

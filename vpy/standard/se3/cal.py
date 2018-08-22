@@ -83,14 +83,9 @@ class Cal(Se3):
         m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / conv
         m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / conv
 
-        m_b = m_bc - m_c
-        m_a = m_abc - m_bc
-
         res.store("OutGasRate", "outgas_abc",  m_abc, "mbar/s")
         res.store("OutGasRate", "outgas_bc",  m_bc, "mbar/s")
         res.store("OutGasRate", "outgas_c",  m_c, "mbar/s")
-        res.store("OutGasRate", "outgas_b",  m_b, "mbar/s")
-        res.store("OutGasRate", "outgas_a",  m_a, "mbar/s")
         res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
         res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
 
