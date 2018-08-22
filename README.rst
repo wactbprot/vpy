@@ -16,7 +16,16 @@ virtual env
 install dependencies
 ====================
 
+For the pandas installation the python header files are needed.
+
 .. code-block:: shell
+
+    > sudo zypper in python3-devel ## opensuse
+    > sudo apt-get install python3-dev ## dedian
+
+
+.. code-block:: shell
+
     > cd /path/to/vpy
     > source bin/activate
     > pip install -e .
