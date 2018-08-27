@@ -152,7 +152,6 @@ class Result(Analysis):
             idx = r
 
 
-        print("hereeeee")
         print(idx)
         if self.io.make_plot == True:
             fig, ax = plt.subplots()
@@ -170,7 +169,7 @@ class Result(Analysis):
             plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$e\;(\%)$")
-            plt.savefig("reject_outliers.pdf")
+            plt.savefig("reject_outliers_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
             plt.clf()
             reject = []
             while True:
@@ -273,7 +272,7 @@ class Result(Analysis):
             plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
-            plt.savefig("offset_stability_abs.pdf")
+            plt.savefig("offset_stability_abs_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
             plt.cla()
             y = np.take(p_off / p_cal * 100, idx)
             y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
@@ -283,7 +282,7 @@ class Result(Analysis):
             plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')   
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
-            plt.savefig("offset_stability_rel.pdf")
+            plt.savefig("offset_stability_rel_"+ str(self.org["Calibration"]["Certificate"]) + ".pdf")
             plt.clf()
 
 
@@ -424,71 +423,71 @@ class Result(Analysis):
                 ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
                 ax.semilogx(xdata, model(xdata, *para_val), '-', label="model")
                 handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc=4)
+                ax.legend(handles, labels, loc=9, bbox_to_anchor=(0.95, 1.1))
                 para_names = ["a", "b", "c", "d"]
                 para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
                 para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
                 text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
                 text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
-                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)
+                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05, x=0.25)
                 ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
                 plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
                 plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
                 plt.ylabel(r"$e\;(\%)$")
-                plt.savefig("fit_thermal_transpiration.pdf")
+                plt.savefig("fit_thermal_transpiration_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
                 plt.clf()
 
 
-    def fit_thermal_transpiration2(self):
+    # def fit_thermal_transpiration2(self):
 
-        def model(p, params):
-            return params['d'] + 3.5 / (params['a'] * p**2 + params['b'] * p + params['c'] * np.sqrt(p) + 1)
+    #     def model(p, params):
+    #         return params['d'] + 3.5 / (params['a'] * p**2 + params['b'] * p + params['c'] * np.sqrt(p) + 1)
 
-        def residuals(params):
-            return model(self.cal, params) - self.error
+    #     def residuals(params):
+    #         return model(self.cal, params) - self.error
 
-        params = lmfit.Parameters()
-        params.add_many(('a', 1.), ('b', 1.), ('c', 1.), ('d',1.))
+    #     params = lmfit.Parameters()
+    #     params.add_many(('a', 1.), ('b', 1.), ('c', 1.), ('d',1.))
 
-        mini = lmfit.Minimizer(residuals, params, nan_policy='omit')
-        out = mini.minimize(method='leastsq', params=params)
-        ci = lmfit.conf_interval(mini, out, sigmas=[1, 2])
+    #     mini = lmfit.Minimizer(residuals, params, nan_policy='omit')
+    #     out = mini.minimize(method='leastsq', params=params)
+    #     ci = lmfit.conf_interval(mini, out, sigmas=[1, 2])
 
-        lmfit.report_fit(out)
-        lmfit.printfuncs.report_ci(ci)
+    #     lmfit.report_fit(out)
+    #     lmfit.printfuncs.report_ci(ci)
 
-        para_val = [out.params[i].value for i in out.params]
-        para_unc = [out.params[i].stderr for i in out.params]
+    #     para_val = [out.params[i].value for i in out.params]
+    #     para_unc = [out.params[i].stderr for i in out.params]
 
-        viscous_idx = [i for i in range(len(self.error)) if 0.8 < self.cal[i] < max(self.cal)]
-        if len(viscous_idx) >= 4 and abs(np.mean(residuals(out.params)[viscous_idx])) > 0.1:
-            #if the deviation is high and there are enough data points in the viscous regime
-            #take the mean of the smallest 3 values (excluding the one at highest pressure)
-            self.evis = np.mean(sorted(self.error[viscous_idx])[0:3])
-        else:
-            self.evis = model(100, out.params)
+    #     viscous_idx = [i for i in range(len(self.error)) if 0.8 < self.cal[i] < max(self.cal)]
+    #     if len(viscous_idx) >= 4 and abs(np.mean(residuals(out.params)[viscous_idx])) > 0.1:
+    #         #if the deviation is high and there are enough data points in the viscous regime
+    #         #take the mean of the smallest 3 values (excluding the one at highest pressure)
+    #         self.evis = np.mean(sorted(self.error[viscous_idx])[0:3])
+    #     else:
+    #         self.evis = model(100, out.params)
 
-        if self.io.make_plot == True:
-                fig, ax = plt.subplots()
-                x = self.cal
-                xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
-                ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
-                ax.semilogx(xdata, model(xdata, out.params), '-', color='orange', label="model")
-                #ax.semilogx(xdata, model(xdata, {'a': ci['a'][0][1], 'b': ci['b'][0][1], 'c': ci['c'][0][1], 'd': ci['d'][0][1]}), '-', color='gold', label="95%")
-                ax.semilogx(xdata, model(xdata, {'a': ci['a'][-1][1], 'b': ci['b'][-1][1], 'c': ci['c'][-1][1], 'd': ci['d'][-1][1]}), '-', color='gold', label="95%")
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc=4)
-                para_names = ["a", "b", "c", "d"]
-                para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
-                para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
-                text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
-                text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
-                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)
-                ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
-                plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-                plt.ylabel(r"$e\;(\%)$")
-                plt.savefig("fit_thermal_transpiration.pdf")
-                plt.clf()
+    #     if self.io.make_plot == True:
+    #             fig, ax = plt.subplots()
+    #             x = self.cal
+    #             xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
+    #             ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
+    #             ax.semilogx(xdata, model(xdata, out.params), '-', color='orange', label="model")
+    #             #ax.semilogx(xdata, model(xdata, {'a': ci['a'][0][1], 'b': ci['b'][0][1], 'c': ci['c'][0][1], 'd': ci['d'][0][1]}), '-', color='gold', label="95%")
+    #             ax.semilogx(xdata, model(xdata, {'a': ci['a'][-1][1], 'b': ci['b'][-1][1], 'c': ci['c'][-1][1], 'd': ci['d'][-1][1]}), '-', color='gold', label="95%")
+    #             handles, labels = ax.get_legend_handles_labels()
+    #             ax.legend(handles, labels, loc=4)
+    #             para_names = ["a", "b", "c", "d"]
+    #             para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
+    #             para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
+    #             text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
+    #             text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
+    #             plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)
+    #             ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
+    #             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+    #             plt.ylabel(r"$e\;(\%)$")
+    #             plt.savefig("fit_thermal_transpiration.pdf")
+    #             plt.clf()
 
 
 
