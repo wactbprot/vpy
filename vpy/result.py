@@ -114,7 +114,9 @@ class Result(Analysis):
         idx = self.ToDo.average_index
         self.log.debug("average index: {}".format(idx))
         # coarse filtering
+        print(idx)
         idx = [[j for j in i if abs(error[j]) < 0.5] for i in idx]
+        print(idx)
         # fine filtering
         k = 0
         while True:
@@ -150,6 +152,9 @@ class Result(Analysis):
                 break
             idx = r
 
+
+        print("hereeeee")
+        print(idx)
         if self.io.make_plot == True:
             fig, ax = plt.subplots()
             x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
@@ -163,6 +168,7 @@ class Result(Analysis):
             handles, labels = ax.get_legend_handles_labels()
             ax.legend(handles, labels, loc=0)
             plt.title(str(k) + " mal durchlaufen")
+            plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$e\;(\%)$")
             plt.savefig("reject_outliers.pdf")
@@ -264,7 +270,8 @@ class Result(Analysis):
             y_err = np.take(offset_unc, idx)
             ax.errorbar(x, y, y_err, fmt='o')
             ax.semilogx(x, y, 'o')
-            plt.title("offset stability")          
+            plt.title("offset stability")
+            plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
             plt.savefig("offset_stability_abs.pdf")
@@ -273,7 +280,8 @@ class Result(Analysis):
             y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
             ax.errorbar(x, y, y_err, fmt='o')
             ax.semilogx(x, y, 'o')
-            plt.title("offset stability")          
+            plt.title("offset stability")
+            plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')   
             plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
             plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
             plt.savefig("offset_stability_rel.pdf")
@@ -398,7 +406,7 @@ class Result(Analysis):
         def model(p, a, b, c, d):
             return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
 
-        para_val, covariance = curve_fit(model, self.cal, self.error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]))
+        para_val, covariance = curve_fit(model, self.cal, self.error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
         residuals = model(self.cal, *para_val) - self.error
         para_unc = np.sqrt(np.diag(covariance))
 
@@ -425,6 +433,7 @@ class Result(Analysis):
                 text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
                 plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05)          
                 ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
+                plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
                 plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
                 plt.ylabel(r"$e\;(\%)$")
                 plt.savefig("fit_thermal_transpiration.pdf")

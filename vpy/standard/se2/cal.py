@@ -106,7 +106,6 @@ class Cal(Se2):
 
         p_off_val, _ = self.Pres.get_value_and_unit("p_offset")
         cf = res.get_object("Type", "cf")["Value"]
-        p_off_val = p_off_val * cf
         p_off_val = [0 if p_off_val[i] == 0 else p_off_val[i] * cf[i] for i in range(len(p_off_val))]
 
         res.store("Pressure", "offset", p_off_val, "mbar")
