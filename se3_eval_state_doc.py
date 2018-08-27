@@ -6,8 +6,9 @@ from vpy.standard.se3.cal import Cal
 
 def main():
     io = Io()
-    doc = io.get_state_doc("se3")
-    base_doc = io.get_base_doc("se3")
+    io.eval_args()
+    doc = io.get_state_doc(name="se3")
+    base_doc = io.get_base_doc(name="se3")
 
     for k, v in base_doc.items():
         doc['State'][k] = v
@@ -21,7 +22,7 @@ def main():
     cal.temperatur_state(res)
 
     chk = Analysis(res.build_doc())
-    cal.check(res, chk)
+    cal.check_state(res, chk)
     io.save_doc(chk.build_doc("Check"))
 
 if __name__ == "__main__":

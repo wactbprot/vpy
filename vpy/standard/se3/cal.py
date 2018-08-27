@@ -13,7 +13,7 @@ class Cal(Se3):
 
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
-        min/max-list (stored in ``vpy/standard/[.]/state.json``).
+        min/max-list (stored in ``self.state_check``).
         Calculates a rating for each value. The range for
         this value is [0..9] where 0 is (mostly) best and 9 is (mostly) worst.
 
@@ -65,59 +65,25 @@ class Cal(Se3):
                     chk.store_dict(quant, dct)
 
     def outgas_state(self, res):
-        """ Calculates the outgasing rate of  dut-a,b,c u (vacuum branch
-        with dut valves closed) and v (vessel only). If the pressure rise is
-        uncorrelated the minimum outgasing rate of the vessel plus 20%
-        is used as an replace value.
+        """ Calculates the outgasing rate of dut-a,b,c u (vacuum branch
+        with dut valves closed) and v (vessel only).
 
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
         """
-        R_min = 0.99
 
-        sc_dict = self.state_check
-        m_min = sc_dict['OutGasRate']['Vessel']['Min']
-        m_max = sc_dict['OutGasRate']['Vessel']['Max']
-        m_med = m_min * (1 + 0.2)
         conv = self.Cons.get_conv("ms", "s")
 
         m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / conv
-        R_abc = self.OutGas.get_value("rise_abc_R", "1")
-        i = (R_abc < R_min)
-        if len(i) > 0:
-            m_abc[i] = m_med
-
         m_bc = self.OutGas.get_value("rise_bc_slope_x", "mbar/ms") / conv
-        R_bc = self.OutGas.get_value("rise_bc_R", "1")
-        i = (R_bc < R_min)
-        if len(i) > 0:
-            m_bc[i] = m_med
-
         m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / conv
-        R_c = self.OutGas.get_value("rise_c_R", "1")
-        i = (R_c < R_min)
-        if len(i) > 0:
-            m_c[i] = m_med
-
         m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / conv
-        R_u = self.OutGas.get_value("rise_u_R", "1")
-        i = (R_u < R_min)
-        if len(i) > 0:
-            m_u[i] = m_med
-
         m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / conv
-        R_v = self.OutGas.get_value("rise_base_R", "1")
-        i = (R_v < R_min)
-        if len(i) > 0:
-            m_v[i] = m_med
 
-        m_b = m_bc - m_c
-        m_a = m_abc - m_bc
-
-        res.store("OutGasRate", "outgas_a",  m_a, "mbar/s")
-        res.store("OutGasRate", "outgas_b",  m_b, "mbar/s")
+        res.store("OutGasRate", "outgas_abc",  m_abc, "mbar/s")
+        res.store("OutGasRate", "outgas_bc",  m_bc, "mbar/s")
         res.store("OutGasRate", "outgas_c",  m_c, "mbar/s")
         res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
         res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
@@ -133,7 +99,7 @@ class Cal(Se3):
         L = list(range(1001, 1031)) + list(range(2001, 2031)) + \
             list(range(3001, 3031))
         for ch in L:
-            t_mean, t_stdv, t_N = self.temperature([ch], "state")
+            t_mean, _, _ = self.temperature([ch], "state")
 
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 
@@ -329,7 +295,6 @@ class Cal(Se3):
         fill_target = self.Pres.get_value("target-fill", "mbar")
 
         N = len(self.fill_types)
-        M = self.no_of_meas_points
 
         cor_arr = []
         for i in range(N):
