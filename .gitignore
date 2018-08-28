@@ -8,3 +8,6 @@ lib64
 pyvenv.cfg
 bin
 vpy_docs
+.vscode
+pip-selfcheck.json
+
