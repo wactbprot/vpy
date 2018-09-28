@@ -19,7 +19,7 @@ def main():
     cal.volume_state(res)
     cal.pressure_state(res)
     cal.outgas_state(res)
-    cal.temperatur_state(res)
+    cal.temperature_state(res)
 
     chk = Analysis(res.build_doc())
     cal.check_state(res, chk)

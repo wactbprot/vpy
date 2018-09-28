@@ -20,7 +20,7 @@ class Se3(Standard):
     state measurements ``amt`` is used.
     """
     name = "SE3"
-    unit = "mbar"
+    unit = "Pa"
     temp_dev_name = "SE3_Temperature_Keithley"
     small_temp_types = ["ch_3001_before", "ch_3002_before", "ch_3003_before", ]
 

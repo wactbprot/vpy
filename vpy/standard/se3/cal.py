@@ -10,7 +10,7 @@ class Cal(Se3):
         super().__init__(doc)
 
         self.log.debug("init func: {}".format(__name__))
-
+        
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
         min/max-list (stored in ``self.state_check``).
@@ -88,7 +88,7 @@ class Cal(Se3):
         res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
         res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
 
-    def temperatur_state(self, res):
+    def temperature_state(self, res):
         """ Adds the correction factor for each sensor and stores the result.
 
         :param: Class with methode

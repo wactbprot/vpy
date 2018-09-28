@@ -13,13 +13,13 @@ class Device(Document):
         self.Const = Constants(doc)
 
         if "CalibrationObject" in dev:
-            dev = dev["CalibrationObject"]
+            dev = dev.get('CalibrationObject')
 
         if "CustomerObject" in dev:
-            dev = dev["CustomerObject"]
+            dev = dev.get('CustomerObject')
 
         if "Uncertainty" in dev:
-            self.uncert_dict = dev["Uncertainty"]
+            self.uncert_dict = dev.get('Uncertainty')
 
         super().__init__(dev)
 
@@ -53,20 +53,20 @@ class Device(Document):
                 idx = np.full(N, True)
 
                 if "From" in u_i and "To" in u_i and "RangeUnit" in u_i:
-                    range_conv = self.Const.get_conv(u_i["RangeUnit"], unit)
-                    if u_i["RangeUnit"] and unit == "K":
-                        f = float(u_i["From"]) + range_conv
-                        t = float(u_i["To"]) + range_conv
+                    range_conv = self.Const.get_conv(u_i.get('RangeUnit'), unit)
+                    if unit == "K":
+                        f = float(u_i.get('From')) + range_conv
+                        t = float(u_i.get('To')) + range_conv
                     else:
-                        f = float(u_i["From"]) * range_conv
-                        t = float(u_i["To"]) * range_conv
+                        f = float(u_i.get('From')) * range_conv
+                        t = float(u_i.get('To')) * range_conv
 
                     i = (meas > f) & (meas < t)
                     if len(i) > 0:
                         idx = i
 
                 if "Value" in u_i:
-                    u[idx] = float(u_i["Value"])
+                    u[idx] = float(u_i.get('Value'))
 
                 if "Expression" in u_i:
                     # untested
@@ -76,8 +76,8 @@ class Device(Document):
                     pass
 
                 if "Unit" in u_i:
-                    if u_i["Unit"] != "1":
-                        conv = self.Const.get_conv(u_i["Unit"], runit)
+                    if u_i.get('Unit') != "1":
+                        conv = self.Const.get_conv(u_i.get('Unit'), runit)
                         if unit == "C" and runit == "K":
                             u = u + conv
                         else:
@@ -89,15 +89,14 @@ class Device(Document):
                         else:
                             u = u * meas * conv
 
-                self.log.debug("""found type {},
-                        append {} to uncertainty array""".format(u_i["Type"], u))
-                u_arr.append(u)
+                self.log.debug("found type {}, append {} to uncertainty array".format(u_i.get('Type'), u))
+                u_arr.append( u )
 
             u = np.sqrt(np.nansum(np.power(u_arr, 2), axis=0))
 
-            idx = (u == 0.0)
-            if len(idx) > 0:
-                u[idx] = np.nan
+            i = (u == 0.0)
+            if len(i) > 0:
+                u[i] = np.nan
 
             return u
         else:

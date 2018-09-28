@@ -21,8 +21,6 @@ class Values(Document):
         if name is None and quant is None:
             super().__init__(doc)
         else:
-            print(name)
-            print(quant)
             if 'Calibration' in doc:
                 doc = doc['Calibration']
 
