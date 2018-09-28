@@ -54,11 +54,11 @@ class Io(object):
 
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
-            print("use database {}".format(self.config["db"]["name"]))
+            
 
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
-            print("use server {}".format(self.config["db"]["url"]))
+            
 
     def save_plot(self, plot):
         """The plan is:
@@ -82,7 +82,7 @@ class Io(object):
             f = tempfile.NamedTemporaryFile()
             f.name = f.name+".pdf"
             plot.savefig(f.name)
-            print("plot saved as {}".format(f.name))
+            
         else:
             pass
 
@@ -94,23 +94,17 @@ class Io(object):
 
         if self.args.id:
             docid = self.args.id[0]
-            print("""try to get document {}
-                          from database""".format(docid))
             doc = self.get_doc_db(docid)
 
         if self.args.file:
             fname = self.args.file[0]
-            print("""try to get document {}
-                          from file""".format(fname))
             with open(fname) as json_doc_file:
                 doc = json.load(json_doc_file)
 
         if doc:
-            print("got doc, will return")
             return doc
         else:
             err_msg = "document not found"
-            print(err_msg)
             sys.exit(err_msg)
 
     def save_doc(self, doc):
@@ -122,16 +116,12 @@ class Io(object):
         """
         if self.save:
             if self.args.id:
-                print("try writing doc to database")
                 doc = self.set_doc_db(doc)
 
             if self.args.file:
                 path_file_name = self.args.file[0]
                 path, file_name = os.path.split(path_file_name)
                 new_file_name = "{}/new.{}".format(path, file_name)
-
-                print("""try writing doc to
-                            new filename: {}""".format(new_file_name))
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
         else:
@@ -155,14 +145,10 @@ class Io(object):
             if "error" in doc:
                 err_msg = """database returns
                           with error: {}""".format(doc['error'])
-                print(err_msg)
                 sys.exit(err_msg)
-            else:
-                print("""got document from database """)
         else:
             err_msg = """document with id {}
                       not found""".format(doc_id)
-            print(err_msg)
             sys.exit(err_msg)
 
         return doc
@@ -262,14 +248,11 @@ class Io(object):
         db = srv[self.config['db']['name']]
 
         if self.args.id:
-            print("""try to get document {}
-                          from database""".format(self.args.id))
             doc_id = self.args.id[0]
             doc = self.get_doc_db(doc_id)
         else:
             view = self.config['standards'][name]['state_doc_view']
             for item in db.view(view):
-                print(item.id)
                 doc = item.value
 
             self.args.id = doc['_id']

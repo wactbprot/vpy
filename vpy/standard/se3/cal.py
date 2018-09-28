@@ -156,15 +156,15 @@ class Cal(Se3):
         """
 
         V_5 = self.get_value("V_5", "cm^3")
-        p_before = self.Pres.get_value("add_vol_before", "mbar")
-        p_before_a = self.Pres.get_value("add_vol_a_before", "mbar")
-        p_before_ab = self.Pres.get_value("add_vol_ab_before", "mbar")
-        p_before_abc = self.Pres.get_value("add_vol_abc_before", "mbar")
+        p_before = self.Pres.get_value("add_vol_before", self.unit)
+        p_before_a = self.Pres.get_value("add_vol_a_before", self.unit)
+        p_before_ab = self.Pres.get_value("add_vol_ab_before", self.unit)
+        p_before_abc = self.Pres.get_value("add_vol_abc_before", self.unit)
 
-        p_after = self.Pres.get_value("add_vol_after", "mbar")
-        p_after_a = self.Pres.get_value("add_vol_a_after", "mbar")
-        p_after_ab = self.Pres.get_value("add_vol_ab_after", "mbar")
-        p_after_abc = self.Pres.get_value("add_vol_abc_after", "mbar")
+        p_after = self.Pres.get_value("add_vol_after", self.unit)
+        p_after_a = self.Pres.get_value("add_vol_a_after", self.unit)
+        p_after_ab = self.Pres.get_value("add_vol_ab_after", self.unit)
+        p_after_abc = self.Pres.get_value("add_vol_abc_after", self.unit)
 
         V_add = V_5 * p_after / (p_before - p_after)
         V_add_a = V_5 * p_after_a / (p_before_a - p_after_a)

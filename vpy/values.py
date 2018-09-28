@@ -32,8 +32,7 @@ class Values(Document):
 
             if 'Values' in doc:
                 doc = doc['Values']
-
-                print(doc)
+                
             if name in doc:
                 super().__init__(doc[name])
 
