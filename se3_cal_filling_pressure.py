@@ -42,24 +42,47 @@ def main():
         N = len(cal.fill_dev_names)
         u = []
 
+        # loop over all filling pressure CDGs and get the total uncertainty
         for i in range(N):
             Dev = cal.FillDevs[i]
+
             u_i = Dev.get_total_uncert(fill_target, target_unit, target_unit)
             u.append(u_i)
-
+        
         # calculate rel. uncert
-        u_rel = u/fill_target 
-
+        u_rel = u/fill_target + u_f_rel
         # calculate rel. combined uncert. of all devices by 1/u = sqrt( sum (1/u_rel^2))
-        u_comb_rel = np.power(np.sqrt(np.nansum(np.power(u_rel, -2), axis=0)), -1)
+        u_1 = np.nansum(np.power(u_rel, -2), axis=0)
+        u_2 = np.sqrt(u_1)
+        out = (u_2 == 0.0)
+        if len(out) > 0:
+            u_2[out] = np.nan
+        u_rel = np.power(u_2, -1)
+
+        out = (u_rel == 0.0)
+        if len(out) > 0:
+            u_rel[out] = np.nan
+           
+        out = ( fill_target < 100.0)  
+        if len(out) > 0:
+           u_rel[out] = np.nan
         
-        i = (u_comb_rel == 0.0)
-        if len(i) > 0:
-            u_comb_rel[i] = np.nan
-        
-        i = np.nanargmin(u_comb_rel + u_f_rel)
-        
-        res = {"Pressure_fill.Value": fill_target[i], "Pressure_fill.Unit":  target_unit, "Expansion_name": f_name[i] }
+        out = ( fill_target > 133000.0)  
+        if len(out) > 0:
+           u_rel[out] = np.nan
+
+        if not all(np.isnan(u_rel)):
+
+            i = np.nanargmin(u_rel)
+            res = {
+                "Pressure_fill.Value": fill_target[i], 
+                "Pressure_fill.Type":  "target_fill", 
+                "Pressure_fill.Unit":  target_unit, 
+                "Expansion.Type" : 'name',
+                "Expansion.Value": f_name[i] }
+        else:
+            res = {"error": "all expasion sequences deliver nan"}
+        # print writes back to relay server by writing to std.out
         print(json.dumps(res))        
 
 if __name__ == "__main__":

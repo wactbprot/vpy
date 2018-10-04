@@ -146,6 +146,9 @@ class Values(Document):
         """
         return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n) for i in range(len(val_arr))])
 
+class Expansion(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Expansion', quant)
 
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):
