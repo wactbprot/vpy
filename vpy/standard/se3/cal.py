@@ -282,7 +282,7 @@ class Cal(Se3):
 
     def pressure_fill(self, res):
         """Calculates the  mean value of the filling pressure.
-        Stores result under the path *Pressure, fill, mbar*
+        Stores result under the path *Pressure, fill, Pa*
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -292,7 +292,7 @@ class Cal(Se3):
 
 
         fill_time = self.Time.get_value("amt_fill", "ms")
-        fill_target = self.Pres.get_value("target-fill", "mbar")
+        fill_target = self.Pres.get_value("target_fill", self.unit)
 
         N = len(self.fill_types)
 
@@ -302,13 +302,13 @@ class Cal(Se3):
             self.log.debug("Working on filling pressure of device {}".format(FillDev.name))
             p_corr = np.full(self.no_of_meas_points, np.nan)
 
-            ind = self.Pres.get_value(self.fill_types[i], "mbar")
+            ind = self.Pres.get_value(self.fill_types[i], self.unit)
             off = self.Aux.get_val_by_time(
-                fill_time, "offset_mt", "ms", self.offset_types[i], "mbar")
+                fill_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
-            e = FillDev.get_error_interpol(
-                p, self.unit, fill_target, self.unit)
+            print(p)
+            e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
 
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
@@ -321,7 +321,7 @@ class Cal(Se3):
         p_std = np.nanstd(cor_arr, axis=0)
         n = np.apply_along_axis(cnt_nan, 0, cor_arr)
 
-        res.store("Pressure", "fill", p_mean, "mbar", p_std, n)
+        res.store("Pressure", "fill", p_mean, self.unit, p_std, n)
 
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
         tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")

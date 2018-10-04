@@ -1,6 +1,6 @@
 {
     "plot": {"path": "temppath", "make": true},
-    "loglevel": "ERROR",
+    "loglevel": "DEBUG",
     "db": {
         "url": "http://localhost:5984",
         "name": "vl_db"

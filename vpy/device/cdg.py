@@ -83,17 +83,28 @@ class Cdg(Device):
         N = len(p_interpol)
         e = np.full(N, np.nan)
 
-        if unit_interpol == self.unit:
-            f = self.interp_function(self.interpol_x, self.interpol_y)
-        if p_target is None:
-            p_target = p_interpol
-        if unit_target is None:
+        if unit_target is None and p_target is None:
             unit_target = unit_interpol
+            p_target = p_interpol
 
-        idx = (p_target > self.interpol_min) & (p_target < self.interpol_max)
+        if unit_interpol == self.unit:
+            conv_interpol = 1.0
+        else:
+            conv_interpol = self.Const.get_conv(unit_interpol, self.unit)
+        
+        if unit_target == self.unit:
+            conv_target = 1.0
+        else:
+            conv_target = self.Const.get_conv(unit_target, self.unit)
 
+        f = self.interp_function(self.interpol_x, self.interpol_y)
+        print(self.interpol_min)
+        print(p_target)
+        idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
+        print(idx)
         if len(idx) > 0:
-            e[idx] = f(p_interpol[idx])
+            print(p_interpol[idx]*conv_interpol)
+            e[idx] = f(p_interpol[idx]*conv_interpol)
 
         return e
 
