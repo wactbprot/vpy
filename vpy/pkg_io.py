@@ -108,22 +108,21 @@ class Io(object):
             sys.exit(err_msg)
 
     def save_doc(self, doc):
-        """Saves the document. The location depends on
-        command line arguments:
-
-        * *--id*: back do database
-        * *--file*: new.<filename>
+        """Saves the document if cli param *-s* is on. 
+        If the cli param *--file* is given
+        the docoment is saved to: *new.<filename>*. Otherwise, the 
+        document is stored by means of *set_doc_db()*
         """
         if self.save:
-            if self.args.id:
-                doc = self.set_doc_db(doc)
-
             if self.args.file:
                 path_file_name = self.args.file[0]
                 path, file_name = os.path.split(path_file_name)
                 new_file_name = "{}/new.{}".format(path, file_name)
                 with open(new_file_name, 'w') as f:
                     json.dump(doc, f, indent=4, ensure_ascii=False)
+            else:
+                doc = self.set_doc_db(doc)
+
         else:
             print("Result is not saved (use -s param)")
 
@@ -175,16 +174,17 @@ class Io(object):
         :returns: updated calibration document
         :rtype: dict
         """
-        ret = None
-        if "Calibration" in doc:
+      
+        if 'Calibration' in doc:
             for k, v in base_doc.items():
-                doc["Calibration"][k] = v
-            ret = doc
+                doc['Calibration'][k] = v
+           
         else:
             err_msg = "wrong data structure"
             print(err_msg)
             sys.exit(err_msg)
-        return ret
+        
+        return doc
 
     def get_base_doc(self, name):
         """Gets the latest standard related documents from the given
@@ -231,12 +231,8 @@ class Io(object):
         return doc
 
     def get_state_doc(self, name):
-        """Gets and returns:
-
-         a) a certain document with ```doc_id``` or
-         b) the latest
-
-        containing the additional volume outgasing rate ect.
+        """Gets and returns the latest state document
+         containing the additional volume outgasing rate ect.
 
         :param std: name of the calibration standard
         :type std: str
@@ -246,16 +242,10 @@ class Io(object):
         """
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
+        view = self.config['standards'][name]['state_doc_view']
 
-        if self.args.id:
-            doc_id = self.args.id[0]
-            doc = self.get_doc_db(doc_id)
-        else:
-            view = self.config['standards'][name]['state_doc_view']
-            for item in db.view(view):
-                doc = item.value
-
-            self.args.id = doc['_id']
+        for item in db.view(view):
+            doc = item.value
 
         return doc
 

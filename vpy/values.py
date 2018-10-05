@@ -21,11 +21,11 @@ class Values(Document):
         if name is None and quant is None:
             super().__init__(doc)
         else:
-            if 'Calibration' in doc:
-                doc = doc['Calibration']
-
             if 'State' in doc:
                 doc = doc['State']
+
+            if 'Calibration' in doc:
+                doc = doc['Calibration']
 
             if quant in doc:
                 doc = doc[quant]

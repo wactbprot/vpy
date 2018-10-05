@@ -8,11 +8,11 @@ class CalibrationObject(Document):
 
     def __init__(self, doc):
 
-        if 'Calibration' in doc:
-            doc = doc['Calibration']
-
         if 'State' in doc:
             doc = doc['State']
+
+        if 'Calibration' in doc:
+            doc = doc['Calibration']
 
         if 'CalibrationObject' in doc:
             cob = doc['CalibrationObject']
@@ -23,8 +23,6 @@ class CalibrationObject(Document):
                 for c in self.doc:
                     cob_name = c['Name']
                     self.cob_by_name[cob_name] = c
-
-        self.log.debug("init func: {}".format(__name__))
 
     def get_by_name(self, name):
         if name in self.cob_by_name:

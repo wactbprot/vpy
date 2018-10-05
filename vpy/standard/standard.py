@@ -14,14 +14,14 @@ class Standard(Document):
         self.Cons = Constants(doc)
         self.Cobj = CalibrationObject(doc)
 
+        if 'State' in doc:
+            doc = doc['State']
+
         if 'Calibration' in doc:
             doc = doc['Calibration']
 
         if "ToDo" in doc:
             self.ToDo = ToDo(doc)
-
-        if 'State' in doc:
-            doc = doc['State']
 
         if 'Standard' in doc:
             doc = doc['Standard']
@@ -35,8 +35,6 @@ class Standard(Document):
                 if doc['Name'] == name:
                     super().__init__(doc)
 
-        self.log.debug("init func: {}".format(__name__))
-
     def real_gas_correction(self, res):
         """Real gas correction for already calculated filling pressure
         """
@@ -47,7 +45,6 @@ class Standard(Document):
 
         vconv = self.Cons.get_conv("m^3", "cm^3")
         R = self.Cons.get_value("R", "Pa m^3/mol/K") * vconv
-
        
         p = res.pick("Pressure", "fill", self.unit) 
 

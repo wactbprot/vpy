@@ -8,8 +8,6 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-
-        self.log.debug("init func: {}".format(__name__))
         
     def check_state(self, res, chk):
         """ Checks the measured state values against a given

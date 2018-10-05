@@ -206,6 +206,7 @@ class Se3(Standard):
         self.Aux = AuxSe3(doc)
         self.Pos = Position(doc)
         self.Exp = Expansion(doc)
+
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
@@ -348,7 +349,7 @@ class Se3(Standard):
         f_name = self.Exp.get_str("name")
         if f_name is None:
             f_name = np.full(self.no_of_meas_points, self.Aux.get_expansion())
-        
+
         return f_name
 
 
