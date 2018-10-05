@@ -6,7 +6,7 @@ from ...device.dmm import Dmm
 from ...device.cdg import InfCdg
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position
+from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion
 from ..standard import Standard
 from ...device.cdg import Cdg
 
@@ -205,7 +205,7 @@ class Se3(Standard):
         self.Time = Time(doc)
         self.Aux = AuxSe3(doc)
         self.Pos = Position(doc)
-
+        self.Exp = Expansion(doc)
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
@@ -345,9 +345,12 @@ class Se3(Standard):
         :rtype: np.array of strings
         """
 
-        f=self.Aux.get_expansion()
-        if f is not None:
-            return np.full(self.no_of_meas_points, f)
+        f_name = self.Exp.get_str("name")
+        if f_name is None:
+            f_name = np.full(self.no_of_meas_points, self.Aux.get_expansion())
+        
+        return f_name
+
 
     def expansion(self, res):
         """Builds a vector containing the expansion factors

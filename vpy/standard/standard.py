@@ -48,8 +48,8 @@ class Standard(Document):
         vconv = self.Cons.get_conv("m^3", "cm^3")
         R = self.Cons.get_value("R", "Pa m^3/mol/K") * vconv
 
-        pconv = self.Cons.get_conv("mbar", "Pa")
-        p = res.pick("Pressure", "fill", "mbar") * pconv
+       
+        p = res.pick("Pressure", "fill", self.unit) 
 
         rg = 1. / (1. + p * B / (R * T))
 

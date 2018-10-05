@@ -268,16 +268,30 @@ class Cal(Se3):
         self.volume_start(res)
         self.expansion(res)
 
-        p_fill = res.pick("Pressure", "fill", "mbar")
+        p_fill = res.pick("Pressure", "fill", self.unit)
+        self.log.debug("filling pressure is: {}".format(p_fill))
+
         rg = res.pick("Correction", "rg", "1")
+        self.log.debug("real gas correctioin is: {}".format(rg))
+        
         f = res.pick("Expansion", "uncorr", "1")
+        self.log.debug("expansion factor is: {}".format(f))
+
         T_before = res.pick("Temperature", "before", "K")
+        self.log.debug("Temperature before is: {}".format(T_before))
+
         T_after = res.pick("Temperature", "after", "K")
+        self.log.debug("Temperature after is: {}".format(T_after))
+
         V_add = res.pick("Volume", "add", "cm^3")
+        self.log.debug("Volume add is: {}".format(V_add))
+
         V_start = res.pick("Volume", "start", "cm^3")
+        self.log.debug("Volume start is: {}".format(V_start))
 
         p_cal = p_fill / rg * T_after / T_before / (1.0 / f + V_add / V_start)
-
+        self.log.debug("calibration pressure is: {}".format(p_cal))
+        
         res.store("Pressure", "cal", p_cal, self.unit)
 
     def pressure_fill(self, res):
@@ -289,6 +303,7 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
+        self.log.debug("start filling pressure")
 
 
         fill_time = self.Time.get_value("amt_fill", "ms")
