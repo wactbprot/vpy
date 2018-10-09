@@ -101,6 +101,17 @@ class Cal(Se3):
 
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 
+    def time_state(self, res):
+        """A transfer of absolute measure time analysis section.
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+        :type: class
+        """
+      
+        res.store("Time", "amt", self.Time.get_value("amt", "ms"), "ms")
+    
     def pressure_state(self, res):
         """ So far: a simple transfer of measured values to
         Analysis section.
@@ -243,7 +254,8 @@ class Cal(Se3):
                 self.log.info("At Point(s) {}  dut- c are open ".format(i_c))
                 vol[i_c] = self.Aux.get_volume("c")
         else:
-            self.log.warning("""assume doc is not a regular calibration,
+            self.log.warning("""assume values in document do not belong 
+                            to a regular calibration,
                             use additional volume 0.0""")
 
         res.store("Volume", "add",   vol, "cm^3")

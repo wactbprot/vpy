@@ -29,8 +29,11 @@ def main():
              'OutGasRate' in state_doc['State']['Analysis']['Values'],
              ]     
     if all(ok):
-        state_meas_date = state_doc['State']['Measurement']['Date'][-1]
+        state_meas_date = state_doc['State']['Measurement']['Date'][0]
         state_meas_date['Type'] = 'state_meas'
+        if isinstance(state_meas_date['Value'], str):
+            state_meas_date['Value'] = [state_meas_date['Value']]
+            print("---------------")
         doc['Calibration']['Measurement']['Date'].append(state_meas_date)
         doc['Calibration']['Measurement']['AuxValues']['Volume'] = state_doc['State']['Analysis']['Values']['Volume']
         doc['Calibration']['Measurement']['AuxValues']['OutGasRate'] = state_doc['State']['Analysis']['Values']['OutGasRate']
@@ -43,5 +46,6 @@ def main():
     cal.pressure_cal(res)
     
     io.save_doc(res.build_doc())
+
 if __name__ == "__main__":
     main()

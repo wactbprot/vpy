@@ -16,6 +16,7 @@ def main():
     cal = Cal(doc)
     res = Analysis(doc)
 
+    cal.time_state(res)
     cal.volume_state(res)
     cal.pressure_state(res)
     cal.outgas_state(res)
