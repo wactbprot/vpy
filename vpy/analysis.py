@@ -20,11 +20,12 @@ class Analysis(Document):
                         "Date": [{
                         "Type": "generated",
                         "Value": d}],
+                        "AuxValues":{
+                            "AnalysisProgram": "vpy",
+                            "AnalysisGitHash": githash
+                        },
                         "Values": {},
-                        "AnalysisProgram": "vpy",
-                        "AnalysisGitHash": githash
                         }
-
 
         super().__init__(init_dict)
         self.org = copy.deepcopy(doc)
@@ -128,26 +129,32 @@ class Analysis(Document):
 
         return a
 
-    def pick(self, quant, val, unit):
+    def pick(self, quant, dict_type, dict_unit, dest='Values'):
         """Picks and returns an already calculated value.
 
         :param quant: quant measurement quantity
         :type quant: str
 
-        :param val: value of type to pick
-        :type val: str
+        :param dict_type: value of type to pick
+        :type dict_type: str
 
-        :param unit: unit expected
-        :type unit: str
+        :param dict_unit: dict_unit expected
+        :type dict_unit: str
         """
-
-        if quant in self.doc['Values']:
-            doc = self.doc['Values'][quant]
-            for d in doc:
-                if d['Type'] == val:
-                    ret = self.get_value(val, unit, d)
+        if dest in self.doc:
+            if quant in self.doc[dest]:
+                doc = self.doc[dest][quant]
+                for d in doc:
+                    if d['Type'] == dict_type:
+                        ret = self.get_value(dict_type, dict_unit, d)
+            else:
+                msg = "{} not in Values".format(quant)
+                self.log.error(msg)
+                sys.exit(msg)
         else:
-            self.log.error("{} not in Values".format(quant))
+            msg = "{} not in self.doc".format(dest)            
+            self.log.error(msg)
+            sys.exit(msg)
 
         return ret
 

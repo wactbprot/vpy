@@ -25,23 +25,25 @@ def main():
              isinstance(doc['Calibration']['Measurement']['Date'], list),
              'Analysis' in state_doc['State'],
              'Values' in state_doc['State']['Analysis'],
-             'Volume' in state_doc['State']['Analysis']['Values'],
+             'Volume' in state_doc['State']['Analysis']['Values'], 
+             'Time' in state_doc['State']['Analysis']['Values'],
              'OutGasRate' in state_doc['State']['Analysis']['Values'],
              ]     
-    if all(ok):
-        state_meas_date = state_doc['State']['Measurement']['Date'][0]
-        state_meas_date['Type'] = 'state_meas'
-        if isinstance(state_meas_date['Value'], str):
-            state_meas_date['Value'] = [state_meas_date['Value']]
-            print("---------------")
-        doc['Calibration']['Measurement']['Date'].append(state_meas_date)
-        doc['Calibration']['Measurement']['AuxValues']['Volume'] = state_doc['State']['Analysis']['Values']['Volume']
-        doc['Calibration']['Measurement']['AuxValues']['OutGasRate'] = state_doc['State']['Analysis']['Values']['OutGasRate']
+
+    if all(ok):    
+        volumes = state_doc['State']['Analysis']['Values']['Volume']
+        outgasrates = state_doc['State']['Analysis']['Values']['OutGasRate']
+        times = state_doc['State']['Analysis']['Values']['Time']
     else:
         sys.exit('missing state or wrong structure')
 
     res = Analysis(doc)
-
+    for volume in volumes:
+        res.store_dict('Volume', volume, dest="AuxValues")
+    for outgasrate in outgasrates:
+        res.store_dict('OutGasRate', outgasrate, dest="AuxValues")
+    for time in times:
+        res.store_dict('Time', time, dest="AuxValues")
     cal = Cal(doc)
     cal.pressure_cal(res)
     

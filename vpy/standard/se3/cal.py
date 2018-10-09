@@ -226,6 +226,8 @@ class Cal(Se3):
 
     def volume_add(self, res):
         """Builds up a vector containing the additional volume and stores it.
+        The additional volumes should be measured and analyzed before and stored
+        under *Analysis.AuxValues.Volumes*
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -233,33 +235,32 @@ class Cal(Se3):
         :type: class
         """
 
-        vol = np.full(self.no_of_meas_points, 0.0)
-        if "get_str" in self.Pos.__dict__:
-            v_pos = self.Pos.get_str("dut_open")
-            i_abc = np.where(v_pos == "abc")
-            i_bc = np.where(v_pos == "bc")
-            i_c = np.where(v_pos == "c")
 
-            if np.shape(i_abc)[1] > 0:
-                self.log.info(
-                    "At Point(s) {}  dut-a,b and c are open ".format(i_abc))
-                vol[i_abc] = self.Aux.get_volume("abc")
+        vol_add_branch = res.pick('Volume', dict_type='add_branch', dict_unit='cm^3', dest='AuxValues')
+        vol_a = res.pick('Volume', dict_type='a', dict_unit='cm^3', dest='AuxValues')
+        vol_b = res.pick('Volume', dict_type='b', dict_unit='cm^3', dest='AuxValues')
+        vol_c = res.pick('Volume', dict_type='c', dict_unit='cm^3', dest='AuxValues')
+        
+        dut_a = self.Pos.get_str('dut_a')
+        dut_b = self.Pos.get_str('dut_b')
+        dut_c = self.Pos.get_str('dut_c')
 
-            if np.shape(i_bc)[1] > 0:
-                self.log.info(
-                    "At Point(s) {}  dut-b and c are open ".format(i_bc))
-                vol[i_bc] = self.Aux.get_volume("bc")
+        vol = np.full(self.no_of_meas_points, vol_add_branch[-1])
 
-            if np.shape(i_c)[1] > 0:
-                self.log.info("At Point(s) {}  dut- c are open ".format(i_c))
-                vol[i_c] = self.Aux.get_volume("c")
-        else:
-            self.log.warning("""assume values in document do not belong 
-                            to a regular calibration,
-                            use additional volume 0.0""")
+        i_a = np.where(dut_a == "open")
+        i_b = np.where(dut_b == "open")
+        i_c = np.where(dut_c == "open")
+
+        
+        if np.shape(i_a)[1] > 0:
+            vol[i_a] = vol[i_a] + vol_a
+        if np.shape(i_b)[1] > 0:
+            vol[i_b] = vol[i_a] + vol_b
+        if np.shape(i_c)[1] > 0:
+            vol[i_c] = vol[i_c] + vol_c
 
         res.store("Volume", "add",   vol, "cm^3")
-
+        
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the
         result under the path *Pressure, cal, mbar*
