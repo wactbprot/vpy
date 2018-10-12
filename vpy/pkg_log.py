@@ -9,9 +9,7 @@ class Log(object):
         """
         Provides logging with the level given in  ``config.json``.
         """
-        # open and parse config file
-        with open('./conf.json') as json_config_file:
-            self.config = json.load(json_config_file)
+        self.level = 'DEBUG'
 
     def logger(self, name):
         """
@@ -25,6 +23,6 @@ class Log(object):
         fmt = '%(asctime)s,%(msecs)03d %(hostname)s %(filename)s:%(lineno)s %(levelname)s %(message)s'
 
         coloredlogs.install(
-            fmt=fmt, level=self.config["loglevel"], logger=logger)
+            fmt=fmt, level=self.level, logger=logger)
 
         return logger
