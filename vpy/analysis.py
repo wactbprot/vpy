@@ -124,10 +124,52 @@ class Analysis(Document):
 
         if "tolist" in dir(a):
             a = copy.deepcopy(a)
-            #a[np.where(np.isnan(a))] = None
+            self.log.debug("try to make: {} writable".format(a))
+            odx = np.isnan(a)
+            self.log.debug("odx: {}".format(odx))
+            idx = np.where(odx)
+            self.log.debug("idx: {}".format(idx))
+            if np.shape(idx)[1] > 0:
+                a[idx] = None
             a = a.tolist()
 
         return a
+    
+    def pick_dict(self, quant, dict_type, dest='Values'):
+        """Picks and returns an already calculated value.
+
+        :param quant: quant measurement quantity
+        :type quant: str
+
+        :param dict_type: value of type to pick
+        :type dict_type: str
+
+        :param dict_unit: dict_unit expected
+        :type dict_unit: str
+        """
+        ret = None
+        if dest in self.doc:
+            if quant in self.doc[dest]:
+                doc = self.doc[dest][quant]
+                for d in doc:
+                    if d['Type'] == dict_type:
+                        ret = d
+                        break
+            else:
+                msg = "{} not in Values".format(quant)
+                self.log.error(msg)
+                sys.exit(msg)
+        else:
+            msg = "{} not in self.doc".format(dest)            
+            self.log.error(msg)
+            sys.exit(msg)
+        
+        if ret is None:
+            msg = "dict with type {} not found".format(dict_type)
+            self.log.error(msg)
+            sys.exit(msg)
+        else:
+            return ret
 
     def pick(self, quant, dict_type, dict_unit, dest='Values'):
         """Picks and returns an already calculated value.
@@ -141,6 +183,7 @@ class Analysis(Document):
         :param dict_unit: dict_unit expected
         :type dict_unit: str
         """
+        res = None
         if dest in self.doc:
             if quant in self.doc[dest]:
                 doc = self.doc[dest][quant]
@@ -156,7 +199,12 @@ class Analysis(Document):
             self.log.error(msg)
             sys.exit(msg)
 
-        return ret
+        if ret is None: 
+            msg = "dict with type {} not found".format(dict_type)
+            self.log.error(msg)
+            sys.exit(msg)
+        else:
+            return ret
 
     def build_doc(self, dest='Analysis'):
         """Merges the analysis dict to the original doc and returns it.

@@ -42,7 +42,17 @@ class Cdg(Device):
             self.interpol_max = np.max(self.interpol_x)
 
 
-
+    def pressure(self, pressure_dict, temperature_dict, unit= "Pa", gas= "N2"):
+        pressure_unit = pressure_dict.get('Unit')
+        pressure_value = pressure_dict.get('Value')
+        
+        if pressure_unit == "V":
+            #deal with it
+            pass
+        else:
+            pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
+        
+        return pressure
 
 
     def store_interpol(self, p, e, u, p_unit, e_unit, u_unit):
@@ -98,13 +108,13 @@ class Cdg(Device):
             conv_target = self.Const.get_conv(unit_target, self.unit)
 
         f = self.interp_function(self.interpol_x, self.interpol_y)
-        print(self.interpol_min)
-        print(p_target)
+        
         idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
-        print(idx)
-        if len(idx) > 0:
-            print(p_interpol[idx]*conv_interpol)
-            e[idx] = f(p_interpol[idx]*conv_interpol)
+        odx = (p_interpol*conv_target > self.interpol_min) & (p_interpol*conv_target < self.interpol_max)
+        ndx = idx & odx
+       
+        if len(ndx) > 0:
+            e[ndx] = f(p_interpol[ndx]*conv_interpol)
 
         return e
 

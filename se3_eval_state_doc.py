@@ -12,7 +12,7 @@ def main():
 
     for k, v in base_doc.items():
         doc['State'][k] = v
-
+    
     cal = Cal(doc)
     res = Analysis(doc)
 
@@ -21,10 +21,9 @@ def main():
     cal.pressure_state(res)
     cal.outgas_state(res)
     cal.temperature_state(res)
-
     chk = Analysis(res.build_doc())
     cal.check_state(res, chk)
     io.save_doc(chk.build_doc("Check"))
-
+    print(chk.build_doc("Check")["_id"])
 if __name__ == "__main__":
     main()

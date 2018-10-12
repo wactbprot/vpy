@@ -14,39 +14,25 @@ def main():
     meas_doc = io.load_doc()
     base_doc = io.get_base_doc("se3")
     doc = io.update_cal_doc(meas_doc, base_doc)
- 
-    ## get Volumes and outgasing from latest state document
     state_doc = io.get_state_doc("se3") 
-    ok = [state_doc is not None,
-             'State' in state_doc,
-             'Measurement' in state_doc['State'],
-             'Date' in state_doc['State']['Measurement'],
-             isinstance(state_doc['State']['Measurement']['Date'], list),
-             isinstance(doc['Calibration']['Measurement']['Date'], list),
-             'Analysis' in state_doc['State'],
-             'Values' in state_doc['State']['Analysis'],
-             'Volume' in state_doc['State']['Analysis']['Values'], 
-             'Time' in state_doc['State']['Analysis']['Values'],
-             'OutGasRate' in state_doc['State']['Analysis']['Values'],
-             ]     
-
-    if all(ok):    
-        volumes = state_doc['State']['Analysis']['Values']['Volume']
-        outgasrates = state_doc['State']['Analysis']['Values']['OutGasRate']
-        times = state_doc['State']['Analysis']['Values']['Time']
-    else:
-        sys.exit('missing state or wrong structure')
-
     res = Analysis(doc)
-    for volume in volumes:
-        res.store_dict('Volume', volume, dest="AuxValues")
-    for outgasrate in outgasrates:
-        res.store_dict('OutGasRate', outgasrate, dest="AuxValues")
-    for time in times:
-        res.store_dict('Time', time, dest="AuxValues")
+ 
     cal = Cal(doc)
-    cal.pressure_cal(res)
+    cal.insert_state_results(res, state_doc)
+    cal.pressure_fill(res)
+    cal.temperature_before(res)
+    cal.temperature_after(res)
+    cal.real_gas_correction(res)
+    cal.volume_add(res)
+    cal.volume_start(res)
+    cal.expansion(res)
     
+    cal.pressure_cal(res)
+
+    cal.pressure_ind(res)
+    p_ind = res.pick('Pressure', 'ind_corr', 'Pa')
+    p_cal = res.pick('Pressure', 'cal', 'Pa')
+    print(p_ind/p_cal)
     io.save_doc(res.build_doc())
 
 if __name__ == "__main__":

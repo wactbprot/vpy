@@ -102,15 +102,19 @@ class Cal(Se3):
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 
     def time_state(self, res):
-        """A transfer of absolute measure time analysis section.
+        """A transfer of absolute measure time to 
+        relative measure time and stores the result in analysis section.
 
         :param: Class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
         """
-      
-        res.store("Time", "amt", self.Time.get_value("amt", "ms"), "ms")
+        t = self.Time.get_rmt(dict_type="amt", unit="ms")
+        conv2s = self.Cons.get_conv(from_unit="ms", to_unit="s")
+        conv2min = self.Cons.get_conv(from_unit="s", to_unit="min")
+        
+        res.store("Time", "amt", t *conv2s*conv2min, "ms")
     
     def pressure_state(self, res):
         """ So far: a simple transfer of measured values to
@@ -121,31 +125,10 @@ class Cal(Se3):
             pick(quantity, type, unit)
         :type: class
         """
-        # more dry pls
-        res.store("Pressure", "1T_1-state",
-                  self.Pres.get_value("1T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "1T_2-state",
-                  self.Pres.get_value("1T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "1T_3-state",
-                  self.Pres.get_value("1T_3-state", "mbar"), "mbar")
-        res.store("Pressure", "10T_1-state",
-                  self.Pres.get_value("10T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "10T_2-state",
-                  self.Pres.get_value("10T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "10T_3-state",
-                  self.Pres.get_value("10T_3-state", "mbar"), "mbar")
-        res.store("Pressure", "100T_1-state",
-                  self.Pres.get_value("100T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "100T_2-state",
-                  self.Pres.get_value("100T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "100T_3-state",
-                  self.Pres.get_value("100T_3-state", "mbar"), "mbar")
-        res.store("Pressure", "1000T_1-state",
-                  self.Pres.get_value("1000T_1-state", "mbar"), "mbar")
-        res.store("Pressure", "1000T_2-state",
-                  self.Pres.get_value("1000T_2-state", "mbar"), "mbar")
-        res.store("Pressure", "1000T_3-state",
-                  self.Pres.get_value("1000T_3-state", "mbar"), "mbar")
+        self.log.debug("transfer state pressure")
+        for state_type in self.state_types:
+            p = self.Pres.get_value("1T_1-state", self.unit)
+            res.store("Pressure", state_type, p, self.unit)
 
     def volume_state(self, res):
         """ Calculates additional volumes of dut-a,b,c branch of state
@@ -227,7 +210,8 @@ class Cal(Se3):
     def volume_add(self, res):
         """Builds up a vector containing the additional volume and stores it.
         The additional volumes should be measured and analyzed before and stored
-        under *Analysis.AuxValues.Volumes*
+        under *Analysis.AuxValues.Volumes*. So far, the last measured values *[-1]*
+        are used. 
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -236,16 +220,16 @@ class Cal(Se3):
         """
 
 
-        vol_add_branch = res.pick('Volume', dict_type='add_branch', dict_unit='cm^3', dest='AuxValues')
-        vol_a = res.pick('Volume', dict_type='a', dict_unit='cm^3', dest='AuxValues')
-        vol_b = res.pick('Volume', dict_type='b', dict_unit='cm^3', dest='AuxValues')
-        vol_c = res.pick('Volume', dict_type='c', dict_unit='cm^3', dest='AuxValues')
+        vol_add_branch = res.pick('Volume', dict_type='add_branch', dict_unit='cm^3', dest='AuxValues')[-1]
+        vol_a = res.pick('Volume', dict_type='a', dict_unit='cm^3', dest='AuxValues')[-1]
+        vol_b = res.pick('Volume', dict_type='b', dict_unit='cm^3', dest='AuxValues')[-1]
+        vol_c = res.pick('Volume', dict_type='c', dict_unit='cm^3', dest='AuxValues')[-1]
         
         dut_a = self.Pos.get_str('dut_a')
         dut_b = self.Pos.get_str('dut_b')
         dut_c = self.Pos.get_str('dut_c')
 
-        vol = np.full(self.no_of_meas_points, vol_add_branch[-1])
+        vol = np.full(self.no_of_meas_points, vol_add_branch)
 
         i_a = np.where(dut_a == "open")
         i_b = np.where(dut_b == "open")
@@ -260,7 +244,31 @@ class Cal(Se3):
             vol[i_c] = vol[i_c] + vol_c
 
         res.store("Volume", "add",   vol, "cm^3")
+    
+    def pressure_ind(self, res):
+        """Calculates the corrected indicatet pressure in dependence
+         of the customer device. *offset*  and uncorrected *ind*ication are also stored.
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        gas = self.Aux.get_gas()
+
+        temperature_dict = res.pick_dict('Temperature', 'after')
+        offset_dict = self.Pres.get_dict('Type', 'ind_offset' )    
+        ind_dict = self.Pres.get_dict('Type', 'ind' )
+
+        offset = self.CustomerDevice.pressure(offset_dict, temperature_dict, unit = self.unit, gas=gas)
+        ind = self.CustomerDevice.pressure(ind_dict, temperature_dict, unit = self.unit, gas=gas)
         
+        res.store("Pressure", "offset", offset, self.unit)
+        res.store("Pressure", "ind", ind, self.unit)
+        res.store("Pressure", "ind_corr", ind - offset, self.unit)
+        self.log.debug("indicated pressure in {} is: {}".format(self.unit, ind))
+    
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the
         result under the path *Pressure, cal, mbar*
@@ -270,15 +278,8 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-
-        self.pressure_fill(res)
-        self.temperature_before(res)
-        self.temperature_after(res)
-        self.real_gas_correction(res)
-        self.volume_add(res)
-        self.volume_start(res)
-        self.expansion(res)
-
+        ## removed implicit pfill etc. calculation
+        
         p_fill = res.pick("Pressure", "fill", self.unit)
         self.log.debug("filling pressure is: {}".format(p_fill))
 
@@ -301,7 +302,7 @@ class Cal(Se3):
         self.log.debug("Volume start is: {}".format(V_start))
 
         p_cal = p_fill / rg * T_after / T_before / (1.0 / f + V_add / V_start)
-        self.log.debug("calibration pressure is: {}".format(p_cal))
+        self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
         
         res.store("Pressure", "cal", p_cal, self.unit)
 
@@ -333,7 +334,6 @@ class Cal(Se3):
                 fill_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
-            print(p)
             e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
 
             p_corr = p / (e + 1.0)

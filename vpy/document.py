@@ -216,21 +216,21 @@ class Document(object):
 
             if "Value" in obj:
                 if isinstance(obj["Value"], str):
-                    ret = np.asarray([np.float64(obj["Value"])])
+                    ret = np.asarray([obj["Value"]]).astype(np.float)
 
                 if isinstance(obj["Value"], list):
-                    ret = np.asarray(obj["Value"])
+                    ret = np.asarray(obj["Value"]).astype(np.float)
 
                 if isinstance(obj["Value"], float):
-                    ret = np.array([obj["Value"]])
+                    ret = np.array([obj["Value"]]).astype(np.float)
 
                 if isinstance(obj["Value"], int):
-                    ret = np.array([obj["Value"]])
+                    ret = np.array([obj["Value"]]).astype(np.float)
 
         else:
             self.log.warning("Value of Type {} not found".format(t))
-
-        return ret.astype(np.float)
+        
+        return ret
 
     def get_dict(self, key, value, o=False):
         """ Wrapper methode for get_object with more healthy name.

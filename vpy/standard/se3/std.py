@@ -2,13 +2,15 @@ import copy
 import json
 import numpy as np
 import sympy as sym
+
 from ...device.dmm import Dmm
-from ...device.cdg import InfCdg
+from ...device.cdg import InfCdg, Cdg
+from ...device.srg import Srg
+
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
 from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion
 from ..standard import Standard
-from ...device.cdg import Cdg
 
 
 class Se3(Standard):
@@ -62,10 +64,16 @@ class Se3(Standard):
                     "CDG_100T_1", "CDG_100T_2", "CDG_100T_3",
                     "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3", ]
 
+    
     fill_types = ["1T_1-fill", "1T_2-fill", "1T_3-fill",
                   "10T_1-fill",  "10T_2-fill", "10T_3-fill",
                   "100T_1-fill", "100T_2-fill", "100T_3-fill",
                   "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", ]
+    
+    state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
+                  "10T_1-state",  "10T_2-state", "10T_3-state",
+                  "100T_1-state", "100T_2-state", "100T_3-state",
+                  "1000T_1-state", "1000T_2-state", "1000T_3-state", ]
 
     offset_types = ["1T_1-offset", "1T_2-offset", "1T_3-offset",
                     "10T_1-offset",  "10T_2-offset", "10T_3-offset",
@@ -82,18 +90,18 @@ class Se3(Standard):
           "DutC":{"Type":"c", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut c only"}
         },
         "Pressure":{
-          "CDG1T1":{"Type":"1T_1-state", "Unit": "mbar" , "Max":0.1, "Min": -0.1,"Description":"Offset of 1st 1T CDG"},
-          "CDG1T2":{"Type":"1T_2-state", "Unit": "mbar" , "Max":0.1, "Min": -0.1,"Description":"Offset of 2nd 1T CDG"},
-          "CDG1T3":{"Type":"1T_3-state", "Unit": "mbar" , "Max":0.1, "Min": -0.1,"Description":"Offset of 3rd 1T CDG"},
-          "CDG10T1":{"Type":"10T_1-state", "Unit": "mbar" , "Max":0.2, "Min": -0.2,"Description":"Offset of 1st 10T CDG"},
-          "CDG10T2":{"Type":"10T_2-state", "Unit": "mbar" , "Max":0.2, "Min": -0.2,"Description":"Offset of 2nd 10T CDG"},
-          "CDG10T3":{"Type":"10T_3-state", "Unit": "mbar" , "Max":0.2, "Min": -0.2,"Description":"Offset of 3rd 10T CDG"},
-          "CDG100T1":{"Type":"100T_1-state", "Unit": "mbar" , "Max":0.3, "Min": -0.3,"Description":"Offset of 1st 100T CDG"},
-          "CDG100T2":{"Type":"100T_2-state", "Unit": "mbar" , "Max":0.3, "Min": -0.3,"Description":"Offset of 2nd 100T CDG"},
-          "CDG100T3":{"Type":"100T_3-state", "Unit": "mbar" , "Max":0.3, "Min": -0.3,"Description":"Offset of 3rd 100T CDG"},
-          "CDG1000T1":{"Type":"1000T_1-state", "Unit": "mbar" , "Max":0.5, "Min": -0.5,"Description":"Offset of 1st 1000T CDG"},
-          "CDG1000T2":{"Type":"1000T_2-state", "Unit": "mbar" , "Max":0.5, "Min": -0.5,"Description":"Offset of 2nd 1000T CDG"},
-          "CDG1000T3":{"Type":"1000T_3-state", "Unit": "mbar" , "Max":0.5, "Min": -0.5,"Description":"Offset of 3rd 1000T CDG"}
+          "CDG1T1":{"Type":"1T_1-state", "Unit": "Pa" , "Max":1, "Min": -1,"Description":"Offset of 1st 1T CDG"},
+          "CDG1T2":{"Type":"1T_2-state", "Unit": "Pa" , "Max":1, "Min": -1,"Description":"Offset of 2nd 1T CDG"},
+          "CDG1T3":{"Type":"1T_3-state", "Unit": "Pa" , "Max":1, "Min": -1,"Description":"Offset of 3rd 1T CDG"},
+          "CDG10T1":{"Type":"10T_1-state", "Unit": "Pa" , "Max":2, "Min": -2,"Description":"Offset of 1st 10T CDG"},
+          "CDG10T2":{"Type":"10T_2-state", "Unit": "Pa" , "Max":2, "Min": -2,"Description":"Offset of 2nd 10T CDG"},
+          "CDG10T3":{"Type":"10T_3-state", "Unit": "Pa" , "Max":2, "Min": -2,"Description":"Offset of 3rd 10T CDG"},
+          "CDG100T1":{"Type":"100T_1-state", "Unit": "Pa" , "Max":3, "Min": -3,"Description":"Offset of 1st 100T CDG"},
+          "CDG100T2":{"Type":"100T_2-state", "Unit": "Pa" , "Max":3, "Min": -3,"Description":"Offset of 2nd 100T CDG"},
+          "CDG100T3":{"Type":"100T_3-state", "Unit": "Pa" , "Max":3, "Min": -3,"Description":"Offset of 3rd 100T CDG"},
+          "CDG1000T1":{"Type":"1000T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 1000T CDG"},
+          "CDG1000T2":{"Type":"1000T_2-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 2nd 1000T CDG"},
+          "CDG1000T3":{"Type":"1000T_3-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 3rd 1000T CDG"}
         },
         "OutGasRate":{
           "Vessel":{"Type":"outgas_v", "Unit": "mbar/s" , "Max":1e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel only"},
@@ -215,12 +223,27 @@ class Se3(Standard):
             # define model
             self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
             self.define_model()
+            # costomer device
+            if 'CustomerObject' in doc['Calibration']:
+                customer_device = doc['Calibration']['CustomerObject']
+                dev_class = customer_device.get('Class', "generic")
 
+                if dev_class == 'SRG':
+                    self.CustomerDevice = Srg(doc, customer_device)
+                if dev_class == 'CDG':
+                    self.CustomerDevice = Cdg(doc, customer_device)
+                if dev_class == 'generic':
+                    self.CustomerDevice = Cdg(doc, {})
+        
         self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
 
         self.FillDevs =[]
         for d in self.fill_dev_names:
             self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+        
+        
+
+
 
 
     def define_model(self):
@@ -393,3 +416,40 @@ class Se3(Standard):
         t = self.Time.get_rmt("amt_meas", "ms")*conv2s *conv2min
 
         res.store("Time", "meas", t, "min")
+
+    def insert_state_results(self, res, state_doc):
+        """Takes the volume, outgasing rate and time out of the 
+        analysis of preliminary state measurements and
+        stores it under the AuxValues section of the *res*
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :param: state doc, must contain lists under: 
+                * State.Analysis.Values.Volume 
+                * State.Analysis.Values.OutgasRate 
+                * State.Analysis.Values.Time
+        :type: dict
+        """ 
+        doc_id = state_doc.get('_id')
+
+        values = state_doc.get('State', {}).get('Analysis',{}).get('Values', {})
+        if 'Volume' in values:
+            for volume in values.get('Volume'):
+                res.store_dict('Volume', volume, dest="AuxValues")
+        else:
+            sys.exit('missing volume section in state doc {}'.format(doc_id))
+
+        if 'OutGasRate' in values:
+            for outgasrate in values.get('OutGasRate'):
+                res.store_dict('OutGasRate', outgasrate, dest="AuxValues")
+        else:
+            sys.exit('missing outGas rate section in state doc {}'.format(doc_id))
+
+        if 'Time' in values:
+            for time in values.get('Time'):
+                res.store_dict('Time', time, dest="AuxValues")
+        else:
+            sys.exit('missing time section in state doc {}'.format(doc_id))
+        
+        

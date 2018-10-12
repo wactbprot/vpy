@@ -99,7 +99,7 @@ class Constants(Document):
         :type N: int
 
         :returns: conversion factor
-        :rtype: np.array of length 1
+        :rtype: np.array of length N
         """
 
         if from_unit == to_unit:

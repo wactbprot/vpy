@@ -63,7 +63,7 @@ def main():
         if len(out) > 0:
             u_rel[out] = np.nan
            
-        out = ( fill_target < 100.0)  
+        out = ( fill_target < 4.0)  
         if len(out) > 0:
            u_rel[out] = np.nan
         
