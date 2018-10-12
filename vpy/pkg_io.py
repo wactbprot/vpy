@@ -10,12 +10,13 @@ class Io(object):
     output issues of the pkg.
     """
 
-    def __init__(self):
+    def __init__(self, path="."):
         """
-        Gets the configuration out of the file: ``config.json``.
+        Gets the configuration out of the file: ``[path]/config.json``.
+        Default path is ``.``
         """
         # open and parse config file
-        with open('./conf.json') as json_config_file:
+        with open('{}/conf.json'.format(path)) as json_config_file:
             config = json.load(json_config_file)
 
         self.make_plot = config["plot"]["make"]
@@ -30,6 +31,9 @@ class Io(object):
         # --id
         parser.add_argument("--id", type=str, nargs=1,
                             help="id of the document to analyse")
+        # --ids
+        parser.add_argument("--ids", type=str, nargs=1,
+                            help=";-separated ids of the documents to analyse")
         # --db
         parser.add_argument("--db", type=str, nargs=1,
                             help="name of the database")

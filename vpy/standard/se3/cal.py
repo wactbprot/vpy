@@ -335,12 +335,12 @@ class Cal(Se3):
 
             p = ind - off
             e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
-
+           
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
 
         p_mean = np.nanmean(cor_arr, axis=0)
-
+       
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 

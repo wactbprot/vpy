@@ -1,5 +1,5 @@
 """
-python se3_calibration.py --id 'cal-2018-se3-ik-4925_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python se3_calibration.py --id 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
 import numpy as np

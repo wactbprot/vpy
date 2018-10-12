@@ -51,6 +51,7 @@ def main():
         
         # calculate rel. uncert
         u_rel = u/fill_target + u_f_rel
+
         # calculate rel. combined uncert. of all devices by 1/u = sqrt( sum (1/u_rel^2))
         u_1 = np.nansum(np.power(u_rel, -2), axis=0)
         u_2 = np.sqrt(u_1)
@@ -72,7 +73,6 @@ def main():
            u_rel[out] = np.nan
 
         if not all(np.isnan(u_rel)):
-
             i = np.nanargmin(u_rel)
             res = {
                 "Pressure_fill.Value": fill_target[i], 
