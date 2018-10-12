@@ -14,7 +14,6 @@ class Document(object):
         :type doc: dict
         """
         self.doc = copy.deepcopy(doc)
-        self.io = Io()
         self.log = Log().logger(__name__)
 
     def get_all(self):
