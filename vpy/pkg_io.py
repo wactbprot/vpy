@@ -16,8 +16,10 @@ class Io(object):
         Default path is ``.``
         """
         # open and parse config file
-        with open('{}/conf.json'.format(path)) as json_config_file:
-            config = json.load(json_config_file)
+
+        if not 'config' in dir(self):
+            with open('{}/conf.json'.format(path)) as json_config_file:
+                config = json.load(json_config_file)
 
         self.make_plot = config["plot"]["make"]
         self.config = config
