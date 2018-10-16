@@ -31,9 +31,8 @@ def main():
                 chk = Analysis(doc)
 
                 cal.check_analysis(res, chk)
-                print(res.build_doc(()))
                 
-                #io.save_doc(chk.build_doc("Check"))
+                io.save_doc(chk.build_doc("Check"))
             else:
                 ret = {"error": "doc {} contains no analysis to check".format(id)}
     else:

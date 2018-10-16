@@ -83,6 +83,9 @@ class Se3(Standard):
     analysis_check = {
         "Error":{
             "Customer":{"Type":"relative", "Unit": "1" , "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
+            "CDG_1T_1": {"Type":"CDG_1T_1-relative", "Unit": "1" , "Max":0.005, "Min":-0.005, "Description":"Error of the 1st 1T CDG."},
+            "CDG_1T_2": {"Type":"CDG_1T_2-relative", "Unit": "1" , "Max":0.005, "Min":-0.005, "Description":"Error of the 2nd 1T CDG."},
+            "CDG_1T_3": {"Type":"CDG_1T_3-relative", "Unit": "1" , "Max":0.005, "Min":-0.005, "Description":"Error of the 3rd 1T CDG."},
         }
     }
 

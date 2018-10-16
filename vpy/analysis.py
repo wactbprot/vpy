@@ -123,21 +123,21 @@ class Analysis(Document):
             sys.exit(msg)
 
     def make_writable(self, a):
-        """ converts array, nd.array etc. to json writable lists
+        """ converts array, nd.array etc. to json writable lists.
+
         """
 
         if "tolist" in dir(a):
             a = a.tolist()
             b = []
             for v in a:
-                if math.isnan(v):
+                
+                if not isinstance(v, str) and math.isnan(v):
                     b.append(None)
                 else:
                     b.append(v)
 
             return b
-            
-            
 
         return a
     
