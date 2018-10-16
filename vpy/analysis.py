@@ -8,10 +8,10 @@ from .document import Document
 
 class Analysis(Document):
     """Holds a deep copy of ``document``. Container for storing
-    Results of analysis.
+    the calculation results of analysis.
     """
 
-    def __init__(self, doc, init_dict=None):
+    def __init__(self, doc, init_dict=None, insert_dict=None):
 
         if init_dict is None:
             d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -26,6 +26,10 @@ class Analysis(Document):
                         },
                         "Values": {},
                         }
+        
+        if insert_dict:
+            for insert_key in insert_dict:
+                init_dict[insert_key] = insert_dict[insert_key]
 
         super().__init__(init_dict)
         self.org = copy.deepcopy(doc)

@@ -8,6 +8,10 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
+    
+    def check_analysis(self, res, chk):
+        pass
+
         
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
@@ -15,12 +19,12 @@ class Cal(Se3):
         Calculates a rating for each value. The range for
         this value is [0..9] where 0 is (mostly) best and 9 is (mostly) worst.
 
-        :param: res Class with methode
+        :param: res instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit) to pick the values from
         :type: class
 
-        :param: chc Class with methode
+        :param: chc instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit) to store the values in
         :type: class
@@ -66,7 +70,7 @@ class Cal(Se3):
         """ Calculates the outgasing rate of dut-a,b,c u (vacuum branch
         with dut valves closed) and v (vessel only).
 
-        :param: Class with methode
+        :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
@@ -89,7 +93,7 @@ class Cal(Se3):
     def temperature_state(self, res):
         """ Adds the correction factor for each sensor and stores the result.
 
-        :param: Class with methode
+        :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
@@ -105,7 +109,7 @@ class Cal(Se3):
         """A transfer of absolute measure time to 
         relative measure time and stores the result in analysis section.
 
-        :param: Class with methode
+        :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
@@ -120,7 +124,7 @@ class Cal(Se3):
         """ So far: a simple transfer of measured values to
         Analysis section.
 
-        :param: Class with methode
+        :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
@@ -141,7 +145,7 @@ class Cal(Se3):
 
         Stores result under the path *Volume, add_x, cm^3*
 
-        :param: Class with methode
+        :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
@@ -185,7 +189,7 @@ class Cal(Se3):
     def volume_start(self, res):
         """Builds a vector containing the start volume and stores it.
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
@@ -213,7 +217,7 @@ class Cal(Se3):
         under *Analysis.AuxValues.Volumes*. So far, the last measured values *[-1]*
         are used. 
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
@@ -245,11 +249,26 @@ class Cal(Se3):
 
         res.store("Volume", "add",   vol, "cm^3")
     
+    def error(self, res):
+        """Calculates the error of indication from the calibration pressure and 
+        the corrected indicated pressure.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        ind = res.pick("Pressure", "ind_corr",self.unit)
+        cal = res.pick("Pressure", "cal",self.unit)
+        
+        res.store('Error', 'relative', ind/cal-1, '1')
+
     def pressure_ind(self, res):
-        """Calculates the corrected indicatet pressure in dependence
+        """Calculates the corrected indicated pressure in dependence
          of the customer device. *offset*  and uncorrected *ind*ication are also stored.
 
-        :param: Class with methode
+        :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
             pick_dict(quantity, type)
@@ -273,7 +292,7 @@ class Cal(Se3):
         """Calculates the calibration pressure nand stores the
         result under the path *Pressure, cal, mbar*
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
@@ -310,7 +329,7 @@ class Cal(Se3):
         """Calculates the  mean value of the filling pressure.
         Stores result under the path *Pressure, fill, Pa*
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
@@ -372,7 +391,7 @@ class Cal(Se3):
         .. todo::
             use shape() instead of len()
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
@@ -415,7 +434,7 @@ class Cal(Se3):
         The used  sensors are:
         *channel 1001 to 1030* and *channel 2001 to 2028*
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class
@@ -428,7 +447,7 @@ class Cal(Se3):
     def temperature_room(self, res):
         """Calculates the temperature of the room.
 
-        :param: Class with methode
+        :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
         :type: class

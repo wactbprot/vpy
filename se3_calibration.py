@@ -11,14 +11,12 @@ from vpy.standard.se3.uncert import Uncert
 def main():
     io = Io()
     io.eval_args()
-    meas_doc = io.load_doc()
-    base_doc = io.get_base_doc("se3")
-    doc = io.update_cal_doc(meas_doc, base_doc)
-    state_doc = io.get_state_doc("se3") 
-    res = Analysis(doc)
- 
+    doc = io.load_doc() 
+    # keep the AuxValues containing related Outgasing and additional volumes
+    auxvalues =   doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
+    res = Analysis(doc, insert_dict={'AuxValues':auxvalues})
+
     cal = Cal(doc)
-    cal.insert_state_results(res, state_doc)
     cal.pressure_fill(res)
     cal.temperature_before(res)
     cal.temperature_after(res)
