@@ -3,6 +3,7 @@ import re
 import locale
 import numpy as np
 import time
+from datetime import datetime
 from .document import Document
 
 
@@ -191,6 +192,27 @@ class Time(Values):
             val = val - val[0]
 
         return val
+
+    def amt_to_date(self,  dict_type, unit):
+        """gets and converts an array containing _a_bsolut _m_easure _t_ime
+        to a date string.
+
+        :param dict_type: name of the Type (e.g. amt_fill)
+        :type dict_type: str
+     
+        :param unit: expected unit of the Type (e.g. ms)
+        :type unit: str
+        
+        :returns: relative measure time
+        :rtype: np.array | None
+        """ 
+        amt = self.get_value(dict_type, unit)
+        if unit == "ms":        
+            return np.array([datetime.fromtimestamp(d/1000.0).strftime('%Y-%m-%d %H:%M:%S') for d in amt])
+        else:
+            sys.exit("todo: care about unit conversion")
+
+
 
 class Date(Values):
     def __init__(self, doc, quant="Measurement"):

@@ -1,4 +1,8 @@
-mport sys
+"""
+python se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+"""
+import sys
+import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
@@ -10,7 +14,7 @@ def main():
     io.eval_args()
     args = sys.argv
     fail = False
-    res = {'ok':True}
+    ret = {'ok':True}
 
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
@@ -19,13 +23,11 @@ def main():
         except:
            fail = True
         
-        
     base_doc = io.get_base_doc("se3")
     state_doc = io.get_state_doc("se3") 
     
     if not fail and len(ids) >0:
         for id in ids:
-            
             meas_doc = io.get_doc_db(id)
             doc = io.update_cal_doc(meas_doc, base_doc)
             res = Analysis(doc)
@@ -48,10 +50,10 @@ def main():
             io.save_doc(res.build_doc())
            
     else:
-        res = {"error": "no --ids found"}
+        ret = {"error": "no --ids found"}
         # print writes back to relay server by writing to std.out
     
-    print(json.dumps(res))        
+    print(json.dumps(ret))        
 
 if __name__ == "__main__":
     main()

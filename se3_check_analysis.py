@@ -10,7 +10,8 @@ def main():
     io.eval_args()
     args = sys.argv
     fail = False
-    res = {'ok':True}
+    ret = {'ok':True}
+
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
         try:
@@ -23,12 +24,21 @@ def main():
     if not fail and len(ids) >0:
         for id in ids:
             doc = io.get_doc_db(id)
-           
+            if 'Calibration' in doc and 'Analysis' in doc['Calibration']:
+                cal = Cal(doc)
+                analysis = doc['Calibration']['Analysis']
+                res = Analysis(doc, init_dict=analysis)
+                chk = Analysis(doc)
+
+                cal.check_analysis(res, chk)
+                io.save_doc(chk.build_doc("Check"))
+            else:
+                ret = {"error": "doc {} contains no analysis to check".format(id)}
     else:
-        res = {"error": "no --Ids found"}
+        ret = {"error": "no --ids found"}
         # print writes back to relay server by writing to std.out
     
-    print(json.dumps(res))        
+    print(json.dumps(ret))        
 
 if __name__ == "__main__":
     main()

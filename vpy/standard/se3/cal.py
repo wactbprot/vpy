@@ -1,6 +1,5 @@
 import numpy as np
 import sympy as sym
-from datetime import datetime
 from .std import Se3
 
 
@@ -10,7 +9,9 @@ class Cal(Se3):
         super().__init__(doc)
     
     def check_analysis(self, res, chk):
-        pass
+        dt = self.Time.amt_to_date("amt", "ms")
+        self.loop_check_dict(check_dict=self.state_check, pick_from=res, store_to=chk, date_array=dt)
+        
 
         
     def check_state(self, res, chk):
@@ -24,24 +25,24 @@ class Cal(Se3):
             pick(quantity, type, unit) to pick the values from
         :type: class
 
-        :param: chc instance of a class with methode
+        :param: chk instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit) to store the values in
         :type: class
         """
-        sc_dict = self.state_check
-        amt = self.Time.get_value("amt", "ms")
-        dt = []
-        for d in amt:
-            d = int(d) / 1000.0
-            dt.append(datetime.fromtimestamp(d).strftime('%Y-%m-%d %H:%M:%S'))
+        
+        dt = self.Time.amt_to_date("amt", "ms")
+        self.loop_check_dict(check_dict=self.state_check, pick_from=res, store_to=chk, date_array=dt)
+        
 
-        for quant in sc_dict:  # m ... Temperature ect.
-            for head in sc_dict[quant]:  # ... VesselBranch
-                if isinstance(sc_dict[quant][head], dict):
-                    dct = sc_dict[quant][head]
+    def loop_check_dict(self, check_dict, pick_from, store_to, date_array):
 
-                    val = res.pick(quant, dct['Type'], dct['Unit'])
+        for quant in check_dict:  # m ... Temperature ect.
+            for head in check_dict[quant]:  # ... VesselBranch
+                if isinstance(check_dict[quant][head], dict):
+                    dct = check_dict[quant][head]
+
+                    val = pick_from.pick(quant, dct['Type'], dct['Unit'])
                     rnd_val = []
                     rtn_val = []
                     min = dct['Min']
@@ -63,8 +64,10 @@ class Cal(Se3):
 
                     dct['Value'] = rnd_val
                     dct['Rating'] = rtn_val
-                    dct['Date'] = dt
-                    chk.store_dict(quant, dct)
+                    dct['Date'] = date_array
+
+                    store_to.store_dict(quant, dct)
+
 
     def outgas_state(self, res):
         """ Calculates the outgasing rate of dut-a,b,c u (vacuum branch

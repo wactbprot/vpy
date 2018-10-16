@@ -127,15 +127,20 @@ class Analysis(Document):
         """
 
         if "tolist" in dir(a):
-            a = copy.deepcopy(a)
-            self.log.debug("try to make: {} writable".format(a))
-            odx = np.isnan(a)
-            self.log.debug("odx: {}".format(odx))
-            idx = np.where(odx)
-            self.log.debug("idx: {}".format(idx))
-            if np.shape(idx)[1] > 0:
-                a[idx] = None
-            a = a.tolist()
+            if 'dtype' in dir(a):
+                if a.dtype == 'float64':
+                    a = copy.deepcopy(a)
+                    self.log.debug("try to make: {} writable".format(a))
+                    odx = np.isnan(a)
+                    self.log.debug("odx: {}".format(odx))
+                    idx = np.where(odx)
+                    self.log.debug("idx: {}".format(idx))
+                    if np.shape(idx)[1] > 0:
+                        a[idx] = None
+                
+                a = a.tolist()
+            else:
+                sys.exit("element to store seems not to be a numpy array")
 
         return a
     
