@@ -9,16 +9,30 @@ class Cal(Se3):
         super().__init__(doc)
     
     def check_analysis(self, res, chk):
-        dt = self.Time.amt_to_date("amt", "ms")
-        self.loop_check_dict(check_dict=self.state_check, pick_from=res, store_to=chk, date_array=dt)
+        """ Checks the analysis values against a given
+        min/max-list (stored in ``self.analysis_check``).
+        Calculates a rating for each value. 
+
+        :param: res instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit) to pick the values from
+        :type: class
+
+        :param: chk instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit) to store the values in
+        :type: class
+        """
+
+        dt = self.Time.amt_to_date("amt_fill", "ms")
+        self.loop_check_dict(check=self.analysis_check, compare=res, date=dt, result=chk)
         
 
         
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
         min/max-list (stored in ``self.state_check``).
-        Calculates a rating for each value. The range for
-        this value is [0..9] where 0 is (mostly) best and 9 is (mostly) worst.
+        Calculates a rating for each value. 
 
         :param: res instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -32,17 +46,20 @@ class Cal(Se3):
         """
         
         dt = self.Time.amt_to_date("amt", "ms")
-        self.loop_check_dict(check_dict=self.state_check, pick_from=res, store_to=chk, date_array=dt)
+        self.loop_check_dict(check=self.state_check, compare=res, date=dt, result=chk)
         
 
-    def loop_check_dict(self, check_dict, pick_from, store_to, date_array):
+    def loop_check_dict(self, check, compare,  date, result):
+        """Loops over the given ``check`` dict. Compares the entries witth ``compare``
+        and writes the results plus date to ``result`` 
+       
+        """ 
+        for quant in check:  # m ... Temperature ect.
+            for head in check[quant]:  # ... VesselBranch
+                if isinstance(check[quant][head], dict):
+                    dct = check[quant][head]
 
-        for quant in check_dict:  # m ... Temperature ect.
-            for head in check_dict[quant]:  # ... VesselBranch
-                if isinstance(check_dict[quant][head], dict):
-                    dct = check_dict[quant][head]
-
-                    val = pick_from.pick(quant, dct['Type'], dct['Unit'])
+                    val = compare.pick(quant, dct['Type'], dct['Unit'])
                     rnd_val = []
                     rtn_val = []
                     min = dct['Min']
@@ -64,9 +81,9 @@ class Cal(Se3):
 
                     dct['Value'] = rnd_val
                     dct['Rating'] = rtn_val
-                    dct['Date'] = date_array
+                    dct['Date'] = date
 
-                    store_to.store_dict(quant, dct)
+                    result.store_dict(quant, dct)
 
 
     def outgas_state(self, res):
@@ -358,9 +375,12 @@ class Cal(Se3):
             p = ind - off
             e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
            
+            res.store("Error", "{}-relative".format(FillDev.name), e, '1')
+           
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
-
+            
+      
         p_mean = np.nanmean(cor_arr, axis=0)
        
         def cnt_nan(d):

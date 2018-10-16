@@ -79,6 +79,13 @@ class Se3(Standard):
                     "10T_1-offset",  "10T_2-offset", "10T_3-offset",
                     "100T_1-offset", "100T_2-offset", "100T_3-offset",
                     "1000T_1-offset", "1000T_2-offset", "1000T_3-offset", ]
+   
+    analysis_check = {
+        "Error":{
+            "Customer":{"Type":"relative", "Unit": "1" , "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
+        }
+    }
+
     state_check = {
         "Volume": {
           "Branch":{"Type":"add_branch", "Unit": "cm^3" , "Max":550.0, "Min":450.0, "Description":"Additional volume of dut-branch. All dut valves are closed."},

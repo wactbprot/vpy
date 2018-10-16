@@ -4,7 +4,7 @@ import subprocess
 import copy
 import numpy as np
 from .document import Document
-
+import math
 
 class Analysis(Document):
     """Holds a deep copy of ``document``. Container for storing
@@ -127,20 +127,17 @@ class Analysis(Document):
         """
 
         if "tolist" in dir(a):
-            if 'dtype' in dir(a):
-                if a.dtype == 'float64':
-                    a = copy.deepcopy(a)
-                    self.log.debug("try to make: {} writable".format(a))
-                    odx = np.isnan(a)
-                    self.log.debug("odx: {}".format(odx))
-                    idx = np.where(odx)
-                    self.log.debug("idx: {}".format(idx))
-                    if np.shape(idx)[1] > 0:
-                        a[idx] = None
-                
-                a = a.tolist()
-            else:
-                sys.exit("element to store seems not to be a numpy array")
+            a = a.tolist()
+            b = []
+            for v in a:
+                if math.isnan(v):
+                    b.append(None)
+                else:
+                    b.append(v)
+
+            return b
+            
+            
 
         return a
     
