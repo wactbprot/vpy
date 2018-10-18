@@ -66,25 +66,31 @@ class Cal(Se3):
                     max = dct['Max']
 
                     v_vec = np.linspace(min, max, 10)
-                    r_vec = np.linspace(0, 9, 10)
+                    if quant in self.rating_distributions:
+                        r_vec = self.rating_distributions[quant]
+                    else:
+                        r_vec = self.rating_distributions['Fallback']
 
                     for v in val:
-                        rnd_val.append('{:0.3e}'.format(v))
-                        if v < min:
-                            rtn_val.append(0)
-                        elif v > max:
-                            rtn_val.append(9)
+                        if np.isnan(v):
+                            rtn_val.append("NaN") 
+                            rnd_val.append("NaN")
                         else:
-                            d = np.abs(v_vec - v)
-                            i = np.argmin(d)
-                            rtn_val.append(r_vec[i])
+                            rnd_val.append('{:0.3e}'.format(v))
+                            if v < min:
+                                rtn_val.append( r_vec[0])
+                            elif v > max:
+                                rtn_val.append( r_vec[-1])
+                            else:
+                                d = np.abs(v_vec - v)
+                                i = np.argmin(d)
+                                rtn_val.append(r_vec[i])
 
                     dct['Value'] = rnd_val
                     dct['Rating'] = rtn_val
                     dct['Date'] = date
 
                     result.store_dict(quant, dct)
-
 
     def outgas_state(self, res):
         """ Calculates the outgasing rate of dut-a,b,c u (vacuum branch
@@ -308,6 +314,68 @@ class Cal(Se3):
         res.store("Pressure", "ind_corr", ind - offset, self.unit)
         self.log.debug("indicated pressure in {} is: {}".format(self.unit, ind))
     
+    def deviation_target_fill(self, res):
+        """Calculates the relative deviation from the target 
+        filling pressure.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        target_fill = self.Pres.get_value('target_fill', 'Pa')
+        pressure_fill = res.pick('Pressure', 'fill', 'Pa')
+
+        res.store('Error', 'dev_fill', pressure_fill/target_fill -1.0, '1')
+    
+    def deviation_target_cal(self, res):
+        """Calculates the relative deviation between the target 
+        pressure and the calculated calibration pressure.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        target_cal = self.Pres.get_value('target_pressure', 'Pa')
+        pressure_cal = res.pick('Pressure', 'cal', 'Pa')
+
+        res.store('Error', 'dev_cal', pressure_cal/target_cal -1.0, '1')
+    
+    def pressure_rise(self, res):
+        """Calculates the pressure rise due to outgasing.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        
+        start_time = self.Time.get_value('amt_expansion_start', 'ms')
+        end_time = self.Time.get_value('amt_expansion_end', 'ms')
+        time_conv = self.Cons.get_conv(from_unit="ms", to_unit="s")
+        dt = end_time - start_time 
+
+        
+        pos_dut_a = self.Pos.get_str('dut_a')
+        pos_dut_b = self.Pos.get_str('dut_b')
+        pos_dut_c = self.Pos.get_str('dut_c')
+        
+        outgas_abc = res.pick('OutGasRate', dict_type='outgas_abc', dict_unit='mbar/s', dest='AuxValues')[-1]
+        outgas_bc = res.pick('OutGasRate', dict_type='outgas_bc', dict_unit='mbar/s', dest='AuxValues')[-1]
+        outgas_c = res.pick('OutGasRate', dict_type='outgas_c', dict_unit='mbar/s', dest='AuxValues')[-1]
+        
+        # todo: check if cal with outgasing works, max outgasing for now:
+
+        pressure_conv = self.Cons.get_conv(from_unit="mbar", to_unit=self.unit)
+
+        rise =  outgas_abc * pressure_conv * dt * time_conv
+        
+        res.store('Pressure', 'rise', rise , self.unit)
+
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the
         result under the path *Pressure, cal, mbar*
@@ -340,7 +408,10 @@ class Cal(Se3):
         V_start = res.pick("Volume", "start", "cm^3")
         self.log.debug("Volume start is: {}".format(V_start))
 
-        p_cal = p_fill / rg * T_after / T_before / (1.0 / f + V_add / V_start)
+        p_rise = res.pick("Pressure", "rise", self.unit)
+        self.log.debug("Pressure rise is: {}".format(p_rise))
+
+        p_cal = p_fill / rg * T_after / T_before / (1.0 / f + V_add / V_start) + p_rise
         self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
         
         res.store("Pressure", "cal", p_cal, self.unit)
@@ -374,7 +445,6 @@ class Cal(Se3):
 
             p = ind - off
             e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
-           
             res.store("Error", "{}-relative".format(FillDev.name), e, '1')
            
             p_corr = p / (e + 1.0)
@@ -382,7 +452,7 @@ class Cal(Se3):
             
       
         p_mean = np.nanmean(cor_arr, axis=0)
-       
+
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 

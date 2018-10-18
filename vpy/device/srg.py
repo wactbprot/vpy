@@ -33,11 +33,6 @@ class Srg(Device):
             conv_m = self.Const.get_conv(from_unit='g', to_unit='kg')
             conv_V = self.Const.get_conv(from_unit='cm^3', to_unit='m^3')
             rho = self.get_value("Density","g/cm^3")*conv_m/conv_V
-
-        sigma = self.get_value("sigma_eff_" + gas, "1")
-        if sigma is None:
-            sigma = self.get_value("Sigma", "1")
-            self.log.warn("no gas dependency for sigma")
         
         d   = self.get_value("d", "m")
         if d is None:
@@ -50,7 +45,7 @@ class Srg(Device):
 
         conv = self.Const.get_conv("Pa", unit)
 
-        return np.sqrt(8*R*T/(np.pi*M))*np.pi*d*rho/20*conv/sigma
+        return np.sqrt(8*R*T/(np.pi*M))*np.pi*d*rho/20*conv
     
     def temperature_correction(self, temperature_dict):
         """Calculates the temperature correction to the reference temperature
