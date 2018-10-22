@@ -108,13 +108,13 @@ class Result(Analysis):
 
         p_ind = ana.pick("Pressure", "ind", "mbar")
         p_cal = ana.pick("Pressure", "cal", "mbar")
-        error = (p_ind - p_cal) / p_cal
+        error = (p_ind - p_cal) / p_cal * 100
         self.ToDo.make_average_index(p_cal, "mbar")
         idx = self.ToDo.average_index
         self.log.debug("average index: {}".format(idx))
         # coarse filtering
         print(idx)
-        idx = [[j for j in i if abs(error[j]) < 0.5] for i in idx]
+        idx = [[j for j in i if abs(error[j]) < 50] for i in idx]
         print(idx)
         # fine filtering
         k = 0
@@ -139,7 +139,7 @@ class Result(Analysis):
                     ref_mean[i] = np.mean(ref)
                     ref_std[i] = np.std(ref)
                     # only accept indices if error[idx[i][j]] deviates either less than 5% or 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[idx[i][j]]) < max(0.05, 5* ref_std[i]):
+                    if abs(ref_mean[i] - error[idx[i][j]]) < max(5, 5 * ref_std[i]):
                         rr.append(idx[i][j])
                 r.append(rr)
 
@@ -151,35 +151,35 @@ class Result(Analysis):
                 break
             idx = r
 
-
         print(idx)
-        if self.io.make_plot == True:
-            fig, ax = plt.subplots()
-            x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
-            ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
-            x = np.take(p_cal, self.flatten(idx)).tolist()
-            y = np.take(error, self.flatten(idx)).tolist()
-            ax.semilogx(x, y, 'o', label="after refinement!")
-            point_label = self.flatten(idx)
-            for i in range(len(x)):
-                plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
-            handles, labels = ax.get_legend_handles_labels()
-            ax.legend(handles, labels, loc=0)
-            plt.title(str(k) + " mal durchlaufen")
-            plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
-            plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-            plt.ylabel(r"$e\;(\%)$")
-            plt.savefig("reject_outliers_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
-            plt.clf()
-            reject = []
-            while True:
-                r = input("Reject datapoint number: ")
-                if r == "":
-                    break
-                reject.append(r)
-            print(idx)
-            idx = [[j for j in i if not str(j) in reject] for i in idx]
-            print(idx)
+
+        fig, ax = plt.subplots()
+        x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
+        ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
+        x = np.take(p_cal, self.flatten(idx)).tolist()
+        y = np.take(error, self.flatten(idx)).tolist()
+        ax.semilogx(x, y, 'o', label="after refinement!")
+        point_label = self.flatten(idx)
+        for i in range(len(x)):
+            plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels, loc=0)
+        plt.title(str(k) + " mal durchlaufen")
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
+        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.ylabel(r"$e\;(\%)$")
+        plt.savefig("reject_outliers_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
+        plt.clf()
+        reject = []
+        
+        while True:
+            r = input("Reject datapoint number: ")
+            if r == "":
+                break
+            reject.append(r)
+        print(idx)
+        idx = [[j for j in i if not str(j) in reject] for i in idx]
+        print(idx)
 
         self.average_index = idx
 
@@ -261,29 +261,28 @@ class Result(Analysis):
         offset_unc = np.asarray(offset_unc)
         self.offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
 
-        if self.io.make_plot == True:
-            fig, ax = plt.subplots()
-            x = np.take(p_cal, idx)
-            y = np.take(p_off, idx)
-            y_err = np.take(offset_unc, idx)
-            ax.errorbar(x, y, y_err, fmt='o')
-            ax.semilogx(x, y, 'o')
-            plt.title("offset stability")
-            plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
-            plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-            plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
-            plt.savefig("offset_stability_abs_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
-            plt.cla()
-            y = np.take(p_off / p_cal * 100, idx)
-            y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
-            ax.errorbar(x, y, y_err, fmt='o')
-            ax.semilogx(x, y, 'o')
-            plt.title("offset stability")
-            plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')   
-            plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-            plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
-            plt.savefig("offset_stability_rel_"+ str(self.org["Calibration"]["Certificate"]) + ".pdf")
-            plt.clf()
+        fig, ax = plt.subplots()
+        x = np.take(p_cal, idx)
+        y = np.take(p_off, idx)
+        y_err = np.take(offset_unc, idx)
+        ax.errorbar(x, y, y_err, fmt='o')
+        ax.semilogx(x, y, 'o')
+        plt.title("offset stability")
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
+        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
+        plt.savefig("offset_stability_abs_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
+        plt.cla()
+        y = np.take(p_off / p_cal * 100, idx)
+        y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
+        ax.errorbar(x, y, y_err, fmt='o')
+        ax.semilogx(x, y, 'o')
+        plt.title("offset stability")
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')   
+        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
+        plt.savefig("offset_stability_rel_"+ str(self.org["Calibration"]["Certificate"]) + ".pdf")
+        plt.clf()
 
 
     def make_error_table(self, ana):
@@ -416,26 +415,25 @@ class Result(Analysis):
         else:
             self.evis = model(100, *para_val)
 
-        if self.io.make_plot == True:
-                fig, ax = plt.subplots()
-                x = self.cal
-                xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
-                ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
-                ax.semilogx(xdata, model(xdata, *para_val), '-', label="model")
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles, labels, loc=9, bbox_to_anchor=(0.95, 1.1))
-                para_names = ["a", "b", "c", "d"]
-                para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
-                para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
-                text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
-                text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
-                plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05, x=0.25)
-                ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
-                plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
-                plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-                plt.ylabel(r"$e\;(\%)$")
-                plt.savefig("fit_thermal_transpiration_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
-                plt.clf()
+        fig, ax = plt.subplots()
+        x = self.cal
+        xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
+        ax.errorbar(self.cal, self.error, self.k2, fmt='o', label="error")
+        ax.semilogx(xdata, model(xdata, *para_val), '-', label="model")
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels, loc=9, bbox_to_anchor=(0.95, 1.1))
+        para_names = ["a", "b", "c", "d"]
+        para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
+        para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
+        text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
+        text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(self.evis, 2) + "$"
+        plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05, x=0.25)
+        ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
+        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.ylabel(r"$e\;(\%)$")
+        plt.savefig("fit_thermal_transpiration_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
+        plt.clf()
 
 
     # def fit_thermal_transpiration2(self):
