@@ -1,6 +1,7 @@
 import os
 import sys
-import getpass
+import matplotlib as plt
+%matplotlib inline
 
 vpy_path = '/home/ipynb/notebooks/vpy'
 module_path = os.path.abspath(os.path.join(vpy_path))
