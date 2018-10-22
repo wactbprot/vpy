@@ -1,6 +1,6 @@
 import os
 import sys
-import matplotlib as plt
+import matplotlib.pyplot as plt
 %matplotlib inline
 
 vpy_path = '/home/ipynb/notebooks/vpy'
