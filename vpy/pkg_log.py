@@ -9,7 +9,7 @@ class Log(object):
         """
         Provides logging with the level given in  ``config.json``.
         """
-        self.level = 'DEBUG'
+        self.level = 'ERROR'
 
     def logger(self, name):
         """
@@ -22,7 +22,6 @@ class Log(object):
         logger = logging.getLogger()
         fmt = '%(asctime)s,%(msecs)03d %(hostname)s %(filename)s:%(lineno)s %(levelname)s %(message)s'
 
-        coloredlogs.install(
-            fmt=fmt, level=self.level, logger=logger)
+        coloredlogs.install(fmt=fmt, level=self.level, logger=logger)
 
         return logger
