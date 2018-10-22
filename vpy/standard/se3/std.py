@@ -82,7 +82,13 @@ class Se3(Standard):
    
     analysis_check = {
         "Error":{
-            "Customer":{"Type":"relative", "Unit": "1" , "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
+            "Customer":{"Type":"relative", "Unit": "1", "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
+            "FillDeviation": {"Type":"dev_fill", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and measured filling pressure."},           
+            "CalDeviation": {"Type":"dev_cal", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and target calibration pressure."},           
+        },
+        "Temperature":{
+            "Vessel":{"Type":"after", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Vessel Temperature"},        
+            "StartVolume":{"Type":"before", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Temperature of the starting Volume"}, 
         }
     }
 
@@ -249,10 +255,6 @@ class Se3(Standard):
             self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
         
         
-
-
-
-
     def define_model(self):
         """ Defines symbols and model for the static expansion system SE3.
         The order of symbols must match the order in ``gen_val_arr``:

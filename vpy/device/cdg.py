@@ -116,6 +116,7 @@ class Cdg(Device):
         if len(ndx) > 0:
             e[ndx] = f(p_interpol[ndx]*conv_interpol)
 
+
         return e
 
     def interp_function(self, x, y):

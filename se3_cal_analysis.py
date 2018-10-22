@@ -36,15 +36,18 @@ def main():
             cal.insert_state_results(res, state_doc)
 
             cal.pressure_fill(res)
+            cal.deviation_target_fill(res)
             cal.temperature_before(res)
             cal.temperature_after(res)
             cal.real_gas_correction(res)
             cal.volume_add(res)
             cal.volume_start(res)
             cal.expansion(res)
+            cal.pressure_rise(res)
 
             cal.pressure_cal(res)
             cal.pressure_ind(res)
+            cal.deviation_target_cal(res)
             cal.error(res)
             io.save_doc(res.build_doc())
            
