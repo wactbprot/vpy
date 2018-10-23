@@ -7,6 +7,7 @@ import tempfile
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.result import Result
+from vpy.display import Display
 from vpy.standard.se2.cal import Cal
 from vpy.standard.se2.uncert import Uncert
 from vpy.values import Values
@@ -34,6 +35,7 @@ def main():
     ana = Analysis(doc)
     res = Result(doc)
     val = Values(doc)
+    disp = Display(doc)
 
     # Berechnungen-Klasse leitet vom Standard se2 ab
     cal = Cal(doc)
@@ -88,6 +90,8 @@ def main():
     print(cal.Cons.get_conv("mbar","Torr"))
     print(val.get_object("Type", "p_fill"))
     print(cal.Cons.get_conv("C", "K"))
+    plt = disp.SE2_CDG()
+    plt.savefig("fit_thermal_transpiration_" + str(doc["Calibration"]["Certificate"]) + ".pdf")
 
 
 if __name__ == "__main__":
