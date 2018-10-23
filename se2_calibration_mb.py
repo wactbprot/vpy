@@ -35,7 +35,6 @@ def main():
     ana = Analysis(doc)
     res = Result(doc)
     val = Values(doc)
-    disp = Display(doc)
 
     # Berechnungen-Klasse leitet vom Standard se2 ab
     cal = Cal(doc)
@@ -91,6 +90,16 @@ def main():
     print(cal.Cons.get_conv("mbar","Torr"))
     print(val.get_object("Type", "p_fill"))
     print(cal.Cons.get_conv("C", "K"))
+    
+    io = Io()
+    # holt Messdaten aus --db
+    io.eval_args()
+    meas_doc = io.load_doc()
+    # holt Konstanten ect. aus --db
+    base_doc = io.get_base_doc("se2")
+    # merge der beiden Dokumente
+    doc = io.update_cal_doc(meas_doc, base_doc)
+    disp = Display(doc)
     plt = disp.SE2_CDG_error_plot()
     plt.savefig("fit_thermal_transpiration_" + str(doc["Calibration"]["Certificate"]) + ".pdf")
 

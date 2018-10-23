@@ -61,6 +61,7 @@ class Display(Document):
 
         try:
             measurement = Document(self.org['Calibration']['Measurement']['Values'])
+            print(measurement.doc)
             pcal0, pcal0_unit = measurement.get_value_and_unit('p_cal')
             pcal0 = pcal0 * self.Cons.get_conv(pcal0_unit, "mbar")
             error0 = measurement.get_value('ind', '')
