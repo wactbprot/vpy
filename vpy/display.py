@@ -24,7 +24,37 @@ class Display(Document):
         self.org = copy.deepcopy(doc)
 
 
-    def SE2_CDG(self):
+    def SE2_CDG_offset_abs(self):
+
+        try:
+            idx = self.org['Calibration']['Result']['AuxValues']['AverageIndexFlat']
+
+            measurement = Document(self.org['Calibration']['Measurement']['Values'])
+            pcal0, pcal0_unit = measurement.get_value_and_unit('p_cal')
+            pcal0 = pcal0 * self.Cons.get_conv(pcal0_unit, "mbar")
+            poff0, poff0_unit = measurement.get_value_and_unit('offset')
+            poff0 = poff0 * self.Cons.get_conv(poff0_unit, "mbar")       
+
+        except:
+            print("error")
+
+        plt.clf()
+        fig, ax = plt.subplots()
+        x = np.take(pcal0, idx)
+        y = np.take(poff0, idx)
+        y_err = np.take(offset_unc, idx) #<----
+        ax.errorbar(x, y, y_err, fmt='o')
+        ax.semilogx(x, y, 'o')
+        plt.title("offset stability")
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
+        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
+        plt.savefig("offset_stability_abs2_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
+        plt.rcParams['figure.figsize']=8,6
+        return plt
+
+
+    def SE2_CDG_error_plot(self):
 
         def model(p, a, b, c, d):
             return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
@@ -48,7 +78,6 @@ class Display(Document):
             unc, unc_unit = result.get_value_and_unit('uncertTotal_rel')
             unc = np.asarray(unc, dtype=float)
             unc = unc * self.Cons.get_conv(unc_unit, "%")            
-            print(pcal0, error0)
 
         except:
             print("error")
@@ -83,6 +112,7 @@ class Display(Document):
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
         plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
         plt.ylabel(r"$e\;(\%)$")
+        plt.rcParams['figure.figsize']=8,6
         return plt
 
 

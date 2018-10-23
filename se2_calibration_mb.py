@@ -58,6 +58,7 @@ def main():
     res.make_error_table(ana)
     res.fit_thermal_transpiration()
     res.make_formula_section(ana)
+    res.make_AuxValues_section(ana)
 
     # key = self.Pres.round_to_n(p_cal, 2)
     # p_cal = [np.mean(g.values.tolist()) for _, g in pd.DataFrame(p_cal).groupby(key)]
@@ -90,7 +91,7 @@ def main():
     print(cal.Cons.get_conv("mbar","Torr"))
     print(val.get_object("Type", "p_fill"))
     print(cal.Cons.get_conv("C", "K"))
-    plt = disp.SE2_CDG()
+    plt = disp.SE2_CDG_error_plot()
     plt.savefig("fit_thermal_transpiration_" + str(doc["Calibration"]["Certificate"]) + ".pdf")
 
 

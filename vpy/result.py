@@ -8,8 +8,7 @@ from scipy.optimize import curve_fit
 from .analysis import Analysis
 from .todo import ToDo
 from .values import Values
-# 
-#import lmfit # needed by self.fit_thermal_transpiration2()
+
 
 class Result(Analysis):
     """Holds a deep copy of ``document``. Container for storing
@@ -89,7 +88,7 @@ class Result(Analysis):
                                         [0.0014, 0.001, 0.00092, 0.00086, 0.00075, 0.00019, 0.00014]).tolist() for p in p_list])
 
     def repeat_rel(self, p_list):
-        return np.asarray([np.piecewise(p, [p <= 0.1, p <= 10, p > 10], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
+        return np.asarray([np.piecewise(p, [p <= 0.1, p <= 9.5, p > 9.5], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
 
     def reject_outliers_index(self, ana):
         """Takes the list of indices of measurement points belonging to a
@@ -396,6 +395,20 @@ class Result(Analysis):
         self.store_dict(quant="Formula", d=form, dest=None, plain=True)
 
         self.log.info("Formula section written")
+
+
+    def make_AuxValues_section(self, ana):
+
+        aux = {
+            "MainMaesurementIndex": self.main_maesurement_index,
+            "PressureRangeIndex": self.pressure_range_index,
+            "AverageIndex": self.average_index,
+            "AverageIndexFlat": self.flatten(self.average_index)
+            }
+
+        self.store_dict(quant="AuxValues", d=aux, dest=None, plain=True)
+
+        self.log.info("AuxValues section written")
 
 
     def fit_thermal_transpiration(self):

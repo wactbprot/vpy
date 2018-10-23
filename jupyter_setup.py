@@ -2,6 +2,7 @@ import os
 import sys
 import matplotlib.pyplot as plt
 %matplotlib inline
+%config InlineBackend.figure_format = 'svg'
 
 plt.rcParams['figure.figsize']=10,10
 
