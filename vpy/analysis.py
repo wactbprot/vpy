@@ -128,7 +128,10 @@ class Analysis(Document):
         """
 
         if "tolist" in dir(a):
-            a = a.tolist()
+            if isinstance(a, np.float64):
+                a = [a]
+            else:
+                a = a.tolist()
             b = []
             for v in a:
                 

@@ -19,6 +19,7 @@ python se2_calibration_mb.py --id "cal-2018-se2-kk-75001_0001" --db "vl_db" --sr
 python se2_calibration_mb.py --id "cal-2018-se2-kk-75012_0001" --db "vl_db" --srv "http://a73434:5984"
 python se2_calibration_mb.py --id "cal-2018-se2-kk-75043_0001" --db "vl_db" --srv "http://a73434:5984"
 python se2_calibration_mb.py --id "cal-2018-se2-kk-75063_0001" --db "vl_db" --srv "http://a73434:5984"
+python se2_calibration_mb.py --id "cal-2018-se2-kk-75043_0001" --db "vl_db" --srv "http://a73434:5984"
 """
 
 def main():
