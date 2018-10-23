@@ -3,7 +3,7 @@ import sys
 import matplotlib.pyplot as plt
 %matplotlib inline
 
-plt.rcParams['figure.figsize']=15,15
+plt.rcParams['figure.figsize']=10,10
 
 vpy_path = '/home/ipynb/notebooks/vpy'
 module_path = os.path.abspath(os.path.join(vpy_path))
