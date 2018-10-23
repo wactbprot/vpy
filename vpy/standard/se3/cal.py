@@ -375,6 +375,21 @@ class Cal(Se3):
         rise =  outgas_abc * pressure_conv * dt * time_conv
         
         res.store('Pressure', 'rise', rise , self.unit)
+    
+    def error_pressure_rise(self, res):
+        """Calculates the relative contribution of the pressure 
+        rise due to outgasing.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        p_cal = res.pick('Pressure', 'cal', self.unit)
+        p_rise = res.pick('Pressure', 'rise', self.unit)
+        
+        res.store('Error', 'rise', p_rise/p_cal, '1')
 
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the

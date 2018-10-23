@@ -172,6 +172,14 @@ class Position(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Position', quant)
 
+class Error(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Error', quant)
+
+class Sigma(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Error', quant)
+
 class Time(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Time', quant)

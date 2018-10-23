@@ -46,6 +46,8 @@ def main():
             cal.pressure_rise(res)
 
             cal.pressure_cal(res)
+            cal.error_pressure_rise(res)
+            
             cal.pressure_ind(res)
             cal.deviation_target_cal(res)
             cal.error(res)
