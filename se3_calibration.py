@@ -13,7 +13,7 @@ def main():
     io.eval_args()
     doc = io.load_doc() 
     # keep the AuxValues containing related Outgasing and additional volumes
-    auxvalues =   doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
+    auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
     res = Analysis(doc, insert_dict={'AuxValues':auxvalues})
 
     cal = Cal(doc)

@@ -9,7 +9,7 @@ from ...device.srg import Srg
 
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion
+from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion, Date
 from ..standard import Standard
 
 
@@ -82,9 +82,11 @@ class Se3(Standard):
    
     analysis_check = {
         "Error":{
-            "Customer":{"Type":"relative", "Unit": "1", "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
+            "Customer":{"Type":"ind", "Unit": "1", "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
             "FillDeviation": {"Type":"dev_fill", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and measured filling pressure."},           
-            "CalDeviation": {"Type":"dev_cal", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and target calibration pressure."},           
+            "CalDeviation": {"Type":"dev_cal", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and target calibration pressure."}, 
+            "PressureRise": {"Type":"rise", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"relative contribution of pressure rise to the calibration pressure."}, 
+                      
         },
         "Temperature":{
             "Vessel":{"Type":"after", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Vessel Temperature"},        
@@ -227,6 +229,7 @@ class Se3(Standard):
         self.Aux = AuxSe3(doc)
         self.Pos = Position(doc)
         self.Exp = Expansion(doc)
+        self.Date = Date(doc)
 
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)

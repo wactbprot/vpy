@@ -22,23 +22,33 @@ def main():
             ids = args[idx_ids].split(';')
         except:
            fail = True
-        
+    if '--update' in args:
+        update = True
+    else:
+        update = False
+
     base_doc = io.get_base_doc("se3")
-    state_doc = io.get_state_doc("se3") 
     
     if not fail and len(ids) >0:
         for id in ids:
-            meas_doc = io.get_doc_db(id)
-            doc = io.update_cal_doc(meas_doc, base_doc)
-            res = Analysis(doc)
- 
-            cal = Cal(doc)
-            cal.insert_state_results(res, state_doc)
+            if update:
+                meas_doc = io.get_doc_db(id)
+                doc = io.update_cal_doc(meas_doc, base_doc)
+                cal = Cal(doc)
+            else:
+                doc = io.get_doc_db(id)
+                cal = Cal(doc)
 
+            res = Analysis(doc)
+        
+            state_doc = io.get_state_doc("se3", meas_date=cal.Date.first_measurement()) 
+            cal.insert_state_results(res, state_doc)
+            
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
             cal.temperature_after(res)
+            cal.temperature_room(res)
             cal.real_gas_correction(res)
             cal.volume_add(res)
             cal.volume_start(res)
@@ -51,6 +61,7 @@ def main():
             cal.pressure_ind(res)
             cal.deviation_target_cal(res)
             cal.error(res)
+
             io.save_doc(res.build_doc())
            
     else:

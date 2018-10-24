@@ -237,13 +237,17 @@ class Io(object):
 
         return doc
 
-    def get_state_doc(self, name):
-        """Gets and returns the latest state document
+    def get_state_doc(self, name, meas_date):
+        """Gets and returns the state document
          containing the additional volume outgasing rate ect.
+         who is closest before the meas_date
 
+        :param meas_date: measurement date in the form yyyy-mm-dd
+        :type meas_date: str
+        
         :param std: name of the calibration standard
         :type std: str
-
+        
         :returns: document
         :rtype: dict
         """
@@ -251,7 +255,7 @@ class Io(object):
         db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['state_doc_view']
 
-        for item in db.view(view):
+        for item in db.view(view, startkey="20170101", endkey=meas_date.replace("-","")):
             doc = item.value
 
         return doc

@@ -94,7 +94,10 @@ class Cal(Se3):
 
     def outgas_state(self, res):
         """ Calculates the outgasing rate of dut-a,b,c u (vacuum branch
-        with dut valves closed) and v (vessel only).
+        with dut valves closed) and v (vessel only). About 50% of the 
+        outgasing rate is caused by the ion gauge (IG) which  is 
+        switched of during the calibration. The factor ``outgas_correction``
+        takes this into account.   
 
         :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -102,13 +105,13 @@ class Cal(Se3):
         :type: class
         """
 
-        conv = self.Cons.get_conv("ms", "s")
+        time_conv = self.Cons.get_conv("ms", "s")
 
-        m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / conv
-        m_bc = self.OutGas.get_value("rise_bc_slope_x", "mbar/ms") / conv
-        m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / conv
-        m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / conv
-        m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / conv
+        m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / time_conv  
+        m_bc = self.OutGas.get_value("rise_bc_slope_x", "mbar/ms") / time_conv 
+        m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / time_conv 
+        m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / time_conv 
+        m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / time_conv 
 
         res.store("OutGasRate", "outgas_abc",  m_abc, "mbar/s")
         res.store("OutGasRate", "outgas_bc",  m_bc, "mbar/s")
@@ -288,7 +291,7 @@ class Cal(Se3):
         ind = res.pick("Pressure", "ind_corr",self.unit)
         cal = res.pick("Pressure", "cal",self.unit)
         
-        res.store('Error', 'relative', ind/cal-1, '1')
+        res.store('Error', 'ind', ind/cal-1, '1')
 
     def pressure_ind(self, res):
         """Calculates the corrected indicated pressure in dependence
@@ -345,7 +348,7 @@ class Cal(Se3):
         res.store('Error', 'dev_cal', pressure_cal/target_cal -1.0, '1')
     
     def pressure_rise(self, res):
-        """Calculates the pressure rise due to outgasing.
+        """Calculates the pressure rise due to outgasing. 
 
         :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -353,12 +356,12 @@ class Cal(Se3):
             pick_dict(quantity, type)
         :type: class
         """
-        
+        outgas_correction = self.get_value('outgas_correction', '1')
+
         start_time = self.Time.get_value('amt_expansion_start', 'ms')
         end_time = self.Time.get_value('amt_expansion_end', 'ms')
         time_conv = self.Cons.get_conv(from_unit="ms", to_unit="s")
-        dt = end_time - start_time 
-
+        dt = (end_time - start_time) * time_conv
         
         pos_dut_a = self.Pos.get_str('dut_a')
         pos_dut_b = self.Pos.get_str('dut_b')
@@ -367,13 +370,14 @@ class Cal(Se3):
         outgas_abc = res.pick('OutGasRate', dict_type='outgas_abc', dict_unit='mbar/s', dest='AuxValues')[-1]
         outgas_bc = res.pick('OutGasRate', dict_type='outgas_bc', dict_unit='mbar/s', dest='AuxValues')[-1]
         outgas_c = res.pick('OutGasRate', dict_type='outgas_c', dict_unit='mbar/s', dest='AuxValues')[-1]
-        
+        outgas_v = res.pick('OutGasRate', dict_type='outgas_v', dict_unit='mbar/s', dest='AuxValues')[-1]
+
         # todo: check if cal with outgasing works, max outgasing for now:
 
         pressure_conv = self.Cons.get_conv(from_unit="mbar", to_unit=self.unit)
+        print(outgas_correction)
+        rise =  outgas_v * pressure_conv * dt * outgas_correction
 
-        rise =  outgas_abc * pressure_conv * dt * time_conv
-        
         res.store('Pressure', 'rise', rise , self.unit)
     
     def error_pressure_rise(self, res):
@@ -388,8 +392,8 @@ class Cal(Se3):
         """
         p_cal = res.pick('Pressure', 'cal', self.unit)
         p_rise = res.pick('Pressure', 'rise', self.unit)
-        
-        res.store('Error', 'rise', p_rise/p_cal, '1')
+        e_rise = p_rise/p_cal 
+        res.store('Error', 'rise', e_rise, '1')
 
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the
@@ -460,7 +464,12 @@ class Cal(Se3):
 
             p = ind - off
             e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
-            res.store("Error", "{}-relative".format(FillDev.name), e, '1')
+            res.store("Error", "{}-fill".format(FillDev.name), e, '1')
+
+            s = (ind == 0.)
+            if len(s>0):
+                ind[s] = np.nan
+            res.store("Error", "{}-offset".format(FillDev.name), off/ind, '1')
            
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
