@@ -7,7 +7,6 @@ import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
-from vpy.standard.se3.uncert import Uncert
 
 def main():
     io = Io()

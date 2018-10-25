@@ -9,17 +9,104 @@ class Uncert(Se3):
     def __init__(self, doc):
         super().__init__(doc)
 
+    def define_model(self):
+        """ Defines symbols and model for the static expansion system SE3.
+        The order of symbols must match the order in ``gen_val_arr``:
+
+        # . f
+        # . p_fill
+        # . V_5
+        # . V_start
+        # . p_before
+        # . p_after
+
+        The equation is:
+
+        .. math::
+
+                p = f_{corr} p_{fill}
+
+        with
+
+        .. math::
+
+                f_{corr} = \\frac{1}{ \\frac{1}{f} + \\frac{V_{add}}{V_{start}}}
+
+
+        :type: class
+        """
+        self.model_unit="mbar"
+
+        f=sym.Symbol('f')
+        p_fill=sym.Symbol('p_fill')
+        V_start=sym.Symbol('V_start')
+        V_add=sym.Symbol('V_add')
+        T_before=sym.Symbol('T_before')
+        T_after=sym.Symbol('T_after')
+        rg=sym.Symbol('rg')
+
+        self.symb=(
+                    f,
+                    p_fill,
+                    V_start,
+                    V_add,
+                    T_before,
+                    T_after,
+                    rg,
+                    )
+
+        self.model=p_fill * 1.0 / (1.0 / f + V_add / V_start) / T_before * T_after / rg
+
+    def gen_val_array(self, res):
+        """Generates a array of values
+        with the same order as define_models symbols order:
+
+        # . f
+        # . p_fill
+        # . V_5
+        # . V_start
+        # . V_add
+        # . T_before
+        # . T_after
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+        :type: class
+        """
+        self.val_arr=[
+                    self.val_dict['f'],
+                    self.val_dict['p_fill'],
+                    self.val_dict['V_start'],
+                    self.val_dict['V_add'],
+                    self.val_dict['T_before'],
+                    self.val_dict['T_after'],
+                    self.val_dict['rg'],
+                    ]
+
+    def gen_val_dict(self, res):
+        """Reads in a dict of values
+        with the same order as in ``define_models``. For the calculation
+        of the gas density, the Frs reading is multiplyed by 10 which gives a
+        suffucient approximation for the pressure.
+
+        :param: Class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+        :type: class
+        """
+
+        self.val_dict={
+        'f': res.pick("Expansion", "uncorr", "1"),
+        'p_fill': res.pick("Pressure", "fill", self.unit),
+        'V_start': res.pick("Volume", "start", "cm^3"),
+        'V_add': res.pick("Volume", "add", "cm^3"),
+        'T_before': res.pick("Temperature", "before", "K"),
+        'T_after': res.pick("Temperature", "after", "K"),
+        'rg': res.pick("Correction", "rg", "1"),
+        }
+
     def total(self, res):
-
-        self.gen_val_dict(res)
-        self.gen_val_array(res)
-
-        self.volume_start(res)
-        self.volume_5(res)
-        self.pressure_fill(res)
-        self.temperature_before(res)
-        self.temperature_after(res)
-
         u_1 = res.pick("Uncertainty", "v_start", "1")
         u_2 = res.pick("Uncertainty", "v_5", "1")
         u_3 = res.pick("Uncertainty", "p_fill", "1")
@@ -114,7 +201,7 @@ class Uncert(Se3):
         :type: class
         """
 
-        fill_target = self.Pres.get_value("target-fill", "mbar")
+        fill_target = self.Pres.get_value("target_fill", self.unit)
 
         N = len(self.fill_dev_names)
         M = self.no_of_meas_points
@@ -122,7 +209,7 @@ class Uncert(Se3):
 
         for i in range(N):
             Dev = self.FillDevs[i]
-            u_i = Dev.get_total_uncert(fill_target, "mbar", self.unit)
+            u_i = Dev.get_total_uncert(fill_target, self.unit, self.unit)
             u_arr.append(u_i)
 
         u_comb = np.power(np.nansum(np.power(u_arr, -1), axis=0), -1)

@@ -295,7 +295,8 @@ class Cal(Se3):
 
     def pressure_ind(self, res):
         """Calculates the corrected indicated pressure in dependence
-         of the customer device. *offset*  and uncorrected *ind*ication are also stored.
+         of the customer device. The offset  and the uncorrected 
+         indication are stored too.
 
         :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -349,6 +350,12 @@ class Cal(Se3):
     
     def pressure_rise(self, res):
         """Calculates the pressure rise due to outgasing. 
+        
+        .. note::
+
+                An investigation plus measurement is required to find a
+                proper way to correct the current outgasing rate measured by IG
+                who causes the most of the outgasing.
 
         :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and

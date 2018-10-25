@@ -226,19 +226,22 @@ class Date(Values):
     def first_measurement(self):
         """Returns the first measurement date. The expected
         structure is:
-        ```
+        
+        .. code-block:: javascript
+        
              "Date": [
                         {
                         "Type": "measurement",
-                        "Value": [ "2018-10-19 09:01"]
+                        "Value": [ "2018-10-19 09:01", "2018-10-20 09:01"]
                         }
                      ]
-         ```
-        at the path: Calibration.Measurement
+        
+        at the path: ``Calibration.Measurement``
 
-        :returns: first measurement date
+        :returns: first entry where the type is measurement
         :rtype: str
         """
+
         date_arr = self.get_str('measurement')
         if date_arr and isinstance(date_arr, np.ndarray):
             if isinstance(date_arr[0], str):
