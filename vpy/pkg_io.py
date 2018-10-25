@@ -35,7 +35,7 @@ class Io(object):
                             help="id of the document to analyse")
         # --ids
         parser.add_argument("--ids", type=str, nargs=1,
-                            help=";-separated ids of the documents to analyse")
+                            help=";-separated ids of the documents to handle")
         # --db
         parser.add_argument("--db", type=str, nargs=1,
                             help="name of the database")
@@ -48,7 +48,10 @@ class Io(object):
         # -s save
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)
-
+        # -u update
+        parser.add_argument('-u', action='store_true',
+                            help='update calibration doc with standard-, constants-, etc- documents', default=False)
+        
 
         self.args = parser.parse_args()
 
@@ -237,10 +240,11 @@ class Io(object):
 
         return doc
 
-    def get_state_doc(self, name, meas_date):
+    def get_state_doc(self, name, date=None):
         """Gets and returns the state document
          containing the additional volume outgasing rate ect.
-         who is closest before the meas_date
+         who is closest and before the date. if no dfate is given
+         the last state doc is returned.
 
         :param meas_date: measurement date in the form yyyy-mm-dd
         :type meas_date: str
@@ -255,9 +259,13 @@ class Io(object):
         db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['state_doc_view']
 
-        for item in db.view(view, startkey="20170101", endkey=meas_date.replace("-","")):
-            doc = item.value
-
+        if date:
+            for item in db.view(view, startkey="20170101", endkey=meas_date.replace("-","")):
+                doc = item.value
+        else:
+            for item in db.view(view):
+                doc = item.value
+            
         return doc
 
 

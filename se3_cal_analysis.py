@@ -22,7 +22,7 @@ def main():
             ids = args[idx_ids].split(';')
         except:
            fail = True
-    if '--update' in args:
+    if '-u' in args:
         update = True
     else:
         update = False
@@ -43,7 +43,7 @@ def main():
         
             state_doc = io.get_state_doc("se3", meas_date=cal.Date.first_measurement()) 
             cal.insert_state_results(res, state_doc)
-            
+
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
