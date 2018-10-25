@@ -182,16 +182,16 @@ class Document(object):
             sys.exit(errmsg)
         return ret
 
-    def get_value(self, t, unit, o=False):
+    def get_value(self, value_type, value_unit, o=False, with_stats=False):
         """Gets an dict by means of  ``o=get_object()``,
-        compares o.Unit with unit and returns
+        compares o.Unit with value_unit and returns
         numpy typed array.
 
-        :param t: value for type key
-        :type t: str
+        :param value_type: value for type key
+        :type value_type: str
 
-        :param unit: unit of value
-        :type unit: str
+        :param value_unit: value_unit of value
+        :type value_unit: str
 
         :returns: np.array
         :rtype: np.array
@@ -201,33 +201,50 @@ class Document(object):
         if o:
             obj = o
         else:
-            obj = self.get_object("Type", t)
+            obj = self.get_object("Type", value_type)
 
         if obj:
             if "Unit" in  obj:
-                if obj["Unit"] == unit:
-                    self.log.debug("unit of Type: {} is {}".format(t, unit))
+                if obj["Unit"] == value_unit:
+                    self.log.debug("value_unit of Type: {} is {}".format(value_type, value_unit))
                 else:
-                    errmsg="Unit is {} not {}".format(obj["Unit"], unit)
+                    errmsg="Unit is {} not {}".format(obj["Unit"], value_unit)
                     self.log.error(errmsg)
                     sys.exit(errmsg)
 
             if "Value" in obj:
-                if isinstance(obj["Value"], str):
-                    ret = np.asarray([obj["Value"]]).astype(np.float)
-
-                if isinstance(obj["Value"], list):
-                    ret = np.asarray(obj["Value"]).astype(np.float)
-
-                if isinstance(obj["Value"], float):
-                    ret = np.array([obj["Value"]]).astype(np.float)
-
-                if isinstance(obj["Value"], int):
-                    ret = np.array([obj["Value"]]).astype(np.float)
-
+                value_ret = self.safe_float_array(obj['Value'])
+            if "SdValue" in obj:
+                sd_ret = self.safe_float_array(obj['SdValue'])
+            if "N" in obj:
+                n_ret = self.safe_float_array(obj['N'])
         else:
-            self.log.warning("Value of Type {} not found".format(t))
+            self.log.warning("Value of Type {} not found".format(value_type))
         
+        if with_stats:
+            return value_ret, sd_ret, n_ret
+        else:
+            return value_ret
+
+    def safe_float_array(self, value):
+        """Ensures the return value to be a numpy array of float
+
+        :param value: value
+        :type value: str|list|float|int
+
+        :returns: ret
+        :rtype: np: array of type np.float
+        """
+
+        if isinstance(value, str):
+            ret = np.asarray([value]).astype(np.float)
+        if isinstance(value, list):
+            ret = np.asarray(value).astype(np.float)
+        if isinstance(value, float):
+            ret = np.array([value]).astype(np.float)
+        if isinstance(value, int):
+            ret = np.array([value]).astype(np.float)
+    
         return ret
 
     def get_dict(self, key, value, o=False):

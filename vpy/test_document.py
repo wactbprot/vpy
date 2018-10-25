@@ -35,7 +35,8 @@ class TestDocument(unittest.TestCase):
                 {'Type':'b', 'Value':['1', '2', '3'], 'Unit':'s'},
                 {'Type':'b_1', 'Value':['1', '2', '3'], 'Unit':'s'},
                 {'Type':'b_2', 'Value':['1', '2', '3'], 'Unit':'s'},
-                {'Type':'b_3', 'Value':['1', '2', '3'], 'Unit':'s'},
+                {'Type':'b_3', 'Value':['1', '2', '3'], 'Unit':'s'}, 
+                {'Type':'stats', 'Value':[1, 2, 3],  'SdValue':[0.1, 0.2, 0.3], 'N':[1,1,1], 'Unit':'s'},
                 {'Type':'expr', 'Expression':'2*b', 'Unit':'s'}
 
                 ]
@@ -108,6 +109,19 @@ class TestDocument(unittest.TestCase):
 
         self.assertTrue(type(res).__module__ == 'numpy')
         self.assertEqual(res[0], 1.0)
+
+    def test_get_value_3(self):
+        """Shold return a val, sdval and N 
+        """
+        val, sdval, n  = self.Doc.get_value('stats', 's', with_stats=True)
+
+        self.assertTrue(type(val).__module__ == 'numpy')
+        self.assertTrue(type(sdval).__module__ == 'numpy')
+        self.assertTrue(type(n).__module__ == 'numpy')
+        self.assertEqual(val[0], 1.0)
+        self.assertEqual(sdval[0], 0.1)
+        self.assertEqual(n[0], 1.0)
+
 
     def test_get_str_1(self):
         """Shold return a numpy vector of strings
