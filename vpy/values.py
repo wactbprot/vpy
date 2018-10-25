@@ -177,6 +177,10 @@ class Sigma(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Error', quant)
 
+class Uncertainty(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Uncertainty', quant)
+
 class Time(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Time', quant)
