@@ -48,7 +48,7 @@ class TestAnalysis(unittest.TestCase):
         self.assertEqual(ana["E"], d)
 
     def test_store_pick_4(self):
-        """store int, pick array containing float
+        """store int, pick array containing float with stats
         """
         self.Ana.store(quant="A", type="b", value=1, unit= "u", sd = 0.1, n = 10)
         v, sd, n = self.Ana.pick("A", "b", "u", with_stats=True)

@@ -111,7 +111,7 @@ class TestDocument(unittest.TestCase):
         self.assertEqual(res[0], 1.0)
 
     def test_get_value_3(self):
-        """Shold return a val, sdval and N 
+        """Shold return the value, sd of value and N 
         """
         val, sdval, n  = self.Doc.get_value('stats', 's', with_stats=True)
 
