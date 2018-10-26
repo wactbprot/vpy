@@ -180,7 +180,7 @@ class Analysis(Document):
         else:
             return ret
 
-    def pick(self, quant, dict_type, dict_unit, dest='Values'):
+    def pick(self, quant, dict_type, dict_unit, dest='Values', with_stats=False):
         """Picks and returns an already calculated value.
 
         :param quant: quant measurement quantity
@@ -192,13 +192,16 @@ class Analysis(Document):
         :param dict_unit: dict_unit expected
         :type dict_unit: str
         """
-        res = None
+        value_ret = None
         if dest in self.doc:
             if quant in self.doc[dest]:
                 doc = self.doc[dest][quant]
                 for d in doc:
                     if d['Type'] == dict_type:
-                        ret = self.get_value(dict_type, dict_unit, d)
+                        if with_stats:
+                            value_ret, sd_ret, n_ret = self.get_value(dict_type, dict_unit, o=d, with_stats=with_stats)
+                        else:    
+                            value_ret = self.get_value(dict_type, dict_unit, o=d)
             else:
                 msg = "{} not in Values".format(quant)
                 self.log.error(msg)
@@ -208,12 +211,15 @@ class Analysis(Document):
             self.log.error(msg)
             sys.exit(msg)
 
-        if ret is None: 
+        if value_ret is None: 
             msg = "dict with type {} not found".format(dict_type)
             self.log.error(msg)
             sys.exit(msg)
         else:
-            return ret
+            if with_stats:
+                return value_ret, sd_ret, n_ret
+            else:
+                return value_ret
 
     def build_doc(self, dest='Analysis'):
         """Merges the analysis dict to the original doc and returns it.

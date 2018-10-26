@@ -197,7 +197,7 @@ class Document(object):
         :rtype: np.array
         """
 
-        ret = None
+        value_ret = None
         if o:
             obj = o
         else:
