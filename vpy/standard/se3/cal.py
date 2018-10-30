@@ -470,15 +470,17 @@ class Cal(Se3):
 
             p = ind - off
             e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
-            res.store("Error", "{}-fill".format(FillDev.name), e, '1')
 
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
-            res.store("Error", "{}-offset".format(FillDev.name), off/ind, '1')
            
             p_corr = p / (e + 1.0)
             cor_arr.append(p_corr)
+
+            res.store("Pressure", "{}-fill".format(FillDev.name), p_corr, self.unit)
+            res.store("Error", "{}-fill".format(FillDev.name), e, '1')
+            res.store("Error", "{}-offset".format(FillDev.name), off/p_corr, '1')
             
       
         p_mean = np.nanmean(cor_arr, axis=0)
