@@ -58,17 +58,6 @@ run script with database
     > python se3_fm_eval.py --id 'doc-id'
 
 
-logging
-=======
-
-One can set different log levels:
-
-* INFO
-* DEBUG
-* ERROR
-
-in ``conf.json``.
-
 unit tests, coverage and pre commit hook
 ========================================
 
