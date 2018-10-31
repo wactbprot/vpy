@@ -127,7 +127,7 @@ class Uncert(Frs5):
             'A':       self.get_value_full("A_eff", "m^2", N),
             'r':       self.Pres.get_value("frs_p", "lb"),
             'r_zc':    self.Pres.get_value("frs_zc_p", "lb"),
-            'r_zc0':   self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb"),
+            'r_zc0':   self.Aux.get_val_by_time(meas_time, "amt_offset", "ms", "frs_zc0_p", "lb"),
             'r_cal':   self.get_value_full("R_cal", "lb", N),
             'r_cal0':  np.full(self.no_of_meas_points, 0.0),
             'ub':      np.full(self.no_of_meas_points, 0.0),

@@ -208,7 +208,7 @@ class Document(object):
                 if obj["Unit"] == value_unit:
                     self.log.debug("value_unit of Type: {} is {}".format(value_type, value_unit))
                 else:
-                    errmsg="Unit is {} not {}".format(obj["Unit"], value_unit)
+                    errmsg="On attempt to get value of Type {}: Unit is {} not {}".format(value_type, obj["Unit"], value_unit)
                     self.log.error(errmsg)
                     sys.exit(errmsg)
 

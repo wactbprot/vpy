@@ -21,17 +21,18 @@ class Cal(Frs5):
         """
 
         ## untestet methode call:
-        tem, tem_unit = self.Temp.get_value_and_unit("frs5")
+        temperatur_dict = self.Temp.get_dict('Type', 'frs5')
+
         gas = self.Aux.get_gas()
-        mt = self.Time.get_value("amt_meas", "ms")
+        mt = self.Time.get_value('amt_meas', 'ms')
 
-        off = self.Aux.get_obj_by_time(
-            mt, "offset_mt", "ms", "frs_res_off", "DCR")
-        res_off = self.ResDev.pressure(off, tem, "mbar", gas)
+        pressure_offset_dict= self.Aux.get_obj_by_time(mt, "amt_offset", "ms", "frs_res_off", "DCR")
 
-        ## untestet methode call:
-        ind, ind_unit = self.Pres.get_value_and_unit("frs_res_ind")
-        res_ind = self.ResDev.pressure(ind, tem, "mbar", gas)
+        pressure_ind_dict = self.Pres.get_dict("Type", "frs_res_ind")
+        
+        res_off = self.ResDev.pressure(pressure_offset_dict, temperatur_dict, gas=gas)
+        res_ind = self.ResDev.pressure(pressure_ind_dict, temperatur_dict, gas=gas)
+
         p_res = res_ind - res_off
 
         res.store('Pressure', "frs5_res_off", res_off, "mbar")
@@ -90,7 +91,6 @@ class Cal(Frs5):
             ## Temperature in C
         T = res.pick("Temperature", "frs5", "C")
         ab = self.get_value_full("alpha_beta_frs", "1/C", N)
-
         # correction buoyancy  get info for gas
         approx_p = self.Pres.get_value("frs_p", "lb") * 10.0  # mbar
         gas = self.get_gas()
@@ -107,7 +107,7 @@ class Cal(Frs5):
         # get measure time for r_zc0
         meas_time = self.Time.get_value("amt_meas", "ms")
 
-        r_zc0 = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb")
+        r_zc0 = self.Aux.get_val_by_time(meas_time, "amt_offset", "ms", "frs_zc0_p", "lb")
         r_zc = self.Pres.get_value("frs_zc_p", "lb")
 
         r_0 = r_zc - r_zc0
