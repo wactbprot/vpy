@@ -1,54 +1,58 @@
+import sys
 import numpy as np
 from scipy.interpolate import interp1d
 from ..device.device import Device
 
 
 class Cdg(Device):
-    unit = "mbar"
+    unit = "Pa"
     usable_decades = 3
-    max_typehead_mbar = {
-        "001Torr":  0.0013,
-        "01Torr":   0.0133,
-        "1Torr":    1.3332,
-        "10Torr":   13.332,
-        "100Torr":  133.32,
-        "1000Torr": 1333.2
+    max_type_head = {
+        "0.001Torr":  0.13,
+        "0.01Torr":   1.33,
+        "0.1Torr":   13.33,        
+        "1Torr":    133.32,
+        "10Torr":   1333.2,
+        "100Torr":  13332.0,
+        "1000Torr": 133320.0
     }
 
     def __init__(self, doc, dev):
-
         super().__init__(doc, dev)
-
         self.doc = dev
+        dev = dev.get('CalibrationObject')
+        if dev:
+            self.name = dev.get('Name')
+            dev_setup = dev.get('Setup')
+            if dev_setup:
+                type_head = dev_setup.get('TypeHead')
+                if type_head:
+                    if type_head in self.max_type_head:
+                        self.max_p = self.max_type_head.get(type_head)
+                        self.min_p = self.max_p / 10.0**self.usable_decades
+                    else:
+                        msg = "missing definition for type head {head}".format(head=type_head)
+                        self.log.error(msg)
+                        sys.exit(msg)
 
-        if "CalibrationObject" in dev:
-            dev = dev['CalibrationObject']
+            if "Interpol" in dev:
+                self.interpol_x = self.get_value("p_ind", self.unit)
+                self.interpol_y = self.get_value("e", "1")
+                self.interpol_min = np.min(self.interpol_x)
+                self.interpol_max = np.max(self.interpol_x)
 
-        if "Name" in dev:
-            self.name = dev["Name"]
+        else:
+            msg = "Can't find device"
+            self.log.error(msg)
+            sys.exit(msg)
 
-        if "Setup" in dev:
-            dev_setup = dev['Setup']
-            if "TypeHead" in dev_setup:
-                th = dev_setup['TypeHead']
-                if th is not None:
-                    self.max_p_mbar = self.max_typehead_mbar[th]
-                    self.min_p_mbar = self.max_p_mbar / 10.0**self.usable_decades
-
-        if "Interpol" in dev:
-            self.interpol_x = self.get_value("p_ind", self.unit)
-            self.interpol_y = self.get_value("e", "1")
-            self.interpol_min = np.min(self.interpol_x)
-            self.interpol_max = np.max(self.interpol_x)
-
-
-    def pressure(self, pressure_dict, temperature_dict, unit= "Pa", gas= "N2"):
+    def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = pressure_dict.get('Value')
         
         if pressure_unit == "V":
             #deal with it
-            pass
+            sys.exit('missing implementation')
         else:
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         
@@ -122,6 +126,12 @@ class Cdg(Device):
     def interp_function(self, x, y):
         return interp1d(x, y, kind="linear")
 
+    def error(self, p_cal, p_ind):
+        N = p_cal.shape[0]
+        err = np.full(N, np.nan)
+
+        return p_ind/p_cal - 1.0, '1'
+
     def cal_interpol(self, p_cal, p_ind, uncert):
         """Calculates a interpolation vector for the relative
         error of indication and the uncertainty
@@ -141,8 +151,8 @@ class Cdg(Device):
         return p_ind_cut_nice, error_nice, uncert_nice
 
     def cut_values(self, p, s):
-        i = np.argmin(abs(p -self.max_p_mbar))
-        j = np.argmin(abs(p -self.min_p_mbar))
+        i = np.argmin(abs(p - self.max_p))
+        j = np.argmin(abs(p - self.min_p))
         return p[j:i+1], s[j:i+1]
 
     def get_nice_vals(self, x):
@@ -161,6 +171,15 @@ class InfCdg(Cdg):
     """
 
     usable_decades = 2
+
+    def __init__(self, doc, dev):
+        super().__init__(doc, dev)
+
+class Se3Cdg(Cdg):
+    """Hand picked CDGs
+    """
+
+    usable_decades = 3
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
