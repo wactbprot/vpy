@@ -71,7 +71,6 @@ class Result(Analysis):
         """
         return [item for sublist in l for item in sublist]
 
-
     def gatherby_idx(self, l, compare_function):
         groups = {}
         for i in range(len(l)):
