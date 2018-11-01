@@ -60,16 +60,6 @@ class Result(Analysis):
         super().__init__(doc, init_dict)
         self.org = copy.deepcopy(doc)
 
-    def flatten(self, l):
-        """Flattens a list of lists.
-
-        :param l: list of lists
-        :type cal: list
-
-        :returns: a list
-        :rtype: list
-        """
-        return [item for sublist in l for item in sublist]
 
     def gatherby_idx(self, l, compare_function):
         groups = {}
