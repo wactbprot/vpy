@@ -3,8 +3,6 @@ import time
 import subprocess
 import copy
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import curve_fit
 from .analysis import Analysis
 from .todo import ToDo
 from .values import Values
@@ -60,17 +58,6 @@ class Result(Analysis):
         super().__init__(doc, init_dict)
         self.org = copy.deepcopy(doc)
 
-    def flatten(self, l):
-        """Flattens a list of lists.
-
-        :param l: list of lists
-        :type cal: list
-
-        :returns: a list
-        :rtype: list
-        """
-        return [item for sublist in l for item in sublist]
-
 
     def gatherby_idx(self, l, compare_function):
         groups = {}
@@ -90,199 +77,6 @@ class Result(Analysis):
     def repeat_rel(self, p_list):
         return np.asarray([np.piecewise(p, [p <= 0.1, p <= 9.5, p > 9.5], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
 
-    def reject_outliers_index(self, ana):
-        """Takes the list of indices of measurement points belonging to a
-        certain target pressure and rejects outliers by comparing each
-        measurement value to the mean value of the neighbors (without the
-        point itself).
-        remarks: using the standard deviation of the neighbors is unsatisfactory
-        because one may end up with a small value by chance. Probably it is
-        better to use a threshold that is decreasing with increasing pressure
-        values. Another problem is that iterating over empty lists aborts the
-        program.
-
-        :returns: array of arrays of indices
-        :rtype: np.array
-        """
-
-        p_ind = ana.pick("Pressure", "ind", "mbar")
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        error = (p_ind - p_cal) / p_cal * 100
-        self.ToDo.make_average_index(p_cal, "mbar")
-        idx = self.ToDo.average_index
-        self.log.debug("average index: {}".format(idx))
-        # coarse filtering
-        print(idx)
-        idx = [[j for j in i if abs(error[j]) < 50] for i in idx]
-        print(idx)
-        # fine filtering
-        k = 0
-        while True:
-            r = []
-            ref_mean = [None] * len(idx)
-            ref_std = [None] * len(idx)
-            s = [None] * len(idx)
-            for i in range(len(idx)):
-                s[i] = 1
-                if i > 1:
-                    s[i] = i
-                if i > len(idx) - 3:
-                    s[i] = len(idx) - 2
-                # collect indices of neighbors
-                ref_idx = self.flatten(idx[s[i] - 1: s[i] + 1])
-                rr = []
-                for j in range(len(idx[i])):
-                    # indices of neighbors only
-                    ref_idx0 = [a for a in ref_idx if a != idx[i][j]]
-                    ref = np.take(error, ref_idx0).tolist()
-                    ref_mean[i] = np.mean(ref)
-                    ref_std[i] = np.std(ref)
-                    # only accept indices if error[idx[i][j]] deviates either less than 5% or 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[idx[i][j]]) < max(5, 5 * ref_std[i]):
-                        rr.append(idx[i][j])
-                r.append(rr)
-
-            self.log.debug("average index: {}".format(s))
-            self.log.debug("average index: {}".format(idx))
-
-            k = k + 1
-            if idx == r:
-                break
-            idx = r
-
-        print(idx)
-
-        fig, ax = plt.subplots()
-        x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
-        ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
-        x = np.take(p_cal, self.flatten(idx)).tolist()
-        y = np.take(error, self.flatten(idx)).tolist()
-        ax.semilogx(x, y, 'o', label="after refinement!")
-        point_label = self.flatten(idx)
-        for i in range(len(x)):
-            plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles, labels, loc=0)
-        plt.title(str(k) + " mal durchlaufen")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-        plt.ylabel(r"$e\;(\%)$")
-        plt.savefig("reject_outliers_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
-        plt.clf()
-        reject = []
-        
-        while True:
-            r = input("Reject datapoint number: ")
-            if r == "":
-                break
-            reject.append(r)
-        print(idx)
-        idx = [[j for j in i if not str(j) in reject] for i in idx]
-        print(idx)
-
-        self.average_index = idx
-
-
-    def make_main_maesurement_index(self, ana):
-        """Collects indices of the main measurement in average_index.
-
-        :returns: list of indices
-        :rtype: list
-        """
-
-        idx = self.flatten(self.average_index)
-        mdate0 = ana.get_object("Type","measurement")["Value"]
-        mdate = np.take(mdate0, idx).tolist()
-        occurrences = [[i, mdate.count(i)] for i in list(set(mdate))]
-        max_occurrence = sorted(occurrences, key=lambda j: j[1])[-1][0]
-        idx = [i for i in idx if mdate0[i] == max_occurrence]
-
-        self.main_maesurement_index = idx
-
-
-    def make_pressure_range_index(self, ana):
-        """Collects indices of measurements with the same conversion factor in r1.
-        Collects indices of measurements within the same decade of p_cal in r2.
-        Returns the one with smaller standard deviation in the low pressure range.
-
-        :returns: list of lists of indices
-        :rtype: list
-        """
-
-        cf = ana.get_object("Type","cf")["Value"]
-        idx = self.flatten(self.average_index)
-
-        r1 = {}
-        for i in idx:
-            for j in r1:
-                if np.isclose(cf[i], cf[j], rtol=1.e-3) and np.isfinite(cf[j]):
-                    r1[j].append(i)
-                    break
-            else: r1[i] = [i]
-        r1 = list(r1.values())
-
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        p_off = ana.pick("Pressure", "offset", "mbar")
-        p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
-        r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(cf[j])] for i in sorted(list(set(p_cal_log10)))]
-        if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
-        if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
-
-        print("pressure ranges for offset stability")
-        print(r1)
-        print(r2)
-        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r1])
-        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r2])
-
-        if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
-        else: r = r2
-
-        self.pressure_range_index = r
-
-
-    def make_offset_stability(self, ana):
-
-        # should outliers by rejected? e.g. forgot to switch
-        # measurement range for offset but switched for p_ind
-
-        pr_idx = self.pressure_range_index
-        av_idx = self.average_index
-        idx = self.flatten(av_idx)
-
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        p_off = ana.pick("Pressure", "offset", "mbar")
-
-        offset_unc = [None] * len(p_off)
-        for i in pr_idx:
-            unc = np.std([p_off[j] for j in i])
-            for j in i:
-                offset_unc[j] = unc
-        offset_unc = np.asarray(offset_unc)
-        self.offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
-
-        fig, ax = plt.subplots()
-        x = np.take(p_cal, idx)
-        y = np.take(p_off, idx)
-        y_err = np.take(offset_unc, idx)
-        ax.errorbar(x, y, y_err, fmt='o')
-        ax.semilogx(x, y, 'o')
-        plt.title("offset stability")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-        plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
-        plt.savefig("offset_stability_abs_" + str(self.org["Calibration"]["Certificate"]) + ".pdf")
-        plt.cla()
-        y = np.take(p_off / p_cal * 100, idx)
-        y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
-        ax.errorbar(x, y, y_err, fmt='o')
-        ax.semilogx(x, y, 'o')
-        plt.title("offset stability")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')   
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-        plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
-        plt.savefig("offset_stability_rel_"+ str(self.org["Calibration"]["Certificate"]) + ".pdf")
-        plt.clf()
-
 
     def make_error_table(self, ana):
 
@@ -290,14 +84,18 @@ class Result(Analysis):
         ind = ana.pick("Pressure", "ind", "mbar")
         error = 100 * (ind - cal) / cal
 
-        av_idx = self.average_index
+        av_idx = ana.doc["AuxValues"]["AverageIndex"]
+        offset_unc = ana.pick("Uncertainty", "offset", "mbar")
+
+        offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
+
         n_avr = np.asarray([len(i) for i in av_idx])
         cal = self.cal = np.asarray([np.mean(np.take(cal, i)) for i in av_idx])
         ind = self.ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
         error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
 
         # digitizing error still missing
-        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + self.offset_uncertainty**2)
+        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + offset_uncertainty**2)
         k2 = self.k2 = 2 * 100 * ind / cal * np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
 
         #format output
@@ -349,8 +147,13 @@ class Result(Analysis):
         T_room = ana.pick("Temperature", "room", "C")
         mdate = ana.get_object("Type","measurement")["Value"]
 
-        mm_idx = self.main_maesurement_index
+        mm_idx = ana.doc["AuxValues"]["MainMaesurementIndex"]
 
+        av_idx = ana.doc["AuxValues"]["AverageIndex"]
+        offset_unc = ana.pick("Uncertainty", "offset", "mbar")
+
+        offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
+        
         mdate = np.take(mdate, mm_idx)[0]
 
         T_after = np.take(T_after, mm_idx)
@@ -366,7 +169,7 @@ class Result(Analysis):
         T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
         T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
 
-        zero_stability_str = self.Val.round_to_sig_dig(min(self.offset_uncertainty), 2)
+        zero_stability_str = self.Val.round_to_sig_dig(min(offset_uncertainty), 2)
 
         target = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Value"]
         target_unit = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Unit"]
@@ -374,7 +177,7 @@ class Result(Analysis):
         gas = self.org["Calibration"]["ToDo"]["Gas"]
         language = self.org["Calibration"]["Customer"]["Lang"]
         gas = self.gas[language][gas]
-
+        print("#")
         form = {
             "GasTemperature": T_after_mean_str,
             "GasTemperatureUncertainty": T_after_unc_str,
@@ -387,53 +190,14 @@ class Result(Analysis):
             "RoomTemperatureUncertainty": T_room_unc_str,
             "ZeroStability": zero_stability_str,
             "ZeroStabilityUnit": target_unit,
-            "Evis": self.evis,
+            "Evis": ana.get_value("Error", "evis", "%"),
             "GasTemperatureEvis": T_after_mean_K_str,
             "GasTemperatureEvisUncertainty": T_after_unc_str
             }
-
+        print("#")
         self.store_dict(quant="Formula", d=form, dest=None, plain=True)
 
         self.log.info("Formula section written")
 
-
-    def make_AuxValues_section(self, ana):
-
-        aux = {
-            "MainMaesurementIndex": self.main_maesurement_index,
-            "PressureRangeIndex": self.pressure_range_index,
-            "AverageIndex": self.average_index,
-            "AverageIndexFlat": self.flatten(self.average_index)
-            }
-
-        self.store_dict(quant="AuxValues", d=aux, dest=None, plain=True)
-
         self.log.info("AuxValues section written")
 
-
-    def fit_thermal_transpiration(self):
-
-        def model(p, a, b, c, d):
-            return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
-
-        para_val, covariance = curve_fit(model, self.cal, self.error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
-        residuals = model(self.cal, *para_val) - self.error
-        para_unc = np.sqrt(np.diag(covariance))
-
-        viscous_idx = [i for i in range(len(self.error)) if 0.8 < self.cal[i] < max(self.cal)]
-        if len(viscous_idx) >= 4 and abs(np.mean(residuals[viscous_idx])) > 0.1:
-            #if the deviation is high and there are enough data points in the viscous regime
-            #take the mean of the smallest 3 values (excluding the one at highest pressure)
-            self.evis = np.mean(sorted(self.error[viscous_idx])[0:3])
-        else:
-            self.evis = model(100, *para_val)
-
-
-    def make_sigma_formula(self):
-        pass
-
-    def make_evis_formula(self):
-        pass
-
-    def make_sens_table(self):
-        pass
