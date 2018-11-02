@@ -16,7 +16,8 @@ class Cdg(Device):
         "100Torr":  13332.0,
         "1000Torr": 133320.0
     }
-
+        
+    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
@@ -34,12 +35,6 @@ class Cdg(Device):
                         msg = "missing definition for type head {head}".format(head=type_head)
                         self.log.error(msg)
                         sys.exit(msg)
-
-            if "Interpol" in dev:
-                self.interpol_x = self.get_value("p_ind", self.unit)
-                self.interpol_y = self.get_value("e", "1")
-                self.interpol_min = np.min(self.interpol_x)
-                self.interpol_max = np.max(self.interpol_x)
 
         else:
             msg = "Can't find device"
@@ -126,44 +121,53 @@ class Cdg(Device):
     def interp_function(self, x, y):
         return interp1d(x, y, kind="linear")
 
-    def error(self, p_cal, p_ind):
-        N = p_cal.shape[0]
-        err = np.full(N, np.nan)
+    def error(self, p_cal, p_ind, p_unit):
+        p_cal = self.shape_pressure(p_cal, p_unit)
+        err = np.divide(p_ind, p_cal) - 1.0
 
-        return p_ind/p_cal - 1.0, '1'
+        return err, '1'
+    
+    def conv_smooth(self, data, n=3):
+        weights = np.ones(n) / n
+        return np.convolve(data, weights, mode='valid')
 
-    def cal_interpol(self, p_cal, p_ind, uncert):
+    def cal_interpol(self, pressure, error, uncertainty):
         """Calculates a interpolation vector for the relative
         error of indication and the uncertainty
 
         """
+      
+        f_e = self.interp_function(pressure, error)
+        f_u = self.interp_function(pressure, uncertainty)
 
-        p_cal_cut, p_ind_cut = self.cut_values(p_cal, p_ind)
-        p_cal_cut, uncert_cut = self.cut_values(p_cal, uncert)
+        p_ind_cut_nice = self.get_nice_vals( np.nanmin(pressure), np.nanmax(pressure))
 
-
-        f_error = self.interp_function(p_ind_cut, p_ind_cut / p_cal_cut - 1.0)
-        f_uncert = self.interp_function(p_ind_cut, uncert_cut)
-        p_ind_cut_nice = self.get_nice_vals(p_ind_cut)
-        error_nice = f_error(p_ind_cut_nice)
-        uncert_nice = f_uncert(p_ind_cut_nice)
+        error_nice = f_e(p_ind_cut_nice)
+        uncert_nice = f_u(p_ind_cut_nice)
 
         return p_ind_cut_nice, error_nice, uncert_nice
 
-    def cut_values(self, p, s):
-        i = np.argmin(abs(p - self.max_p))
-        j = np.argmin(abs(p - self.min_p))
-        return p[j:i+1], s[j:i+1]
+    def shape_pressure(self, p, unit):
+        if unit == self.unit:
+            N = p.shape[0]
+            arr = np.full(N, np.nan)
 
-    def get_nice_vals(self, x):
-        ls = np.logspace(-5, 3, num=80)
-        x_max = np.max(x)
-        x_min = np.min(x)
+            i = np.where((p > self.min_p) & (p < self.max_p))
+            arr[i] = p[i]
 
-        i = np.where(ls > x_min)[0][0]
-        j = np.where(ls < x_max)[0][-1]
+            return arr
+        else:
+            sys.exit('implement auto unit conversion')
 
-        return np.concatenate((np.array([x_min]), ls[i:j],  np.array([x_max])))
+    def get_nice_vals(self, x_min, x_max):
+        i_min = np.where(self.interpol_pressure_points > x_min)[0][0]
+        i_max = np.where(self.interpol_pressure_points < x_max)[0][-1]
+        
+        start_array = np.array([x_min])
+        med_array = self.interpol_pressure_points[i_min:i_max]
+        end_array = np.array([x_max])
+        
+        return np.concatenate((start_array, med_array, end_array )) 
 
 
 class InfCdg(Cdg):
@@ -171,15 +175,6 @@ class InfCdg(Cdg):
     """
 
     usable_decades = 2
-
-    def __init__(self, doc, dev):
-        super().__init__(doc, dev)
-
-class Se3Cdg(Cdg):
-    """Hand picked CDGs
-    """
-
-    usable_decades = 3
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
