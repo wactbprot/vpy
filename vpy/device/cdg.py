@@ -131,22 +131,32 @@ class Cdg(Device):
         weights = np.ones(n) / n
         return np.convolve(data, weights, mode='valid')
 
-    def rm_nan(self, x):
-        return x[np.logical_not(np.isnan(x))]
+    def rm_nan(self, x, ldx=None):
+        if not isinstance(ldx, np.ndarray):
+            ldx = np.logical_not(np.isnan(x))
+        return x[ldx], ldx
 
     def cal_interpol(self, pressure, error, uncertainty):
         """Calculates a interpolation vector for the relative
-        error of indication and the uncertainty
+        error of indication and the uncertainty.
+
+        This is done as follows:
+            # conv_smooth
+
+            # shape_pressures
+            # rm_nan
+            # get_default_values
+            # interpolate default values
 
         ... todo::
 
             describe interpol proc
 
         """
-        p = self.rm_nan(pressure)
-        e = self.rm_nan(error)
-        u = self.rm_nan(uncertainty)
-
+        p, l = self.rm_nan(pressure)
+        e, _ = self.rm_nan(error, l)
+        u, _ = self.rm_nan(uncertainty, l)
+       
         f_e = self.interp_function(p, e)
         f_u = self.interp_function(p, u)
 
