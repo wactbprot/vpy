@@ -131,21 +131,31 @@ class Cdg(Device):
         weights = np.ones(n) / n
         return np.convolve(data, weights, mode='valid')
 
+    def rm_nan(self, x):
+        return x[np.logical_not(np.isnan(x))]
+
     def cal_interpol(self, pressure, error, uncertainty):
         """Calculates a interpolation vector for the relative
         error of indication and the uncertainty
 
+        ... todo::
+
+            describe interpol proc
+
         """
-      
-        f_e = self.interp_function(pressure, error)
-        f_u = self.interp_function(pressure, uncertainty)
+        p = self.rm_nan(pressure)
+        e = self.rm_nan(error)
+        u = self.rm_nan(uncertainty)
 
-        p_ind_cut_nice = self.get_nice_vals( np.nanmin(pressure), np.nanmax(pressure))
+        f_e = self.interp_function(p, e)
+        f_u = self.interp_function(p, u)
 
-        error_nice = f_e(p_ind_cut_nice)
-        uncert_nice = f_u(p_ind_cut_nice)
+        p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
 
-        return p_ind_cut_nice, error_nice, uncert_nice
+        e_nice = f_e( p_default )
+        u_nice = f_u( p_default )
+
+        return  p_default, e_nice, u_nice
 
     def shape_pressure(self, p, unit):
         if unit == self.unit:
@@ -159,7 +169,7 @@ class Cdg(Device):
         else:
             sys.exit('implement auto unit conversion')
 
-    def get_nice_vals(self, x_min, x_max):
+    def get_default_values(self, x_min, x_max):
         i_min = np.where(self.interpol_pressure_points > x_min)[0][0]
         i_max = np.where(self.interpol_pressure_points < x_max)[0][-1]
         

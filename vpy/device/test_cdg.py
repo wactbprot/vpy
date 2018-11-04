@@ -68,7 +68,7 @@ class TestAnalysis(unittest.TestCase):
     def test_nice_values(self):
         cob = copy.deepcopy(self.cob)
         cdg = Cdg({}, cob)
-        vec = cdg.get_nice_vals(1,1000)
+        vec = cdg.get_default_values(1,1000)
        
         self.assertAlmostEqual(len(vec), 30)
         self.assertAlmostEqual(vec[0], 1)
@@ -77,9 +77,13 @@ class TestAnalysis(unittest.TestCase):
     def test_interpol_values(self):
         cob = copy.deepcopy(self.cob)
         cdg = Cdg({}, cob)
-        p = np.array([1,2,3,4,5,6,7,8,9,10 ])
+
+        p = np.array([np.nan,2,3,4,5,6,7,8,9,np.nan ])
         e = np.array([1,1,1,1,1,1,1,1,1,1 ])
         u = np.array([1,1,1,1,1,1,1,1,1,1 ])
 
-        vec = cdg.get_error_interpol(p, e, u)
-        print(vec)
+        i_p, i_e, i_u = cdg.cal_interpol(p, e, u)
+        self.assertAlmostEqual(i_p[0] , 2)
+        self.assertAlmostEqual(i_e[0] , 1)
+        self.assertAlmostEqual(i_u[0] , 1)
+        
