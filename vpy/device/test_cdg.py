@@ -76,13 +76,18 @@ class TestAnalysis(unittest.TestCase):
     
     def test_interpol_values(self):
         cob = copy.deepcopy(self.cob)
+        cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'
         cdg = Cdg({}, cob)
 
-        p = np.array([np.nan,2,3,4,5,6,7,8,9,np.nan ])
-        e = np.array([1,1,1,1,1,1,1,1,1,1 ])
-        u = np.array([1,1,1,1,1,1,1,1,1,1 ])
+        p = np.array([np.nan,2,2,2,
+                            3,4,5,6,7,8,
+                            9,9,9,np.nan ])
+        e = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
+        u = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
 
         i_p, i_e, i_u = cdg.cal_interpol(p, e, u)
+        print(cdg.min_p)
+        print(i_p)
         self.assertAlmostEqual(i_p[0] , 2)
         self.assertAlmostEqual(i_e[0] , 1)
         self.assertAlmostEqual(i_u[0] , 1)

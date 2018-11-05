@@ -122,19 +122,7 @@ class Cdg(Device):
         return interp1d(x, y, kind="linear")
 
     def error(self, p_cal, p_ind, p_unit):
-        p_cal = self.shape_pressure(p_cal, p_unit)
-        err = np.divide(p_ind, p_cal) - 1.0
-
-        return err, '1'
-    
-    def conv_smooth(self, data, n=3):
-        weights = np.ones(n) / n
-        return np.convolve(data, weights, mode='valid')
-
-    def rm_nan(self, x, ldx=None):
-        if not isinstance(ldx, np.ndarray):
-            ldx = np.logical_not(np.isnan(x))
-        return x[ldx], ldx
+        return np.divide(p_ind, p_cal) - 1.0, '1'
 
     def cal_interpol(self, pressure, error, uncertainty):
         """Calculates a interpolation vector for the relative
@@ -142,42 +130,52 @@ class Cdg(Device):
 
         This is done as follows:
             # conv_smooth
-
-            # shape_pressures
-            # rm_nan
             # get_default_values
+            # gen. interp. functions
             # interpolate default values
 
-        ... todo::
-
-            describe interpol proc
-
         """
-        p, l = self.rm_nan(pressure)
-        e, _ = self.rm_nan(error, l)
-        u, _ = self.rm_nan(uncertainty, l)
-       
+        # smooth
+        p = self.conv_smooth(pressure)
+        e = self.conv_smooth(error)       
+        u = self.conv_smooth(uncertainty)
+        #interpolate function
         f_e = self.interp_function(p, e)
         f_u = self.interp_function(p, u)
-
+        # default values
         p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
+        # cal. interpol on default values
+        e_default = f_e( p_default )
+        u_default = f_u( p_default )
 
-        e_nice = f_e( p_default )
-        u_nice = f_u( p_default )
+        return  p_default, e_default, u_default
 
-        return  p_default, e_nice, u_nice
+    def conv_smooth(self, data, n=3):
+        weights = np.ones(n) / n
+        start_array = np.array([np.nanmean(data[0:n])])
+        med_array = np.convolve(data, weights, mode='valid')
+     
+        end_array = np.array([np.nanmean(data[-n-1:-1])])
 
-    def shape_pressure(self, p, unit):
-        if unit == self.unit:
-            N = p.shape[0]
-            arr = np.full(N, np.nan)
+        return np.concatenate((start_array, med_array, end_array ))
 
-            i = np.where((p > self.min_p) & (p < self.max_p))
-            arr[i] = p[i]
+    def rm_nan(self, x, ldx=None):
+        if not isinstance(ldx, np.ndarray):
+            ldx = np.logical_not(np.isnan(x))
+        return x[ldx], ldx
 
-            return arr
-        else:
-            sys.exit('implement auto unit conversion')
+    def shape_pressure(self, p):
+        """Shapes the pressures by means of self.min and self.max
+        in the unit self.unit
+
+        :param p: pressure in the unit self.unit
+        :type p: np.array
+        """
+        arr = np.full(p.shape[0], np.nan)
+        i = np.where((p > self.min_p) & (p < self.max_p))
+        arr[i] = p[i]
+        return arr
+       
 
     def get_default_values(self, x_min, x_max):
         i_min = np.where(self.interpol_pressure_points > x_min)[0][0]
