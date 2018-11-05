@@ -55,3 +55,31 @@ class TestAnalysis(unittest.TestCase):
         self.assertEqual(v[0], 1.)
         self.assertEqual(sd[0], .1)
         self.assertEqual(n[0], 10.)
+
+    def test_store_auxvalues_1(self):
+        """should store list in AuxValues
+        """
+        aux = {
+            "A": [1,2,3,4],
+            "B": [5,6,7,8]
+            }
+
+        self.Ana.store_dict(quant=None, d=aux, dest="AuxValues", plain=True)
+        
+        doc = self.Ana.build_doc()
+        self.assertTrue('Analysis' in doc)
+        self.assertTrue('AuxValues' in doc['Analysis'])
+        self.assertTrue('A' in  doc['Analysis']['AuxValues'])
+        self.assertTrue('B' in  doc['Analysis']['AuxValues'])
+        self.assertTrue(isinstance( doc['Analysis']['AuxValues']['A'], list))
+        
+    def test_pick_auxvalues_1(self):
+        """should store list in AuxValues
+        """
+        aux = {
+            "A": [1,2,3,4],
+            "B": [5,6,7,8]
+            }
+        self.Ana.store_dict(quant=None, d=aux, dest="AuxValues", plain=True)
+        d = self.Ana.pick_dict(quant='A', dict_type=None, dest="AuxValues")
+        self.assertEqual(d[0], 1)

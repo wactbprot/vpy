@@ -36,26 +36,21 @@ class Analysis(Document):
 
     def store(self, quant, type, value, unit, sd=None, n=None, dest='Values'):
         """Stores the result of a calculation in
-        the analysis structure under the given quant[ity].
+        the analysis structure under the given quant[ity]. See function ``store_dict()``
+        for a more detailed explanation of ``dest`` and ``quant`` params.
 
         :param quant: quant measurement quantity (Pressure, Temperature ect)
         :type quant: str
-
         :param type: name of type to store
         :type val: str
-
         :param value: value of type to store
         :type val: np.array
-
         :param unit: name of unit to store
         :type val: str
-
         :param sd:  standard deviation of the single values (optional)
         :type sd: np.array
-
         :param n:  n of the single values (optional)
         :type np: np.array
-
         :param dest:  destination (default in Values)
         :type str: str
         """
@@ -78,100 +73,114 @@ class Analysis(Document):
         else:
             if quant not in self.doc:
                 self.doc[quant] = []
-
             self.doc[quant].append(o)
             self.log.info("stored values of type {}".format(type))
 
     def store_dict(self, quant, d, dest='Values', plain=False):
-        """ Appends complete dicts to document under the given destination.
+        """ Appends a dict to document under the given destination. 
+        Use this function if the dict d has not a ``Type``, ``Value``, 
+        ``Unit`` structure. Otherwise use ``store()``.
+
+        The document structure ``self.doc`` afterwards is:
+
+        .. code-block:: javascript
+
+                {'Values':{quant: [d]}, ..} // plain=False
+                {'Values':{quant:  d }, ..} // plain=True
+
+        if only ``quant`` and ``d`` is given. If ``dest`` and ``quant`` is given:
+
+        .. code-block:: javascript
+
+                {'dest':{quant: [d] }, ..} // plain=False
+                {'dest':{quant:  d  }, ..} // plain=True
+
+        If ``dest`` is given but not ``quant`` (the quantity is provided by the dict key(s)):
+
+        .. code-block:: javascript
+
+                {{dest: [d] }, ..} // plain=False
+                {{dest:  d  }, ..} // plain=True
+
+
+        A possible call signature is:
+
+        .. code-block:: python
+
+               <cls>.store_dict(quant=None, d={SomeIndex:[1,2,3]}, dest='AuxValues')
 
 
         :param quant: quant measurement quantity (Pressure, Temperature, ect)
         :type quant: str
-
         :param d: dictionary to store
         :type d: dict
-
-        :param dest:  destination (default in Values)
+        :param dest:  destination like Table, AuxValues or Values (default is Values)
         :type str: str
-
         :param plain:  if True stores dict w/o creating an array
         :type str: bool
-
         """
+
         if isinstance(d, dict):
             for e in d:
                 d[e] = self.make_writable(d[e])
 
             if plain:
-                if dest is not None:
+                if dest is not None and quant is not None:
                     self.doc[dest][quant] = d
-                else:
+                if quant is not None and dest is None:
                     self.doc[quant] = d
+                if quant is None and dest is not None:
+                    self.doc[dest] = d
             else:
-                if dest is not None:
+                if dest is not None and quant is not None:
                     if quant not in self.doc[dest]:
                         self.doc[dest][quant] = []
                     self.doc[dest][quant].append(d)
-                else:
+                if dest is None and quant is not None:
                     if quant not in self.doc:
                         self.doc[quant] = []
                     self.doc[quant].append(d)
+                if dest is not None and quant is None:
+                    if dest not in self.doc:
+                        self.doc[dest] = []
+                    self.doc[dest].append(d)
         else:
             msg = "given value is not a dictionary"
             self.log.error(msg)
             sys.exit(msg)
 
-    def make_writable(self, a):
-        """ converts array, nd.array etc. to json writable lists.
-
-        """
-
-        if "tolist" in dir(a):
-            if isinstance(a, np.float64):
-                a = [a]
-            else:
-                a = a.tolist()
-            b = []
-            for v in a:
-                
-                if not isinstance(v, str) and math.isnan(v):
-                    b.append(None)
-                else:
-                    b.append(v)
-
-            return b
-
-        return a
-    
+   
     def pick_dict(self, quant, dict_type, dest='Values'):
-        """Picks and returns an already calculated value.
+        """Picks and returns an already calculated value. 
+        
+        A possible call signature is:
+
+        .. code-block:: python
+
+               <cls>.pick_dict(quant='SomeIndex', dict_type=None, dest='AuxValues')
 
         :param quant: quant measurement quantity
         :type quant: str
-
         :param dict_type: value of type to pick
         :type dict_type: str
-
         :param dict_unit: dict_unit expected
         :type dict_unit: str
         """
         ret = None
-        if dest in self.doc:
-            if quant in self.doc[dest]:
-                doc = self.doc[dest][quant]
-                for d in doc:
-                    if d['Type'] == dict_type:
-                        ret = d
-                        break
-            else:
-                msg = "{} not in Values".format(quant)
-                self.log.error(msg)
-                sys.exit(msg)
-        else:
-            msg = "{} not in self.doc".format(dest)            
-            self.log.error(msg)
-            sys.exit(msg)
+
+        if dict_type is not None and dest in self.doc and quant in self.doc[dest]:
+            for d in self.doc[dest][quant]:
+                if d['Type'] == dict_type:
+                    ret = d
+                    break
+        if  dict_type is None and dest in self.doc and quant in self.doc[dest]:
+            ret = self.doc[dest][quant]
+        
+        if  dict_type is None and dest is None and quant in self.doc:
+            ret = self.doc[quant]
+        
+        if  dict_type is None and dest in self.doc and quant is None:
+            ret = self.doc[dest]
         
         if ret is None:
             msg = "dict with type {} not found".format(dict_type)
@@ -220,7 +229,26 @@ class Analysis(Document):
                 return value_ret, sd_ret, n_ret
             else:
                 return value_ret
+    
+    def make_writable(self, a):
+        """ converts array, nd.array etc. to json writable lists.
 
+        """
+        self.log.debug("try to make {a} writable".format(a=a))
+        if "tolist" in dir(a):
+            if isinstance(a, np.float64):
+                a = [a]
+            else:
+                a = a.tolist()
+            b = []
+            for v in a:  
+                if not isinstance(v, str) and math.isnan(v):
+                    b.append(None)
+                else:
+                    b.append(v)
+            return b
+        return a
+    
     def build_doc(self, dest='Analysis'):
         """Merges the analysis dict to the original doc and returns it.
 
