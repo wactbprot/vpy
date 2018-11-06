@@ -4,7 +4,7 @@ vpy
 Classes and methods for vaclab measurement analysis.
 
 virtual env
-===========
+-----------
 
 .. code-block:: shell
 
@@ -14,7 +14,7 @@ virtual env
 
 
 install dependencies
-====================
+--------------------
 
 * python >=3.6
 * for the pandas installation the python header files are needed:
@@ -33,7 +33,7 @@ install dependencies
 
 
 docu gen
-========
+--------
 
 .. code-block:: shell
 
@@ -42,16 +42,14 @@ docu gen
     > make html
 
 run script with file
-====================
-
+--------------------
 
 .. code-block:: shell
 
     > python se3_fm_eval.py --file test_doc/fm_doc.json
 
 run script with database
-========================
-
+------------------------
 
 .. code-block:: shell
 
@@ -59,7 +57,7 @@ run script with database
 
 
 unit tests, coverage and pre commit hook
-========================================
+----------------------------------------
 
 There is a unit test stub for ``documents.py`` and ``todo.py``. Call with:
 
@@ -79,14 +77,9 @@ see .. _`documentation of coverage pkg`: https://coverage.readthedocs.io/en/cove
 
 The tests run a pre commit hook. The folder for that script is ``./hooks``.
 
-visual feedback
-===============
-
-The switch ``-s`` sets the member variable ``self.io.plot`` to ``True``.
-
 
 relayServer
-============
+-----------
 
 To run a script by means of the ``relayServer``
 use a task like:
