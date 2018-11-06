@@ -19,8 +19,8 @@ class DkmPpc4(Standard):
     is used for this purpose if doc is a calibration. For the analysis of
     state measurements ``amt`` is used.
     """
-    name = "DKM_PPC4"
-    unit = "mbar"
+    name = 'DKM_PPC4'
+    unit = 'Pa'
 
     def __init__(self, doc):
         super().__init__(doc, self.name)

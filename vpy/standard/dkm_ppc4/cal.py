@@ -19,11 +19,7 @@ class Cal(DkmPpc4):
         :type: class
         """
 
-        self.temperature(res)
-        self.temperature_correction(res)
-        self.pressure_res(res)
-        self.mass_total(res)
-
+        
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit)
         m = res.pick("Mass", "total", "kg")
         corr = res.pick("Correction", "temperature", "1")
