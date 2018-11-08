@@ -17,7 +17,7 @@ class Cdg(Device):
         "1000Torr": 133320.0
     }
         
-    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
+    interpol_pressure_points = np.logspace(-3, 5, num=101) # Pa 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
