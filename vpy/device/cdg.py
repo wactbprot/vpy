@@ -151,6 +151,11 @@ class Cdg(Device):
         return  p_default, e_default, u_default
 
     def conv_smooth(self, data, n=3):
+        """Generates smooth data by a convolution.
+        Bondaries (left and right) are calculated 
+        from mean values.
+        """
+        
         weights = np.ones(n) / n
         start_array = np.array([np.nanmean(data[0:n])])
         med_array = np.convolve(data, weights, mode='valid')
@@ -160,20 +165,38 @@ class Cdg(Device):
         return np.concatenate((start_array, med_array, end_array ))
 
     def rm_nan(self, x, ldx=None):
+        """Removes data from the given list by:
+        
+        * testing ``np.isnan()``
+        * or the given (logical) vector ldx
+        """
+        
         if not isinstance(ldx, np.ndarray):
             ldx = np.logical_not(np.isnan(x))
+        
         return x[ldx], ldx
 
     def shape_pressure(self, p):
-        """Shapes the pressures by means of self.min and self.max
-        in the unit self.unit
+        """Shapes the pressures by means of 
+        ``self.min`` and ``self.max`` in the 
+        unit ``self.unit``
 
         :param p: pressure in the unit self.unit
         :type p: np.array
         """
+        p = np.nan_to_num(p)
         arr = np.full(p.shape[0], np.nan)
-        i = np.where((p > self.min_p) & (p < self.max_p))
-        arr[i] = p[i]
+        l_list = np.less_equal(p, self.max_p)
+        u_list = np.greater_equal(p, self.min_p)
+
+        self.log.debug("lower list is: {l_list}".format(l_list=l_list))
+        self.log.debug("upper list is: {u_list}".format(u_list=u_list))
+
+        idx = np.where( u_list & l_list)
+        self.log.debug("index vector is: {idx}".format(idx=idx))
+        arr[idx] = p[idx]
+        self.log.debug("returning array is: {arr}".format(arr=arr))
+        
         return arr
        
 

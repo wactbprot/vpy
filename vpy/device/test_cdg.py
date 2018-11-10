@@ -33,37 +33,16 @@ class TestAnalysis(unittest.TestCase):
         cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'
         cdg = Cdg({}, cob)
 
-        err, unit = cdg.error(self.p_cal, self.p_ind, 'Pa')
-        self.assertEqual(unit, '1')
-        self.assertTrue(np.isnan(err[0]))
-        self.assertTrue(np.isnan(err[1]))
-        self.assertTrue(np.isnan(err[5]))
-        self.assertTrue(np.isnan(err[6]))
-        self.assertTrue(np.isnan(err[7]))
+        p_cal = cdg.shape_pressure(self.p_cal)
+        p_cal, l = cdg.rm_nan(p_cal)
+        p_ind, _ = cdg.rm_nan(self.p_ind, l)
 
+        err, unit = cdg.error(p_cal, p_ind, 'Pa')
+        self.assertEqual(unit, '1')
+
+        self.assertAlmostEqual(err[0], 1e-2)        
+        self.assertAlmostEqual(err[1], 1e-2)        
         self.assertAlmostEqual(err[2], 1e-2)        
-        self.assertAlmostEqual(err[3], 1e-2)        
-        self.assertAlmostEqual(err[4], 1e-2)        
-
-    def test_error_2(self):
-        """should cal error for 1000Torr CDG
-        """
-        cob = copy.deepcopy(self.cob)
-        cob['CalibrationObject']['Setup']['TypeHead'] = '1000Torr'
-        cdg = Cdg({}, cob)
-
-        err, unit = cdg.error(self.p_cal, self.p_ind, 'Pa')
-
-        self.assertEqual(unit, '1')
-        self.assertTrue(np.isnan(err[0]))
-        self.assertTrue(np.isnan(err[1]))
-        self.assertTrue(np.isnan(err[2]))
-        self.assertTrue(np.isnan(err[3]))
-        self.assertTrue(np.isnan(err[4]))
-
-        self.assertAlmostEqual(err[5], 1e-2)        
-        self.assertAlmostEqual(err[6], 1e-2)        
-        self.assertAlmostEqual(err[7], 1e-2)        
 
     def test_nice_values(self):
         cob = copy.deepcopy(self.cob)
@@ -79,16 +58,37 @@ class TestAnalysis(unittest.TestCase):
         cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'
         cdg = Cdg({}, cob)
 
-        p = np.array([np.nan,2,2,2,
-                            3,4,5,6,7,8,
-                            9,9,9,np.nan ])
-        e = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
-        u = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
+        p = np.array([  1, 1.4, 
+                        np.nan,
+                        2,2,2,
+                        3,4,np.nan,6,7,8,
+                        9,9,9, 
+                        np.nan ])
+        e = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
+        u = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
+        print("ää")
+        print(p)
+        p = cdg.shape_pressure(p)
+        print(p)
+
+        p, l = cdg.rm_nan(p)
+        e, _ = cdg.rm_nan(e, l)
+        u, _ = cdg.rm_nan(u, l)
 
         i_p, i_e, i_u = cdg.cal_interpol(p, e, u)
-        print(cdg.min_p)
-        print(i_p)
-        self.assertAlmostEqual(i_p[0] , 2)
+
+        self.assertAlmostEqual(i_p[0] , (1+1.4+2)/3)
         self.assertAlmostEqual(i_e[0] , 1)
         self.assertAlmostEqual(i_u[0] , 1)
         
+    def test_rm_nan_1(self):
+        """
+        a = [1,2,3,]
+        np.shape(a) -->       (3,)
+        a = np.array([1,2,3,])
+        np.shape(a) -->       (3,)
+        """
+        cob = copy.deepcopy(self.cob)
+        cdg = Cdg({}, cob)
+        # res = cdg.rm_nan([np.nan,np.nan])
+        # print(res)
