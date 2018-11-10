@@ -66,10 +66,7 @@ class TestAnalysis(unittest.TestCase):
                         np.nan ])
         e = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
         u = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
-        print("ää")
-        print(p)
         p = cdg.shape_pressure(p)
-        print(p)
 
         p, l = cdg.rm_nan(p)
         e, _ = cdg.rm_nan(e, l)
@@ -90,5 +87,5 @@ class TestAnalysis(unittest.TestCase):
         """
         cob = copy.deepcopy(self.cob)
         cdg = Cdg({}, cob)
-        # res = cdg.rm_nan([np.nan,np.nan])
+        res = cdg.rm_nan([np.nan,np.nan])
         # print(res)
