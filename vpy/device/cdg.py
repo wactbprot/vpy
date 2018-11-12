@@ -21,7 +21,8 @@ class Cdg(Device):
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
-        dev = dev.get('CalibrationObject')
+        if 'CalibrationObject' in dev:
+            dev = dev.get('CalibrationObject')
         if dev:
             self.name = dev.get('Name')
             dev_setup = dev.get('Setup')
@@ -35,7 +36,11 @@ class Cdg(Device):
                         msg = "missing definition for type head {head}".format(head=type_head)
                         self.log.error(msg)
                         sys.exit(msg)
-
+            if 'Interpol' in dev:
+                self.interpol_x = self.get_value(value_type='p_ind', value_unit=self.unit)
+                self.interpol_y = self.get_value(value_type='e', value_unit='1')
+                self.interpol_min = np.min(self.interpol_x)
+                self.interpol_max = np.max(self.interpol_x)
         else:
             msg = "Can't find device"
             self.log.error(msg)
