@@ -37,10 +37,11 @@ class Cdg(Device):
                         self.log.error(msg)
                         sys.exit(msg)
             if 'Interpol' in dev:
-                self.interpol_x = self.get_value(value_type='p_ind', value_unit=self.unit)
-                self.interpol_y = self.get_value(value_type='e', value_unit='1')
-                self.interpol_min = np.min(self.interpol_x)
-                self.interpol_max = np.max(self.interpol_x)
+                self.interpol_p = self.get_value(value_type='p_ind', value_unit=self.unit)
+                self.interpol_e = self.get_value(value_type='e', value_unit='1')
+                self.interpol_u = self.get_value(value_type='u', value_unit='1')
+                self.interpol_min = np.min(self.interpol_p)
+                self.interpol_max = np.max(self.interpol_p)
         else:
             msg = "Can't find device"
             self.log.error(msg)
@@ -96,7 +97,8 @@ class Cdg(Device):
         """
         N = len(p_interpol)
         e = np.full(N, np.nan)
-
+        u = np.full(N, np.nan)
+        
         if unit_target is None and p_target is None:
             unit_target = unit_interpol
             p_target = p_interpol
@@ -111,17 +113,19 @@ class Cdg(Device):
         else:
             conv_target = self.Const.get_conv(unit_target, self.unit)
 
-        f = self.interp_function(self.interpol_x, self.interpol_y)
+        f_e = self.interp_function(self.interpol_p, self.interpol_e)
+        f_u = self.interp_function(self.interpol_p, self.interpol_u)
         
         idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
         odx = (p_interpol*conv_target > self.interpol_min) & (p_interpol*conv_target < self.interpol_max)
         ndx = idx & odx
        
         if len(ndx) > 0:
-            e[ndx] = f(p_interpol[ndx]*conv_interpol)
+            e[ndx] = f_e(p_interpol[ndx]*conv_interpol)
+            u[ndx] = f_u(p_interpol[ndx]*conv_interpol)
 
 
-        return e
+        return e, u
 
     def interp_function(self, x, y):
         return interp1d(x, y, kind="linear")

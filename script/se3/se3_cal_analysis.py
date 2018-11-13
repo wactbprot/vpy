@@ -7,6 +7,7 @@ import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
+from vpy.standard.se3.uncert import Uncert
 
 def main():
     io = Io()
@@ -49,7 +50,7 @@ def main():
            
             
             cal = Cal(doc)
-            
+            uncert = Uncert(doc)            
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
@@ -68,6 +69,17 @@ def main():
             cal.deviation_target_cal(res)
             cal.error(res)
 
+            uncert.define_model()
+            uncert.gen_val_dict(res)
+            uncert.gen_val_array(res)
+            uncert.volume_start(res)
+            uncert.volume_5(res)
+            uncert.pressure_fill(res)
+            uncert.temperature_after(res)
+            uncert.temperature_before(res)
+            uncert.expansion(res)
+            uncert.total(res)
+            
             io.save_doc(res.build_doc())
            
     else:
