@@ -1,5 +1,5 @@
 """
-python se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/se3/se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
 import json
@@ -8,6 +8,7 @@ from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
 from vpy.standard.se3.uncert import Uncert
+from vpy.standard.se3.std import Se3
 
 def main():
     io = Io()
@@ -22,6 +23,7 @@ def main():
             ids = args[idx_ids].split(';')
         except:
            fail = True
+
     if '-u' in args:
         update = True
     else:

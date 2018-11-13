@@ -499,7 +499,6 @@ class Cal(Se3):
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
-        print(cor_arr_nan)
         p_std = np.nanstd(cor_arr_nan, axis=0)
         n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
 
