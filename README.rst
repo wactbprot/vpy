@@ -3,6 +3,9 @@ vpy
 
 Classes and methods for vaclab measurement analysis.
 
+.. image:: https://travis-ci.org/wactbprot/vpy.svg?branch=master
+    :target: https://travis-ci.org/wactbprot/vpy
+
 virtual env
 -----------
 
