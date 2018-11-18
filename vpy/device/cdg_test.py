@@ -5,7 +5,7 @@ import copy
 from vpy.device.cdg import Cdg
 
 
-class TestAnalysis(unittest.TestCase):
+class TestCdg(unittest.TestCase):
 
     def setUp(self):
         self.cob = {"CalibrationObject": {

@@ -35,6 +35,5 @@ snowballstemmer==1.2.1
 sympy==1.2
 typed-ast==1.1.0
 urllib3==1.24.1
--e git+git@github.com:wactbprot/vpy.git@58c10888ad1db4301f65696c8953b035e19f7d7b#egg=vpy
 wrapt==1.10.11
 yarg==0.1.9
