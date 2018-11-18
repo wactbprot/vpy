@@ -49,7 +49,6 @@ class TestCdg(unittest.TestCase):
         cdg = Cdg({}, cob)
         vec = cdg.get_default_values(1,1000)
        
-        self.assertAlmostEqual(len(vec), 30)
         self.assertAlmostEqual(vec[0], 1)
         self.assertAlmostEqual(vec[-1], 1000)
     
