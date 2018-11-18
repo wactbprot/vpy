@@ -170,10 +170,12 @@ class Cdg(Device):
         * testing ``np.isnan()``
         * or the given (logical) vector ldx
         """
-        
+        if not isinstance(x,np.ndarray):
+            sys.exit("rm_nan x argument has wrong type")
+            
         if not isinstance(ldx, np.ndarray):
             ldx = np.logical_not(np.isnan(x))
-        
+           
         return x[ldx], ldx
 
     def shape_pressure(self, p):

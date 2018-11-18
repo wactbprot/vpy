@@ -87,5 +87,7 @@ class TestAnalysis(unittest.TestCase):
         """
         cob = copy.deepcopy(self.cob)
         cdg = Cdg({}, cob)
-        res = cdg.rm_nan([np.nan,np.nan])
-        # print(res)
+        val, ldx = cdg.rm_nan(np.array([np.nan,np.nan]))
+        self.assertEqual( np.shape(val)[0], 0)
+        self.assertEqual( np.shape(ldx)[0], 2)
+        
