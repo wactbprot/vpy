@@ -12,19 +12,13 @@ from .values import Values
 from .constants import Constants
 
 
-class Display(Document):
-    """Holds a deep copy of ``document``.
-    """
+class Display:
 
     def __init__(self, doc):
+        self.doc = doc
+     
 
-        self.Val = Values(doc)
-        self.Cons = Constants(doc)
-        super().__init__(None)
-        self.org = copy.deepcopy(doc)
-
-
-    def SE2_CDG_offset_abs(self):
+    def SE2_CDG_offset_abs(self, ana):
 
         try:
             idx = self.org['Calibration']['Result']['AuxValues']['AverageIndexFlat']

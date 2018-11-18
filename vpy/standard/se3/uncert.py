@@ -112,12 +112,14 @@ class Uncert(Se3):
         u_3 = res.pick("Uncertainty", "p_fill", "1")
         u_4 = res.pick("Uncertainty", "t_before", "1")
         u_5 = res.pick("Uncertainty", "t_after", "1")
-
+        u_6 = res.pick("Uncertainty", "f", "1")
+        
         u_t = np.sqrt(np.power(u_1, 2) +
                       np.power(u_2, 2) +
                       np.power(u_3, 2) +
                       np.power(u_4, 2) +
-                      np.power(u_5, 2)
+                      np.power(u_5, 2) +
+                      np.power(u_6, 2)
                       )
 
         res.store("Uncertainty", "total", u_t, "1")
@@ -256,6 +258,40 @@ class Uncert(Se3):
 
         res.store("Uncertainty", "v_start", np.absolute(val / p_nom), "1")
         self.log.debug("uncert v_start: {}".format(val / p_nom))
+   
+    def expansion(self, res):
+        """Calculates the uncertainty contribution
+        of the axpansion factor
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        f_name = self.get_expansion_name()
+        f = np.full(self.no_of_meas_points, np.nan)
+
+        i_l = np.where(f_name == "f_l")
+        i_m = np.where(f_name == "f_m")
+        i_s = np.where(f_name == "f_s")
+
+        if np.shape(i_s)[1] > 0:
+            f[i_s] = self.get_value("u_f_s", "1") * self.get_value("f_s", "1")
+
+        if np.shape(i_m)[1] > 0:
+            f[i_m] = self.get_value("u_f_m", "1")* self.get_value("f_m", "1")
+
+        if np.shape(i_l)[1] > 0:
+            f[i_l] = self.get_value("u_f_l", "1") * self.get_value("f_l", "1")
+
+        s_expr = sym.diff(self.model, sym.Symbol('f'))
+        u = sym.lambdify(self.symb, s_expr, "numpy")
+        val = u(*self.val_arr) * f
+
+        p_nom = self.val_dict['f'] * self.val_dict['p_fill']
+
+        res.store("Uncertainty", "f", np.absolute(val / p_nom), "1")
+        self.log.debug("uncert f: {}".format(val / p_nom))
 
     def volume_5(self, res):
         """Calculates the uncertainty contribution

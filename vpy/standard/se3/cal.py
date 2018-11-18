@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 import sympy as sym
 from .std import Se3
 
@@ -382,8 +383,8 @@ class Cal(Se3):
         # todo: check if cal with outgasing works, max outgasing for now:
 
         pressure_conv = self.Cons.get_conv(from_unit="mbar", to_unit=self.unit)
-        rise =  outgas_v * pressure_conv * dt * outgas_correction
-
+        rise =  outgas_v * pressure_conv * dt #* outgas_correction
+       
         res.store('Pressure', 'rise', rise , self.unit)
     
     def error_pressure_rise(self, res):
@@ -459,6 +460,8 @@ class Cal(Se3):
         N = len(self.fill_types)
 
         cor_arr = []
+        cor_arr_nan = []
+        u_arr =[]
         for i in range(N):
             FillDev = self.FillDevs[i]
             self.log.debug("Working on filling pressure of device {}".format(FillDev.name))
@@ -469,27 +472,35 @@ class Cal(Se3):
                 fill_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
-            e = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
+            e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
 
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
            
             p_corr = p / (e + 1.0)
-            cor_arr.append(p_corr)
-
+            
             res.store("Pressure", "{}-fill".format(FillDev.name), p_corr, self.unit)
             res.store("Error", "{}-fill".format(FillDev.name), e, '1')
             res.store("Error", "{}-offset".format(FillDev.name), off/p_corr, '1')
             
-      
-        p_mean = np.nanmean(cor_arr, axis=0)
+            cor_arr_nan.append(copy.deepcopy(p_corr))
 
+            p_corr[np.isnan(p_corr)] = 0
+            u[np.isnan(p_corr)] = 1
+
+            cor_arr.append(p_corr)
+            u_arr.append(u)
+        
+        s_u = np.nansum(cor_arr*np.power(u_arr,-2), axis=0)
+        s_l = np.nansum(np.power(u_arr,-2), axis=0)
+        p_mean = np.divide(s_u, s_l)
+                
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
-        p_std = np.nanstd(cor_arr, axis=0)
-        n = np.apply_along_axis(cnt_nan, 0, cor_arr)
+        p_std = np.nanstd(cor_arr_nan, axis=0)
+        n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
 
         res.store("Pressure", "fill", p_mean, self.unit, p_std, n)
 

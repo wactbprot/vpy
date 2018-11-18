@@ -51,6 +51,9 @@ class Io(object):
         # -u update
         parser.add_argument('-u', action='store_true',
                             help='update calibration doc with standard-, constants-, etc- documents', default=False)
+        # -u update
+        parser.add_argument('-a', action='store_true',
+                            help='keep Analysis AuxValues section', default=False)
         
 
         self.args = parser.parse_args()

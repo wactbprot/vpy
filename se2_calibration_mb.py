@@ -70,12 +70,15 @@ def main():
     #print(pd.Series(ana.pick("Pressure","cal","mbar")))
     #print(pd.DataFrame(ana.pick("Pressure","cal","mbar")).head())
     
+    doc = ana.build_doc(dest="Analysis")
+    doc = res.build_doc(dest="Result")
+    io.save_doc(doc)
+
     print("*******")
     p_cal = ana.pick("Pressure","cal","mbar")
     print("*******")
     res.ToDo.make_average_index(p_cal,"mbar")
     print(res.ToDo.average_index)
-    io.save_doc(res.build_doc(dest="Result"))
     print(5<3<5)
     a=np.pi**50
     print(val.round_to_uncertainty(a,0.097,2))
@@ -95,19 +98,18 @@ def main():
     print(cal.Cons.get_conv("mbar","Torr"))
     print(val.get_object("Type", "p_fill"))
     print(cal.Cons.get_conv("C", "K"))
-    
-    io = Io()
-    # holt Messdaten aus --db
-    io.eval_args()
-    meas_doc = io.load_doc()
-    # holt Konstanten ect. aus --db
-    base_doc = io.get_base_doc("se2")
-    # merge der beiden Dokumente
-    doc = io.update_cal_doc(meas_doc, base_doc)
-    disp = Display(doc)
-    plt = disp.SE2_CDG_error_plot()
-    plt.savefig("fit_thermal_transpiration_" + str(doc["Calibration"]["Certificate"]) + ".pdf")
+    bana = Analysis({})
+    print(bana.doc)
+    bana.store("myquant", "mytype", [1,2,3], "myunit")
+    print(bana.doc)
 
+    # disp = Display(doc)
+    # plt = disp.SE2_CDG_error_plot()
+    # plt.savefig("fit_thermal_transpiration_" + str(doc["Calibration"]["Certificate"]) + ".pdf")
+
+    print(ana.doc)
+    print("**----**")
+    print(ana.org)
 
 if __name__ == "__main__":
     main()
