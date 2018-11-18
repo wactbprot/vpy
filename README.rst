@@ -62,8 +62,6 @@ run script with database
 unit tests
 ----------
 
-There are some test:
-
 .. code-block:: shell
 
     > python runner.py
