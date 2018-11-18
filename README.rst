@@ -29,7 +29,7 @@ install dependencies
 
     > cd /path/to/vpy
     > source bin/activate
-    > pip install -e .
+    > pip install -r requirements.txt
 
 
 docu gen
@@ -65,13 +65,13 @@ There is a unit test stub for ``documents.py`` and ``todo.py``. Call with:
 
 .. code-block:: shell
 
-    > python -m unittest vpy/test_*.py
+    > python -m unittest vpy/*_test.py
 
 Same with the code coverage tool:
 
 .. code-block:: shell
 
-    > coverage run --source vpy -m unittest vpy/test_*.py
+    > coverage run --source vpy -m unittest vpy/*_test.py
     > coverage html
     > firefox htmcovindex.html
 
