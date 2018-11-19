@@ -249,12 +249,15 @@ class Analysis(Document):
             return b
         return a
     
-    def build_doc(self, dest='Analysis'):
+    def build_doc(self, dest='Analysis', doc=None):
         """Merges the analysis dict to the original doc and returns it.
 
         :returns: assembled dictionary
         :rtype: dict
         """
+        if doc is not None:
+            self.org = doc
+            
         if "Calibration" in self.org:
             self.org['Calibration'][dest] = self.doc
         elif "State" in self.org:
