@@ -22,18 +22,14 @@ class Display:
 
     def SE2_CDG_offset_abs(self):
 
-        try:
-            idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
+        idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
 
-            pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
-            pcal0 = pressure.get_value('cal', 'mbar')
-            poff0 = pressure.get_value('offset', 'mbar')
+        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
+        pcal0 = pressure.get_value('cal', 'mbar')
+        poff0 = pressure.get_value('offset', 'mbar')
 
-            pressure = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
-            offset_unc = pressure.get_value('offset', 'mbar')
-
-        except:
-            print("error")
+        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
+        offset_unc = pressure.get_value('offset', 'mbar')
 
         plt.clf()
         fig, ax = plt.subplots()
@@ -52,18 +48,14 @@ class Display:
 
     def SE2_CDG_offset_rel(self):
 
-        try:
-            idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
+        idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
 
-            pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
-            pcal0 = pressure.get_value('cal', 'mbar')
-            poff0 = pressure.get_value('offset', 'mbar')
+        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
+        pcal0 = pressure.get_value('cal', 'mbar')
+        poff0 = pressure.get_value('offset', 'mbar')
 
-            pressure = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
-            offset_unc = pressure.get_value('offset', 'mbar')
-
-        except:
-            print("error")
+        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
+        offset_unc = pressure.get_value('offset', 'mbar')
 
         plt.clf()
         fig, ax = plt.subplots()
@@ -85,33 +77,28 @@ class Display:
         def model(p, a, b, c, d):
             return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
 
-        try:
-            pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])           
-            error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
+        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])           
+        error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
 
-            pcal0 = pressure.get_value('cal', 'mbar')
-            e0 = error.get_value('ind', '%')
+        pcal0 = pressure.get_value('cal', 'mbar')
+        e0 = error.get_value('ind', '%')
 
-            idx = (abs(e0) > 50)
-            if len(idx) > 0:
-                e0[idx] = np.nan
+        idx = (abs(e0) > 50)
+        if len(idx) > 0:
+            e0[idx] = np.nan
 
-            result = Document(self.doc['Calibration']['Result']['Table'])
-            pcal, pcal_unit = result.get_value_and_unit('cal')
-            pcal = np.asarray(pcal, dtype=float)
-            pcal = pcal * self.Cons.get_conv(pcal_unit, "mbar")
-            error, error_unit = result.get_value_and_unit('relative')
-            error = np.asarray(error, dtype=float)
-            error = error * self.Cons.get_conv(error_unit, "%")
-            unc, unc_unit = result.get_value_and_unit('uncertTotal_rel')
-            unc = np.asarray(unc, dtype=float)
-            unc = unc * self.Cons.get_conv(unc_unit, "%")            
+        result = Document(self.doc['Calibration']['Result']['Table'])
+        pcal, pcal_unit = result.get_value_and_unit('cal')
+        pcal = np.asarray(pcal, dtype=float)
+        pcal = pcal * self.Cons.get_conv(pcal_unit, "mbar")
+        error, error_unit = result.get_value_and_unit('relative')
+        error = np.asarray(error, dtype=float)
+        error = error * self.Cons.get_conv(error_unit, "%")
+        unc, unc_unit = result.get_value_and_unit('uncertTotal_rel')
+        unc = np.asarray(unc, dtype=float)
+        unc = unc * self.Cons.get_conv(unc_unit, "%")            
 
-        except:
-            print("error")
-
-        #para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
-        para_val, covariance = curve_fit(model, pcal, error, maxfev=1000)
+        para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
         residuals = model(pcal, *para_val) - error
         para_unc = np.sqrt(np.diag(covariance))
 
