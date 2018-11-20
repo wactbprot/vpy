@@ -110,7 +110,8 @@ class Display:
         except:
             print("error")
 
-        para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
+        #para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
+        para_val, covariance = curve_fit(model, pcal, error, maxfev=1000)
         residuals = model(pcal, *para_val) - error
         para_unc = np.sqrt(np.diag(covariance))
 
