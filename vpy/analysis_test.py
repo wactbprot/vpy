@@ -85,7 +85,5 @@ class TestAnalysis(unittest.TestCase):
         self.assertEqual(d[0], 1)
     
     def test_init_no_hash(self):
-
         ana = Analysis({}, git_hash=False)
-        print(ana.doc)
         self.assertFalse("AnalysisGitHash" in ana.doc['AuxValues'])
