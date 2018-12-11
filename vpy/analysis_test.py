@@ -83,3 +83,7 @@ class TestAnalysis(unittest.TestCase):
         self.Ana.store_dict(quant=None, d=aux, dest="AuxValues", plain=True)
         d = self.Ana.pick_dict(quant='A', dict_type=None, dest="AuxValues")
         self.assertEqual(d[0], 1)
+    
+    def test_init_no_hash(self):
+        ana = Analysis({}, git_hash=False)
+        self.assertFalse("AnalysisGitHash" in ana.doc['AuxValues'])

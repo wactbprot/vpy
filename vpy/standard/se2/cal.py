@@ -14,6 +14,7 @@ class Cal(Se2):
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Date = Date(doc)
+        self.CFaktor = Values(doc['Calibration']['Measurement']['Values']['faktor'])
 
     def get_expansion(self):
         """Returns an np.array
@@ -24,7 +25,7 @@ class Cal(Se2):
         pass
 
     
-    def temperature_after(self, res):
+    def temperature_after(self, ana):
         """Simple translation from Measurement to Analysis
 
         :param: Class with methode
@@ -35,10 +36,10 @@ class Cal(Se2):
 
         T_after_val, T_after_unit = self.Temp.get_value_and_unit("T_after")
         T_after_val = T_after_val + self.Cons.get_conv(T_after_unit, "C")
-        res.store("Temperature", "after", T_after_val, "C")
+        ana.store("Temperature", "after", T_after_val, "C")
 
 
-    def temperature_room(self, res):
+    def temperature_room(self, ana):
         """Simple translation from Measurement to Analysis
 
         :param: Class with methode
@@ -49,10 +50,10 @@ class Cal(Se2):
 
         T_room_val, T_room_unit = self.Temp.get_value_and_unit("T_room")
         T_room_val = T_room_val + self.Cons.get_conv(T_room_unit, "C")
-        res.store("Temperature", "room", T_room_val, "C")
+        ana.store("Temperature", "room", T_room_val, "C")
     
     
-    def pressure_cal(self, res):
+    def pressure_cal(self, ana):
         """Simple translation from Measurement to Analysis
 
         :param: Class with methode
@@ -63,10 +64,10 @@ class Cal(Se2):
 
         p_cal_val, p_cal_unit = self.Pres.get_value_and_unit("p_cal")
         p_cal_val = p_cal_val * self.Cons.get_conv(p_cal_unit, "mbar")
-        res.store("Pressure", "cal", p_cal_val, "mbar")
+        ana.store("Pressure", "cal", p_cal_val, "mbar")
 
 
-    def pressure_ind(self, res):
+    def pressure_ind(self, ana):
         """Simple translation from Measurement to Analysis
            "ind" = "p_cor" != "p_ind"   !!!!
 
@@ -78,27 +79,10 @@ class Cal(Se2):
 
         p_cor_val, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
         p_cor_val = p_cor_val * self.Cons.get_conv(p_cor_unit, "mbar")
-        res.store("Pressure", "ind", p_cor_val, "mbar")
+        ana.store("Pressure", "ind", p_cor_val, "mbar")
 
 
-    def pressure_conversion_factor(self, res):
-        """Simple translation from Measurement to Analysis
-
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-
-        p_ind_val, p_ind_unit = self.Pres.get_value_and_unit("p_ind")
-        p_off_val, _ = self.Pres.get_value_and_unit("p_offset")
-        p_cor_val, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
-        cf = p_cor_val / (p_ind_val - p_off_val)
-
-        res.store("Pressure", "cf", cf, p_cor_unit + "/" + p_ind_unit)
-
-
-    def pressure_offset(self, res):
+    def pressure_offset(self, ana):
         """Simple translation from Measurement to Analysis
 
         :param: Class with methode
@@ -108,13 +92,29 @@ class Cal(Se2):
         """
 
         p_off_val, _ = self.Pres.get_value_and_unit("p_offset")
-        cf = res.get_object("Type", "cf")["Value"]
-        p_off_val = [0 if p_off_val[i] == 0 else p_off_val[i] * cf[i] for i in range(len(p_off_val))]
+        cf = self.CFaktor.get_value("faktor","")
+        p_off_val = p_off_val * cf
 
-        res.store("Pressure", "offset", p_off_val, "mbar")
+        ana.store("Pressure", "offset", p_off_val, "mbar")
 
 
-    def measurement_time(self, res):
+    def pressure_indication_error(self, ana):
+        """Simple translation from Measurement to Analysis
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        p_ind = ana.pick("Pressure", "ind", "mbar")
+        p_cal = ana.pick("Pressure", "cal", "mbar")
+        error = (p_ind - p_cal) / p_cal * 100
+
+        ana.store("Error", "ind", error, "%")
+
+
+    def measurement_time(self, ana):
         """Simple translation from Measurement to Analysis
 
         :param: Class with methode
@@ -124,7 +124,7 @@ class Cal(Se2):
         """
 
         time = self.Date.parse_labview_date()
-        res.store("Date", "measurement", time, "date")
+        ana.store("Date", "measurement", time, "date")
 
 
     def reject_outliers_index(self, ana):
@@ -142,9 +142,8 @@ class Cal(Se2):
         :rtype: np.array
         """
 
-        p_ind = ana.pick("Pressure", "ind", "mbar")
         p_cal = ana.pick("Pressure", "cal", "mbar")
-        error = (p_ind - p_cal) / p_cal * 100
+        error = ana.pick("Error", "ind", "%")
         self.ToDo.make_average_index(p_cal, "mbar")
         idx = self.ToDo.average_index
         self.log.debug("average index: {}".format(idx))
@@ -246,7 +245,7 @@ class Cal(Se2):
         :rtype: list
         """
 
-        cf = ana.get_object("Type","cf")["Value"]
+        cf = self.CFaktor.get_value("faktor","")
         idx = self.Val.flatten(self.average_index)
 
         r1 = {}
@@ -296,29 +295,6 @@ class Cal(Se2):
                 offset_unc[j] = unc
 
         ana.store("Uncertainty", "offset", offset_unc, "mbar")
-
-        fig, ax = plt.subplots()
-        x = np.take(p_cal, idx)
-        y = np.take(p_off, idx)
-        y_err = np.take(offset_unc, idx)
-        ax.errorbar(x, y, y_err, fmt='o')
-        ax.semilogx(x, y, 'o')
-        plt.title("offset stability")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-        plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
-        plt.savefig("offset_stability_abs_" + str(ana.org["Calibration"]["Certificate"]) + ".pdf")
-        plt.cla()
-        y = np.take(p_off / p_cal * 100, idx)
-        y_err = np.take(offset_unc, idx) / np.take(p_cal, idx) * 100
-        ax.errorbar(x, y, y_err, fmt='o')
-        ax.semilogx(x, y, 'o')
-        plt.title("offset stability")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')   
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-        plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
-        plt.savefig("offset_stability_rel_"+ str(ana.org["Calibration"]["Certificate"]) + ".pdf")
-        plt.clf()
 
 
     def fit_thermal_transpiration(self, ana):

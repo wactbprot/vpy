@@ -187,7 +187,7 @@ class Error(Values):
 
 class Sigma(Values):
     def __init__(self, doc, quant="Measurement"):
-        super().__init__(doc, 'Error', quant)
+        super().__init__(doc, 'Sigma', quant)
 
 class Uncertainty(Values):
     def __init__(self, doc, quant="Measurement"):

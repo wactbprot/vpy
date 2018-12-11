@@ -9,6 +9,7 @@ class TestValues(unittest.TestCase):
     def setUp(self):
         pass
 
+    @unittest.skip("methode will be removed")
     def test_date_labview(self):
         """
         """

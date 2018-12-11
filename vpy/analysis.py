@@ -11,21 +11,21 @@ class Analysis(Document):
     the calculation results of analysis.
     """
 
-    def __init__(self, doc, init_dict=None, insert_dict=None):
+    def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True):
 
         if init_dict is None:
             d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            githash = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
             init_dict = {
                         "Date": [{
                         "Type": "generated",
                         "Value": d}],
                         "AuxValues":{
-                            "AnalysisProgram": "vpy",
-                            "AnalysisGitHash": githash
+                            "AnalysisProgram": "vpy"
                         },
                         "Values": {},
                         }
+        if git_hash:
+            init_dict['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
         
         if insert_dict:
             for insert_key in insert_dict:
@@ -249,12 +249,15 @@ class Analysis(Document):
             return b
         return a
     
-    def build_doc(self, dest='Analysis'):
+    def build_doc(self, dest='Analysis', doc=None):
         """Merges the analysis dict to the original doc and returns it.
 
         :returns: assembled dictionary
         :rtype: dict
         """
+        if doc is not None:
+            self.org = doc
+            
         if "Calibration" in self.org:
             self.org['Calibration'][dest] = self.doc
         elif "State" in self.org:

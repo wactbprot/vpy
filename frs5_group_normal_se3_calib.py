@@ -1,1 +1,0 @@
-/home/bock04/group_normal/frs5_group_normal_se3_calib.py

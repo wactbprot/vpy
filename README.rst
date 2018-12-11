@@ -3,6 +3,9 @@ vpy
 
 Classes and methods for vaclab measurement analysis.
 
+.. image:: https://travis-ci.org/wactbprot/vpy.svg?branch=master
+    :target: https://travis-ci.org/wactbprot/vpy
+
 virtual env
 -----------
 
@@ -29,7 +32,7 @@ install dependencies
 
     > cd /path/to/vpy
     > source bin/activate
-    > pip install -e .
+    > pip install -r requirements.txt
 
 
 docu gen
@@ -56,27 +59,21 @@ run script with database
     > python se3_fm_eval.py --id 'doc-id'
 
 
-unit tests, coverage and pre commit hook
-----------------------------------------
-
-There is a unit test stub for ``documents.py`` and ``todo.py``. Call with:
+unit tests
+----------
 
 .. code-block:: shell
 
-    > python -m unittest vpy/test_*.py
+    > python runner.py
 
-Same with the code coverage tool:
+code coverage tool
+------------------
 
 .. code-block:: shell
 
-    > coverage run --source vpy -m unittest vpy/test_*.py
+    > coverage run --source vpy -m unittest vpy/*_test.py
     > coverage html
     > firefox htmcovindex.html
-
-see .. _`documentation of coverage pkg`: https://coverage.readthedocs.io/en/coverage-4.5.1/
-
-The tests run a pre commit hook. The folder for that script is ``./hooks``.
-
 
 relayServer
 -----------
