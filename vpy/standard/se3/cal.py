@@ -273,7 +273,7 @@ class Cal(Se3):
         if np.shape(i_a)[1] > 0:
             vol[i_a] = vol[i_a] + vol_a
         if np.shape(i_b)[1] > 0:
-            vol[i_b] = vol[i_a] + vol_b
+            vol[i_b] = vol[i_b] + vol_b
         if np.shape(i_c)[1] > 0:
             vol[i_c] = vol[i_c] + vol_c
 

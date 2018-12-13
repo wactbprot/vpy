@@ -45,13 +45,15 @@ def main():
                 # keep the AuxValues containing related outgasing and additional volumes
                 auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
                 res = Analysis(doc, insert_dict={'AuxValues': auxvalues})
+                cal = Cal(doc)
             else:
                  # renew the AuxValues
-                state_doc = io.get_state_doc("se3", date=cal.Date.first_measurement()) 
+                cal = Cal(doc)
+                meas_date = cal.Date.first_measurement()
+                state_doc = io.get_state_doc("se3", date=meas_date) 
+                res = Analysis(doc)
                 cal.insert_state_results(res, state_doc)
-           
             
-            cal = Cal(doc)
             uncert = Uncert(doc)            
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)

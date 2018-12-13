@@ -10,7 +10,8 @@ class Cdg(Device):
     max_type_head = {
         "0.001Torr":  0.13,
         "0.01Torr":   1.33,
-        "0.1Torr":   13.33,        
+        "0.1Torr":   13.33,  
+        "01Torr":   13.33,     
         "1Torr":    133.32,
         "10Torr":   1333.2,
         "100Torr":  13332.0,
