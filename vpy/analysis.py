@@ -249,6 +249,46 @@ class Analysis(Document):
             return b
         return a
     
+    def ask_for_reject(self, average_index):
+        """ Asks for points to reject. removes this points from average_index.
+        Returns the resulting array of arrays.
+        """
+        reject = []
+        while True:
+            r = input("Reject datapoint number: ")
+            if r == "":
+                break
+            reject.append(r)
+        self.log.debug("average index before manual remove:{}".format(average_index))
+        average_index = [[j for j in i if not str(j) in reject] for i in average_index]
+        self.log.debug("average index after manual remove:{}".format(average_index))
+
+        return average_index
+
+    def coarse_error_filtering(self, average_index):
+        """Removes indices above threshold.
+        """
+        found_threshold = False
+        error_dict = self.pick_dict(quant='Error', dict_type='ind')
+        error_unit = error_dict.get('Unit')
+        if error_unit == "%": 
+            threshold = 50.0
+            found_threshold = True
+        if error_unit == "1": 
+            threshold = 0.5
+            found_threshold = True
+        
+        if found_threshold:
+            self.log.debug("average index before coarse error filtering:{}".format(average_index))
+            idx = [[j for j in i if abs(error[j]) < 50] for i in idx]
+            self.log.debug("average index before coarse error filtering:{}".format(average_index))
+        else:
+            msg = "No treshold found; see Error(ind) Unit"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return average_index
+
     def build_doc(self, dest='Analysis', doc=None):
         """Merges the analysis dict to the original doc and returns it.
 

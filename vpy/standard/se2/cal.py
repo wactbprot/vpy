@@ -146,11 +146,9 @@ class Cal(Se2):
         error = ana.pick("Error", "ind", "%")
         self.ToDo.make_average_index(p_cal, "mbar")
         idx = self.ToDo.average_index
-        self.log.debug("average index: {}".format(idx))
         # coarse filtering
-        print(idx)
-        idx = [[j for j in i if abs(error[j]) < 50] for i in idx]
-        print(idx)
+        idx = ana.coarse_error_filtering(average_index=idx)
+       
         # fine filtering
         k = 0
         while True:
@@ -205,17 +203,9 @@ class Cal(Se2):
         plt.ylabel(r"$e\;(\%)$")
         plt.savefig("reject_outliers_" + str(ana.org["Calibration"]["Certificate"]) + ".pdf")
         plt.clf()
-        reject = []
-        
-        while True:
-            r = input("Reject datapoint number: ")
-            if r == "":
-                break
-            reject.append(r)
-        print(idx)
-        idx = [[j for j in i if not str(j) in reject] for i in idx]
-        print(idx)
 
+        idx = ana.ask_for_reject(average_index=idx)
+        
         self.average_index = idx
 
 
