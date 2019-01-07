@@ -44,7 +44,6 @@ class Result(Analysis):
             }
         }
 
-
     def __init__(self, doc):
 
         d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -55,8 +54,8 @@ class Result(Analysis):
 
         self.ToDo = ToDo(doc)
         self.Val = Values(doc)
-        super().__init__(doc, init_dict)
         self.org = copy.deepcopy(doc)
+        super().__init__(doc, init_dict)
 
 
     def gatherby_idx(self, l, compare_function):
