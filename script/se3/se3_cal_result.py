@@ -8,6 +8,7 @@ from vpy.pkg_io import Io
 from vpy.result import Result
 from vpy.analysis import Analysis
 from vpy.constants import Constants
+from vpy.standard.se3.uncert import Uncert
 
 def main():
     io = Io()
@@ -27,9 +28,23 @@ def main():
     if not fail and len(ids) >0:
         for id in ids:
             doc = io.get_doc_db(id)
+
             ana = Analysis(doc, init_dict=doc.get('Calibration').get('Analysis'))
             res = Result(doc)
             
+            # cal uncertainty of standard
+            uncert = Uncert(doc)
+            uncert.define_model()
+            uncert.gen_val_dict(ana)
+            uncert.gen_val_array(ana)
+            uncert.volume_start(ana)
+            uncert.volume_5(ana)
+            uncert.panasure_fill(ana)
+            uncert.temperature_after(ana)
+            uncert.temperature_before(ana)
+            uncert.expansion(ana)
+            uncert.total(ana)
+                 
             p_cal = ana.pick('Pressure', 'cal', unit)
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
