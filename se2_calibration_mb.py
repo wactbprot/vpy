@@ -44,13 +44,19 @@ def main():
     cal.pressure_offset(ana)
     cal.pressure_indication_error(ana)
     cal.measurement_time(ana)
-    unc.temperature_vessel(ana)
+    
     cal.reject_outliers_index(ana)    
     cal.make_main_maesurement_index(ana)
     cal.make_pressure_range_index(ana)
-    cal.make_offset_stability(ana)
+   
     cal.fit_thermal_transpiration(ana)
+    
     cal.make_AuxValues_section(ana)
+    unc.make_offset_stability(ana)
+    unc.repeat_rel(ana)
+    unc.u_PTB_rel(ana)
+    unc.total(ana)
+   
     res.make_error_table(ana)
     res.make_formula_section(ana)
 

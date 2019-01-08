@@ -343,9 +343,13 @@ class Analysis(Document):
                 break
             average_index = r
             self.log.debug("average index after fine error filtering: {}".format(average_index))
-
+            
         return average_index, ref_mean, ref_std, k
-
+    
+    def reduce_by_average_index(self,  value, average_index):
+        """Calculates the mean value for each target pressure.
+        """
+        return np.asarray([np.mean(np.take(value, i)) for i in average_index])
 
     def build_doc(self, dest='Analysis', doc=None):
         """Merges the analysis dict to the original doc and returns it.

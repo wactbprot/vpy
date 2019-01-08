@@ -70,74 +70,59 @@ class Result(Analysis):
             else: groups[i] = [i]
         return list(groups.values())
 
-
-    def u_PTB_rel(self, p_list):
-        return np.asarray([np.piecewise(p, [p <= 0.00027, p <= 0.003, p <= 0.0073, p <= 0.09, p <= 10, p <= 80,  80 < p],
-                                        [0.0014, 0.001, 0.00092, 0.00086, 0.00075, 0.00019, 0.00014]).tolist() for p in p_list])
-
-    def repeat_rel(self, p_list):
-        return np.asarray([np.piecewise(p, [p <= 0.1, p <= 9.5, p > 9.5], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
-
-
-    def make_error_table(self, ana):
-
-        cal = ana.pick("Pressure", "cal", "mbar")
-        ind = ana.pick("Pressure", "ind", "mbar")
-        error = 100 * (ind - cal) / cal
-
+    def make_error_table(self, ana, pressure_unit='mbar', error_unit='%'):
+        k=2
+        cal = ana.pick("Pressure", "cal", pressure_unit)
+        ind = ana.pick("Pressure", "ind", pressure_unit)
+        error = ana.pick("Error", "ind", error_unit)
+        u = ana.pick("Uncertainty", "total_rel", error_unit)
+        
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
-        offset_unc = ana.pick("Uncertainty", "offset", "mbar")
 
-        offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
-
-        n_avr = np.asarray([len(i) for i in av_idx])
-        cal = self.cal = np.asarray([np.mean(np.take(cal, i)) for i in av_idx])
-        ind = self.ind = np.asarray([np.mean(np.take(ind, i)) for i in av_idx])
-        error = self.error = np.asarray([np.mean(np.take(error, i)) for i in av_idx])
-
-        # digitizing error still missing
-        u_ind_abs = np.sqrt((cal * self.repeat_rel(cal))**2 + offset_uncertainty**2)
-        k2 = self.k2 = 2 * 100 * ind / cal * np.sqrt((u_ind_abs / ind)**2 + self.u_PTB_rel(cal)**2)
+        cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
+        ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
+        error = ana.reduce_by_average_index(value=error, average_index=av_idx)
+        u = ana.reduce_by_average_index(value=u, average_index=av_idx)
 
         #format output
         cal_str = [f"{i:.4e}" for i in cal]
         ind_str = [f"{i:.4e}" for i in ind]
-        error_str = self.Val.round_to_uncertainty_array(error, k2, 2)
-        k2_str = self.Val.round_to_sig_dig_array(k2, 2)
+        error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
+        u_k2_str = self.Val.round_to_sig_dig_array(u*k, 2)
 
-        p_cal = {
+        p_cal_dict = {
             "Type": "cal",
-            "Unit": "mbar",
+            "Unit": pressure_unit,
             "Value": cal_str,
             "HeadCell": self.head_cell["cal"],
-            "UnitCell": self.unit_cell["mbar"]
+            "UnitCell": self.unit_cell[pressure_unit]
             }
-        p_ind_corr = {
+        p_ind_corr_dict = {
             "Type": "ind_corr",
-            "Unit": "mbar",
+            "Unit": pressure_unit,
             "Value": ind_str,
             "HeadCell": self.head_cell["ind_corr"],
-            "UnitCell": self.unit_cell["mbar"]
+            "UnitCell": self.unit_cell[pressure_unit]
             }
-        e = {
+        e_dict = {
             "Type": "relative",
-            "Unit": "%",
+            "Unit": error_unit,
             "Value": error_str,
             "HeadCell": self.head_cell["error"],
-            "UnitCell": self.unit_cell["%"]
+            "UnitCell": self.unit_cell[error_unit]
             }
-        u  = {
+        u_dict  = {
             "Type": "uncertTotal_rel",
-            "Unit": "%",
-            "Value": k2_str,
+            "Unit": error_unit,
+            "Value": u_k2_str,
             "HeadCell": self.head_cell["uncertTotal_rel"],
-            "UnitCell": self.unit_cell["%"]
+            "UnitCell": self.unit_cell[error_unit]
             }
 
-        self.store_dict(quant="Table", d=p_cal, dest=None)
-        self.store_dict(quant="Table", d=p_ind_corr, dest=None)
-        self.store_dict(quant="Table", d=e, dest=None)
-        self.store_dict(quant="Table", d=u, dest=None)
+        self.store_dict(quant="Table", d=p_cal_dict, dest=None)
+        self.store_dict(quant="Table", d=p_ind_corr_dict, dest=None)
+        self.store_dict(quant="Table", d=e_dict, dest=None)
+        self.store_dict(quant="Table", d=u_dict, dest=None)
 
         self.log.info("Result error table written")
 

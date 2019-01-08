@@ -159,7 +159,7 @@ class Cal(Se2):
 
         idx = ana.ask_for_reject(average_index=idx)
         
-        self.average_index = idx
+        ana.average_index = idx
 
 
     def make_main_maesurement_index(self, ana):
@@ -169,14 +169,14 @@ class Cal(Se2):
         :rtype: list
         """
 
-        idx = self.Val.flatten(self.average_index)
+        idx = self.Val.flatten(ana.average_index)
         mdate0 = ana.get_object("Type","measurement")["Value"]
         mdate = np.take(mdate0, idx).tolist()
         occurrences = [[i, mdate.count(i)] for i in list(set(mdate))]
         max_occurrence = sorted(occurrences, key=lambda j: j[1])[-1][0]
         idx = [i for i in idx if mdate0[i] == max_occurrence]
 
-        self.main_maesurement_index = idx
+        ana.main_maesurement_index = idx
 
 
     def make_pressure_range_index(self, ana):
@@ -189,7 +189,7 @@ class Cal(Se2):
         """
 
         cf = self.CFaktor.get_value("faktor","")
-        idx = self.Val.flatten(self.average_index)
+        idx = self.Val.flatten(ana.average_index)
 
         r1 = {}
         for i in idx:
@@ -216,30 +216,10 @@ class Cal(Se2):
         if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
         else: r = r2
 
-        self.pressure_range_index = r
+        ana.pressure_range_index = r
 
 
-    def make_offset_stability(self, ana):
-
-        # should outliers by rejected? e.g. forgot to switch
-        # measurement range for offset but switched for p_ind
-
-        pr_idx = self.pressure_range_index
-        av_idx = self.average_index
-        idx = self.Val.flatten(av_idx)
-
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        p_off = ana.pick("Pressure", "offset", "mbar")
-
-        offset_unc = np.full(len(p_off), np.nan)
-        for i in pr_idx:
-            unc = np.std([p_off[j] for j in i])
-            for j in i:
-                offset_unc[j] = unc
-
-        ana.store("Uncertainty", "offset", offset_unc, "mbar")
-
-
+    
     def fit_thermal_transpiration(self, ana):
 
         cal = ana.pick("Pressure", "cal", "mbar")
@@ -269,10 +249,10 @@ class Cal(Se2):
     def make_AuxValues_section(self, ana):
 
         aux = {
-            "MainMaesurementIndex": self.main_maesurement_index,
-            "PressureRangeIndex": self.pressure_range_index,
-            "AverageIndex": self.average_index,
-            "AverageIndexFlat": self.Val.flatten(self.average_index)
+            "MainMaesurementIndex": ana.main_maesurement_index,
+            "PressureRangeIndex": ana.pressure_range_index,
+            "AverageIndex": ana.average_index,
+            "AverageIndexFlat": self.Val.flatten(ana.average_index)
             }
 
         ana.store_dict(quant="AuxValues", d=aux, dest=None, plain=True)
