@@ -206,7 +206,7 @@ class Analysis(Document):
             if quant in self.doc[dest]:
                 doc = self.doc[dest][quant]
                 for d in doc:
-                    if d['Type'] == dict_type:
+                    if d.get('Type') == dict_type:
                         if with_stats:
                             value_ret, sd_ret, n_ret = self.get_value(dict_type, dict_unit, o=d, with_stats=with_stats)
                         else:    
@@ -271,6 +271,7 @@ class Analysis(Document):
         found_threshold = False
         error_dict = self.pick_dict(quant='Error', dict_type='ind')
         error_unit = error_dict.get('Unit')
+        error_value = error_dict.get('Value')
         if error_unit == "%": 
             threshold = 50.0
             found_threshold = True
@@ -280,7 +281,7 @@ class Analysis(Document):
         
         if found_threshold:
             self.log.debug("average index before coarse error filtering:{}".format(average_index))
-            idx = [[j for j in i if abs(error[j]) < 50] for i in idx]
+            average_index = [[j for j in i if abs(error_value[j]) < 50] for i in average_index]
             self.log.debug("average index before coarse error filtering:{}".format(average_index))
         else:
             msg = "No treshold found; see Error(ind) Unit"
@@ -288,6 +289,63 @@ class Analysis(Document):
             sys.exit(msg)
 
         return average_index
+
+    def fine_error_filtering(self, average_index):
+        """Fine filtering.
+        Takes the list of indices of measurement points belonging to a
+        certain target pressure and rejects outliers by comparing each
+        measurement value to the mean value of the neighbors (without the
+        point itself).
+        remarks: using the standard deviation of the neighbors is unsatisfactory
+        because one may end up with a small value by chance. Probably it is
+        better to use a threshold that is decreasing with increasing pressure
+        values. Another problem is that iterating over empty lists aborts the
+        program.
+
+        """
+        error_dict = self.pick_dict(quant='Error', dict_type='ind')
+        error = error_dict.get('Value')
+
+        self.log.debug("average index before fine error filtering: {}".format(average_index))
+    
+        k = 0
+        while True:
+            r = []
+            ref_mean = [None] * len(average_index) # evtl. np.full()
+            ref_std = [None] * len(average_index)
+            s = [None] * len(average_index)
+            for i in range(len(average_index)):
+                s[i] = 1
+                if i > 1:
+                    s[i] = i
+                if i > len(average_index) - 3:
+                    s[i] = len(average_index) - 2
+                # collect indices of neighbors
+                l = average_index[s[i] - 1: s[i] + 1]
+                ref_idx = [item for sublist in l for item in sublist] # flatten
+                rr = []
+                for j in range(len(average_index[i])):
+                    # indices of neighbors only
+                    ref_idx0 = [a for a in ref_idx if a != average_index[i][j]]
+                    ref = np.take(error, ref_idx0).tolist()
+                    ref_mean[i] = np.mean(ref)
+                    ref_std[i] = np.std(ref)
+                    #Only accept indices if error[idx[i][j]] deviates either 
+                    #less than 5% or 5*sigma from neighbors
+                    if abs(ref_mean[i] - error[average_index[i][j]]) < max(5, 5 * ref_std[i]):
+                        rr.append(average_index[i][j])
+                r.append(rr)
+
+            self.log.debug("s: {}".format(s))
+
+            k = k + 1
+            if average_index == r:
+                break
+            average_index = r
+            self.log.debug("average index after fine error filtering: {}".format(average_index))
+
+        return average_index
+
 
     def build_doc(self, dest='Analysis', doc=None):
         """Merges the analysis dict to the original doc and returns it.

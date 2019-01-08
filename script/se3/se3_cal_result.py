@@ -30,14 +30,14 @@ def main():
             ana = Analysis(doc, init_dict=doc.get('Calibration').get('Analysis'))
             res = Result(doc)
             
-            const = Constants(doc)
-            
             p_cal = ana.pick('Pressure', 'cal', unit)
+            conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
+            average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
-            conv = const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
-            res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-            res.ToDo.average_index
-            #res.reject_outliers_index(res)    
+            average_index = ana.coarse_error_filtering(average_index=average_index)
+            average_index = ana.fine_error_filtering(average_index=average_index)
+            average_index = ana.ask_for_reject(average_index=average_index)
+
        
     else:
         ret = {"error": "no --ids found"}

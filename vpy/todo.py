@@ -67,4 +67,4 @@ class ToDo(Document):
             r.append(rr)
 
         self.average_index = r
-        
+        return r

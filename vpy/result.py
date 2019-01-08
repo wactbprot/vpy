@@ -6,6 +6,7 @@ import numpy as np
 from .analysis import Analysis
 from .todo import ToDo
 from .values import Values
+from .constants import Constants
 
 
 class Result(Analysis):
@@ -53,6 +54,7 @@ class Result(Analysis):
              }
 
         self.ToDo = ToDo(doc)
+        self.Const = Constants(doc)
         self.Val = Values(doc)
         self.org = copy.deepcopy(doc)
         super().__init__(doc, init_dict)

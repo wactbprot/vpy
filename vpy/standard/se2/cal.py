@@ -128,63 +128,16 @@ class Cal(Se2):
 
 
     def reject_outliers_index(self, ana):
-        """Takes the list of indices of measurement points belonging to a
-        certain target pressure and rejects outliers by comparing each
-        measurement value to the mean value of the neighbors (without the
-        point itself).
-        remarks: using the standard deviation of the neighbors is unsatisfactory
-        because one may end up with a small value by chance. Probably it is
-        better to use a threshold that is decreasing with increasing pressure
-        values. Another problem is that iterating over empty lists aborts the
-        program.
-
-        :returns: array of arrays of indices
-        :rtype: np.array
+        """Reject outliers by several filtering algorithms.
         """
 
         p_cal = ana.pick("Pressure", "cal", "mbar")
         error = ana.pick("Error", "ind", "%")
         self.ToDo.make_average_index(p_cal, "mbar")
         idx = self.ToDo.average_index
-        # coarse filtering
+
         idx = ana.coarse_error_filtering(average_index=idx)
-       
-        # fine filtering
-        k = 0
-        while True:
-            r = []
-            ref_mean = [None] * len(idx)
-            ref_std = [None] * len(idx)
-            s = [None] * len(idx)
-            for i in range(len(idx)):
-                s[i] = 1
-                if i > 1:
-                    s[i] = i
-                if i > len(idx) - 3:
-                    s[i] = len(idx) - 2
-                # collect indices of neighbors
-                ref_idx = self.Val.flatten(idx[s[i] - 1: s[i] + 1])
-                rr = []
-                for j in range(len(idx[i])):
-                    # indices of neighbors only
-                    ref_idx0 = [a for a in ref_idx if a != idx[i][j]]
-                    ref = np.take(error, ref_idx0).tolist()
-                    ref_mean[i] = np.mean(ref)
-                    ref_std[i] = np.std(ref)
-                    # only accept indices if error[idx[i][j]] deviates either less than 5% or 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[idx[i][j]]) < max(5, 5 * ref_std[i]):
-                        rr.append(idx[i][j])
-                r.append(rr)
-
-            self.log.debug("average index: {}".format(s))
-            self.log.debug("average index: {}".format(idx))
-
-            k = k + 1
-            if idx == r:
-                break
-            idx = r
-
-        print(idx)
+        idx = ana.fine_error_filtering(average_index=idx)
 
         fig, ax = plt.subplots()
         x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
