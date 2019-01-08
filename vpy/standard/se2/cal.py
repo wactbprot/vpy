@@ -137,7 +137,7 @@ class Cal(Se2):
         idx = self.ToDo.average_index
 
         idx = ana.coarse_error_filtering(average_index=idx)
-        idx = ana.fine_error_filtering(average_index=idx)
+        idx, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=idx)
 
         fig, ax = plt.subplots()
         x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
@@ -150,7 +150,7 @@ class Cal(Se2):
             plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels, loc=0)
-        plt.title(str(k) + " mal durchlaufen")
+        plt.title(str(loops) + " mal durchlaufen")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
         plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
         plt.ylabel(r"$e\;(\%)$")

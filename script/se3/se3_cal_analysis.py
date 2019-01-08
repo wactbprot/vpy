@@ -1,5 +1,5 @@
 """
-python script/se3/se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/se3/se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984' -a # keep aux values
 """
 import sys
 import json

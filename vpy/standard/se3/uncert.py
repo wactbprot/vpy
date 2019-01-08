@@ -122,7 +122,7 @@ class Uncert(Se3):
                       np.power(u_6, 2)
                       )
 
-        res.store("Uncertainty", "total", u_t, "1")
+        res.store("Uncertainty", "total_standard", u_t, "1")
         self.log.info("Calibration pressure: {}".format(
             self.val_dict["f"] * self.val_dict["p_fill"]))
         self.log.info("Uncertainty total: {}".format(u_t))

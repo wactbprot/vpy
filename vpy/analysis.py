@@ -344,7 +344,7 @@ class Analysis(Document):
             average_index = r
             self.log.debug("average index after fine error filtering: {}".format(average_index))
 
-        return average_index
+        return average_index, ref_mean, ref_std, k
 
 
     def build_doc(self, dest='Analysis', doc=None):
