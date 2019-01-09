@@ -122,7 +122,7 @@ class Uncert(Se3):
                       np.power(u_6, 2)
                       )
 
-        res.store("Uncertainty", "total_standard", u_t, "1")
+        res.store("Uncertainty", "standard", u_t, "1")
         self.log.info("Calibration pressure: {}".format(
             self.val_dict["f"] * self.val_dict["p_fill"]))
         self.log.info("Uncertainty total: {}".format(u_t))
@@ -313,3 +313,56 @@ class Uncert(Se3):
 
         res.store("Uncertainty", "v_5", np.absolute(val / p_nom), "1")
         self.log.debug("uncert v_5: {}".format(val / p_nom))
+
+    def offset(self, res):
+        """Calculates the standard deviation of the *single* value of the 
+        offset sample stored in ``Measurement.AuxValues.Pressure``
+        
+        .. todo::
+
+            anselm needs to store the range a pressure point is measured with
+
+        """
+    
+        p_ind_corr = res.pick("Pressure", "ind_corr", self.unit)
+
+        offset_sample_types = ["offset"] ## get from measurement.Values.Range
+        for s_type in offset_sample_types:
+            offset_sample_value = self.Aux.get_value(value_type=s_type, value_unit=self.unit)
+
+        std = np.nanstd(offset_sample_value)
+        N = np.shape(offset_sample_value)[0]
+        u = std/p_ind_corr
+        
+        res.store("Uncertainty", "offset", u, "1")
+
+    def repeat_rel(self, ana):
+
+        p_list = ana.pick("Pressure", "ind_corr", "Pa")
+        u = np.asarray([np.piecewise(p, [p <= 10, p <= 950, p > 950], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
+
+        ana.store("Uncertainty", "repeat", u, "1")
+
+    def u_PTB_rel(self, ana):
+        
+        p_list = ana.pick("Pressure", "cal", "Pa")
+        u = np.asarray([np.piecewise(p, [p <= 0.027, p <= 0.3, p <= 0.73, p <= 9., p <= 1000, p <= 8000,  8000 < p],
+                                        [0.0014, 0.001, 0.00092, 0.00086, 0.00075, 0.00019, 0.00014]).tolist() for p in p_list])
+
+        ana.store("Uncertainty", "standard", u , "1")
+
+    def total(self, ana):
+        
+        p_cal = ana.pick("Pressure", "cal", "Pa")
+        p_ind = ana.pick("Pressure", "ind", "Pa")
+
+        offset_uncert = ana.pick("Uncertainty", "offset", "1")
+        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+        standard_uncert = ana.pick("Uncertainty", "standard", "1")
+        # digitizing error still missing
+        u_ind_abs = np.sqrt(np.power(p_cal * repeat_uncert, 2) + np.power(p_cal * offset_uncert, 2))
+
+        u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
+        
+        ana.store("Uncertainty", "total_rel", u_rel , "1")
+        ana.store("Uncertainty", "total_abs", u_rel*p_cal , "Pa")

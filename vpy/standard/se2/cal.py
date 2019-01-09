@@ -215,9 +215,8 @@ class Cal(Se2):
 
         if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
         else: r = r2
-
+        
         ana.pressure_range_index = r
-
 
     
     def fit_thermal_transpiration(self, ana):

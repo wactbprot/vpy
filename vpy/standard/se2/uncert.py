@@ -1,12 +1,13 @@
 import numpy as np
 import sympy as sym
-from .std import Se2
+#from .std import Se2
 
-class Uncert(Se2):
+#class Uncert(Se2):
+class Uncert:
 
     def __init__(self, doc):
-        super().__init__(doc)
-
+        #super().__init__(doc)
+        pass
     
     def total(self, ana):
         
@@ -22,7 +23,7 @@ class Uncert(Se2):
         u_rel = 100.0 * p_ind / p_cal * np.sqrt((u_ind_abs / p_ind)**2 + standard_uncert**2)
         
         ana.store("Uncertainty", "total_rel", u_rel , "%")
-        ana.store("Uncertainty", "total_abs", u_rel , "mbar")
+        ana.store("Uncertainty", "total_abs", u_rel , "1")
 
     def u_PTB_rel(self, ana):
         

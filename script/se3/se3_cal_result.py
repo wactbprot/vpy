@@ -9,7 +9,7 @@ from vpy.pkg_io import Io
 from vpy.result import Result
 from vpy.analysis import Analysis
 from vpy.constants import Constants
-from vpy.standard.se3.uncert import Uncert
+from vpy.standard.se3.uncert import Uncert as UncertSe3 
 from vpy.device.device import Device
 
 def main():
@@ -38,29 +38,27 @@ def main():
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
 
+            ## bis update CMC Einträge --> vorh. CMC Einträge  
             # cal uncertainty of standard
-            uncert = Uncert(doc)
-            uncert.define_model()
-            uncert.gen_val_dict(ana)
-            uncert.gen_val_array(ana)
-            uncert.volume_start(ana)
-            uncert.volume_5(ana)
-            uncert.pressure_fill(ana)
-            uncert.temperature_after(ana)
-            uncert.temperature_before(ana)
-            uncert.expansion(ana)
-            uncert.total(ana)
-
-            uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
-            
-            # cal uncertaity of the costomer device
-            uncert_customer = customer_device.get_total_uncert(meas=p_ind_corr, unit=unit, runit=unit)/p_cal
-            ana.store(quant="Uncertainty", type="customer", value=uncert_customer, unit='1')
-
-            # combine customer and standard uncertainty
-            uncert_total = np.sqrt( np.power(uncert_customer, 2) + np.power(uncert_standard, 2) )
-            ana.store(quant="Uncertainty", type="total_rel", value= uncert_total, unit='1')
-            ana.store(quant="Uncertainty", type="total_abs", value= uncert_total*p_cal, unit=unit)
+            ## uncert = Uncert(doc)
+            ## uncert.define_model()
+            ## uncert.gen_val_dict(ana)
+            ## uncert.gen_val_array(ana)
+            ## uncert.volume_start(ana)
+            ## uncert.volume_5(ana)
+            ## uncert.pressure_fill(ana)
+            ## uncert.temperature_after(ana)
+            ## uncert.temperature_before(ana)
+            ## uncert.expansion(ana)
+            ## uncert.total(ana)
+            ## uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
+            ## # cal uncertaity of the costomer device
+            ## uncert_customer = customer_device.get_total_uncert(meas=p_ind_corr, unit=unit, runit=unit)/p_cal
+            ## ana.store(quant="Uncertainty", type="customer", value=uncert_customer, unit='1')
+            ## # combine customer and standard uncertainty
+            ## uncert_total = np.sqrt( np.power(uncert_customer, 2) + np.power(uncert_standard, 2) )
+            ## ana.store(quant="Uncertainty", type="total_rel", value= uncert_total, unit='1')
+            ## ana.store(quant="Uncertainty", type="total_abs", value= uncert_total*p_cal, unit=unit)
 
             # start build cert table
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
@@ -73,7 +71,19 @@ def main():
             
             ana.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
 
+            se3_uncert = UncertSe3(doc)
 
+            se3_uncert.offset(ana)
+            se3_uncert.repeat_rel(ana)
+            se3_uncert.u_PTB_rel(ana)
+            print("-----")
+            se3_uncert.total(ana)
+
+            res.make_error_table(ana, pressure_unit='Pa', error_unit='1')
+            
+            doc = ana.build_doc("Analysis", doc)
+            doc = res.build_doc("Result", doc)
+            io.save_doc(doc)
        
     else:
         ret = {"error": "no --ids found"}
