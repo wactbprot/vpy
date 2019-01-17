@@ -190,7 +190,7 @@ class Uncert(Frs5):
         self.log.info("value array derived from dict_arr")
         self.log.debug(self.val_arr)
 
-    def total(self, res):
+    def total_standard(self, res):
         """Calculates the total uncertainty.
         sympy derives the sensitivity coefficients.
 
@@ -234,7 +234,7 @@ class Uncert(Frs5):
                     + res.pick("Uncertainty", "u_rho_frs", "1")**2
                     )**0.5
 
-        p = res.pick("Pressure", "frs5", self.unit)
+        p = res.pick("Pressure", "cal", self.unit)
         res.store("Uncertainty", "frs5_total_rel", u_total, "1")
         res.store("Uncertainty", "frs5_total_abs", u_total*p, self.unit)
         self.log.debug("uncert total: {}".format(u_total))
@@ -249,7 +249,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('r'))
         u_expr = self.get_expression("u_r", "lb")
@@ -270,7 +270,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('r_zc'))
         u_expr = self.get_expression("u_r_zc", "lb")
@@ -290,7 +290,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('r_zc0'))
         u_expr = self.get_expression("u_r_zc0", "lb")
@@ -310,7 +310,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('ub'))
         u_expr = self.get_expression("u_ub", "lb")
@@ -330,7 +330,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('usys'))
         u_expr = self.get_expression("u_usys", "lb")
@@ -350,7 +350,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('m_cal'))
         u_expr = self.get_expression("u_m_cal", "kg")
@@ -370,7 +370,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('r_cal'))
         u_expr = self.get_expression("u_r_cal", "lb")
@@ -390,7 +390,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('r_cal0'))
         u_expr = self.get_expression("u_r_cal0", "lb")
@@ -410,7 +410,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('g'))
         u_expr = self.get_expression("u_g", "1")
@@ -431,7 +431,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('A'))
         u_expr = self.get_expression("u_A", "m^2")
@@ -452,7 +452,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('T'))
         u_expr = self.get_expression("u_t", "C")
@@ -474,7 +474,7 @@ class Uncert(Frs5):
         """
 
         pconv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         ## --rho gas--
         # T in K
@@ -521,7 +521,7 @@ class Uncert(Frs5):
         """
 
         pconv   = self.Cons.get_conv("Pa", self.unit)
-        p       = res.pick("Pressure", "frs5", self.unit)
+        p       = res.pick("Pressure", "cal", self.unit)
 
         ## -- rho piston --
 
@@ -546,7 +546,7 @@ class Uncert(Frs5):
         :type: class
         """
         conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "frs5", self.unit)
+        p      = res.pick("Pressure", "cal", self.unit)
 
         s_expr = sym.diff(self.model, sym.Symbol('r'))
         u_expr = self.get_expression("u_ab", "1/K")
@@ -558,3 +558,51 @@ class Uncert(Frs5):
 
         self.log.debug("uncert ab: {}".format(val/p))
         res.store("Uncertainty", "u_ab", np.absolute(val/p), "1")
+
+
+    def offset(self, res):
+        """Calculates the standard deviation of the *single* value of the 
+        offset sample stored in ``Measurement.AuxValues.Pressure``
+        
+        .. todo::
+
+            anselm needs to store the range a pressure point is measured with
+
+        """
+        off_std = np.full(self.no_of_meas_points, np.nan)
+        p_ind_corr = res.pick("Pressure", "ind_corr", self.unit)
+        range_arr = self.Range.get_str('ind')
+        
+        for i, r in enumerate(range_arr): 
+            val, unit = self.Aux.get_value_and_unit(self.range_trans[r])
+            conv = self.Cons.get_conv(from_unit=unit, to_unit=self.unit)
+            off_std[i] = np.nanstd(val) *conv
+
+        res.store("Uncertainty", "offset", off_std/p_ind_corr, "1")
+
+    def repeat_rel(self, res):
+
+        p_list = res.pick("Pressure", "ind_corr", "mbar")
+        u = np.asarray([np.piecewise(p, [p <= 0.10, p <= 9.50, p > 9.50], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
+
+        res.store("Uncertainty", "repeat", u, "1")
+
+    def total(self, res):
+        
+        p_cal = res.pick("Pressure", "cal", self.unit)
+
+        p_ind = res.pick("Pressure", "ind", self.unit)
+
+        offset_uncert = res.pick("Uncertainty", "offset", "1")
+        repeat_uncert = res.pick("Uncertainty", "repeat", "1")
+        standard_uncert = res.pick("Uncertainty", "frs5_total_rel", "1")
+        # digitizing error still missing
+        u_ind_abs = np.sqrt(np.power(p_cal * repeat_uncert, 2) + np.power(p_cal * offset_uncert, 2))
+
+        u_rel = np.abs(p_ind / p_cal) * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
+        
+        
+        res.store("Pressure", "cal", p_cal , self.unit)
+        res.store("Uncertainty", "total_rel", u_rel , "1")
+        res.store("Uncertainty", "total_abs", u_rel*p_cal , self.unit)
+

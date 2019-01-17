@@ -160,6 +160,10 @@ class Expansion(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Expansion', quant)
 
+class Range(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Range', quant)
+
 class Mass(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Mass', quant)

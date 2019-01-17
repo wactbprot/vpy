@@ -76,7 +76,7 @@ def main():
             se3_uncert.offset(ana)
             se3_uncert.repeat_rel(ana)
             se3_uncert.u_PTB_rel(ana)
-            print("-----")
+ 
             se3_uncert.total(ana)
 
             res.make_error_table(ana, pressure_unit='Pa', error_unit='1')

@@ -4,7 +4,7 @@ from ..standard import Standard
 from ...device.srg import Srg
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxFrs5
+from ...values import Temperature, Pressure, Time, AuxFrs5, Range
 
 
 class Frs5(Standard):
@@ -35,28 +35,25 @@ class Frs5(Standard):
     """
     name = "FRS5"
     unit = "mbar"
-
+    range_trans = {
+            "X0.01":"offset_x0.01",
+            "X0.1":"offset_x0.1",
+            "X1":"offset_x1" 
+        }
     def __init__(self, doc):
         super().__init__(doc, self.name)
-        # define model
-
-
         # measurement values
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
+        self.Range = Range(doc)
         self.Time = Time(doc)
         self.Aux = AuxFrs5(doc)
 
         # residua pressure device
         amt = self.Time.get_value("amt_meas", "ms")
-
         self.no_of_meas_points = len(amt)
-
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS5_4019"))
-
         self.log.debug("init func: {}".format(__name__))
-
-
 
     def get_gas(self):
         """Returns the name of the calibration gas stored in *AuxValues*

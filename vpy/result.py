@@ -20,12 +20,14 @@ class Result(Analysis):
         "uncertTotal_rel": "{\\(U(k=2)\\)}",
         "uncertTotal_abs": "{\\(U(k=2)\\)}",
         "error":"{\\(e\\)}",
+        "N":"{\\(N\\)}",
     }
     unit_cell = {
         "1": "",
         "mbar": "mbar",
         "Pa":"Pa",
-        "%": "{\\(\\si{\\percent}\\)}"
+        "%": "{\\(\\si{\\percent}\\)}",
+        "N":"",
         }
     unit = {
         "mbar": "\\mbar",
@@ -71,16 +73,24 @@ class Result(Analysis):
             else: groups[i] = [i]
         return list(groups.values())
 
-    def make_error_table(self, ana, pressure_unit='mbar', error_unit='%'):
+    def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         k=2
-        cal = ana.pick("Pressure", "cal", pressure_unit)
-        ind = ana.pick("Pressure", "ind", pressure_unit)
+
+        cal_dict = ana.pick_dict("Pressure", "cal")
+        cal_conv = self.Const.get_conv(from_unit=cal_dict.get("Unit"), to_unit=pressure_unit)
+        cal = cal_conv * cal_dict.get("Value")
+
+        ind_dict = ana.pick_dict("Pressure", "ind_corr")
+        ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=pressure_unit)
+        ind = ind_conv * ind_dict.get("Value")
+
         error = ana.pick("Error", "ind", error_unit)
         u = ana.pick("Uncertainty", "total_rel", error_unit)
         
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
-
+        N = [len(i) for i in av_idx]
         cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
+
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
         error = ana.reduce_by_average_index(value=error, average_index=av_idx)
         u = ana.reduce_by_average_index(value=u, average_index=av_idx)
@@ -119,9 +129,17 @@ class Result(Analysis):
             "HeadCell": self.head_cell["uncertTotal_rel"],
             "UnitCell": self.unit_cell[error_unit]
             }
-
+        n_dict = {
+            "Type": "count",
+            "Unit": "1",
+            "Value": N,
+            "HeadCell": self.head_cell["N"],
+            "UnitCell": self.unit_cell["N"]
+            }
         self.store_dict(quant="Table", d=p_cal_dict, dest=None)
         self.store_dict(quant="Table", d=p_ind_corr_dict, dest=None)
+        if add_n_column:
+            self.store_dict(quant="Table", d=n_dict, dest=None)        
         self.store_dict(quant="Table", d=e_dict, dest=None)
         self.store_dict(quant="Table", d=u_dict, dest=None)
 
