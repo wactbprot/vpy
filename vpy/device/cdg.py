@@ -15,7 +15,10 @@ class Cdg(Device):
         "1Torr":    133.32,
         "10Torr":   1333.2,
         "100Torr":  13332.0,
-        "1000Torr": 133320.0
+        "1000Torr": 133320.0,
+        "01mbar": 1.0,
+        "1mbar": 100.0,"10mbar": 1000.0,"100mbar": 10000.0,
+
     }
         
     interpol_pressure_points = np.logspace(-3, 5, num=101) # Pa 

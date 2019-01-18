@@ -259,7 +259,7 @@ class Date(Values):
         """
 
         date_arr = self.get_str('measurement')
-        if date_arr and isinstance(date_arr, np.ndarray):
+        if isinstance(date_arr, np.ndarray):
             if isinstance(date_arr[0], str):
                 date = date_arr[0].split(' ')[0]
                 if not len(date) == 10: 
