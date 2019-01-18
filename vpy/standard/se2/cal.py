@@ -128,65 +128,16 @@ class Cal(Se2):
 
 
     def reject_outliers_index(self, ana):
-        """Takes the list of indices of measurement points belonging to a
-        certain target pressure and rejects outliers by comparing each
-        measurement value to the mean value of the neighbors (without the
-        point itself).
-        remarks: using the standard deviation of the neighbors is unsatisfactory
-        because one may end up with a small value by chance. Probably it is
-        better to use a threshold that is decreasing with increasing pressure
-        values. Another problem is that iterating over empty lists aborts the
-        program.
-
-        :returns: array of arrays of indices
-        :rtype: np.array
+        """Reject outliers by several filtering algorithms.
         """
 
         p_cal = ana.pick("Pressure", "cal", "mbar")
         error = ana.pick("Error", "ind", "%")
         self.ToDo.make_average_index(p_cal, "mbar")
         idx = self.ToDo.average_index
-        self.log.debug("average index: {}".format(idx))
-        # coarse filtering
-        print(idx)
-        idx = [[j for j in i if abs(error[j]) < 50] for i in idx]
-        print(idx)
-        # fine filtering
-        k = 0
-        while True:
-            r = []
-            ref_mean = [None] * len(idx)
-            ref_std = [None] * len(idx)
-            s = [None] * len(idx)
-            for i in range(len(idx)):
-                s[i] = 1
-                if i > 1:
-                    s[i] = i
-                if i > len(idx) - 3:
-                    s[i] = len(idx) - 2
-                # collect indices of neighbors
-                ref_idx = self.Val.flatten(idx[s[i] - 1: s[i] + 1])
-                rr = []
-                for j in range(len(idx[i])):
-                    # indices of neighbors only
-                    ref_idx0 = [a for a in ref_idx if a != idx[i][j]]
-                    ref = np.take(error, ref_idx0).tolist()
-                    ref_mean[i] = np.mean(ref)
-                    ref_std[i] = np.std(ref)
-                    # only accept indices if error[idx[i][j]] deviates either less than 5% or 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[idx[i][j]]) < max(5, 5 * ref_std[i]):
-                        rr.append(idx[i][j])
-                r.append(rr)
 
-            self.log.debug("average index: {}".format(s))
-            self.log.debug("average index: {}".format(idx))
-
-            k = k + 1
-            if idx == r:
-                break
-            idx = r
-
-        print(idx)
+        idx = ana.coarse_error_filtering(average_index=idx)
+        idx, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=idx)
 
         fig, ax = plt.subplots()
         x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
@@ -199,24 +150,16 @@ class Cal(Se2):
             plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels, loc=0)
-        plt.title(str(k) + " mal durchlaufen")
+        plt.title(str(loops) + " mal durchlaufen")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
         plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
         plt.ylabel(r"$e\;(\%)$")
         plt.savefig("reject_outliers_" + str(ana.org["Calibration"]["Certificate"]) + ".pdf")
         plt.clf()
-        reject = []
-        
-        while True:
-            r = input("Reject datapoint number: ")
-            if r == "":
-                break
-            reject.append(r)
-        print(idx)
-        idx = [[j for j in i if not str(j) in reject] for i in idx]
-        print(idx)
 
-        self.average_index = idx
+        idx = ana.ask_for_reject(average_index=idx)
+        
+        ana.average_index = idx
 
 
     def make_main_maesurement_index(self, ana):
@@ -226,14 +169,14 @@ class Cal(Se2):
         :rtype: list
         """
 
-        idx = self.Val.flatten(self.average_index)
+        idx = self.Val.flatten(ana.average_index)
         mdate0 = ana.get_object("Type","measurement")["Value"]
         mdate = np.take(mdate0, idx).tolist()
         occurrences = [[i, mdate.count(i)] for i in list(set(mdate))]
         max_occurrence = sorted(occurrences, key=lambda j: j[1])[-1][0]
         idx = [i for i in idx if mdate0[i] == max_occurrence]
 
-        self.main_maesurement_index = idx
+        ana.main_maesurement_index = idx
 
 
     def make_pressure_range_index(self, ana):
@@ -246,7 +189,7 @@ class Cal(Se2):
         """
 
         cf = self.CFaktor.get_value("faktor","")
-        idx = self.Val.flatten(self.average_index)
+        idx = self.Val.flatten(ana.average_index)
 
         r1 = {}
         for i in idx:
@@ -272,31 +215,10 @@ class Cal(Se2):
 
         if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
         else: r = r2
+        
+        ana.pressure_range_index = r
 
-        self.pressure_range_index = r
-
-
-    def make_offset_stability(self, ana):
-
-        # should outliers by rejected? e.g. forgot to switch
-        # measurement range for offset but switched for p_ind
-
-        pr_idx = self.pressure_range_index
-        av_idx = self.average_index
-        idx = self.Val.flatten(av_idx)
-
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        p_off = ana.pick("Pressure", "offset", "mbar")
-
-        offset_unc = np.full(len(p_off), np.nan)
-        for i in pr_idx:
-            unc = np.std([p_off[j] for j in i])
-            for j in i:
-                offset_unc[j] = unc
-
-        ana.store("Uncertainty", "offset", offset_unc, "mbar")
-
-
+    
     def fit_thermal_transpiration(self, ana):
 
         cal = ana.pick("Pressure", "cal", "mbar")
@@ -326,10 +248,10 @@ class Cal(Se2):
     def make_AuxValues_section(self, ana):
 
         aux = {
-            "MainMaesurementIndex": self.main_maesurement_index,
-            "PressureRangeIndex": self.pressure_range_index,
-            "AverageIndex": self.average_index,
-            "AverageIndexFlat": self.Val.flatten(self.average_index)
+            "MainMaesurementIndex": ana.main_maesurement_index,
+            "PressureRangeIndex": ana.pressure_range_index,
+            "AverageIndex": ana.average_index,
+            "AverageIndexFlat": self.Val.flatten(ana.average_index)
             }
 
         ana.store_dict(quant="AuxValues", d=aux, dest=None, plain=True)

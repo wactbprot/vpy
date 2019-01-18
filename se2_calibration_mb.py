@@ -44,13 +44,20 @@ def main():
     cal.pressure_offset(ana)
     cal.pressure_indication_error(ana)
     cal.measurement_time(ana)
-    unc.temperature_vessel(ana)
+    
     cal.reject_outliers_index(ana)    
     cal.make_main_maesurement_index(ana)
     cal.make_pressure_range_index(ana)
-    cal.make_offset_stability(ana)
+   
     cal.fit_thermal_transpiration(ana)
+    
     cal.make_AuxValues_section(ana)
+    
+    unc.make_offset_stability(ana)
+    unc.repeat_rel(ana)
+    unc.u_PTB_rel(ana)
+    unc.total(ana)
+   
     res.make_error_table(ana)
     res.make_formula_section(ana)
 
@@ -94,15 +101,7 @@ def main():
     print(cal.Cons.get_conv("mbar","Torr"))
     print(val.get_object("Type", "p_fill"))
     print(cal.Cons.get_conv("C", "K"))
-    bana = Analysis({})
-    print(bana.doc)
-    bana.store("myquant", "mytype", [1,2,3], "myunit")
-    print(bana.doc)
-    print(bana.org)
-    print(bana.pick("myquant","mytype","myunit"))
-    bana2 = Analysis({'Values': {'myquant': [{'Type': 'mytype', 'Value': [1, 2, 3], 'Unit': 'myunit'}]}})
-    print(bana2.org)
-    print(bana2.pick("myquant","mytype","myunit"))
+    
 
 if __name__ == "__main__":
     main()

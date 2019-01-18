@@ -46,6 +46,56 @@ class Cal(Frs5):
         tem = self.Temp.get_value("frs5", "C")
         res.store('Temperature', "frs5", tem, "C")
 
+    def error(self, res):
+        """Calculates the error of indication from the calibration pressure and 
+        the corrected indicated pressure.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        ind = res.pick("Pressure", "ind_corr",self.unit)
+        cal = res.pick("Pressure", "cal", self.unit)
+        
+        res.store('Error', 'ind', ind/(cal)-1, '1')
+
+    def pressure_offset(self, res):
+        """Calculates an offset vector from the offse samples below
+        Auxvalues
+        """
+        
+        off = np.full(self.no_of_meas_points, np.nan)
+        range_arr = self.Range.get_str('ind')
+        
+        for i, r in enumerate(range_arr): 
+            val, unit = self.Aux.get_value_and_unit(self.range_trans[r])
+            conv = self.Cons.get_conv(from_unit=unit, to_unit=self.unit)
+            off[i] = np.nanmean(val) *conv
+        
+        res.store("Pressure", "offset", off, self.unit)
+
+    def pressure_ind(self, res):
+        """Calculates the corrected indicated pressure in dependence
+         of the customer device. The offset  and the uncorrected 
+         indication are stored too.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        offset = res.pick("Pressure", "offset", self.unit)
+        ind, unit = self.Pres.get_value_and_unit('ind')
+        conv = self.Cons.get_conv(from_unit=unit, to_unit=self.unit)
+        ind = ind * conv 
+        res.store("Pressure", "ind", ind, self.unit)
+        res.store("Pressure", "ind_corr", ind - offset, self.unit)
+        self.log.debug("indicated pressure in {} is: {}".format(self.unit, ind))
+
+
     def pressure_cal(self, res):
         """Calculates the FRS5 calibration pressure from
         lb indication. The equation is:
@@ -110,6 +160,6 @@ class Cal(Frs5):
 
         res.store("Correction", "buoyancy_frs5", corr_rho, "1")
         res.store("Correction", "temperature_frs5", corr_temp, "1")
-        res.store('Pressure', "frs5", p, self.unit)
+        res.store('Pressure', "cal", p, self.unit)
 
         self.log.debug("FRS5 pressure is: {p} {u}".format(p=p, u=self.unit))

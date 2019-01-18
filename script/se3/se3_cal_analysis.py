@@ -1,5 +1,5 @@
 """
-python script/se3/se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/se3/se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984' -a # keep aux values
 """
 import sys
 import json
@@ -7,7 +7,7 @@ import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
-from vpy.standard.se3.uncert import Uncert
+
 from vpy.standard.se3.std import Se3
 
 def main():
@@ -53,8 +53,7 @@ def main():
                 state_doc = io.get_state_doc("se3", date=meas_date) 
                 res = Analysis(doc)
                 cal.insert_state_results(res, state_doc)
-            
-            uncert = Uncert(doc)            
+              
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
@@ -67,23 +66,12 @@ def main():
             cal.pressure_rise(res)
 
             cal.pressure_cal(res)
-            cal.error_pressure_rise(res)
-            
             cal.pressure_ind(res)
-            cal.deviation_target_cal(res)
             cal.error(res)
-
-            uncert.define_model()
-            uncert.gen_val_dict(res)
-            uncert.gen_val_array(res)
-            uncert.volume_start(res)
-            uncert.volume_5(res)
-            uncert.pressure_fill(res)
-            uncert.temperature_after(res)
-            uncert.temperature_before(res)
-            uncert.expansion(res)
-            uncert.total(res)
             
+            cal.error_pressure_rise(res)
+            cal.deviation_target_cal(res)
+
             io.save_doc(res.build_doc())
            
     else:

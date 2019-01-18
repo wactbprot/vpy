@@ -61,7 +61,8 @@ plt.subplot(121)
 
 plt.errorbar(p_se2_23 , s_se2_23,    yerr=u_se2_23  *2, marker = markers[1], linestyle="None", label="SE2 (18.10.18)", capsize=2, markersize=8, color=colors[0])
 plt.errorbar(p_se3_23_1, s_se3_23_1, yerr=u_se3_23_1*2, marker = markers[2], linestyle="None", label="SE3 (01.10.18)", capsize=2, markersize=8, color=colors[1])
-plt.errorbar(p_se3_23_3, s_se3_23_3, yerr=u_se3_23_3*2, marker = markers[4], linestyle="None", label="SE3 (15.10.18)", capsize=2, markersize=8, color=colors[2])
+#plt.errorbar(p_se3_23_2, s_se3_23_2, yerr=u_se3_23_2*2, marker = markers[3], linestyle="None", label="SE3 (01.10.18)", capsize=2, markersize=8, color=colors[2])
+plt.errorbar(p_se3_23_3, s_se3_23_3, yerr=u_se3_23_3*2, marker = markers[4], linestyle="None", label="SE3 (15.10.18)", capsize=2, markersize=8, color=colors[3])
 
 plt.xscale('symlog', linthreshx=1e-12)
 plt.xlabel('Druck in Pa')
@@ -76,7 +77,8 @@ plt.subplot(122)
 
 plt.errorbar(p_se2_25 , s_se2_25,    yerr=u_se2_25  *2, marker = markers[1], linestyle="None", label="SE2 (18.10.18)", capsize=2, markersize=8, color=colors[0])
 plt.errorbar(p_se3_25_1, s_se3_25_1, yerr=u_se3_25_1*2, marker = markers[2], linestyle="None", label="SE3 (01.10.18)", capsize=2, markersize=8, color=colors[1])
-plt.errorbar(p_se3_25_3, s_se3_25_3, yerr=u_se3_25_3*2, marker = markers[4], linestyle="None", label="SE3 (15.10.18)", capsize=2, markersize=8, color=colors[2])
+#plt.errorbar(p_se3_25_2, s_se3_25_2, yerr=u_se3_25_2*2, marker = markers[3], linestyle="None", label="SE3 (01.10.18)", capsize=2, markersize=8, color=colors[2])
+plt.errorbar(p_se3_25_3, s_se3_25_3, yerr=u_se3_25_3*2, marker = markers[4], linestyle="None", label="SE3 (15.10.18)", capsize=2, markersize=8, color=colors[3])
 
 
 plt.xscale('symlog', linthreshx=1e-12)

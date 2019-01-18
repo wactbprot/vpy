@@ -31,7 +31,7 @@ class Device(Document):
         .. todo::
                 rewrite expression branch
 
-        :param meas: array containing values of the measurand
+        :param meas: array containing values of the measurand the uncertainties are related to 
         :type meas: np.array
 
         :param unit: unit of the  measurand
