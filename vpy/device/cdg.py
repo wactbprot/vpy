@@ -16,11 +16,12 @@ class Cdg(Device):
         "10Torr":   1333.2,
         "100Torr":  13332.0,
         "1000Torr": 133320.0,
-        "01mbar": 1.0,
-        "1mbar": 100.0,"10mbar": 1000.0,"100mbar": 10000.0,
-
+        "01mbar": 10.0,
+        "1mbar": 100.0,
+        "10mbar": 1000.0,
+        "100mbar": 10000.0,
     }
-        
+    max_voltage = 10.0
     interpol_pressure_points = np.logspace(-3, 5, num=101) # Pa 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
@@ -70,11 +71,10 @@ class Cdg(Device):
 
     def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
         pressure_unit = pressure_dict.get('Unit')
-        pressure_value = pressure_dict.get('Value')
+        pressure_value = np.array(pressure_dict.get('Value'))
         
         if pressure_unit == "V":
-            #deal with it
-            sys.exit('missing implementation')
+           pressure = pressure_value * self.max_p/self.max_voltage
         else:
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         
