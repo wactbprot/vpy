@@ -417,7 +417,7 @@ class Cal(Se3):
         self.log.debug("filling pressure is: {}".format(p_fill))
 
         rg = res.pick("Correction", "rg", "1")
-        self.log.debug("real gas correctioin is: {}".format(rg))
+        self.log.debug("real gas correction is: {}".format(rg))
         
         f = res.pick("Expansion", "uncorr", "1")
         self.log.debug("expansion factor is: {}".format(f))
@@ -437,7 +437,14 @@ class Cal(Se3):
         p_rise = res.pick("Pressure", "rise", self.unit)
         self.log.debug("Pressure rise is: {}".format(p_rise))
 
-        p_cal = p_fill / rg * T_after / T_before / (1.0 / f + V_add / V_start) + p_rise
+        T_corr = T_after / T_before
+        res.store("Correction", "temperature", T_corr, '1')
+
+        f_prime = 1.0/(1.0 / f + V_add / V_start)
+        res.store("Expansion", "corr", f_prime, "1")
+
+        ## calibration pressure:
+        p_cal = f_prime * p_fill / rg * T_corr  + p_rise
         self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
         
         res.store("Pressure", "cal", p_cal, self.unit)

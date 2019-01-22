@@ -20,6 +20,7 @@ class Result(Analysis):
         "uncertTotal_rel": "{\\(U(k=2)\\)}",
         "uncertTotal_abs": "{\\(U(k=2)\\)}",
         "error":"{\\(e\\)}",
+        "cf": "{\\(CF\\)}",
         "N":"{\\(N\\)}",
     }
     unit_cell = {
@@ -84,6 +85,7 @@ class Result(Analysis):
         ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=pressure_unit)
         ind = ind_conv * ind_dict.get("Value")
 
+        cf = cal/ind
         error = ana.pick("Error", "ind", error_unit)
         u = ana.pick("Uncertainty", "total_rel", error_unit)
         
@@ -93,12 +95,14 @@ class Result(Analysis):
 
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
         error = ana.reduce_by_average_index(value=error, average_index=av_idx)
+        cf = ana.reduce_by_average_index(value=cf, average_index=av_idx)
         u = ana.reduce_by_average_index(value=u, average_index=av_idx)
 
         #format output
         cal_str = [f"{i:.4e}" for i in cal]
         ind_str = [f"{i:.4e}" for i in ind]
         error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
+        cf_str = self.Val.round_to_uncertainty_array(cf, u*k, 2)
         u_k2_str = self.Val.round_to_sig_dig_array(u*k, 2)
 
         p_cal_dict = {
@@ -122,6 +126,13 @@ class Result(Analysis):
             "HeadCell": self.head_cell["error"],
             "UnitCell": self.unit_cell[error_unit]
             }
+        cf_dict = {
+            "Type": "relative",
+            "Unit": error_unit,
+            "Value": cf_str,
+            "HeadCell": self.head_cell["cf"],
+            "UnitCell": self.unit_cell[error_unit]
+            }
         u_dict  = {
             "Type": "uncertTotal_rel",
             "Unit": error_unit,
@@ -141,6 +152,7 @@ class Result(Analysis):
         if add_n_column:
             self.store_dict(quant="Table", d=n_dict, dest=None)        
         self.store_dict(quant="Table", d=e_dict, dest=None)
+        self.store_dict(quant="Table", d=cf_dict, dest=None)
         self.store_dict(quant="Table", d=u_dict, dest=None)
 
         self.log.info("Result error table written")

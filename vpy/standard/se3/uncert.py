@@ -323,18 +323,18 @@ class Uncert(Se3):
             anselm needs to store the range a pressure point is measured with
 
         """
-    
-        p_ind_corr = res.pick("Pressure", "ind_corr", self.unit)
-
+        ind, ind_unit = self.Pres.get_value_and_unit(type="ind")
         offset_sample_types = ["offset"] ## get from measurement.Values.Range
         for s_type in offset_sample_types:
-            offset_sample_value = self.Aux.get_value(value_type=s_type, value_unit=self.unit)
+            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=s_type)
 
-        std = np.nanstd(offset_sample_value)
-        N = np.shape(offset_sample_value)[0]
-        u = std/p_ind_corr
+        if ind_unit == sample_unit:
+            std = np.nanstd(offset_sample_value)
+            u = np.abs(std/ind)
         
-        res.store("Uncertainty", "offset", u, "1")
+            res.store("Uncertainty", "offset", u, "1")
+        else:
+            sys.exit("ind measurement unit and sample unit dont match")
 
     def repeat_rel(self, ana):
 
@@ -364,5 +364,5 @@ class Uncert(Se3):
 
         u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
         
-        ana.store("Uncertainty", "total_rel", u_rel , "1")
-        ana.store("Uncertainty", "total_abs", u_rel*p_cal , "Pa")
+        ana.store("Uncertainty", "total_rel", np.abs(u_rel) , "1")
+        ana.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , "Pa")

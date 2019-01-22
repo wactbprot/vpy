@@ -70,10 +70,12 @@ def main():
             average_index = ana.ask_for_reject(average_index=average_index)
             
             ana.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
-
+       
             se3_uncert = UncertSe3(doc)
+            print("-----")
 
             se3_uncert.offset(ana)
+            print("-----")
             se3_uncert.repeat_rel(ana)
             se3_uncert.u_PTB_rel(ana)
  
