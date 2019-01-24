@@ -223,7 +223,6 @@ class Uncert(Frs5):
                     + res.pick("Uncertainty", "u_r_zc", "1")**2
                     + res.pick("Uncertainty", "u_r_zc0", "1")**2
                     + res.pick("Uncertainty", "u_ub", "1")**2
-                    + res.pick("Uncertainty", "u_usys", "1")**2
                     + res.pick("Uncertainty", "u_m_cal", "1")**2
                     + res.pick("Uncertainty", "u_r_cal", "1")**2
                     + res.pick("Uncertainty", "u_r_cal0", "1")**2
@@ -321,25 +320,6 @@ class Uncert(Frs5):
         self.log.debug("uncert ub: {}".format(val/p))
         res.store("Uncertainty", "u_ub", np.absolute(val/p), "1")
 
-    def uncert_usys(self, res):
-        """Calculates the uncertainty of the r (reading)
-
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-        conv   = self.Cons.get_conv("Pa", self.unit)
-        p      = res.pick("Pressure", "cal", self.unit)
-
-        s_expr = sym.diff(self.model, sym.Symbol('usys'))
-        u_expr = self.get_expression("u_usys", "lb")
-
-        f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
-        val   = f(*self.val_arr)*conv
-
-        self.log.debug("uncert usys: {}".format(val/p))
-        res.store("Uncertainty", "u_usys", np.absolute(val/p), "1")
 
     def uncert_m_cal(self, res):
         """Calculates the uncertainty of m_cal
