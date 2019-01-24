@@ -106,26 +106,26 @@ class Uncert(Se3):
         'rg': res.pick("Correction", "rg", "1"),
         }
 
-    def total(self, res):
-        u_1 = res.pick("Uncertainty", "v_start", "1")
-        u_2 = res.pick("Uncertainty", "v_5", "1")
-        u_3 = res.pick("Uncertainty", "p_fill", "1")
-        u_4 = res.pick("Uncertainty", "t_before", "1")
-        u_5 = res.pick("Uncertainty", "t_after", "1")
-        u_6 = res.pick("Uncertainty", "f", "1")
-        
-        u_t = np.sqrt(np.power(u_1, 2) +
-                      np.power(u_2, 2) +
-                      np.power(u_3, 2) +
-                      np.power(u_4, 2) +
-                      np.power(u_5, 2) +
-                      np.power(u_6, 2)
-                      )
+    #def total(self, res):
+    #    u_1 = res.pick("Uncertainty", "v_start", "1")
+    #    u_2 = res.pick("Uncertainty", "v_5", "1")
+    #    u_3 = res.pick("Uncertainty", "p_fill", "1")
+    #    u_4 = res.pick("Uncertainty", "t_before", "1")
+    #    u_5 = res.pick("Uncertainty", "t_after", "1")
+    #    u_6 = res.pick("Uncertainty", "f", "1")
+    #    
+    #    u_t = np.sqrt(np.power(u_1, 2) +
+    #                  np.power(u_2, 2) +
+    #                  np.power(u_3, 2) +
+    #                  np.power(u_4, 2) +
+    #                  np.power(u_5, 2) +
+    #                  np.power(u_6, 2)
+    #                  )
 
-        res.store("Uncertainty", "standard", u_t, "1")
-        self.log.info("Calibration pressure: {}".format(
-            self.val_dict["f"] * self.val_dict["p_fill"]))
-        self.log.info("Uncertainty total: {}".format(u_t))
+    #    res.store("Uncertainty", "standard", u_t, "1")
+    #    self.log.info("Calibration pressure: {}".format(
+    #        self.val_dict["f"] * self.val_dict["p_fill"]))
+    #    self.log.info("Uncertainty total: {}".format(u_t))
 
     def temperature_after(self, res):
         """ Calculates the uncertainty of the temperature after expasion.
@@ -336,25 +336,26 @@ class Uncert(Se3):
         else:
             sys.exit("ind measurement unit and sample unit dont match")
 
-    def repeat_rel(self, ana):
-
+    def repeat(self, ana):
+        
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
-        u = np.asarray([np.piecewise(p, [p <= 10, p <= 950, p > 950], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
+        u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
+                                        [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
 
         ana.store("Uncertainty", "repeat", u, "1")
 
-    def u_PTB_rel(self, ana):
-        
+    def cmc(self, ana):
         p_list = ana.pick("Pressure", "cal", "Pa")
-        u = np.asarray([np.piecewise(p, [p <= 0.027, p <= 0.3, p <= 0.73, p <= 9., p <= 1000, p <= 8000,  8000 < p],
-                                        [0.0014, 0.001, 0.00092, 0.00086, 0.00075, 0.00019, 0.00014]).tolist() for p in p_list])
+        
+        u = np.asarray([np.piecewise(p, [p <= 0.027, (p > 0.027 and p <= 0.3), (p > 0.3 and p <= 0.73), (p >0.73 and p <= 9.), (p > 9. and p <= 1000.), (p > 1000. and p <= 8000.),  8000. < p]
+                                       ,[0.0014,                        0.001,                 0.00092,              0.00086,                 0.00075,                   0.00019,  0.00014] ).tolist() for p in p_list])
 
         ana.store("Uncertainty", "standard", u , "1")
 
     def total(self, ana):
         
         p_cal = ana.pick("Pressure", "cal", "Pa")
-        p_ind = ana.pick("Pressure", "ind", "Pa")
+        p_ind = ana.pick("Pressure", "ind_corr", "Pa")
 
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")

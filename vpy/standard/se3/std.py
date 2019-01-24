@@ -252,11 +252,12 @@ class Se3(Standard):
                 if dev_class == 'generic':
                     self.CustomerDevice = Cdg(doc, {})
         
-        self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
+            if "CalibrationObject" in doc['Calibration']:
+                self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
 
-        self.FillDevs =[]
-        for d in self.fill_dev_names:
-            self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+                self.FillDevs =[]
+                for d in self.fill_dev_names:
+                    self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
         
     def get_gas(self):
         """Returns the name of the calibration gas.
