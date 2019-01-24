@@ -146,11 +146,13 @@ class Document(object):
         """
 
         obj = self.get_object("Type", t)
-
-        if "Value" in obj:
+        
+        if obj and "Value" in obj:
             if isinstance(obj["Value"], list):
                 return np.array(obj["Value"])
-
+        else:
+            return None
+            
     def get_value_full(self, t, unit, N):
         """same as ``self.get_value`` but returns
         an array of the length ``self.no_of_meas_points``

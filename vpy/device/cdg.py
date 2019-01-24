@@ -136,7 +136,9 @@ class Cdg(Device):
 
         f_e = self.interp_function(self.interpol_p, self.interpol_e)
         f_u = self.interp_function(self.interpol_p, self.interpol_u)
-        
+        print("...........................")
+        print(conv_target)
+        print(p_target)
         idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
         odx = (p_interpol*conv_target > self.interpol_min) & (p_interpol*conv_target < self.interpol_max)
         ndx = idx & odx

@@ -583,7 +583,7 @@ class Uncert(Frs5):
     def repeat_rel(self, res):
 
         p_list = res.pick("Pressure", "ind_corr", "mbar")
-        u = np.asarray([np.piecewise(p, [p <= 0.10, p <= 9.50, p > 9.50], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
+        u = np.asarray([np.piecewise(p, [p <= 0.10, (p > 0.1 and p <= 9.5), p > 9.5], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
 
         res.store("Uncertainty", "repeat", u, "1")
 

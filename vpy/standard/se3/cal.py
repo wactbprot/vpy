@@ -479,7 +479,10 @@ class Cal(Se3):
                 fill_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
-            e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
+            if fill_target:
+                e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
+            else:
+                e, u = FillDev.get_error_interpol(p, self.unit, p, self.unit)
             
             s = (ind == 0.)
             if len(s>0):
