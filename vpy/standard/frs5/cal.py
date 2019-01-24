@@ -59,7 +59,7 @@ class Cal(Frs5):
         ind = res.pick("Pressure", "ind_corr",self.unit)
         cal = res.pick("Pressure", "cal", self.unit)
         
-        res.store('Error', 'ind', ind/(cal)-1, '1')
+        res.store('Error', 'ind', ind/(-cal)-1, '1')
 
     def pressure_offset(self, res):
         """Calculates an offset vector from the offse samples below

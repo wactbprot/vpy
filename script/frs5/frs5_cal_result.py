@@ -29,12 +29,15 @@ def main():
             doc = io.get_doc_db(id)
             
             customer_device = Device(doc, doc.get('Calibration').get('CustomerObject'))
-            ana = Analysis(doc, init_dict=doc.get('Calibration').get('Analysis'))
+            analysis = doc.get('Calibration').get('Analysis')
+            if "Values" in analysis and "Uncertainty" in analysis["Values"]:
+                del analysis["Values"]["Uncertainty"]
+
+            ana = Analysis(doc, init_dict=analysis)
             res = Result(doc)
 
             uncert = Uncert(doc)
             uncert.total_standard(ana)
-       
             uncert.offset(ana)
             uncert.repeat_rel(ana)
             uncert.total(ana)
@@ -47,9 +50,7 @@ def main():
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
             # plot needed
             average_index = ana.ask_for_reject(average_index=average_index)
-            
             ana.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
-
             res.make_error_table(ana, pressure_unit="Pa", error_unit='1', add_n_column=True)
             
             doc = ana.build_doc("Analysis", doc)

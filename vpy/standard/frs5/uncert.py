@@ -206,7 +206,6 @@ class Uncert(Frs5):
         self.uncert_r_zc(res)
         self.uncert_r_zc0(res)
         self.uncert_ub(res)
-        self.uncert_usys(res)
         self.uncert_m_cal(res)
         self.uncert_g(res)
         self.uncert_A(res)

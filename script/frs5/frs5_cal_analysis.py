@@ -47,9 +47,6 @@ def main():
             cal.pressure_offset(res)
             cal.pressure_ind(res)
             cal.error(res)
-
-           
-            
            
             io.save_doc(res.build_doc())
 

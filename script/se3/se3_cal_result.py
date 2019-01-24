@@ -32,7 +32,11 @@ def main():
             doc = io.get_doc_db(id)
             
             customer_device = Device(doc, doc.get('Calibration').get('CustomerObject'))
-            ana = Analysis(doc, init_dict=doc.get('Calibration').get('Analysis'))
+            analysis = doc.get('Calibration').get('Analysis')
+            if "Values" in analysis and "Uncertainty" in analysis["Values"]:
+                del analysis["Values"]["Uncertainty"]
+            ana = Analysis(doc, init_dict=analysis)
+            
             res = Result(doc)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
