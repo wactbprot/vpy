@@ -18,13 +18,17 @@ class Cal(Frs5):
         """
 
         temperatur_dict = self.Temp.get_dict('Type', 'frs5')
+
         gas = self.Aux.get_gas()
+        if gas is None:
+            gas = self.ToDo.get_gas()
+
         mt = self.Time.get_value('amt_meas', 'ms')
         pressure_offset_dict= self.Aux.get_obj_by_time(mt, "offset_mt", "ms", "frs_res_off", "DCR")
         pressure_ind_dict = self.Pres.get_dict("Type", "frs_res_ind")
         
-        res_off = self.ResDev.pressure(pressure_offset_dict, temperatur_dict, gas=gas)
-        res_ind = self.ResDev.pressure(pressure_ind_dict, temperatur_dict, gas=gas)
+        res_off = self.ResDev.pressure(pressure_offset_dict, temperatur_dict, unit=self.unit, gas=gas)
+        res_ind = self.ResDev.pressure(pressure_ind_dict, temperatur_dict, unit=self.unit, gas=gas)
 
         p_res = res_ind - res_off
 
@@ -156,6 +160,7 @@ class Cal(Frs5):
 
         ## Pa to self.unit
         r = self.Pres.get_value("frs_p", "lb")
+        print(p_res)
         p = (r - r_0) * conv * conv_p + p_res
 
         res.store("Correction", "buoyancy_frs5", corr_rho, "1")

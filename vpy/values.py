@@ -329,8 +329,8 @@ class AuxValues(Document):
         if "Gas" in self.doc:
             return self.doc['Gas']
         else:
-            self.log.warn("Use default gas N2")
-            return "N2"
+            self.log.warn("No gas entry found in AuxValues try ToDo.Gas")
+            return None
 
 
 

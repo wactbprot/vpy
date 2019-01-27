@@ -44,7 +44,7 @@ class Srg(Device):
         M   = self.Const.get_value("molWeight_" + gas, "kg/mol")
 
         conv = self.Const.get_conv("Pa", unit)
-
+        
         return np.sqrt(8*R*T/(np.pi*M))*np.pi*d*rho/20*conv
     
     def temperature_correction(self, temperature_dict):

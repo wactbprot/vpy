@@ -53,6 +53,8 @@ class Standard(Document):
         """
 
         gas = self.get_gas()
+        if gas is None:
+            gas = self.ToDo.get_gas()
         B = self.Cons.get_value("virialCoeff_" + gas, "cm^3/mol")
         T = self.Cons.get_value("referenceTemperature", "K")
 

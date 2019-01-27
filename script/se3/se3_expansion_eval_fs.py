@@ -54,12 +54,12 @@ def main():
         se3_calc.real_gas_correction(res)
 
         # se3 uncert
-        #se3_uncert = Se3Uncert(doc)
-        #se3_uncert.gen_val_dict(res)
-        #se3_uncert.gen_val_array(res)
-        #se3_uncert.pressure_fill(res)
-        #se3_uncert.temperature_after(res)
-        #se3_uncert.temperature_before(res)
+        se3_uncert = Se3Uncert(doc)
+        se3_uncert.gen_val_dict(res)
+        se3_uncert.gen_val_array(res)
+        se3_uncert.pressure_fill(res)
+        se3_uncert.temperature_after(res)
+        se3_uncert.temperature_before(res)
 
 
         rg = res.pick("Correction", "rg", "1")
@@ -107,11 +107,7 @@ def main():
         #res.store("Uncertainty", "total", u_t, "1")
 
         #print(u_t)
-        print(p_nd)
-        print(p_1)
-        print(p_nd/p_1)
         p_after = p_1 - p_nd
-
         g_after = np.full(len(p_after), 0.0)
         g_before = np.full(len(p_after), 0.0)
         for i in range(len(p_after)):
@@ -130,8 +126,8 @@ def main():
 
         f = g_after/g_before
         res.store("Expansion", "f_s", f, "1")
-        f_s = np.mean(f)
-        u_ex = np.std(f)/f_s
+        f_s = np.mean(f[-5:-1])
+        u_ex = np.std(f[-5:-1])/f_s
         print(g_after/g_before)
         print(f_s)
         print(u_ex)

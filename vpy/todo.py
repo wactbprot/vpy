@@ -41,6 +41,12 @@ class ToDo(Document):
         self.max_dev = 0.1
         self.log.debug("init func: {}".format(__name__))
 
+    def get_gas(self):
+        if 'Gas' in self.doc:
+            return self.doc['Gas']
+        else:
+            return None
+
     def make_average_index(self, cal, unit):
         """Generates and returns a numpy array containing
         the indices of measurement points which belong to a
