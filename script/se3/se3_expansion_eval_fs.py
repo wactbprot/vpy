@@ -4,7 +4,7 @@ measurement.
 
 run:
 
-$[vpy]> python se3_expansion_eval_fs.py --id "cal-2017-se3|frs5-vg-1001_0007"
+$[vpy]> python script/se3/se3_expansion_eval_fs.py --id "cal-2017-se3|frs5-vg-1001_0007"
 """
 
 import sys
@@ -64,8 +64,8 @@ def main():
 
         rg = res.pick("Correction", "rg", "1")
         p_0 = res.pick("Pressure", "fill", "Pa")
+        p_0 = p_0/100.
         p_1 = res.pick("Pressure", "cal", "mbar")
-        p_1 = p_1 *100.
         T_0 = res.pick("Temperature", "before", "K")
         T_1 = res.pick("Temperature", "after", "K")
 
@@ -76,7 +76,10 @@ def main():
 
         p_nd_offset_before = auxval.get_value("nd_offset_before", "mbar")
         p_nd_offset_after = auxval.get_value("nd_offset_after", "mbar")
-        p_nd_offset = (p_nd_offset_before + p_nd_offset_after )/2
+        if p_nd_offset_after:
+            p_nd_offset = (p_nd_offset_before + p_nd_offset_after )/2
+        else:
+            p_nd_offset = p_nd_offset_before
 
         p_nd_ind = pres.get_value("nd_ind", "mbar")
         res.store("Pressure", "nd", p_nd_ind - p_nd_offset, "mbar")
@@ -104,7 +107,10 @@ def main():
         #res.store("Uncertainty", "total", u_t, "1")
 
         #print(u_t)
-        p_after = (p_1 - p_nd)
+        print(p_nd)
+        print(p_1)
+        print(p_nd/p_1)
+        p_after = p_1 - p_nd
 
         g_after = np.full(len(p_after), 0.0)
         g_before = np.full(len(p_after), 0.0)
