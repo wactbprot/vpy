@@ -11,6 +11,7 @@ def main():
     base_doc = io.get_base_doc(name="se3")
 
     for k, v in base_doc.items():
+        print(k)
         doc['State'][k] = v
     
     cal = Cal(doc)
