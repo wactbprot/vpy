@@ -88,7 +88,7 @@ class Result(Analysis):
         cf = cal/ind
         error = ana.pick("Error", "ind", error_unit)
         u = ana.pick("Uncertainty", "total_rel", error_unit)
-        
+
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
         N = [len(i) for i in av_idx]
         cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
@@ -157,6 +157,7 @@ class Result(Analysis):
 
         self.log.info("Result error table written")
 
+        return ind, error, u
 
     def make_formula_section(self, ana):
 

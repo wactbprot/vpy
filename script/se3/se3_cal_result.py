@@ -11,7 +11,7 @@ from vpy.analysis import Analysis
 from vpy.constants import Constants
 from vpy.standard.se3.uncert import Uncert as UncertSe3 
 from vpy.device.device import Device
-
+import matplotlib.pyplot as plt
 def main():
     io = Io()
     io.eval_args()
@@ -31,7 +31,8 @@ def main():
         for id in ids:
             doc = io.get_doc_db(id)
             
-            customer_device = Device(doc, doc.get('Calibration').get('CustomerObject'))
+            customer_object = doc.get('Calibration').get('CustomerObject')
+            customer_device = Device(doc, customer_object)
             analysis = doc.get('Calibration').get('Analysis')
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
@@ -56,15 +57,7 @@ def main():
             ## uncert.expansion(ana)
             ## uncert.total(ana)
             ## uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
-            ## # cal uncertaity of the costomer device
-            ## uncert_customer = customer_device.get_total_uncert(meas=p_ind_corr, unit=unit, runit=unit)/p_cal
-            ## ana.store(quant="Uncertainty", type="customer", value=uncert_customer, unit='1')
-            ## # combine customer and standard uncertainty
-            ## uncert_total = np.sqrt( np.power(uncert_customer, 2) + np.power(uncert_standard, 2) )
-            ## ana.store(quant="Uncertainty", type="total_rel", value= uncert_total, unit='1')
-            ## ana.store(quant="Uncertainty", type="total_abs", value= uncert_total*p_cal, unit=unit)
-
-            # start build cert table
+            
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
@@ -76,14 +69,35 @@ def main():
             ana.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
        
             se3_uncert = UncertSe3(doc)
-
-            se3_uncert.offset(ana)
-            se3_uncert.repeat(ana)
+            if "Uncertainty" in customer_object:
+                u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
+                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
+            else:
+                se3_uncert.offset(ana)
+                se3_uncert.repeat(ana)
+                offset_uncert = ana.pick("Uncertainty", "offset", "1")
+                repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+                ana.store("Uncertainty", "device", np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2)), "1")
+            
             se3_uncert.cmc(ana)
- 
             se3_uncert.total(ana)
+            plt.subplot(111)
+            u = ana.pick("Uncertainty", "total_rel", "1")
+            plt.errorbar(p_ind_corr, p_ind_corr/p_cal-1,   yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
 
-            res.make_error_table(ana, pressure_unit='Pa', error_unit='1')
+            # start build cert table
+            p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
+            
+            
+            plt.xscale('symlog', linthreshx=1e-12)
+            plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
+
+            plt.legend()
+            plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
+            plt.xlabel('$p_{ind} - p_{r}$ in Pa')
+            plt.ylabel('$e$')
+            plt.grid(True)
+            plt.show()
             
             doc = ana.build_doc("Analysis", doc)
             doc = res.build_doc("Result", doc)
