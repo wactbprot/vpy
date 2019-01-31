@@ -84,6 +84,7 @@ def main():
 
         p_nd_ind = pres.get_value("nd_ind", "mbar")
         res.store("Pressure", "nd", p_nd_ind - p_nd_offset, "mbar")
+        
         u_nd_rel = 1.0e-2
         res.store("Uncertainty", "nd", np.abs(p_nd_ind  * u_nd_rel), "1")
         p_nd = res.pick("Pressure", "nd", "mbar")
@@ -130,6 +131,7 @@ def main():
         f_s = np.mean(f[-5:-1])
         u_ex = np.std(f[-5:-1])/f_s
         print(g_after/g_before)
+      
         print(f_s)
         print(u_ex)
         # nd uncert

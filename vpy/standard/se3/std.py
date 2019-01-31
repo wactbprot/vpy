@@ -235,7 +235,14 @@ class Se3(Standard):
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
+            
+            if "CalibrationObject" in doc['State']:
+                self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
 
+                self.FillDevs =[]
+                for d in self.fill_dev_names:
+                    self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+        
         if 'Calibration' in doc:
             # define model
             self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
