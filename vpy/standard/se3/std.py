@@ -235,13 +235,6 @@ class Se3(Standard):
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
-            
-            if "CalibrationObject" in doc['State']:
-                self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
-
-                self.FillDevs =[]
-                for d in self.fill_dev_names:
-                    self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
         
         if 'Calibration' in doc:
             # define model
@@ -259,12 +252,10 @@ class Se3(Standard):
                 if dev_class == 'generic':
                     self.CustomerDevice = Cdg(doc, {})
         
-            if "CalibrationObject" in doc['Calibration']:
-                self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
-
-                self.FillDevs =[]
-                for d in self.fill_dev_names:
-                    self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+        self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
+        self.FillDevs =[]
+        for d in self.fill_dev_names:
+            self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
         
     def get_gas(self):
         """Returns the name of the calibration gas.
