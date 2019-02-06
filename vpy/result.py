@@ -19,6 +19,8 @@ class Result(Analysis):
         "ind_corr": "{\\(p_\\text{ind} - p_\\text{r}\\)}",
         "uncertTotal_rel": "{\\(U(k=2)\\)}",
         "uncertTotal_abs": "{\\(U(k=2)\\)}",
+        "uncertTotal_rel_cf": "{\\(U(CF, k=2)\\)}",
+        "uncertTotal_rel_e": "{\\(U(e, k=2)\\)}",
         "error":"{\\(e\\)}",
         "cf": "{\\(CF\\)}",
         "N":"{\\(N\\)}",
@@ -88,7 +90,7 @@ class Result(Analysis):
         cf = cal/ind
         error = ana.pick("Error", "ind", error_unit)
         u = ana.pick("Uncertainty", "total_rel", error_unit)
-        
+
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
         N = [len(i) for i in av_idx]
         cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
@@ -103,7 +105,15 @@ class Result(Analysis):
         ind_str = [f"{i:.4e}" for i in ind]
         error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
         cf_str = self.Val.round_to_uncertainty_array(cf, u*k, 2)
-        u_k2_str = self.Val.round_to_sig_dig_array(u*k, 2)
+        
+        if error_unit == '1':
+            u_e_k2 = u*(error+1)*k
+        if error_unit == '%':
+            u_e_k2 = u*(error/100.+1)*k
+        u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
+        
+        u_cf_k2  = u/cf*k
+        u_cf_k2_str = self.Val.round_to_sig_dig_array(u_cf_k2, 2)
 
         p_cal_dict = {
             "Type": "cal",
@@ -133,11 +143,18 @@ class Result(Analysis):
             "HeadCell": self.head_cell["cf"],
             "UnitCell": self.unit_cell[error_unit]
             }
-        u_dict  = {
+        u_e_dict  = {
             "Type": "uncertTotal_rel",
             "Unit": error_unit,
-            "Value": u_k2_str,
-            "HeadCell": self.head_cell["uncertTotal_rel"],
+            "Value": u_e_k2_str,
+            "HeadCell": self.head_cell["uncertTotal_rel_e"],
+            "UnitCell": self.unit_cell[error_unit]
+            }
+        u_cf_dict  = {
+            "Type": "uncertTotal_rel",
+            "Unit": error_unit,
+            "Value": u_cf_k2_str,
+            "HeadCell": self.head_cell["uncertTotal_rel_cf"],
             "UnitCell": self.unit_cell[error_unit]
             }
         n_dict = {
@@ -153,10 +170,12 @@ class Result(Analysis):
             self.store_dict(quant="Table", d=n_dict, dest=None)        
         self.store_dict(quant="Table", d=e_dict, dest=None)
         self.store_dict(quant="Table", d=cf_dict, dest=None)
-        self.store_dict(quant="Table", d=u_dict, dest=None)
+        self.store_dict(quant="Table", d=u_e_dict, dest=None)
+        self.store_dict(quant="Table", d=u_cf_dict, dest=None)
 
         self.log.info("Result error table written")
 
+        return ind, error, u
 
     def make_formula_section(self, ana):
 

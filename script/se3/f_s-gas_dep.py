@@ -6,7 +6,7 @@ from vpy.analysis import Analysis
 import matplotlib.pyplot as plt
 from vpy.values import Expansion, Temperature, Error, Uncertainty, Pressure
 font = {'family' : 'normal',
-       # 'weight' : 'bold',
+        'weight' : 'bold',
         'size'   : 18}
 
 plt.rc('font', **font)

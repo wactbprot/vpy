@@ -43,6 +43,7 @@ class Device(Document):
         :returns: quadratic sum of uncertainties
         :rtype: np.array
         """
+        range_enlarge = 0.1
         u_arr = []
         N = np.shape(meas)[0]
 
@@ -61,7 +62,7 @@ class Device(Document):
                         f = float(u_i.get('From')) * range_conv
                         t = float(u_i.get('To')) * range_conv
 
-                    i = (meas > f) & (meas < t)
+                    i = (meas > f*(1-range_enlarge)) & (meas < t*(1+range_enlarge))
                     if len(i) > 0:
                         idx = i
 

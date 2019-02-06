@@ -32,6 +32,7 @@ def main():
     if doc:
         res = Analysis(doc)
         const = Constants(doc=doc)
+
         # FRS5:
         frs_calc = FrsCalc(doc)
         frs_uncert = FrsUncert(doc)
@@ -40,7 +41,7 @@ def main():
         frs_calc.pressure_res(res)
         frs_calc.pressure_cal(res)
         frs_calc.pressure_cal(res)
-        #frs_uncert.total(res)
+        frs_uncert. total_standard(res)
 
         # SE3:
         se3_calc = Se3Calc(doc)
@@ -100,12 +101,12 @@ def main():
         #u_1 = res.pick("Uncertainty", "p_fill", "1")
         #u_2 = res.pick("Uncertainty", "t_before", "1")
         #u_3 = res.pick("Uncertainty", "t_after", "1")
-        #u_4 = res.pick("Uncertainty", "nd", "1")
-        #u_5 = res.pick("Uncertainty", "outgas", "1")
-        #u_6 = res.pick("Uncertainty", "frs5_total_rel", "1")
-#
-        #u_t = np.sqrt(u_1**2 + u_2**2 + u_3**2 + u_4**2+ u_5**2+ u_6**2)
-        #res.store("Uncertainty", "total", u_t, "1")
+        u_4 = res.pick("Uncertainty", "nd", "1")
+        u_5 = res.pick("Uncertainty", "outgas", "1")
+        u_6 = res.pick("Uncertainty", "frs5_total_rel", "1")
+
+        u_t = np.sqrt(u_4**2+ u_5**2+ u_6**2)
+        res.store("Uncertainty", "total", u_t, "1")
 
         #print(u_t)
         p_after = p_1 - p_nd

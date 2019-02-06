@@ -87,10 +87,10 @@ class Uncert(Se3):
     def gen_val_dict(self, res):
         """Reads in a dict of values
         with the same order as in ``define_models``. For the calculation
-        of the gas density, the Frs reading is multiplyed by 10 which gives a
-        suffucient approximation for the pressure.
+        of the gas density, the Frs reading is multiplied by 10 which gives a
+        sufficient approximation for the pressure.
 
-        :param: Class with methode
+        :param: Class with method
             store(quantity, type, value, unit, [stdev], [N])) and
             pick(quantity, type, unit)
         :type: class
@@ -106,7 +106,7 @@ class Uncert(Se3):
         'rg': res.pick("Correction", "rg", "1"),
         }
 
-    #def total(self, res):
+    #def total_standard(self, res):
     #    u_1 = res.pick("Uncertainty", "v_start", "1")
     #    u_2 = res.pick("Uncertainty", "v_5", "1")
     #    u_3 = res.pick("Uncertainty", "p_fill", "1")
@@ -355,14 +355,12 @@ class Uncert(Se3):
     def total(self, ana):
         
         p_cal = ana.pick("Pressure", "cal", "Pa")
-        p_ind = ana.pick("Pressure", "ind_corr", "Pa")
-
-        offset_uncert = ana.pick("Uncertainty", "offset", "1")
-        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
         standard_uncert = ana.pick("Uncertainty", "standard", "1")
-        # digitizing error still missing
-        u_ind_abs = np.sqrt(np.power(p_cal * repeat_uncert, 2) + np.power(p_cal * offset_uncert, 2))
-
+        
+        p_ind = ana.pick("Pressure", "ind_corr", "Pa")
+        device_uncert = ana.pick("Uncertainty", "device", "1")
+        
+        u_ind_abs = device_uncert*p_ind
         u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
         
         ana.store("Uncertainty", "total_rel", np.abs(u_rel) , "1")
