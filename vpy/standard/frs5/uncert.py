@@ -567,6 +567,9 @@ class Uncert(Frs5):
         res.store("Uncertainty", "repeat", u, "1")
 
     def total(self, res):
+
+        """u_total_rel is defined as ((u(p_ind)/p_ind)^2 + (u(p_cal)/p_cal)^2)^0.5
+        """
         
         p_cal = res.pick("Pressure", "cal", self.unit)
 
@@ -576,11 +579,9 @@ class Uncert(Frs5):
         repeat_uncert = res.pick("Uncertainty", "repeat", "1")
         standard_uncert = res.pick("Uncertainty", "frs5_total_rel", "1")
         # digitizing error still missing
-        u_ind_abs = np.sqrt(np.power(p_cal * repeat_uncert, 2) + np.power(p_cal * offset_uncert, 2))
+        u_ind_rel = np.sqrt(np.power(repeat_uncert, 2) + np.power(offset_uncert, 2))
 
-        u_rel = np.abs(p_ind / p_cal) * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
-        
-        
-        res.store("Uncertainty", "total_rel", u_rel , "1")
-        res.store("Uncertainty", "total_abs", u_rel*p_cal , self.unit)
+        u_total_rel = np.sqrt(np.power(u_ind_rel, 2) + np.power(standard_uncert, 2))
+                
+        res.store("Uncertainty", "total_rel", u_total_rel , "1")
 
