@@ -27,9 +27,9 @@ class Result(Analysis):
     }
     unit_cell = {
         "1": "",
-        "mbar": "mbar",
-        "Pa":"Pa",
-        "%": "{\\(\\si{\\percent}\\)}",
+        "mbar": "(mbar)",
+        "Pa":"(Pa)",
+        "%": "{(\\(\\si{\\percent}\\))}",
         "N":"",
         }
     unit = {

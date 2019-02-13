@@ -2,6 +2,9 @@
 python script/se3/se3_cal_result.py --ids 'cal-2018-se3-kk-75050_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
+
 import copy
 import json
 import numpy as np
@@ -43,7 +46,7 @@ def main():
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
 
-            ## bis update CMC Einträge --> vorh. CMC Einträge  
+            # bis update CMC Einträge --> vorh. CMC Einträge  
             # cal uncertainty of standard
             ## uncert = Uncert(doc)
             ## uncert.define_model()

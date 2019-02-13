@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
+
 import json
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
@@ -8,6 +12,7 @@ def main():
     io = Io()
     io.eval_args()
     doc = io.get_state_doc(name="se3")
+    print(doc["_id"])
     base_doc = io.get_base_doc(name="se3")
 
     for k, v in base_doc.items():
