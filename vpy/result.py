@@ -5,7 +5,7 @@ import copy
 import numpy as np
 from .analysis import Analysis
 from .todo import ToDo
-from .values import Values
+from .values import Values, Date
 from .constants import Constants
 
 
@@ -27,8 +27,8 @@ class Result(Analysis):
     }
     unit_cell = {
         "1": "",
-        "mbar": "(mbar)",
-        "Pa":"(Pa)",
+        "mbar": "{(\\(\\si{\\mbar}\\))}",
+        "Pa":"{(\\(\\si{\\pascal}\\))}",
         "%": "{(\\(\\si{\\percent}\\))}",
         "N":"",
         }
@@ -62,6 +62,8 @@ class Result(Analysis):
         self.ToDo = ToDo(doc)
         self.Const = Constants(doc)
         self.Val = Values(doc)
+        self.Date = Date(doc)
+        self.lang = doc.get("Calibration",{}).get("Customer",{}).get("Lang", "en")
         self.org = copy.deepcopy(doc)
         super().__init__(doc, init_dict)
 
@@ -75,6 +77,47 @@ class Result(Analysis):
                     break
             else: groups[i] = [i]
         return list(groups.values())
+
+    def make_calibration_data_section(self, ana):
+        """The Calibration data section should contain data valid
+        for the entire calibration run
+        """
+        p_min, p_max, unit = self.ToDo.get_min_max_pressure()
+        sec = { "PressureRangeBegin": p_min,
+                "PressureRangeEnd": p_max,
+                "PressureRangeUnit": unit,
+        }
+        self.store_dict(quant="CalibrationData", d=sec, dest=None, plain=True)
+
+    def make_measurement_data_section(self, ana):
+        """The measurement data section should contain data 
+        valid for the measurement only
+        """
+        T_gas = ana.pick("Temperature", "after", "K")
+        T_gas = ana.pick("Temperature", "room", "K")
+        T_gas_mean = np.mean(T_gas)
+        T_gas_unc = np.std(T_gas)
+        T_gas_mean_str = self.Val.round_to_uncertainty(T_gas_mean, T_gas_unc, 2)
+        T_gas_unc_str = self.Val.round_to_sig_dig(T_gas_unc, 2)
+
+        T_room = ana.pick("Temperature", "room", "K")
+        T_room_mean = np.mean(T_room)
+        T_room_unc = np.std(T_room)
+        T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
+        T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
+    
+       
+        gas = self.ToDo.get_gas()
+
+        sec = { "GasTemperature": T_gas_mean_str,
+                "GasTemperatureUncertainty": T_gas_unc_str,
+                "MeasurementDate": self.Date.first_measurement(),
+                "RoomTemperature": T_room_mean_str,
+                "RoomTemperatureUncertainty": T_room_unc_str,
+                "GasSpecies": self.gas[self.lang][gas],
+        }
+        self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
+
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         k=2

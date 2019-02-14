@@ -47,6 +47,14 @@ class ToDo(Document):
         else:
             return None
 
+    def get_min_max_pressure(self):
+        if "Pres" in dir(self):
+            target_pressures = self.Pres.get_value("target", self.pressure_unit)
+            return float(target_pressures[0]), float(target_pressures[-1]),  self.pressure_unit
+        else:
+            self.log.error("Not a pressure todo")
+            return None, None, None
+
     def make_average_index(self, cal, unit):
         """Generates and returns a numpy array containing
         the indices of measurement points which belong to a

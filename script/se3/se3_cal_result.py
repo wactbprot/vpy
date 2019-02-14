@@ -88,6 +88,9 @@ def main():
             u = ana.pick("Uncertainty", "total_rel", "1")
             plt.errorbar(p_ind_corr, p_ind_corr/p_cal-1,   yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
 
+            # start making data sections
+            res.make_calibration_data_section(ana)
+            res.make_measurement_data_section(ana)
             # start build cert table
             p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
             

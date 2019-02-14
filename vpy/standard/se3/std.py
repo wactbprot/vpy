@@ -10,7 +10,7 @@ from ...device.srg import Srg
 
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion, Date
+from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion, Date, Range
 from ..standard import Standard
 
 
@@ -219,7 +219,7 @@ class Se3(Standard):
           "Ch3030":{"Type":"ch_3030state", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Pt-100 sensor of channel 3030"}
         }
     }
-
+   
     def __init__(self, doc):
         super().__init__(doc, self.name)
 
@@ -231,6 +231,7 @@ class Se3(Standard):
         self.Pos = Position(doc)
         self.Exp = Expansion(doc)
         self.Date = Date(doc)
+        self.Range = Range(doc)
 
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
