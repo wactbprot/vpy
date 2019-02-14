@@ -84,7 +84,7 @@ class Values(Document):
         return [item for sublist in l for item in sublist]
 
 
-    def round_to_sig_dig(self, val, n):
+    def round_to_sig_dig(self, val, n, scientific=False):
         """ Rounds the value ``val`` to ``n`` significant digits
         and outputs a formated string
 
@@ -104,8 +104,11 @@ class Values(Document):
         factor = (10 ** power)
         val = round(val * factor) / factor
         if val == 0:
-            if 0 < n - val_power < 6:
-                return f"{0:.{n - val_power - 1}f}"
+            if not(scientific):
+                if 0 < n - val_power:
+                    return f"{0:.{n - val_power - 1}f}"
+                else:
+                    return "0"
             val_str = "0e"
             if - n + val_power +1 < 0:
                 val_str = val_str + "-"
@@ -114,8 +117,8 @@ class Values(Document):
             if abs(- n + val_power +1) < 10:
                 val_str = val_str + "0"
             return val_str + str(abs(- n + val_power +1))
-        if -3 <= val_power < 0: return f"{val:.{n - val_power - 1}f}"
-        if  0 <= val_power < 5:
+        if not(scientific) and val_power < 0: return f"{val:.{n - val_power - 1}f}"
+        if not(scientific) and 0 <= val_power:
             n = n - val_power - 1
             if n < 0: n = 0
             return f"{val:.{n}f}"
@@ -124,13 +127,13 @@ class Values(Document):
         return f"{val:.{n}e}"
 
 
-    def round_to_sig_dig_array(self, val_arr, n):
+    def round_to_sig_dig_array(self, val_arr, n, scientific=False):
         """ Applies ``round_to_sig_dig`` to the array ``val_arr``
         """
-        return np.asarray([self.round_to_sig_dig(i, n) for i in val_arr])
+        return np.asarray([self.round_to_sig_dig(i, n, scientific) for i in val_arr])
 
 
-    def round_to_uncertainty(self, val, unc, n):
+    def round_to_uncertainty(self, val, unc, n, scientific=False):
         """ Rounds the value ``val`` to the ``n``th significant digit
         of its uncertainty ``unc`` and outputs a formated string
 
@@ -149,14 +152,14 @@ class Values(Document):
         unc_power = int(np.floor(np.log10(abs(unc))))
         n = val_power - unc_power + n
 
-        return self.round_to_sig_dig(val, n)
+        return self.round_to_sig_dig(val, n, scientific)
 
 
-    def round_to_uncertainty_array(self, val_arr, unc_arr, n):
+    def round_to_uncertainty_array(self, val_arr, unc_arr, n, scientific=False):
         """ Applies ``round_to_uncertainty`` to the array of values ``val_arr``
         using the array of uncertainties ``unc_arr``
         """
-        return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n) for i in range(len(val_arr))])
+        return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n, scientific) for i in range(len(val_arr))])
 
 class Expansion(Values):
     def __init__(self, doc, quant="Measurement"):
