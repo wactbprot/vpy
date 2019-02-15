@@ -61,16 +61,6 @@ def main():
             ## uncert.total(ana)
             ## uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
             
-            conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
-            average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-
-            average_index = ana.coarse_error_filtering(average_index=average_index)
-            average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
-            # plot needed
-            average_index = ana.ask_for_reject(average_index=average_index)
-            
-            ana.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
-       
             se3_uncert = UncertSe3(doc)
             if "Uncertainty" in customer_object:
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
@@ -84,17 +74,36 @@ def main():
             
             se3_uncert.cmc(ana)
             se3_uncert.total(ana)
-            plt.subplot(111)
             u = ana.pick("Uncertainty", "total_rel", "1")
-            plt.errorbar(p_ind_corr, p_ind_corr/p_cal-1,   yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
+            average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
+            average_index = ana.coarse_error_filtering(average_index=average_index)
+            average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
+            
+            # plot needed
+            plt.errorbar(p_ind_corr, p_ind_corr/p_cal-1,   yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            plt.show()
+
+            average_index = ana.ask_for_reject(average_index=average_index)
+            e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
+            
+            d = {"AverageIndex": average_index,
+                "Evis":e_vis,
+                "CFvis":cf_vis,
+                "Uvis":u_vis,
+                "VisUnit":vis_unit
+            }
+            ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+                              
             # start making data sections
             res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana)
+           
             # start build cert table
             p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
             
-            
+            plt.subplot(111)
             plt.xscale('symlog', linthreshx=1e-12)
             plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
 

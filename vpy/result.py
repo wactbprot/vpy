@@ -16,11 +16,11 @@ class Result(Analysis):
     head_cell = {
         "cal": "{\\(p_\\text{cal}\\)}",
         "ind": "{\\(p_\\text{ind}\\)}",
-        "ind_corr": "{\\(p_\\text{ind} - p_\\text{r}\\)}",
-        "uncertTotal_rel": "{\\(U(k=2)\\)}",
-        "uncertTotal_abs": "{\\(U(k=2)\\)}",
-        "uncertTotal_rel_cf": "{\\(U(CF, k=2)\\)}",
-        "uncertTotal_rel_e": "{\\(U(e, k=2)\\)}",
+        "ind_corr": "{\\(p_\\text{ind} - p_\\text{offs}\\)}",
+        "uncert_total_rel": "{\\(U(k=2)\\)}",
+        "uncert_total_abs": "{\\(U(k=2)\\)}",
+        "uncert_total_rel_cf": "{\\(U(CF, k=2)\\)}",
+        "uncert_total_rel_e": "{\\(U(e, k=2)\\)}",
         "error":"{\\(e\\)}",
         "cf": "{\\(CF\\)}",
         "N":"{\\(N\\)}",
@@ -105,8 +105,11 @@ class Result(Analysis):
         T_room_unc = np.std(T_room)
         T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
         T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
-    
-       
+
+        e_vis = ana.doc.get("AuxValues", {}).get("Evis")
+        cf_vis = ana.doc.get("AuxValues", {}).get("CFvis")
+        u_vis = ana.doc.get("AuxValues", {}).get("Uvis")
+ 
         gas = self.ToDo.get_gas()
 
         sec = { "GasTemperature": T_gas_mean_str,
@@ -115,6 +118,8 @@ class Result(Analysis):
                 "RoomTemperature": T_room_mean_str,
                 "RoomTemperatureUncertainty": T_room_unc_str,
                 "GasSpecies": self.gas[self.lang][gas],
+                "Evis": self.Val.round_to_uncertainty(e_vis, u_vis, 2),
+                "CFvis": self.Val.round_to_uncertainty(cf_vis, u_vis, 2),
         }
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
@@ -144,18 +149,21 @@ class Result(Analysis):
         u = ana.reduce_by_average_index(value=u, average_index=av_idx)
 
         #format output
-        cal_str = [f"{i:.4e}" for i in cal]
-        ind_str = [f"{i:.4e}" for i in ind]
+        #cal_str = [f"{i:.4e}" for i in cal]
+        #ind_str = [f"{i:.4e}" for i in ind]
+
+        cal_str = self.Val.round_to_uncertainty_array(cal, u*k, 2, scientific=True)
+        ind_str = self.Val.round_to_uncertainty_array(ind, u*k, 1, scientific=True)        
         error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
         cf_str = self.Val.round_to_uncertainty_array(cf, u*k, 2)
         
         if error_unit == '1':
-            u_e_k2 = u*(error+1)*k
+            u_e_k2 = u*cal/ind*k
         if error_unit == '%':
-            u_e_k2 = u*(error/100.+1)*k
+            u_e_k2 = u*cal/ind*k
         u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
         
-        u_cf_k2  = u/cf*k
+        u_cf_k2  = u*ind/cal*k
         u_cf_k2_str = self.Val.round_to_sig_dig_array(u_cf_k2, 2)
 
         p_cal_dict = {
@@ -173,31 +181,31 @@ class Result(Analysis):
             "UnitCell": self.unit_cell[pressure_unit]
             }
         e_dict = {
-            "Type": "relative",
+            "Type": "ind",
             "Unit": error_unit,
             "Value": error_str,
             "HeadCell": self.head_cell["error"],
             "UnitCell": self.unit_cell[error_unit]
             }
         cf_dict = {
-            "Type": "relative",
+            "Type": "ind",
             "Unit": error_unit,
             "Value": cf_str,
             "HeadCell": self.head_cell["cf"],
             "UnitCell": self.unit_cell[error_unit]
             }
         u_e_dict  = {
-            "Type": "uncertTotal_rel",
+            "Type": "uncert_total_rel",
             "Unit": error_unit,
             "Value": u_e_k2_str,
-            "HeadCell": self.head_cell["uncertTotal_rel_e"],
+            "HeadCell": self.head_cell["uncert_total_rel_e"],
             "UnitCell": self.unit_cell[error_unit]
             }
         u_cf_dict  = {
-            "Type": "uncertTotal_rel",
+            "Type": "uncert_total_rel",
             "Unit": error_unit,
             "Value": u_cf_k2_str,
-            "HeadCell": self.head_cell["uncertTotal_rel_cf"],
+            "HeadCell": self.head_cell["uncert_total_rel_cf"],
             "UnitCell": self.unit_cell[error_unit]
             }
         n_dict = {

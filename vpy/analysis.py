@@ -27,6 +27,8 @@ class Analysis(Document):
         if git_hash:
             init_dict['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
         
+        
+
         if insert_dict:
             for insert_key in insert_dict:
                 init_dict[insert_key] = insert_dict[insert_key]
@@ -264,6 +266,24 @@ class Analysis(Document):
         self.log.debug("average index after manual remove:{}".format(average_index))
 
         return average_index
+    
+    def ask_for_evis(self):
+        """ Asks for e_vis
+        """
+        e_vis = 0
+        while True:
+            r = input("estimate the relativ (unit = 1) value for e_vis={} (empty if ok): ".format(e_vis))
+            if r == "":
+                break
+            e_vis = float(r)
+
+        u_vis = 2e-3
+        while True:
+            r = input("estimate the uncertainty (unit = 1) u(e_vis)={} (empty if ok): ".format(u_vis))
+            if r == "":
+                break
+            e_vis = float(r)
+        return e_vis, 1/(e_vis +1), u_vis, "1"
 
     def coarse_error_filtering(self, average_index):
         """Removes indices above threshold.
