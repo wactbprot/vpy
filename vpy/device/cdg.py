@@ -10,7 +10,8 @@ class Cdg(Device):
     max_type_head = {
         "0.001Torr":  0.13,
         "0.01Torr":   1.33,
-        "0.1Torr":   13.33,        
+        "0.1Torr":   13.33,  
+        "01Torr":   13.33,     
         "1Torr":    133.32,
         "10Torr":   1333.2,
         "100Torr":  13332.0,
@@ -27,21 +28,38 @@ class Cdg(Device):
             self.name = dev.get('Name')
             dev_setup = dev.get('Setup')
             if dev_setup:
+                use_from = dev_setup.get('UseFrom')
+                use_to = dev_setup.get('UseTo')
+                use_unit = dev_setup.get('UseUnit')
                 type_head = dev_setup.get('TypeHead')
-                if type_head:
+                if use_from and use_to and use_unit:
+                    conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
+                    self.max_p = use_to * conv
+                    self.min_p = use_from * conv
+                elif type_head:
                     if type_head in self.max_type_head:
                         self.max_p = self.max_type_head.get(type_head)
                         self.min_p = self.max_p / 10.0**self.usable_decades
-                    else:
-                        msg = "missing definition for type head {head}".format(head=type_head)
-                        self.log.error(msg)
-                        sys.exit(msg)
+                else:
+                    msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
+                    self.log.error(msg)
+                    sys.exit(msg)
+
             if 'Interpol' in dev:
                 self.interpol_p = self.get_value(value_type='p_ind', value_unit=self.unit)
                 self.interpol_e = self.get_value(value_type='e', value_unit='1')
                 self.interpol_u = self.get_value(value_type='u', value_unit='1')
-                self.interpol_min = np.min(self.interpol_p)
-                self.interpol_max = np.max(self.interpol_p)
+                interpol_min = np.min(self.interpol_p)
+                interpol_max = np.max(self.interpol_p)
+                if self.min_p > interpol_min:
+                    self.interpol_min = self.min_p
+                else:
+                    self.interpol_min = interpol_min
+                if self.max_p > interpol_max:
+                    self.interpol_max =  interpol_max
+                else:
+                    self.interpol_max =  self.max_p
+
         else:
             msg = "Can't find device"
             self.log.error(msg)
