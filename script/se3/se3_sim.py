@@ -7,7 +7,6 @@ def main():
 
     sim = Sim("se3")
     doc = sim.build()
-
     res = Analysis(doc)
     unc = Uncert(doc)
     cal = Cal(doc)

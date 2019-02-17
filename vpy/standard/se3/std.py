@@ -239,7 +239,6 @@ class Se3(Standard):
         if 'Calibration' in doc:
             # define model
             self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
-            
             # costomer device
             if 'CustomerObject' in doc['Calibration']:
                 customer_device = doc['Calibration']['CustomerObject']
@@ -249,11 +248,10 @@ class Se3(Standard):
                     self.CustomerDevice = Srg(doc, customer_device)
                 if dev_class == 'CDG':
                     self.CustomerDevice = Cdg(doc, customer_device)
-                if dev_class == 'generic':
-                    self.CustomerDevice = Cdg(doc, {})
-        
+                
         self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
 
+        print("lllllllllll")
         self.FillDevs =[]
         for d in self.fill_dev_names:
             self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))

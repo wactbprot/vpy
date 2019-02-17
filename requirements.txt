@@ -1,4 +1,4 @@
-coloredlogs==10.0
+sou coloredlogs==10.0
 CouchDB==1.2
 cycler==0.10.0
 humanfriendly==4.17
