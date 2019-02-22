@@ -71,6 +71,11 @@ class Se3(Standard):
                   "100T_1-fill", "100T_2-fill", "100T_3-fill",
                   "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", ]
     
+    compare_types = ["1T_1-compare", "1T_2-compare", "1T_3-compare",
+                  "10T_1-compare",  "10T_2-compare", "10T_3-compare",
+                  "100T_1-compare", "100T_2-compare", "100T_3-compare",
+                  "1000T_1-compare", "1000T_2-compare", "1000T_3-compare", ]
+    
     state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
                   "10T_1-state",  "10T_2-state", "10T_3-state",
                   "100T_1-state", "100T_2-state", "100T_3-state",
@@ -239,7 +244,7 @@ class Se3(Standard):
         
         if 'Calibration' in doc:
             # define model
-            self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
+            self.no_of_meas_points = len(self.Pres.get_value("target_pressure", "Pa"))
             
             # costomer device
             if 'CustomerObject' in doc['Calibration']:

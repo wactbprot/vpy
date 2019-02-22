@@ -320,33 +320,33 @@ class Uncert(Se3):
         
         .. todo::
 
-            anselm needs to store the range a pressure point is measured with
+            implement cal.offset from sample 
 
         """
-        range_offset_trans = {
-           "X1":"offset_x1",
-           "X0.1":"offset_x0.1",
-           "X0.01":"offset_x0.01"
-        }
-        ind, ind_unit = self.Pres.get_value_and_unit(type="ind")
-        u = np.full(self.no_of_meas_points, np.nan)
 
-        range_str_arr = self.Range.get_str("ind")
-        if range_str_arr is not None:
-            range_unique = np.unique(range_str_arr)
-                
-            for r in range_unique:
-                i_r = np.where(range_str_arr == r)
-                if np.shape(i_r)[1] > 0:
-                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
-                    if ind_unit == sample_unit:
-                        std = np.nanstd(offset_sample_value)
-                        u[i_r] = np.abs(std/ind[i_r])
-        
-
-            res.store("Uncertainty", "offset", u, "1")
-        else:
-            sys.exit("ind measurement unit and sample unit dont match")
+        ##### --> sd_offset, _,  = res.pick("Pressure", "offset_sample", with_stats=True)
+        ##### v----- kann raus
+        #
+        # range_offset_trans = {
+        #    "X1":"offset_x1",
+        #    "X0.1":"offset_x0.1",
+        #    "X0.01":"offset_x0.01"
+        # }
+        # ind, ind_unit = self.Pres.get_value_and_unit(type="ind")
+        # u = np.full(self.no_of_meas_points, np.nan)
+        # range_str_arr = self.Range.get_str("ind")
+        # if range_str_arr is not None:
+        #     range_unique = np.unique(range_str_arr)
+        #     for r in range_unique:
+        #         i_r = np.where(range_str_arr == r)
+        #         if np.shape(i_r)[1] > 0:
+        #             offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
+        #             if ind_unit == sample_unit:
+        #                 std = np.nanstd(offset_sample_value)
+        #                 u[i_r] = np.abs(std/ind[i_r])
+        #     res.store("Uncertainty", "offset", u, "1")
+        # else:
+        #     sys.exit("ind measurement unit and sample unit dont match")
 
     def repeat(self, ana):
         

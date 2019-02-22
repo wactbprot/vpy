@@ -1,7 +1,7 @@
 """
 python script/se3/se3_shape_todo.py --min_pressure 90 --max_pressure 130000 --pressure_unit Pa --ids 'cal-2019-se3-ik-4556_0001;cal-2019-se3-ik-4625_0001' --db 'vl_db_work'
 """
-import copy
+
 import sys
 import json
 import numpy as np
@@ -59,11 +59,10 @@ def main():
            
             doc["Calibration"]["ToDo"]["Values"]["Pressure"] = todo_pressure_dict
            
-            io.save_doc(copy.deepcopy(doc))
+            io.save_doc(doc)
            
     else:
         ret = {"error": "no --ids found"}
-        # print writes back to relay server by writing to std.out
     
     print(json.dumps(ret))        
 

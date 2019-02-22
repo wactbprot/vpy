@@ -51,7 +51,9 @@ class Io(object):
         # -- max_pressure
         parser.add_argument("--max_pressure", type=str, nargs=1,
                             help="maximal pressure for *whatever*-script")
-
+        # -- target_pressure
+        parser.add_argument("--target_pressure", type=str, nargs=1,
+                            help="target pressure for *whatever*-script")
         # -- pressure_unit
         parser.add_argument("--pressure_unit", type=str, nargs=1,
                             help="pressure unit of the given pressure params")
