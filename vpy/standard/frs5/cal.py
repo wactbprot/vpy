@@ -160,7 +160,7 @@ class Cal(Frs5):
 
         ## Pa to self.unit
         r = self.Pres.get_value("frs_p", "lb")
-        print(p_res)
+       
         p = (r - r_0) * conv * conv_p + p_res
 
         res.store("Correction", "buoyancy_frs5", corr_rho, "1")

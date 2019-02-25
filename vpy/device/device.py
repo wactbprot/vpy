@@ -102,3 +102,15 @@ class Device(Document):
             return u
         else:
             sys.exit("No uncertainty dict available")
+
+    
+    def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
+        pressure_unit = pressure_dict.get('Unit')
+        pressure_value = np.array(pressure_dict.get('Value'))
+        
+        if pressure_unit == "V":
+           pressure = pressure_value * self.max_p/self.max_voltage
+        else:
+            pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
+        
+        return pressure

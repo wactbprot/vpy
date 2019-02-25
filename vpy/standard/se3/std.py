@@ -7,6 +7,7 @@ import sympy as sym
 from ...device.dmm import Dmm
 from ...device.cdg import InfCdg, Cdg
 from ...device.srg import Srg
+from ...device.rsg import Rsg
 
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
@@ -255,8 +256,8 @@ class Se3(Standard):
                     self.CustomerDevice = Srg(doc, customer_device)
                 if dev_class == 'CDG':
                     self.CustomerDevice = Cdg(doc, customer_device)
-                if dev_class == 'generic':
-                    self.CustomerDevice = Cdg(doc, {})
+                if dev_class == 'RSG':
+                    self.CustomerDevice = Rsg(doc, {})
         
         self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
         self.FillDevs =[]

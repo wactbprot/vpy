@@ -16,6 +16,7 @@ def main():
     args = sys.argv
     fail = False
     ret = {'ok':True}
+    unit = "Pa"
 
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
@@ -56,25 +57,24 @@ def main():
 
             cal.temperature_comp(res)           
             cal.pressure_comp(res)
-            ### v go on here
+            
             cal.offset_from_sample(res)
 
             gas = cal.Aux.get_gas()
 
             temperature_dict = res.pick_dict('Temperature', 'compare')
-            offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
+            
            
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-            
-            offset = cal.CustomerDevice.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
-            ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit = "Pa", gas=gas)
-            
-            res.store("Pressure", "offset", offset, "Pa")
-            res.store("Pressure", "ind", ind, "Pa")
-            res.store("Pressure", "ind_corr", ind - offset, "Pa")
+            print(ind_dict)
+            offset = res.pick("Pressure","offset_sample", unit)
+            ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
+             
+            res.store("Pressure", "ind", ind, unit)
+            res.store("Pressure", "ind_corr", ind - offset, unit)
 
             cal.error(res)
-
+            print(res.pick("Error", "ind", "1"))
             io.save_doc(res.build_doc())
            
     else:

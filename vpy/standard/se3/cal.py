@@ -680,26 +680,33 @@ class Cal(Se3):
            "X0.1":"offset_x0.1",
            "X0.01":"offset_x0.01"
         }
-        
+
         range_str_arr = self.Range.get_str("ind")
         if range_str_arr is not None:
             offs = np.full(self.no_of_meas_points, np.nan)
             sd_offs = np.full(self.no_of_meas_points, np.nan)
             n_offs = np.full(self.no_of_meas_points, np.nan)
             range_unique = np.unique(range_str_arr)
-                
+            print(range_str_arr)
             for r in range_unique:
                 i_r = np.where(range_str_arr == r)
                 if np.shape(i_r)[1] > 0:
                     offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
+                    print(offs)
+                    print( np.nanmean(offset_sample_value))
+                    
+                    print(i_r)
                     offs[i_r] = np.nanmean(offset_sample_value)
                     n_offs[i_r] = np.count_nonzero(~np.isnan(offset_sample_value))
                     sd_offs[i_r]= np.nanstd(offset_sample_value)
                 
         else:
             offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset") 
-            off = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
-            sd_off = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
-            n_off = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))
+            offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
+            sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
+            n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))      
 
-        res.store("Pressure", "offset_sample", off , "", sd_off , n_off)
+
+        conv = self.Cons.get_conv(from_unit=sample_unit, to_unit=self.unit)
+
+        res.store("Pressure", "offset_sample", offs*conv , self.unit, sd_offs , n_offs)
