@@ -66,7 +66,6 @@ def main():
             
            
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-            print(ind_dict)
             offset = res.pick("Pressure","offset_sample", unit)
             ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
              
@@ -74,7 +73,7 @@ def main():
             res.store("Pressure", "ind_corr", ind - offset, unit)
 
             cal.error(res)
-            print(res.pick("Error", "ind", "1"))
+            
             io.save_doc(res.build_doc())
            
     else:
