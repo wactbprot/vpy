@@ -45,6 +45,18 @@ class Io(object):
         # --file
         parser.add_argument("--file", type=str, nargs=1,
                             help="file containing document to analyse")
+        # -- min_pressure
+        parser.add_argument("--min_pressure", type=str, nargs=1,
+                            help="minimal pressure for *whatever*-script")
+        # -- max_pressure
+        parser.add_argument("--max_pressure", type=str, nargs=1,
+                            help="maximal pressure for *whatever*-script")
+        # -- target_pressure
+        parser.add_argument("--target_pressure", type=str, nargs=1,
+                            help="target pressure for *whatever*-script")
+        # -- pressure_unit
+        parser.add_argument("--pressure_unit", type=str, nargs=1,
+                            help="pressure unit of the given pressure params")
         # -s save
         parser.add_argument('-s', action='store_true',
                             help='save the results of calculation', default=False)

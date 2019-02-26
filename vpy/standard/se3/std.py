@@ -7,6 +7,7 @@ import sympy as sym
 from ...device.dmm import Dmm
 from ...device.cdg import InfCdg, Cdg
 from ...device.srg import Srg
+from ...device.rsg import Rsg
 
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
@@ -70,6 +71,11 @@ class Se3(Standard):
                   "10T_1-fill",  "10T_2-fill", "10T_3-fill",
                   "100T_1-fill", "100T_2-fill", "100T_3-fill",
                   "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", ]
+    
+    compare_types = ["1T_1-compare", "1T_2-compare", "1T_3-compare",
+                  "10T_1-compare",  "10T_2-compare", "10T_3-compare",
+                  "100T_1-compare", "100T_2-compare", "100T_3-compare",
+                  "1000T_1-compare", "1000T_2-compare", "1000T_3-compare", ]
     
     state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
                   "10T_1-state",  "10T_2-state", "10T_3-state",
@@ -239,7 +245,7 @@ class Se3(Standard):
         
         if 'Calibration' in doc:
             # define model
-            self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
+            self.no_of_meas_points = len(self.Pres.get_value("target_pressure", "Pa"))
             
             # costomer device
             if 'CustomerObject' in doc['Calibration']:
@@ -250,8 +256,8 @@ class Se3(Standard):
                     self.CustomerDevice = Srg(doc, customer_device)
                 if dev_class == 'CDG':
                     self.CustomerDevice = Cdg(doc, customer_device)
-                if dev_class == 'generic':
-                    self.CustomerDevice = Cdg(doc, {})
+                if dev_class == 'RSG':
+                    self.CustomerDevice = Rsg(doc, {})
         
         self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
         self.FillDevs =[]

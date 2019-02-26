@@ -461,8 +461,8 @@ class Cal(Se3):
         self.log.debug("start filling pressure")
 
 
-        fill_time = self.Time.get_value("amt_fill", "ms")
-        fill_target = self.Pres.get_value("target_fill", self.unit)
+        meas_time = self.Time.get_value("amt_fill", "ms")
+        compare_target = self.Pres.get_value("target_fill", self.unit)
 
         N = len(self.fill_types)
 
@@ -476,11 +476,11 @@ class Cal(Se3):
 
             ind = self.Pres.get_value(self.fill_types[i], self.unit)
             off = self.Aux.get_val_by_time(
-                fill_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+                meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
-            if fill_target is not None:
-                e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
+            if compare_target is not None:
+                e, u = FillDev.get_error_interpol(p, self.unit, compare_target, self.unit)
             else:
                 e, u = FillDev.get_error_interpol(p, self.unit, p, self.unit)
             
@@ -513,6 +513,68 @@ class Cal(Se3):
         n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
 
         res.store("Pressure", "fill", p_mean, self.unit, p_std, n)
+
+    def pressure_comp(self, res):
+        """Calculates the  mean value of the compare pressure.
+        Stores result under the path *Pressure, compare, Pa*
+
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        self.log.debug("start calculation of compare pressure") 
+
+        meas_time = self.Time.get_value("amt_meas", "ms")
+        compare_target = self.Pres.get_value("target_comp", self.unit)
+
+        N = len(self.fill_types)
+
+        cor_arr = []
+        cor_arr_nan = []
+        u_arr =[]
+        for i in range(N):
+            CompareDev = self.FillDevs[i]
+            self.log.debug("Working on compare pressure of device {}".format(CompareDev.name))
+            p_corr = np.full(self.no_of_meas_points, np.nan)
+            ind = self.Pres.get_value(self.compare_types[i], self.unit)
+            off = self.Aux.get_val_by_time(
+                meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+            p = ind - off
+            if compare_target is not None:
+                e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
+            else:
+                e, u = CompareDev.get_error_interpol(p, self.unit, p, self.unit)
+            
+            s = (ind == 0.)
+            if len(s>0):
+                ind[s] = np.nan
+           
+            p_corr = p / (e + 1.0)
+            
+            res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
+            res.store("Error", "{}-compare".format(CompareDev.name), e, '1')
+            res.store("Error", "{}-offset".format(CompareDev.name), off/p_corr, '1')
+            
+            cor_arr_nan.append(copy.deepcopy(p_corr))
+
+            p_corr[np.isnan(p_corr)] = 0
+            u[np.isnan(p_corr)] = 1
+
+            cor_arr.append(p_corr)
+            u_arr.append(u)
+        
+        s_u = np.nansum(cor_arr*np.power(u_arr,-2), axis=0)
+        s_l = np.nansum(np.power(u_arr,-2), axis=0)
+        p_mean = np.divide(s_u, s_l)
+                
+        def cnt_nan(d):
+            return np.count_nonzero(~np.isnan(d))
+
+        p_std = np.nanstd(cor_arr_nan, axis=0)
+        n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
+
+        res.store("Pressure", "cal", p_mean, self.unit, p_std, n)
 
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
         tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")
@@ -598,6 +660,48 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
-        t_mean, t_stdv, t_N = self.temperature(
-            list(range(2029, 2031)), "_after")
+        t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_after")
         res.store("Temperature", "room", t_mean, "K", t_stdv, t_N)
+    
+    def temperature_comp(self, res):
+        """Calculates the temperature of the room.
+
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_room")
+        res.store("Temperature", "compare", t_mean, "K", t_stdv, t_N)
+
+    def offset_from_sample(self, res):
+        range_offset_trans = {
+           "X1":"offset_x1",
+           "X0.1":"offset_x0.1",
+           "X0.01":"offset_x0.01"
+        }
+
+        range_str_arr = self.Range.get_str("ind")
+        if range_str_arr is not None:
+            offs = np.full(self.no_of_meas_points, np.nan)
+            sd_offs = np.full(self.no_of_meas_points, np.nan)
+            n_offs = np.full(self.no_of_meas_points, np.nan)
+            range_unique = np.unique(range_str_arr)
+            for r in range_unique:
+                i_r = np.where(range_str_arr == r)
+                if np.shape(i_r)[1] > 0:
+                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
+                    offs[i_r] = np.nanmean(offset_sample_value)
+                    n_offs[i_r] = np.count_nonzero(~np.isnan(offset_sample_value))
+                    sd_offs[i_r]= np.nanstd(offset_sample_value)
+                
+        else:
+            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset") 
+            offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
+            sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
+            n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))      
+
+
+        conv = self.Cons.get_conv(from_unit=sample_unit, to_unit=self.unit)
+
+        res.store("Pressure", "offset_sample", offs*conv , self.unit, sd_offs , n_offs)

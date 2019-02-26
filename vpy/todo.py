@@ -33,13 +33,10 @@ class ToDo(Document):
             if 'Temperature' in doc:
                 self.Temp = Temperature(doc["Values"])
                 self.temperature_unit = self.Temp.get_dict('Type', 'target').get('Unit')
-
                 # delete pressure
                 doc.pop('Temperature', None)
 
-
         self.max_dev = 0.1
-        self.log.debug("init func: {}".format(__name__))
 
     def get_gas(self):
         if 'Gas' in self.doc:
@@ -82,3 +79,34 @@ class ToDo(Document):
 
         self.average_index = r
         return r
+
+    def shape_pressure(self, min, max , unit):
+        """Generates and returns a dict with pressures
+        between the given min and max. The unit
+        must be the same as self.pressure_unit.
+
+        :param min: minimal pressure 
+        :type cal: float
+
+        :param max: maximal pressure
+        :type unit: float
+
+        :param unit: pressure unit
+        :type unit: str
+
+        :returns: Type, Value, Unit, N dict
+        :rtype: dict
+        """
+        
+        pressure_dict = self.get_dict(key="Type", value="target")
+        p = pressure_dict.get("Value")
+        n = pressure_dict.get("N", [1]*len(p))
+        u = pressure_dict.get("Unit")
+        
+        if u == unit:
+            # zip(*l) is ugly, 
+            red_p = [ p[i] for i, v in enumerate(p) if max >= float(v) >= min]
+            red_n = [ n[i] for i, v in enumerate(p) if max >= float(v) >= min]
+            return {"Type":"target", "Value":red_p, "N":red_n, "Unit":unit}
+        else:
+            sys.exit("units don't match on attempt to shape pressure")

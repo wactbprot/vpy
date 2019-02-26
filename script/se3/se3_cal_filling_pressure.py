@@ -9,24 +9,24 @@ def main():
     io = Io()
     args = sys.argv
     fail = False
-    if '-p' in args and '-u' in args:
-        idx_p = args.index('-p') + 1 
-        idx_u = args.index('-u') + 1
-        
+    
+    if '--target_pressure' in args:
+        idx_p = args.index('--target_pressure') + 1 
         try:
-            target_pressure = float(args[idx_p])
-        except:
-           fail = True
-        
-        try:
-            target_unit = args[idx_u]
+             target_pressure = float(args[idx_p])
         except:
            fail = True
     
+    if '--pressure_unit' in args:
+        unit_i = args.index('--pressure_unit') + 1 
+        try:
+            target_unit = str(args[unit_i])
+        except:
+           fail = True
+
     if not fail:
         base_doc = io.get_base_doc(name="se3")
         cal = Cal(base_doc)
-
 
         f_name = ["f_s", "f_m", "f_l"]
 
