@@ -19,8 +19,8 @@ class Result(Analysis):
         "ind_corr": "{\\(p_\\text{ind} - p_\\text{offs}\\)}",
         "uncert_total_rel": "{\\(U(k=2)\\)}",
         "uncert_total_abs": "{\\(U(k=2)\\)}",
-        "uncert_total_rel_cf": "{\\(U(CF, k=2)\\)}",
-        "uncert_total_rel_e": "{\\(U(e, k=2)\\)}",
+        "uncert_total_rel_cf": "{\\(U(CF)\\)}",
+        "uncert_total_rel_e": "{\\(U(e)\\)}",
         "error":"{\\(e\\)}",
         "cf": "{\\(CF\\)}",
         "N":"{\\(N\\)}",
@@ -138,6 +138,7 @@ class Result(Analysis):
         cf = cal/ind
         error = ana.pick("Error", "ind", error_unit)
         u = ana.pick("Uncertainty", "total_rel", error_unit)
+        u_std = ana.pick("Uncertainty", "standard", error_unit)
 
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
         N = [len(i) for i in av_idx]
@@ -152,8 +153,8 @@ class Result(Analysis):
         #cal_str = [f"{i:.4e}" for i in cal]
         #ind_str = [f"{i:.4e}" for i in ind]
 
-        cal_str = self.Val.round_to_uncertainty_array(cal, u*k, 2, scientific=True)
-        ind_str = self.Val.round_to_uncertainty_array(ind, u*k, 1, scientific=True)        
+        cal_str = self.Val.round_to_uncertainty_array(cal, u_std*cal*k, 2, scientific=True)
+        ind_str = self.Val.round_to_uncertainty_array(ind, u*cal*k, 2, scientific=True)        
         error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
         cf_str = self.Val.round_to_uncertainty_array(cf, u*k, 2)
         
