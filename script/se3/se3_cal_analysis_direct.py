@@ -2,6 +2,9 @@
 python script/se3/se3_cal_analysis_direct.py --ids 'cal-2019-se3-ik-4625_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
+
 import json
 import numpy as np
 from vpy.pkg_io import Io

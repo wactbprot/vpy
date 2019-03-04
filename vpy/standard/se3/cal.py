@@ -290,7 +290,7 @@ class Cal(Se3):
         :type: class
         """
         ind = res.pick("Pressure", "ind_corr",self.unit)
-        cal = res.pick("Pressure", "cal",self.unit)
+        cal = res.pick("Pressure", "cal" ,self.unit)
         
         res.store('Error', 'ind', ind/cal-1, '1')
 
@@ -538,8 +538,7 @@ class Cal(Se3):
             self.log.debug("Working on compare pressure of device {}".format(CompareDev.name))
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
-            off = self.Aux.get_val_by_time(
-                meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+            off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
             p = ind - off
             if compare_target is not None:
                 e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
