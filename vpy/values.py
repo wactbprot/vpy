@@ -95,14 +95,22 @@ class Values(Document):
         :returns: formated string
         :rtype: str
         """
+        #check if val is a number
         if not np.isfinite(val): return "nan"
-        if val == 0:
-            if n < 1: n = 1
-            return f"{0:.{n - 1}f}"
-        val_power = int(np.floor(np.log10(abs(val))))
-        power = - val_power + (n - 1)
-        factor = (10 ** power)
-        val = round(val * factor) / factor
+
+        #check if val is exactly zero
+        if not(val == 0):                            
+            #determine exponent of val to basis 10
+            val_power = int(np.floor(np.log10(abs(val))))
+            #round val by generating an integer with digits matching the number significant digits
+            power = - val_power + (n - 1)
+            factor = (10 ** power)
+            val = round(val * factor) / factor
+        else:
+            val_power = 0
+
+        #check if val is exactly zero after rounding
+        #(because formating is then not handled satisfactorily by python)
         if val == 0:
             if not(scientific):
                 if 0 < n - val_power:
@@ -117,11 +125,15 @@ class Values(Document):
             if abs(- n + val_power +1) < 10:
                 val_str = val_str + "0"
             return val_str + str(abs(- n + val_power +1))
+
+        #if val is not exactly zero and scientific notation is switched off   
         if not(scientific) and val_power < 0: return f"{val:.{n - val_power - 1}f}"
         if not(scientific) and 0 <= val_power:
             n = n - val_power - 1
             if n < 0: n = 0
             return f"{val:.{n}f}"
+            
+        #in cases of scientific notation
         n = n - 1
         if n < 0: n = 0
         return f"{val:.{n}e}"
