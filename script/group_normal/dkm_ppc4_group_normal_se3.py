@@ -45,7 +45,7 @@ def main():
     uncert.total(res)
     heads = (
             "100T_1","100T_2","100T_3",
-            "1000T_1","1000T_2","1000T_3"
+            #"1000T_1","1000T_2","1000T_3"
             )
     p_cal = res.pick("Pressure", "dkm_ppc4", p_unit)
     u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", u_unit)
@@ -79,19 +79,17 @@ def main():
         plt.semilogx(p_ind_corr, e, marker = markers[i], markersize=10,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
         plt.legend() 
            
-        # cal interpolation
+        ## cal interpolation
         p_ind_corr, e, u = cdg.cal_interpol( p_ind_corr, e, u)
         
         res.store("Pressure", "{head}-ind_corr".format(head=head), p_ind_corr, p_unit)
         res.store("Error", "{head}-ind".format(head=head), e, e_unit)
         res.store("Uncertainty", "{head}-total".format(head=head), u, u_unit)
         io.save_doc(res.build_doc())
-
         ## store and save
         cdg.store_interpol(p_ind_corr, e, u, p_unit, e_unit, u_unit)
-
-        io.save_doc(cdg.doc)
-
+        if not heads[0] == "100T_1":
+            io.save_doc(cdg.doc)
         plt.errorbar(p_ind_corr, e, yerr=u, capsize=5, marker = markers[i], linestyle="None", color=colors[i], label = "{head} interp. and uncert.".format(head=head))
         plt.legend()
 
@@ -104,7 +102,7 @@ def main():
         p_ind = cdg.get_value(value_type='p_ind', value_unit=p_unit)
         e = cdg.get_value(value_type='e', value_unit=e_unit)
         
-        plt.semilogx(p_ind, e, marker = markers[i], markersize=10,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
+        plt.semilogx(p_ind, e, marker = markers[i], markersize=4,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
         plt.legend()
 
     plt.title(title)

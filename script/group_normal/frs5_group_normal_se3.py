@@ -1,5 +1,4 @@
 """
-calibration 11/2018
 $> python frs5_group_normal_se3_calib.py --id cal-2018-frs5-ik-4050_0002 -s
 """
 
@@ -17,9 +16,9 @@ def main():
     markers =("o", "D", "+", ">", "^", "1", "2", "3", "4")
     colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k', 'b', 'g')
     heads = (
-        "1T_1","1T_2","1T_3",
-        "10T_1","10T_2","10T_3",
-        "100T_1","100T_2","100T_3"
+        #"1T_1","1T_2","1T_3",
+        #"10T_1","10T_2","10T_3",
+        "100T_1","100T_2","100T_3",
     )
     
     io = Io()
@@ -37,15 +36,15 @@ def main():
     cal.temperature(res)
     cal.pressure_res(res)
     cal.pressure_cal(res)
-    uncert.total(res)
+    uncert.total_standard(res)
 
     p_conv = cal.Cons.get_conv(cal.unit, p_unit)
-    p_cal = res.pick("Pressure", "frs5", cal.unit)*p_conv
+    p_cal = res.pick("Pressure", "cal", cal.unit)*p_conv
     ## everything from her runs in p_unit
     u_std = res.pick("Uncertainty", "frs5_total_rel", u_unit)
     m_time = cal.Time.get_value("amt_meas", "ms")
     
-    title = doc.get('_id') + "_100T"
+    title = doc.get('_id') +heads[0]
     plt.subplot(111)
     for i, head in enumerate(heads):
 
@@ -55,8 +54,15 @@ def main():
         p_off = cal.Aux.get_val_by_time(m_time, "offset_mt", "ms", "{head}-ind_offset".format(head=head), p_unit)
         p_ind = cal.Pres.get_value("{}-ind".format(head), p_unit)
         p_ind_corr = p_ind - p_off
+        print(p_ind_corr/p_cal-1)
+        plt.semilogx(p_ind_corr, p_ind_corr/p_cal-1, marker = markers[i], markersize=10,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
         
-        ## caut values for device
+        plt.xlim( (10, 12000) )
+        #plt.ylim( (-5e-3, 2e-2) )
+        
+        plt.legend() 
+        
+        ## cut values for device
         p_cal_dev = cdg.shape_pressure(p_cal)
         p_cal_dev, l = cdg.rm_nan(p_cal_dev)
         p_ind_corr, _ = cdg.rm_nan(p_ind_corr, l)
@@ -68,10 +74,6 @@ def main():
 
         # cal error
         e, e_unit = cdg.error(p_cal_dev,  p_ind_corr, p_unit)
-
-        
-        plt.semilogx(p_ind_corr, e, marker = markers[i], markersize=10,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
-        plt.legend() 
            
         # cal interpolation
         p_ind_corr, e, u = cdg.cal_interpol( p_ind_corr, e, u)
@@ -97,7 +99,7 @@ def main():
         p_ind = cdg.get_value(value_type='p_ind', value_unit=p_unit)
         e = cdg.get_value(value_type='e', value_unit=e_unit)
         
-        plt.semilogx(p_ind, e, marker = markers[i], markersize=10,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
+        plt.semilogx(p_ind, e, marker = markers[i], markersize=4,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
         plt.legend()
 
     plt.title(title)

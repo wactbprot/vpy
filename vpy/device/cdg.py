@@ -165,9 +165,9 @@ class Cdg(Device):
 
         """
         # smooth
-        p = self.conv_smooth(pressure)
-        e = self.conv_smooth(error)       
-        u = self.conv_smooth(uncertainty)
+        p = pressure #self.conv_smooth(pressure)
+        e = error #self.conv_smooth(error)       
+        u = uncertainty #self.conv_smooth(uncertainty)
         #interpolate function
         f_e = self.interp_function(p, e)
         f_u = self.interp_function(p, u)
