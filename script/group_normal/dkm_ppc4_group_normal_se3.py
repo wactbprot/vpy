@@ -2,6 +2,10 @@
 python script/group_normal/dkm_ppc4_group_normal_se3.py --id cal-2019-dkm_ppc4-ik-4050_0001 --db vl_db_work -s
 
 """
+import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
+
 
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
@@ -37,7 +41,7 @@ def main():
 
     uncert.total(res)
     heads = (
-            #"100T_1","100T_2","100T_3",
+            "100T_1","100T_2","100T_3",
             "1000T_1","1000T_2","1000T_3"
             )
     p_cal = res.pick("Pressure", "dkm_ppc4", p_unit)

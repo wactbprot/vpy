@@ -526,7 +526,7 @@ class Cal(Se3):
         self.log.debug("start calculation of compare pressure") 
 
         meas_time = self.Time.get_value("amt_meas", "ms")
-        compare_target = self.Pres.get_value("target_comp", self.unit)
+        compare_target = self.Pres.get_value("target_compare", self.unit)
 
         N = len(self.fill_types)
 
@@ -540,6 +540,7 @@ class Cal(Se3):
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
             off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
             p = ind - off
+          
             if compare_target is not None:
                 e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
             else:
@@ -548,9 +549,11 @@ class Cal(Se3):
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
-           
+
+            print(p)
             p_corr = p / (e + 1.0)
-            
+            print(p_corr)
+
             res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
             res.store("Error", "{}-compare".format(CompareDev.name), e, '1')
             res.store("Error", "{}-offset".format(CompareDev.name), off/p_corr, '1')

@@ -33,10 +33,6 @@ def main():
     else:
         update = False
     
-    if '-a' in args:
-        auxval = True
-    else:
-        auxval = False
 
     if not fail and len(ids) >0:
         base_doc = io.get_base_doc("se3")
@@ -45,18 +41,9 @@ def main():
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
 
-            if auxval: ## keep auxvalues
-                # keep the AuxValues containing related outgasing and additional volumes
-                auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
-                res = Analysis(doc, insert_dict={'AuxValues': auxvalues})
-                cal = Cal(doc)
-            else:
-                 # renew the AuxValues
-                cal = Cal(doc)
-                meas_date = cal.Date.first_measurement()
-                state_doc = io.get_state_doc("se3", date=meas_date) 
-                res = Analysis(doc)
-                cal.insert_state_results(res, state_doc)
+            # renew the AuxValues
+            cal = Cal(doc)
+            res = Analysis(doc)
 
             cal.temperature_comp(res)           
             cal.pressure_comp(res)
@@ -65,8 +52,7 @@ def main():
 
             gas = cal.Aux.get_gas()
 
-            temperature_dict = res.pick_dict('Temperature', 'compare')
-            
+            temperature_dict = res.pick_dict('Temperature', 'compare')       
            
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
             offset = res.pick("Pressure","offset_sample", unit)
