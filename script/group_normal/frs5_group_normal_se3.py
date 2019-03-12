@@ -1,5 +1,5 @@
 """
-$> python frs5_group_normal_se3_calib.py --id cal-2018-frs5-ik-4050_0002 -s
+$> python script/group_normal/frs5_group_normal_se3.py --id cal-2019-frs5-ik-4050_0002 -s
 """
 import sys
 import os
@@ -20,9 +20,9 @@ def main():
     markers =("o", "D", "+", ">", "^", "1", "2", "3", "4")
     colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k', 'b', 'g')
     heads = (
-        "1T_1","1T_2","1T_3",
-        "10T_1","10T_2","10T_3",
-        "100T_1","100T_2","100T_3",
+        #"1T_1","1T_2","1T_3",
+        #"10T_1","10T_2","10T_3",
+        "100T_1", "100T_2", "100T_3",
     )
     
     io = Io()
@@ -58,10 +58,10 @@ def main():
         p_off = cal.Aux.get_val_by_time(m_time, "offset_mt", "ms", "{head}-ind_offset".format(head=head), p_unit)
         p_ind = cal.Pres.get_value("{}-ind".format(head), p_unit)
         p_ind_corr = p_ind - p_off
-       
+      
         plt.semilogx(p_ind_corr, p_ind_corr/p_cal-1, marker = markers[i], markersize=10,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
         
-        plt.xlim( (10, 12000) )
+        #plt.xlim( (10, 12000) )
         #plt.ylim( (-5e-3, 2e-2) )
         
         plt.legend() 
@@ -71,12 +71,11 @@ def main():
         p_cal_dev, l = cdg.rm_nan(p_cal_dev)
         p_ind_corr, _ = cdg.rm_nan(p_ind_corr, l)
         u_std_dev, _ = cdg.rm_nan(u_std, l)
-
+#
         # cal uncertainty
         u_dev = cdg.get_total_uncert(p_ind_corr, p_unit, p_unit)
         u = np.divide(np.sqrt(u_std_dev**2 + u_dev**2), p_cal_dev)
-
-        # cal error
+#       # cal error
         e, e_unit = cdg.error(p_cal_dev,  p_ind_corr, p_unit)
            
         # cal interpolation
@@ -87,11 +86,11 @@ def main():
         res.store("Uncertainty", "{head}-total".format(head=head), u, u_unit)
         io.save_doc(res.build_doc())
 
-        ## store and save
+        # store and save
         cdg.store_interpol(p_ind_corr, e, u, p_unit, e_unit, u_unit)
         io.save_doc(cdg.doc)
 
-        #plt.errorbar(p_ind_corr, e, yerr=u, capsize=5, marker = markers[i], linestyle="None", color=colors[i], label = "{head} interp. and uncert.".format(head=head))
+        plt.errorbar(p_ind_corr, e, yerr=u, capsize=5, marker = markers[i], linestyle="None", color=colors[i], label = "{head} interp. and uncert.".format(head=head))
         plt.legend()
 
     for i, head in enumerate(heads):
@@ -103,8 +102,8 @@ def main():
         p_ind = cdg.get_value(value_type='p_ind', value_unit=p_unit)
         e = cdg.get_value(value_type='e', value_unit=e_unit)
         
-        #plt.semilogx(p_ind, e, marker = markers[i], markersize=4,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
-        #plt.legend()
+        plt.semilogx(p_ind, e, marker = markers[i], markersize=4,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
+        plt.legend()
 
     plt.title(title)
     plt.xlabel(r'$p_{ind} - p_{r}$ in Pa' )

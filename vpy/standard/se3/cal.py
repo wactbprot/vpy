@@ -550,26 +550,24 @@ class Cal(Se3):
             if len(s>0):
                 ind[s] = np.nan
 
-            print(p)
+           
             p_corr = p / (e + 1.0)
-            print(p_corr)
-
+            
             res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
             res.store("Error", "{}-compare".format(CompareDev.name), e, '1')
             res.store("Error", "{}-offset".format(CompareDev.name), off/p_corr, '1')
             
             cor_arr_nan.append(copy.deepcopy(p_corr))
 
-            p_corr[np.isnan(p_corr)] = 0
-            u[np.isnan(p_corr)] = 1
+            #p_corr[np.isnan(p_corr)] = 0
+            #u[np.isnan(p_corr)] = 1
 
             cor_arr.append(p_corr)
             u_arr.append(u)
         
-        s_u = np.nansum(cor_arr*np.power(u_arr,-2), axis=0)
-        s_l = np.nansum(np.power(u_arr,-2), axis=0)
-        p_mean = np.divide(s_u, s_l)
-                
+        
+        p_mean = np.nanmean(cor_arr, axis=0)
+       
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
