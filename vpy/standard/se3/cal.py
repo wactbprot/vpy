@@ -402,6 +402,18 @@ class Cal(Se3):
         e_rise = p_rise/p_cal 
         res.store('Error', 'rise', e_rise, '1')
 
+    def range(self, res):
+        """Traverses Range to analysis section.
+        
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        range_str = self.Range.get_str("ind")
+        if range_str is not None:
+            res.store('Range', 'ind', range_str, '1')
+
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the
         result under the path *Pressure, cal, mbar*
@@ -460,9 +472,8 @@ class Cal(Se3):
         """
         self.log.debug("start filling pressure")
 
-
         meas_time = self.Time.get_value("amt_fill", "ms")
-        compare_target = self.Pres.get_value("target_fill", self.unit)
+        fill_target = self.Pres.get_value("target_fill", self.unit)
 
         N = len(self.fill_types)
 
@@ -479,8 +490,8 @@ class Cal(Se3):
                 meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
-            if compare_target is not None:
-                e, u = FillDev.get_error_interpol(p, self.unit, compare_target, self.unit)
+            if fill_target is not None:
+                e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
             else:
                 e, u = FillDev.get_error_interpol(p, self.unit, p, self.unit)
             
@@ -549,11 +560,8 @@ class Cal(Se3):
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
-
-            print(p)
+       
             p_corr = p / (e + 1.0)
-            print(p_corr)
-
             res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
             res.store("Error", "{}-compare".format(CompareDev.name), e, '1')
             res.store("Error", "{}-offset".format(CompareDev.name), off/p_corr, '1')

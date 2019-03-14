@@ -82,7 +82,12 @@ def main():
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
             
             # plot needed
-            plt.errorbar(p_ind_corr, p_ind_corr/p_cal-1,   yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            x = p_ind_corr
+            y =  p_ind_corr/p_cal-1
+            plt.xscale('symlog', linthreshx=1e-12)
+            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            for i, v in enumerate(x):
+                plt.text(v, y[i], i, rotation=45.)
             plt.show()
 
             average_index = ana.ask_for_reject(average_index=average_index)

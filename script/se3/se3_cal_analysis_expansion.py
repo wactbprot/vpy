@@ -1,7 +1,10 @@
 """
-python script/se3/se3_cal_analysis.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_db_work' --srv 'http://localhost:5984' -a # keep aux values
+python script/se3/se3_cal_analysis_expansion.py --ids 'cal-2019-se3-kk-75002_0001'  -a # keep aux values
 """
 import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
+
 import json
 import numpy as np
 from vpy.pkg_io import Io
@@ -47,7 +50,7 @@ def main():
                 res = Analysis(doc, insert_dict={'AuxValues': auxvalues})
                 cal = Cal(doc)
             else:
-                 # renew the AuxValues
+                # renew the AuxValues
                 cal = Cal(doc)
                 meas_date = cal.Date.first_measurement()
                 state_doc = io.get_state_doc("se3", date=meas_date) 
@@ -64,14 +67,12 @@ def main():
             cal.volume_start(res)
             cal.expansion(res)
             cal.pressure_rise(res)
-
+            cal.range(res)
             cal.pressure_cal(res)
             cal.pressure_ind(res)
             cal.error(res)
-            
             cal.error_pressure_rise(res)
             cal.deviation_target_cal(res)
-
             io.save_doc(res.build_doc())
            
     else:
