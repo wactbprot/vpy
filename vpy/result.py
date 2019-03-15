@@ -93,16 +93,17 @@ class Result(Analysis):
         """The measurement data section should contain data 
         valid for the measurement only
         """
+        k = 2
         T_gas = ana.pick("Temperature", "after", "K")
         T_gas = ana.pick("Temperature", "room", "K")
         T_gas_mean = np.mean(T_gas)
-        T_gas_unc = np.std(T_gas)
+        T_gas_unc = np.std(T_gas)*k
         T_gas_mean_str = self.Val.round_to_uncertainty(T_gas_mean, T_gas_unc, 2)
         T_gas_unc_str = self.Val.round_to_sig_dig(T_gas_unc, 2)
 
         T_room = ana.pick("Temperature", "room", "K")
         T_room_mean = np.mean(T_room)
-        T_room_unc = np.std(T_room)
+        T_room_unc = np.std(T_room)*k
         T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
         T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
 
@@ -157,14 +158,11 @@ class Result(Analysis):
         ind_str = self.Val.round_to_uncertainty_array(ind, u*cal*k, 2, scientific=True)        
         error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
         cf_str = self.Val.round_to_uncertainty_array(cf, u*k, 2)
-        
-        if error_unit == '1':
-            u_e_k2 = u*cal/ind*k
-        if error_unit == '%':
-            u_e_k2 = u*cal/ind*k
+          
+        u_e_k2 = u*ind/cal*k
         u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
         
-        u_cf_k2  = u*ind/cal*k
+        u_cf_k2 = u*cal/ind*k
         u_cf_k2_str = self.Val.round_to_sig_dig_array(u_cf_k2, 2)
 
         p_cal_dict = {

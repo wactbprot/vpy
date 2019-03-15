@@ -41,8 +41,8 @@ def main():
 
     uncert.total(res)
     heads = (
-            "100T_1","100T_2","100T_3",
-            #"1000T_1","1000T_2","1000T_3"
+            #"100T_1","100T_2","100T_3",
+            "1000T_1","1000T_2","1000T_3"
             )
     p_cal = res.pick("Pressure", "dkm_ppc4", p_unit)
     u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", u_unit)
