@@ -24,6 +24,7 @@ class Result(Analysis):
         "error":"{\\(e\\)}",
         "cf": "{\\(CF\\)}",
         "N":"{\\(N\\)}",
+        "range":"range",
     }
     unit_cell = {
         "1": "",
@@ -31,6 +32,7 @@ class Result(Analysis):
         "Pa":"{(\\(\\si{\\pascal}\\))}",
         "%": "{(\\(\\si{\\percent}\\))}",
         "N":"",
+        "range":"",
         }
     unit = {
         "mbar": "\\mbar",
@@ -38,12 +40,14 @@ class Result(Analysis):
         }
     gas = {
         "de": {
+            "He": "Helium",
             "Ar": "Argon",
             "H2": "Wasserstoff",
             "N2": "Stickstoff",
             "Ne": "Neon"
             },
         "en": {
+            "He":"helium",
             "Ar": "argon",
             "H2": "hydrogen",
             "N2": "nitrogen",
@@ -95,7 +99,6 @@ class Result(Analysis):
         """
         k = 2
         T_gas = ana.pick("Temperature", "after", "K")
-        T_gas = ana.pick("Temperature", "room", "K")
         T_gas_mean = np.mean(T_gas)
         T_gas_unc = np.std(T_gas)*k
         T_gas_mean_str = self.Val.round_to_uncertainty(T_gas_mean, T_gas_unc, 2)
@@ -124,9 +127,13 @@ class Result(Analysis):
         }
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
+    def reduce_range_str(self, range_str,  average_index):
+        return [range_str[v[0]] for v in average_index]
+
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         k=2
+
 
         cal_dict = ana.pick_dict("Pressure", "cal")
         cal_conv = self.Const.get_conv(from_unit=cal_dict.get("Unit"), to_unit=pressure_unit)
@@ -143,19 +150,23 @@ class Result(Analysis):
 
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
         N = [len(i) for i in av_idx]
+
+        range_str = ana.pick_dict("Range", "ind").get("Value")
+      
+        if range_str is not None:
+            range_str = self.reduce_range_str(range_str=range_str, average_index=av_idx)
+         
+
         cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
 
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
         error = ana.reduce_by_average_index(value=error, average_index=av_idx)
         cf = ana.reduce_by_average_index(value=cf, average_index=av_idx)
         u = ana.reduce_by_average_index(value=u, average_index=av_idx)
+        u_std = ana.reduce_by_average_index(value=u_std, average_index=av_idx)
 
-        #format output
-        #cal_str = [f"{i:.4e}" for i in cal]
-        #ind_str = [f"{i:.4e}" for i in ind]
-
-        cal_str = self.Val.round_to_uncertainty_array(cal, u_std*cal*k, 2, scientific=True)
-        ind_str = self.Val.round_to_uncertainty_array(ind, u*cal*k, 2, scientific=True)        
+        cal_str = self.Val.round_to_uncertainty_array(cal, u_std*cal, 2, scientific=True)
+        ind_str = self.Val.round_to_uncertainty_array(ind, u*cal, 2, scientific=True)        
         error_str = self.Val.round_to_uncertainty_array(error, u*k, 2)
         cf_str = self.Val.round_to_uncertainty_array(cf, u*k, 2)
           
@@ -214,10 +225,19 @@ class Result(Analysis):
             "HeadCell": self.head_cell["N"],
             "UnitCell": self.unit_cell["N"]
             }
+        range_dict = {
+            "Type": "ind",
+            "Unit": "1",
+            "Value": range_str,
+            "HeadCell": self.head_cell["range"],
+            "UnitCell": self.unit_cell["range"]
+            } 
         self.store_dict(quant="Table", d=p_cal_dict, dest=None)
         self.store_dict(quant="Table", d=p_ind_corr_dict, dest=None)
         if add_n_column:
-            self.store_dict(quant="Table", d=n_dict, dest=None)        
+            self.store_dict(quant="Table", d=n_dict, dest=None)
+        if range_str:
+            self.store_dict(quant="Table", d=range_dict, dest=None)     
         self.store_dict(quant="Table", d=e_dict, dest=None)
         self.store_dict(quant="Table", d=cf_dict, dest=None)
         self.store_dict(quant="Table", d=u_e_dict, dest=None)
