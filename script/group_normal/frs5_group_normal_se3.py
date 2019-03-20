@@ -17,12 +17,12 @@ import matplotlib.pyplot as plt
 def main():
 
     plt.figure(num=None, figsize=(15, 10), facecolor='w', edgecolor='k')
-    markers =("o", "D", "+", ">", "^", "1", "2", "3", "4")
+    markers =("o", "D", "s", ">", "^", "1", "2", "3", "4")
     colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k', 'b', 'g')
     heads = (
         #"1T_1","1T_2","1T_3",
-        #"10T_1","10T_2","10T_3",
-        "100T_1", "100T_2", "100T_3",
+        "10T_1","10T_2","10T_3",
+        #"100T_1", "100T_2", "100T_3",
     )
     
     io = Io()
@@ -38,9 +38,13 @@ def main():
     u_unit = '1'
 
     cal.temperature(res)
+
     cal.pressure_res(res)
+
     cal.pressure_cal(res)
+    print("-----------------------------")
     uncert.total_standard(res)
+    print("-----------------------------")
 
     p_conv = cal.Cons.get_conv(cal.unit, p_unit)
     p_cal = res.pick("Pressure", "cal", cal.unit)*p_conv
@@ -54,7 +58,6 @@ def main():
 
         device = io.get_doc_db('cob-cdg-se3_{head}'.format(head=head))
         cdg = InfCdg(doc, device)
-
         p_off = cal.Aux.get_val_by_time(m_time, "offset_mt", "ms", "{head}-ind_offset".format(head=head), p_unit)
         p_ind = cal.Pres.get_value("{}-ind".format(head), p_unit)
         p_ind_corr = p_ind - p_off
