@@ -184,7 +184,8 @@ class Io(object):
         """
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
-        res = db.save(doc)
+        
+        return db.save(doc)
       
 
     def update_cal_doc(self, doc, base_doc):
