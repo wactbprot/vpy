@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 def main():
 
     plt.figure(num=None, figsize=(15, 10), facecolor='w', edgecolor='k')
-    markers =("o", "D", "+", ">", "^", "1", "2", "3", "4")
+    markers =("o", "D", "s", ">", "^", "1", "2", "3", "4")
     colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k', 'b', 'g')
     io = Io() 
     io.eval_args()
@@ -44,6 +44,20 @@ def main():
             #"100T_1","100T_2","100T_3",
             "1000T_1","1000T_2","1000T_3"
             )
+    volt_channel = {"100T_1": "107",
+                    "100T_2": "108",
+                    "100T_3": "109",
+                    "1000T_1": "110",
+                    "1000T_2": "111",
+                    "1000T_3": "112",
+                    }
+    volt_conv = {"1000T_1": 133322.0/10.0,
+                 "1000T_2": 133322.0/10.0,
+                 "1000T_3": 133322.0/10.0,
+                 "100T_1": 13332.20/10.0,
+                 "100T_2": 13332.20/10.0,
+                 "100T_3": 13332.20/10.0,
+                }
     p_cal = res.pick("Pressure", "dkm_ppc4", p_unit)
     u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", u_unit)
     m_time = cal.Time.get_value("amt_meas", "ms")
@@ -59,10 +73,15 @@ def main():
         p_ind = cal.Pres.get_value("{}-ind".format(head), p_unit)
         p_ind_corr = p_ind - p_off
         
-        ## caut values for device
+        p_off_v = cal.Aux.get_val_by_time(m_time, "offset_mt", "ms", "gncdg_{}_offset".format(volt_channel[head]), "V")
+        p_ind_v = cal.Pres.get_value("gncdg_{}_ind".format(volt_channel[head]), "V")
+        p_ind_corr_v = (p_ind_v - p_off_v)*volt_conv[head]
+        
+        ## cut values for device
         p_cal_dev = cdg.shape_pressure(p_cal)
         p_cal_dev, l = cdg.rm_nan(p_cal_dev)
         p_ind_corr, _ = cdg.rm_nan(p_ind_corr, l)
+        p_ind_corr_v, _ = cdg.rm_nan(p_ind_corr_v, l)
         u_std_dev, _ = cdg.rm_nan(u_std, l)
 
         # cal uncertainty
@@ -71,9 +90,11 @@ def main():
 
         # cal error
         e, e_unit = cdg.error(p_cal_dev,  p_ind_corr, p_unit)
+        e_v, e_unit = cdg.error(p_cal_dev,  p_ind_corr_v, p_unit)
         
        
-        plt.semilogx(p_ind_corr, e, marker = markers[i], markersize=10,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
+        plt.semilogx(p_ind_corr, e, marker = markers[i], markersize=5,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
+        plt.semilogx(p_ind_corr, e_v, marker = markers[i], markersize=15,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
         plt.legend() 
            
         # cal interpolation

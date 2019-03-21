@@ -23,7 +23,7 @@ class Cdg(Device):
         "100mbar": 10000.0,
     }
     max_voltage = 10.0
-    interpol_pressure_points = np.logspace(-3, 5, num=241) # Pa 
+    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
@@ -190,7 +190,7 @@ class Cdg(Device):
         # smooth
         p = self.conv_smooth(pressure)
         e = self.conv_smooth(error)       
-        u = uncertainty #self.conv_smooth(uncertainty)
+        u = self.conv_smooth(uncertainty)
         #interpolate function
         f_e = self.interp_function(p, e)
         f_u = self.interp_function(p, u)
