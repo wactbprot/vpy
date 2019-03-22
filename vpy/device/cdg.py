@@ -128,6 +128,7 @@ class Cdg(Device):
             }]
         
             self.doc["CalibrationObject"]['Interpol'] = value
+        
 
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
