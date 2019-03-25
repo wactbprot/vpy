@@ -16,13 +16,13 @@ class CalibrationObject(Document):
 
         if 'CalibrationObject' in doc:
             cob = doc['CalibrationObject']
-            super().__init__(cob)
-
             if isinstance(cob, list):
                 self.cob_by_name = {}
-                for c in self.doc:
+                for c in cob:
                     cob_name = c['Name']
                     self.cob_by_name[cob_name] = c
+            
+            super().__init__(cob)
 
     def get_by_name(self, name):
         if name in self.cob_by_name:
