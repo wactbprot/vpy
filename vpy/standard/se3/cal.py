@@ -549,13 +549,15 @@ class Cal(Se3):
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
             off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+            print(CompareDev.name)
             p = ind - off
           
             if compare_target is not None:
                 e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
             else:
                 e, u = CompareDev.get_error_interpol(p, self.unit, p, self.unit)
-            
+            print(compare_target)
+            print(e)
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan

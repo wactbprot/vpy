@@ -56,6 +56,7 @@ def main():
            
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
             offset = res.pick("Pressure","offset_sample", unit)
+
             ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
              
             res.store("Pressure", "ind", ind, unit)

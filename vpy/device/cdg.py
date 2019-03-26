@@ -23,6 +23,7 @@ class Cdg(Device):
         "100mbar": 10000.0,
     }
     max_voltage = 10.0
+    range_extend = 0.005 
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
@@ -39,8 +40,8 @@ class Cdg(Device):
                 type_head = dev_setup.get('TypeHead')
                 if use_from and use_to and use_unit:
                     conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
-                    self.max_p = use_to * conv
-                    self.min_p = use_from * conv
+                    self.max_p = float(use_to) * conv
+                    self.min_p = float(use_from) * conv
                 elif type_head:
                     if type_head in self.max_type_head:
                         self.max_p = self.max_type_head.get(type_head)
@@ -80,55 +81,6 @@ class Cdg(Device):
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         
         return pressure
-
-
-    def store_interpol(self, p, e, u, p_unit, e_unit, u_unit):
-        """Stores a dict containing ``p .. pressure``, ``e .. error`` and
-        ``u .. uncertainty``. Overrides existing ranges.
-
-        """
-
-        if "CalibrationObject" in self.doc:
-            if "Interpol" in self.doc["CalibrationObject"]:
-                interpol = Values(self.doc["CalibrationObject"]['Interpol'])
-                p_sav = interpol.get_value(value_type="p_ind", value_unit=p_unit)
-                e_sav = interpol.get_value(value_type="e", value_unit=e_unit)
-                u_sav = interpol.get_value(value_type="u", value_unit=u_unit)
-                
-                out = (p_sav >= np.min(p)) & (p_sav <= np.max(p))
-                
-
-                if not all(out) and len(out) > 0:
-                    p_sav = np.delete(p_sav, np.where(out), axis=0)
-                    e_sav = np.delete(e_sav, np.where(out), axis=0)
-                    u_sav = np.delete(u_sav, np.where(out), axis=0)
-                    if np.min(p_sav) >= np.max(p):
-                        p = np.append(p, p_sav)
-                        e = np.append(e, e_sav)
-                        u = np.append(u, u_sav)
-                    else:                   
-                        p = np.append(p_sav, p)
-                        e = np.append(e_sav, e)
-                        u = np.append(u_sav, u)
-                    
-            value = [{
-                "Type": "p_ind",
-                "Unit": p_unit,
-                "Value": list(p)
-            },
-                {
-                "Type": "e",
-                "Unit": e_unit,
-                "Value": list(e)
-            },
-                {
-                "Type": "u",
-                "Unit": u_unit,
-                "Value": list(u)
-            }]
-        
-            self.doc["CalibrationObject"]['Interpol'] = value
-        
 
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
@@ -183,6 +135,7 @@ class Cdg(Device):
 
         This is done as follows:
             # conv_smooth
+            # extrapolate values to the borders
             # get_default_values
             # gen. interp. functions
             # interpolate default values
@@ -192,16 +145,41 @@ class Cdg(Device):
         p = self.conv_smooth(pressure)
         e = self.conv_smooth(error)       
         u = self.conv_smooth(uncertainty)
+        
+        # extrapolate
+        p, e, u = self.fill_to_dev_borders(p, e, u)
+
         #interpolate function
         f_e = self.interp_function(p, e)
         f_u = self.interp_function(p, u)
+        
         # default values
         p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
+        
         # cal. interpol on default values
         e_default = f_e( p_default )
         u_default = f_u( p_default )
 
         return  p_default, e_default, u_default
+
+    def fill_to_dev_borders(self, p, e, u):
+        """Use the first/last value in the array of e and u
+        as an extrapolation to the devive borders. Reduce the start/end
+        value of p by `self.range_extend` to overcome possible intervall issues.
+        """
+        extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
+        extr_e_low = np.array([e[0]])
+        extr_u_low = np.array([u[0]])
+
+        extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
+        extr_e_high = np.array([e[-1]])
+        extr_u_high = np.array([u[-1]])
+
+        ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
+        ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
+        ret_u = np.concatenate( (extr_u_low, u, extr_u_high), axis=None)
+        
+        return ret_p, ret_e, ret_u
 
     def conv_smooth(self, data, n=3):
         """Generates smooth data by a convolution.

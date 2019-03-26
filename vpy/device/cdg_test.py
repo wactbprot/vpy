@@ -54,7 +54,9 @@ class TestCdg(unittest.TestCase):
     
     def test_interpol_values(self):
         cob = copy.deepcopy(self.cob)
-        cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'
+        cob['CalibrationObject']['Setup']['UseFrom'] = "1"
+        cob['CalibrationObject']['Setup']['UseTo'] = "13.3"
+        cob['CalibrationObject']['Setup']['UseUnit'] = "Pa"
         cdg = Cdg({}, cob)
 
         p = np.array([  1, 1.4, 
@@ -72,8 +74,7 @@ class TestCdg(unittest.TestCase):
         u, _ = cdg.rm_nan(u, l)
 
         i_p, i_e, i_u = cdg.cal_interpol(p, e, u)
-
-        self.assertAlmostEqual(i_p[0] , (1+1.4+2)/3)
+       
         self.assertAlmostEqual(i_e[0] , 1)
         self.assertAlmostEqual(i_u[0] , 1)
         
@@ -89,4 +90,22 @@ class TestCdg(unittest.TestCase):
         val, ldx = cdg.rm_nan(np.array([np.nan,np.nan]))
         self.assertEqual( np.shape(val)[0], 0)
         self.assertEqual( np.shape(ldx)[0], 2)
+    
+    def test_fill_border(self):
+        cob = copy.deepcopy(self.cob)
+        cob['CalibrationObject']['Setup']['UseFrom'] = "100"
+        cob['CalibrationObject']['Setup']['UseTo'] = "1333.0"
+        cob['CalibrationObject']['Setup']['UseUnit'] = "Pa"
+        cdg = Cdg({}, cob)
+        p = np.array([90, 200, 300, 500, 900, 1000, 1290])
+        e = np.array([ 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3 ])
+        u = np.array([ 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3 ])
+
+        pe, ee, ue = cdg.fill_to_dev_borders(p, e, u)
+
+        self.assertEqual(pe[0], cdg.min_p*(1 - cdg.range_extend))
+        self.assertEqual(pe[-1], cdg.max_p*(1 + cdg.range_extend))
+        self.assertEqual(len(pe), len(p) + 2)
+        self.assertEqual(len(ee), len(p) + 2)
+        self.assertEqual(len(ue), len(p) + 2)
         
