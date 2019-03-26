@@ -55,5 +55,69 @@ class TestValues(unittest.TestCase):
       for i in range(len(dig)): self.assertEqual(v.round_to_sig_dig(val, dig[i]), res[i])
       for i in range(len(dig)): self.assertEqual(v.round_to_sig_dig(val, dig[i], scientific=True), res_sci[i])    
 
+    def test_inverse_array_sum(self):
+      v = Values({})
 
+      a = np.array([1, 1, 1])
+      b = []
+      b.append(a)
+      b.append(a)
+      r = v.invers_array_sum(b)
+      
+      self.assertEqual(r[0], 0.5)
+      self.assertEqual(r[1], 0.5)
+      self.assertEqual(r[2], 0.5)
 
+    def test_inverse_array_square_sum(self):
+      v = Values({})
+
+      u = np.array([[1, 2, 3],
+                    [1, 2, 3]])
+      
+      r = v.invers_array_square_sum(u)
+      
+      self.assertAlmostEqual(r[0], (1/(1/1.**2 + 1/1.**2))**0.5)
+      self.assertAlmostEqual(r[1], (1/(1/2.**2 + 1/2.**2))**0.5)
+      self.assertAlmostEqual(r[2], (1/(1/3.**2 + 1/3.**2))**0.5)
+
+    def test_weight_mean_1(self):
+      v = Values({})
+
+      u = np.array([[1, 1, 1],
+                    [1, 1, 1]])
+      p = np.array([[1, 2, 3],
+                    [1, 2, 3]])
+
+      r = v.weight_array_mean(p, u)
+           
+      self.assertAlmostEqual(r[0], 1)
+      self.assertAlmostEqual(r[1], 2)
+      self.assertAlmostEqual(r[2], 3)
+
+    def test_weight_mean_2(self):
+      v = Values({})
+
+      u = np.array([[0.1, 0.1, 0.1],
+                    [0.1, 0.1, 0.1]])
+      p = np.array([[1, 2, 3],
+                    [1, 2, 3]])
+
+      r = v.weight_array_mean(p, u)
+      
+      self.assertAlmostEqual(r[0], 1)
+      self.assertAlmostEqual(r[1], 2)
+      self.assertAlmostEqual(r[2], 3)
+
+    def test_weight_mean_3(self):
+      v = Values({})
+
+      u = np.array([[1, 1, 1],
+                    [0.1, 0.1, 0.1]])
+      p = np.array([[2, 2, 2],
+                    [1, 1, 1]])
+
+      r = v.weight_array_mean(p, u)
+      
+      self.assertAlmostEqual(r[0], 1.01, 3)
+      self.assertAlmostEqual(r[1], 1.01, 3)
+      self.assertAlmostEqual(r[2], 1.01, 3)

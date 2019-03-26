@@ -173,6 +173,36 @@ class Values(Document):
         """
         return np.asarray([self.round_to_uncertainty(val_arr[i], unc_arr[i], n, scientific) for i in range(len(val_arr))])
 
+    def invers_array_sum(self, a):
+        """Calculates the invers sum of columns the given array.
+        
+        .. code ::
+            
+            invers_array_sum([
+                            [a1, a2, a3],
+                            [b1, b2, b3]
+                        ]) = 1/[1/a1 +1/b1, 1/a2 + 1/b2, 1/a2 + 1/b2 ]
+        """
+        return 1/(np.nansum(1/np.array(a), axis=0))
+
+    def invers_array_square_sum(self, a):
+        """Calculates the invers sum of columns the given array.
+        
+        .. code ::
+            
+            invers_array_sum([
+                            [a1, a2, a3],
+                            [b1, b2, b3]
+                        ]) = 1/sqrt([1/a1^2 +1/b1^2, 1/a2^2 + 1/b2^2, 1/a2^2 + 1/b2^2 ])
+        """
+        return 1/np.sqrt(np.nansum(1/np.power(np.array(a), 2), axis=0))
+
+    def weight_array_mean(self, x, w):
+        """ Calculates  a w weighted array mean following 
+        Cox, Metrologia, 2002, 39, 591,  equation (1)
+        """
+        return np.nansum(np.array(x)/np.power(np.array(w), 2), axis=0)/np.nansum(1/np.power(np.array(w), 2), axis=0)
+
 class Expansion(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Expansion', quant)

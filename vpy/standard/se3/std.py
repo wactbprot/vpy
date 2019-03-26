@@ -247,7 +247,7 @@ class Se3(Standard):
             # define model
             self.no_of_meas_points = len(self.Pres.get_value("target_pressure", "Pa"))
             
-            # costomer device
+            # customer device
             if 'CustomerObject' in doc['Calibration']:
                 customer_device = doc['Calibration']['CustomerObject']
                 dev_class = customer_device.get('Class', "generic")
@@ -258,11 +258,13 @@ class Se3(Standard):
                     self.CustomerDevice = Cdg(doc, customer_device)
                 if dev_class == 'RSG':
                     self.CustomerDevice = Rsg(doc, {})
-        
-        self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
+                
+        if self.temp_dev_name in self.Cobj.cob_by_name:
+            self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
         self.FillDevs =[]
         for d in self.fill_dev_names:
-            self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+            if d in self.Cobj.cob_by_name:
+                self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
         
     def get_gas(self):
         """Returns the name of the calibration gas.
