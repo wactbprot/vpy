@@ -81,55 +81,6 @@ class Cdg(Device):
         
         return pressure
 
-
-    def store_interpol(self, p, e, u, p_unit, e_unit, u_unit):
-        """Stores a dict containing ``p .. pressure``, ``e .. error`` and
-        ``u .. uncertainty``. Overrides existing ranges.
-
-        """
-
-        if "CalibrationObject" in self.doc:
-            if "Interpol" in self.doc["CalibrationObject"]:
-                interpol = Values(self.doc["CalibrationObject"]['Interpol'])
-                p_sav = interpol.get_value(value_type="p_ind", value_unit=p_unit)
-                e_sav = interpol.get_value(value_type="e", value_unit=e_unit)
-                u_sav = interpol.get_value(value_type="u", value_unit=u_unit)
-                
-                out = (p_sav >= np.min(p)) & (p_sav <= np.max(p))
-                
-
-                if not all(out) and len(out) > 0:
-                    p_sav = np.delete(p_sav, np.where(out), axis=0)
-                    e_sav = np.delete(e_sav, np.where(out), axis=0)
-                    u_sav = np.delete(u_sav, np.where(out), axis=0)
-                    if np.min(p_sav) >= np.max(p):
-                        p = np.append(p, p_sav)
-                        e = np.append(e, e_sav)
-                        u = np.append(u, u_sav)
-                    else:                   
-                        p = np.append(p_sav, p)
-                        e = np.append(e_sav, e)
-                        u = np.append(u_sav, u)
-                    
-            value = [{
-                "Type": "p_ind",
-                "Unit": p_unit,
-                "Value": list(p)
-            },
-                {
-                "Type": "e",
-                "Unit": e_unit,
-                "Value": list(e)
-            },
-                {
-                "Type": "u",
-                "Unit": u_unit,
-                "Value": list(u)
-            }]
-        
-            self.doc["CalibrationObject"]['Interpol'] = value
-        
-
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
         Returns the interpolation error at the points where:
