@@ -23,6 +23,7 @@ class Cdg(Device):
         "100mbar": 10000.0,
     }
     max_voltage = 10.0
+    range_extend = 0.005 
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
@@ -39,8 +40,8 @@ class Cdg(Device):
                 type_head = dev_setup.get('TypeHead')
                 if use_from and use_to and use_unit:
                     conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
-                    self.max_p = use_to * conv
-                    self.min_p = use_from * conv
+                    self.max_p = float(use_to) * conv
+                    self.min_p = float(use_from) * conv
                 elif type_head:
                     if type_head in self.max_type_head:
                         self.max_p = self.max_type_head.get(type_head)
@@ -134,6 +135,7 @@ class Cdg(Device):
 
         This is done as follows:
             # conv_smooth
+            # extrapolate values to the borders
             # get_default_values
             # gen. interp. functions
             # interpolate default values
@@ -143,16 +145,41 @@ class Cdg(Device):
         p = self.conv_smooth(pressure)
         e = self.conv_smooth(error)       
         u = self.conv_smooth(uncertainty)
+        
+        # extrapolate
+        p, e, u = self.fill_to_dev_borders(p, e, u)
+
         #interpolate function
         f_e = self.interp_function(p, e)
         f_u = self.interp_function(p, u)
+        
         # default values
         p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
+        
         # cal. interpol on default values
         e_default = f_e( p_default )
         u_default = f_u( p_default )
 
         return  p_default, e_default, u_default
+
+    def fill_to_dev_borders(self, p, e, u):
+        """Use the first/last value in the array of e and u
+        as an extrapolation to the devive borders. Reduce the start/end
+        value of p by `self.range_extend` to overcome possible intervall issues.
+        """
+        extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
+        extr_e_low = np.array([e[0]])
+        extr_u_low = np.array([u[0]])
+
+        extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
+        extr_e_high = np.array([e[-1]])
+        extr_u_high = np.array([u[-1]])
+
+        ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
+        ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
+        ret_u = np.concatenate( (extr_u_low, u, extr_u_high), axis=None)
+        
+        return ret_p, ret_e, ret_u
 
     def conv_smooth(self, data, n=3):
         """Generates smooth data by a convolution.

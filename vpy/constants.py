@@ -3,6 +3,36 @@ import numpy as np
 from .document import Document
 
 class Constants(Document):
+    fall_back_const = {
+        "Values": [
+                    {
+                    "Type": "referenceTemperature",
+                    "Value": 296.15,
+                    "Unit": "K",
+                    "Comment": "reference Temperatur"
+                    }
+                ],
+        "Conversion": [
+                    {
+                    "Type": "C_2_K",
+                    "Value": 273.15,
+                    "Unit": "K/C",
+                    "Comment": "conversion C to K"
+                    },
+                    {
+                    "Type": "Pa_2_mbar",
+                    "Value": 0.01,
+                    "Unit": "mbar/Pa",
+                    "Comment": "conversion Pa to mbar"
+                    },
+                    {
+                    "Type": "mbar_2_Pa",
+                    "Value": 100.0,
+                    "Unit": "Pa/mbar",
+                    "Comment": "conversion mbar to Pa"
+                    }
+                ]   
+        }
     """Initialisation of Constant class.
 
     .. todo::
@@ -16,16 +46,23 @@ class Constants(Document):
     """
 
     def __init__(self, doc):
-
+        const = None
         if 'Calibration' in doc:
-            doc = doc['Calibration']
+            const = doc['Calibration']
 
         if 'State' in doc:
-            doc = doc['State']
+            const = doc['State']
 
-        if 'Constants' in doc:
-            super().__init__(doc['Constants'])
+        if const and 'Constants' in const:
+            const = const['Constants'] 
 
+        if const:
+            super().__init__(const)
+        else:
+            super().__init__(self.fall_back_const)
+            self.log.warning("only fallback const available")
+
+       
     def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
 

@@ -43,7 +43,6 @@ def main():
 
             p_ind, u_p_ind = p.get_value_and_unit('ind_corr')
             p_cal, u_p_cal = p.get_value_and_unit('cal')
-            print(p_cal)
             err = p_ind/p_cal -1
             u_err = "1"
             plt.subplot(111)
