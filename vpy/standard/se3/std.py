@@ -74,7 +74,9 @@ class Se3(Standard):
     
     compare_types = ["1T_1-compare", "1T_2-compare", "1T_3-compare",
                   "10T_1-compare",  "10T_2-compare", "10T_3-compare",
-                  "100T_1-compare", "100T_2-compare", "100T_3-compare",
+                  "100T_1-compare", 
+                  "100T_2-compare", 
+                  "100T_3-compare",
                   "1000T_1-compare", "1000T_2-compare", "1000T_3-compare", ]
     
     state_types = ["1T_1-state", "1T_2-state", "1T_3-state",

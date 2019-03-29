@@ -538,7 +538,7 @@ class Cal(Se3):
         meas_time = self.Time.get_value("amt_meas", "ms")
         compare_target = self.Pres.get_value("target_compare", self.unit)
 
-        N = len(self.fill_types)
+        N = len(self.compare_types)
 
         cor_arr = []
         cor_arr_nan = []
@@ -556,8 +556,6 @@ class Cal(Se3):
                 e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
             else:
                 e, u = CompareDev.get_error_interpol(p, self.unit, p, self.unit)
-            print(compare_target)
-            print(e)
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
