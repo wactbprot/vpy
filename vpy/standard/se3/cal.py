@@ -557,8 +557,7 @@ class Cal(Se3):
                 e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
             else:
                 e, u = CompareDev.get_error_interpol(p, self.unit, p, self.unit)
-            print(compare_target)
-            print(e)
+            
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
@@ -580,7 +579,9 @@ class Cal(Se3):
         
         
         p_mean = np.nanmean(cor_arr, axis=0)
-       
+        print(compare_target)
+        print(np.nanstd(cor_arr, axis=0)/compare_target)
+
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
