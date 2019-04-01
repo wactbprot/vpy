@@ -34,6 +34,12 @@ class Result(Analysis):
         "N":"",
         "range":"",
         }
+    
+    dcc_unit = {
+        "1":"\one",
+        "mbar": "\hecto\kilogram\metre\tothe{-1}\second\tothe{-2}",
+        "Pa":"\kilogram\metre\tothe{-1}\second\tothe{-2}",
+        }
     unit = {
         "mbar": "\\mbar",
         "Pa": "\\Pa"
@@ -126,9 +132,6 @@ class Result(Analysis):
         }
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
-    def reduce_range_str(self, range_str,  average_index):
-        return [range_str[v[0]] for v in average_index]
-
     def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit):
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_std = self.get_reduced_uncert_std(ana, av_idx, error_unit)
@@ -158,6 +161,26 @@ class Result(Analysis):
         cf_str = self.Val.round_to_uncertainty_array(cf, u_total*k, 2)
 
         return cf_str
+
+    def make_uncert_cal_entry(self, ana, av_idx, pressure_unit, error_unit):      
+        k=2
+        cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
+        u_std = self.get_reduced_uncert_std(ana, av_idx, error_unit)
+
+        u_std_k2 = u_std*cal*k #pressure_unit
+        u_std_k2_str = self.Val.round_to_sig_dig_array(u_std_k2, 2)
+
+        return  u_std_k2_str     
+
+    def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit):      
+        k=2
+        ind = self.get_reduced_pressure_ind (ana, av_idx, pressure_unit)
+        u_dev = self.get_reduced_uncert_dev(ana, av_idx, error_unit)
+
+        u_dev_k2 = u_dev*ind*k #pressure_unit
+        u_dev_k2_str = self.Val.round_to_sig_dig_array(u_dev_k2, 2)
+
+        return  u_dev_k2_str     
 
     def make_uncert_error_entry(self, ana, av_idx, pressure_unit, error_unit):      
         k=2
@@ -201,12 +224,18 @@ class Result(Analysis):
         u_total = ana.reduce_by_average_index(value=u_total, average_index=av_idx)
 
         return u_total
-    
+
     def get_reduced_uncert_std(self, ana, av_idx, unit):
         u_std = ana.pick("Uncertainty", "standard", unit)
         u_std = ana.reduce_by_average_index(value=u_std, average_index=av_idx)
         
         return u_std
+    
+    def get_reduced_uncert_dev(self, ana, av_idx, unit):
+        u_dev = ana.pick("Uncertainty", "device", unit)
+        u_dev = ana.reduce_by_average_index(value=u_dev, average_index=av_idx)
+        
+        return u_dev
 
     def get_reduced_error(self, ana, av_idx, unit):
         error = ana.pick("Error", "ind", unit)
@@ -225,46 +254,74 @@ class Result(Analysis):
 
         return cf
 
+    def get_reduced_range_str(self, ana, av_idx):
+        range_str = ana.pick_dict("Range", "ind").get("Value")
+        if range_str is not None:
+            return [range_str[v[0]] for v in av_idx]
+
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
 
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
+        ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
+        error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
+        cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
+        u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
+        u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
+        u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
+        u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)
+
+        range_str = self.get_reduced_range_str(ana, av_idx)
+
         self.store_dict(quant="Table", d = {"Type": "cal",
+                                            "DCCOut": True,
+                                            "Quantity": "Pressure",
+                                            "Uncertainty": u_cal_k2_str,
+                                            "DCCUnit": self.dcc_unit[pressure_unit],
                                             "Unit": pressure_unit,
                                             "Value": cal_str,
                                             "HeadCell": self.head_cell["cal"],
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
         
-        ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
         self.store_dict(quant="Table", d = {"Type": "ind_corr",
+                                            "XMLOut": True,
+                                            "Quantity": "Pressure",
+                                            "Uncertainty": u_ind_k2_str,
+                                            "DCCUnit": self.dcc_unit[pressure_unit],
                                             "Unit": pressure_unit,
                                             "Value": ind_str,
                                             "HeadCell": self.head_cell["ind_corr"],
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
 
-        error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
         self.store_dict(quant="Table", d = {"Type": "ind",
+                                            "XMLOut": True,
+                                            "Quantity": "Error",
+                                            "Uncertainty": u_e_k2_str,
+                                            "DCCUnit": self.dcc_unit[error_unit],
                                             "Unit": error_unit,
                                             "Value": error_str,
                                             "HeadCell": self.head_cell["error"],
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
 
-        cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
         self.store_dict(quant="Table", d = {"Type": "ind",
+                                            "XMLOut": True,
+                                            "Quantity": "Correction",
+                                            "Uncertainty": u_cf_k2_str,
+                                            "DCCUnit": self.dcc_unit["1"],
                                             "Unit": error_unit,
                                             "Value": cf_str,
                                             "HeadCell": self.head_cell["cf"],
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
           
-        u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
+                                            "XMLOut": False,
                                             "Unit": error_unit,
                                             "Value": u_e_k2_str,
                                             "HeadCell": self.head_cell["uncert_total_rel_e"],
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
 
-        u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
+                                            "XMLOut": False,
                                             "Unit": error_unit,
                                             "Value": u_cf_k2_str,
                                             "HeadCell": self.head_cell["uncert_total_rel_cf"],
@@ -277,10 +334,8 @@ class Result(Analysis):
                                                 "HeadCell": self.head_cell["N"],
                                                 "UnitCell": self.unit_cell["N"]
                                                 }, dest=None)
-
-        range_str = ana.pick_dict("Range", "ind").get("Value")
+       
         if range_str is not None:
-            range_str = self.reduce_range_str(range_str=range_str, average_index=av_idx)
             self.store_dict(quant="Table", d = {"Type": "ind",
                                                 "Unit": "1",
                                                 "Value": range_str,
