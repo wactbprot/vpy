@@ -36,9 +36,9 @@ class Result(Analysis):
         }
     
     dcc_unit = {
-        "1":"\one",
-        "mbar": "\hecto\kilogram\metre\tothe{-1}\second\tothe{-2}",
-        "Pa":"\kilogram\metre\tothe{-1}\second\tothe{-2}",
+        "1":"\\one",
+        "mbar": "\\hecto\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
+        "Pa":"\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
         }
     unit = {
         "mbar": "\\mbar",
@@ -261,7 +261,8 @@ class Result(Analysis):
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
-
+        k = 2
+        prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
         ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
         error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
@@ -275,7 +276,10 @@ class Result(Analysis):
 
         self.store_dict(quant="Table", d = {"Type": "cal",
                                             "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
                                             "Quantity": "Pressure",
+                                            "Name": "calibration pressure",
                                             "Uncertainty": u_cal_k2_str,
                                             "DCCUnit": self.dcc_unit[pressure_unit],
                                             "Unit": pressure_unit,
@@ -284,8 +288,11 @@ class Result(Analysis):
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
         
         self.store_dict(quant="Table", d = {"Type": "ind_corr",
-                                            "XMLOut": True,
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
                                             "Quantity": "Pressure",
+                                            "Name": "offset corrected indicated pressure",
                                             "Uncertainty": u_ind_k2_str,
                                             "DCCUnit": self.dcc_unit[pressure_unit],
                                             "Unit": pressure_unit,
@@ -294,8 +301,11 @@ class Result(Analysis):
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
 
         self.store_dict(quant="Table", d = {"Type": "ind",
-                                            "XMLOut": True,
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
                                             "Quantity": "Error",
+                                            "Name": "relative error of indication",
                                             "Uncertainty": u_e_k2_str,
                                             "DCCUnit": self.dcc_unit[error_unit],
                                             "Unit": error_unit,
@@ -304,8 +314,11 @@ class Result(Analysis):
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
 
         self.store_dict(quant="Table", d = {"Type": "ind",
-                                            "XMLOut": True,
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
                                             "Quantity": "Correction",
+                                            "Name": "correction factor",
                                             "Uncertainty": u_cf_k2_str,
                                             "DCCUnit": self.dcc_unit["1"],
                                             "Unit": error_unit,
@@ -314,14 +327,14 @@ class Result(Analysis):
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
           
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
-                                            "XMLOut": False,
+                                            "DCCOut": False,
                                             "Unit": error_unit,
                                             "Value": u_e_k2_str,
                                             "HeadCell": self.head_cell["uncert_total_rel_e"],
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
 
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
-                                            "XMLOut": False,
+                                            "DCCOut": False,
                                             "Unit": error_unit,
                                             "Value": u_cf_k2_str,
                                             "HeadCell": self.head_cell["uncert_total_rel_cf"],
