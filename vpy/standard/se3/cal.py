@@ -513,9 +513,8 @@ class Cal(Se3):
             cor_arr.append(p_corr)
             u_arr.append(u)
         
-        s_u = np.nansum(cor_arr*np.power(u_arr,-2), axis=0)
-        s_l = np.nansum(np.power(u_arr,-2), axis=0)
-        p_mean = np.divide(s_u, s_l)
+
+        p_mean = self.Pres.weight_array_mean(cor_arr, u_arr)
                 
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
@@ -539,7 +538,7 @@ class Cal(Se3):
         meas_time = self.Time.get_value("amt_meas", "ms")
         compare_target = self.Pres.get_value("target_compare", self.unit)
 
-        N = len(self.fill_types)
+        N = len(self.compare_types)
 
         cor_arr = []
         cor_arr_nan = []
@@ -550,14 +549,13 @@ class Cal(Se3):
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
             off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
-            print(CompareDev.name)
+
             p = ind - off
           
             if compare_target is not None:
                 e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
             else:
                 e, u = CompareDev.get_error_interpol(p, self.unit, p, self.unit)
-            
             s = (ind == 0.)
             if len(s>0):
                 ind[s] = np.nan
@@ -568,20 +566,18 @@ class Cal(Se3):
             res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
             res.store("Error", "{}-compare".format(CompareDev.name), e, '1')
             res.store("Error", "{}-offset".format(CompareDev.name), off/p_corr, '1')
-            
+             
             cor_arr_nan.append(copy.deepcopy(p_corr))
 
-            #p_corr[np.isnan(p_corr)] = 0
-            #u[np.isnan(p_corr)] = 1
+            p_corr[np.isnan(p_corr)] = 0
+            u[np.isnan(p_corr)] = 1
 
             cor_arr.append(p_corr)
             u_arr.append(u)
         
-        
-        p_mean = np.nanmean(cor_arr, axis=0)
-        print(compare_target)
-        print(np.nanstd(cor_arr, axis=0)/compare_target)
 
+        p_mean = self.Pres.weight_array_mean(cor_arr, u_arr)
+                
         def cnt_nan(d):
             return np.count_nonzero(~np.isnan(d))
 
@@ -714,8 +710,5 @@ class Cal(Se3):
             offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
             sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
             n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))      
-
-
-        conv = self.Cons.get_conv(from_unit=sample_unit, to_unit=self.unit)
-
-        res.store("Pressure", "offset_sample", offs*conv , self.unit, sd_offs , n_offs)
+   
+        res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)
