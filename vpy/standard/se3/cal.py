@@ -27,9 +27,7 @@ class Cal(Se3):
 
         dt = self.Time.amt_to_date("amt_fill", "ms")
         self.loop_check_dict(check=self.analysis_check, compare=res, date=dt, result=chk)
-        
-
-        
+           
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
         min/max-list (stored in ``self.state_check``).
@@ -49,7 +47,6 @@ class Cal(Se3):
         dt = self.Time.amt_to_date("amt", "ms")
         self.loop_check_dict(check=self.state_check, compare=res, date=dt, result=chk)
         
-
     def loop_check_dict(self, check, compare,  date, result):
         """Loops over the given ``check`` dict. Compares the entries witth ``compare``
         and writes the results plus date to ``result`` 
@@ -253,7 +250,6 @@ class Cal(Se3):
         :type: class
         """
 
-
         vol_add_branch = res.pick('Volume', dict_type='add_branch', dict_unit='cm^3', dest='AuxValues')[-1]
         vol_a = res.pick('Volume', dict_type='a', dict_unit='cm^3', dest='AuxValues')[-1]
         vol_b = res.pick('Volume', dict_type='b', dict_unit='cm^3', dest='AuxValues')[-1]
@@ -269,7 +265,6 @@ class Cal(Se3):
         i_b = np.where(dut_b == "open")
         i_c = np.where(dut_c == "open")
 
-        
         if np.shape(i_a)[1] > 0:
             vol[i_a] = vol[i_a] + vol_a
         if np.shape(i_b)[1] > 0:
@@ -289,6 +284,7 @@ class Cal(Se3):
             pick_dict(quantity, type)
         :type: class
         """
+
         ind = res.pick("Pressure", "ind_corr",self.unit)
         cal = res.pick("Pressure", "cal" ,self.unit)
         
