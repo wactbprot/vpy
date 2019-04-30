@@ -77,7 +77,7 @@ class Cal(Se3):
                             rtn_val.append("NaN") 
                             rnd_val.append("NaN")
                         else:
-                            rnd_val.append('{:0.3e}'.format(v))
+                            rnd_val.append('{:0.4e}'.format(v))
                             if v < min:
                                 rtn_val.append( r_vec[0])
                             elif v > max:
@@ -161,7 +161,7 @@ class Cal(Se3):
         """
         self.log.debug("transfer state pressure")
         for state_type in self.state_types:
-            p = self.Pres.get_value("1T_1-state", self.unit)
+            p = self.Pres.get_value(state_type, self.unit)
             res.store("Pressure", state_type, p, self.unit)
 
     def volume_state(self, res):

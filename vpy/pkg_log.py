@@ -9,7 +9,7 @@ class Log(object):
         """
         Provides logging with the level given in  ``config.json``.
         """
-        self.level = 'ERROR'
+        self.level = 'DEBUG'
 
     def logger(self, name):
         """
