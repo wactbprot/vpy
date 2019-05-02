@@ -532,7 +532,7 @@ class Cal(Se3):
         self.log.debug("start calculation of compare pressure") 
 
         meas_time = self.Time.get_value("amt_meas", "ms")
-        compare_target = self.Pres.get_value("target_compare", self.unit)
+        compare_target = self.Pres.get_value("target_pressure", self.unit)
 
         N = len(self.compare_types)
 
