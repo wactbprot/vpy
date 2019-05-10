@@ -253,9 +253,12 @@ class Result(Analysis):
         return cf
 
     def get_reduced_range_str(self, ana, av_idx):
-        range_str = ana.pick_dict("Range", "ind").get("Value")
-        if range_str is not None:
+        range_dict = ana.pick_dict("Range", "ind")
+        if range_dict is not None:
+            range_str = range_dict.get("Value")
             return [range_str[v[0]] for v in av_idx]
+        else:
+            return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         av_idx = ana.doc["AuxValues"]["AverageIndex"]

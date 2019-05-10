@@ -678,7 +678,9 @@ class Cal(Se3):
         """
         t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_room")
         res.store("Temperature", "compare", t_mean, "K", t_stdv, t_N)
-    
+        # same same
+        res.store("Temperature", "room", t_mean, "K", t_stdv, t_N)
+        
     def temperature_gas_expansion(self, res):
         """Defines the gas temperature as the vessel 
          temperature after expansion

@@ -319,10 +319,14 @@ class Analysis(Document):
         values. Another problem is that iterating over empty lists aborts the
         program.
 
+        ..todo::
+
+                function returns empty arrays for 
+                ```len(agerage_index) < 3```
+                
         """
         error_dict = self.pick_dict(quant='Error', dict_type='ind')
         error = error_dict.get('Value')
-
         self.log.debug("average index before fine error filtering: {}".format(average_index))
     
         k = 0

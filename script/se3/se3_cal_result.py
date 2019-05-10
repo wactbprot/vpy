@@ -79,8 +79,9 @@ def main():
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
             average_index = ana.coarse_error_filtering(average_index=average_index)
+          
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
-            
+
             # plot needed
             x = p_ind_corr
             y =  p_ind_corr/p_cal-1
