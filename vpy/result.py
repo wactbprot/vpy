@@ -102,7 +102,7 @@ class Result(Analysis):
         valid for the measurement only
         """
 
-        T_gas = ana.pick("Temperature", "after", "K")
+        T_gas = ana.pick("Temperature", "gas", "K")
         T_gas_mean = np.mean(T_gas)
         T_gas_unc = np.std(T_gas)*k
         T_gas_mean_str = self.Val.round_to_uncertainty(T_gas_mean, T_gas_unc, 2)

@@ -45,14 +45,16 @@ def main():
             cal = Cal(doc)
             res = Analysis(doc)
 
-            cal.temperature_comp(res)           
+            cal.temperature_comp(res)
+            cal.temperature_gas_direct(res)
+            
             cal.pressure_comp(res)
             
             cal.offset_from_sample(res)
 
             gas = cal.Aux.get_gas()
 
-            temperature_dict = res.pick_dict('Temperature', 'compare')       
+            temperature_dict = res.pick_dict('Temperature', 'compare')
            
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
             offset = res.pick("Pressure","offset_sample", unit)

@@ -62,6 +62,7 @@ def main():
             cal.temperature_before(res)
             cal.temperature_after(res)
             cal.temperature_room(res)
+            cal.temperature_gas_expansion(res)
             cal.real_gas_correction(res)
             cal.volume_add(res)
             cal.volume_start(res)

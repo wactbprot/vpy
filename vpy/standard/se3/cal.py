@@ -549,7 +549,7 @@ class Cal(Se3):
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
             off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
-            print(CompareDev.name)
+          
             p = ind - off
           
             if compare_target is not None:
@@ -653,7 +653,7 @@ class Cal(Se3):
         *channel 1001 to 1030* and *channel 2001 to 2028*
 
         :param: instance of a class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
+                store(quantity, type, value, unit, [stdev], [N]) and
                 pick(quantity, type, unit)
         :type: class
         """
@@ -677,12 +677,37 @@ class Cal(Se3):
         """Calculates the temperature of the room.
 
         :param: instance of a class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
+                store(quantity, type, value, unit, [stdev], [N]) and
                 pick(quantity, type, unit)
         :type: class
         """
         t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_room")
         res.store("Temperature", "compare", t_mean, "K", t_stdv, t_N)
+    
+    def temperature_gas_expansion(self, res):
+        """Defines the gas temperature as the vessel 
+         temperature after expansion
+
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N]) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        gas_temp = res.pick('Temperature', 'after', 'K')
+        res.store("Temperature", "gas", gas_temp, "K")
+
+    def temperature_gas_direct(self, res):
+        """Defines the gas temperature as the 
+         temperature of the vacuum pipes
+
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N]) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        gas_temp = res.pick('Temperature', 'compare', 'K')
+        res.store("Temperature", "gas",gas_temp , "K")
+
 
     def offset_from_sample(self, res):
         range_offset_trans = {
