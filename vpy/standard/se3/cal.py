@@ -27,9 +27,7 @@ class Cal(Se3):
 
         dt = self.Time.amt_to_date("amt_fill", "ms")
         self.loop_check_dict(check=self.analysis_check, compare=res, date=dt, result=chk)
-        
-
-        
+           
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
         min/max-list (stored in ``self.state_check``).
@@ -49,7 +47,6 @@ class Cal(Se3):
         dt = self.Time.amt_to_date("amt", "ms")
         self.loop_check_dict(check=self.state_check, compare=res, date=dt, result=chk)
         
-
     def loop_check_dict(self, check, compare,  date, result):
         """Loops over the given ``check`` dict. Compares the entries witth ``compare``
         and writes the results plus date to ``result`` 
@@ -253,7 +250,6 @@ class Cal(Se3):
         :type: class
         """
 
-
         vol_add_branch = res.pick('Volume', dict_type='add_branch', dict_unit='cm^3', dest='AuxValues')[-1]
         vol_a = res.pick('Volume', dict_type='a', dict_unit='cm^3', dest='AuxValues')[-1]
         vol_b = res.pick('Volume', dict_type='b', dict_unit='cm^3', dest='AuxValues')[-1]
@@ -269,7 +265,6 @@ class Cal(Se3):
         i_b = np.where(dut_b == "open")
         i_c = np.where(dut_c == "open")
 
-        
         if np.shape(i_a)[1] > 0:
             vol[i_a] = vol[i_a] + vol_a
         if np.shape(i_b)[1] > 0:
@@ -289,6 +284,7 @@ class Cal(Se3):
             pick_dict(quantity, type)
         :type: class
         """
+
         ind = res.pick("Pressure", "ind_corr",self.unit)
         cal = res.pick("Pressure", "cal" ,self.unit)
         
@@ -536,7 +532,7 @@ class Cal(Se3):
         self.log.debug("start calculation of compare pressure") 
 
         meas_time = self.Time.get_value("amt_meas", "ms")
-        compare_target = self.Pres.get_value("target_compare", self.unit)
+        compare_target = self.Pres.get_value("target_pressure", self.unit)
 
         N = len(self.compare_types)
 
@@ -549,7 +545,11 @@ class Cal(Se3):
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
             off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+<<<<<<< HEAD
           
+=======
+
+>>>>>>> d63442bb63055e4c17a718f927ea2f2aede5538c
             p = ind - off
           
             if compare_target is not None:
@@ -735,8 +735,5 @@ class Cal(Se3):
             offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
             sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
             n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))      
-
-
-        conv = self.Cons.get_conv(from_unit=sample_unit, to_unit=self.unit)
-
-        res.store("Pressure", "offset_sample", offs*conv , self.unit, sd_offs , n_offs)
+   
+        res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)

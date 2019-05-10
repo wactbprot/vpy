@@ -51,19 +51,17 @@ def main():
             cal.pressure_comp(res)
             
             cal.offset_from_sample(res)
-
-            gas = cal.Aux.get_gas()
+            offset_dict = res.pick_dict("Pressure","offset_sample")
 
             temperature_dict = res.pick_dict('Temperature', 'compare')
-           
+            gas = cal.Aux.get_gas()
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-            offset = res.pick("Pressure","offset_sample", unit)
-
+           
             ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
-             
+            offset = cal.CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
+            
             res.store("Pressure", "ind", ind, unit)
             res.store("Pressure", "ind_corr", ind - offset, unit)
-
             cal.error(res)
             
             io.save_doc(res.build_doc())
@@ -72,7 +70,7 @@ def main():
         ret = {"error": "no --ids found"}
         # print writes back to relay server by writing to std.out
     
-    print(json.dumps(ret))        
+    print(json.dumps(ret))
 
 if __name__ == "__main__":
     main()
