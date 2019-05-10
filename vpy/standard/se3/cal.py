@@ -545,11 +545,6 @@ class Cal(Se3):
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
             off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
-<<<<<<< HEAD
-          
-=======
-
->>>>>>> d63442bb63055e4c17a718f927ea2f2aede5538c
             p = ind - off
           
             if compare_target is not None:
