@@ -104,7 +104,6 @@ def main():
             # start making data sections
             res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana)
-           
             # start build cert table
             p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
             

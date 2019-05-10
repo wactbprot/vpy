@@ -186,8 +186,7 @@ class Analysis(Document):
         
         if ret is None:
             msg = "dict with type {} not found".format(dict_type)
-            self.log.error(msg)
-            sys.exit(msg)
+            self.log.warn(msg)
         else:
             return ret
 
@@ -219,13 +218,11 @@ class Analysis(Document):
                 sys.exit(msg)
         else:
             msg = "{} not in self.doc".format(dest)            
-            self.log.error(msg)
-            sys.exit(msg)
+            self.log.warn(msg)
 
         if value_ret is None: 
             msg = "dict with type {} not found".format(dict_type)
-            self.log.error(msg)
-            sys.exit(msg)
+            self.log.warn(msg)
         else:
             if with_stats:
                 return value_ret, sd_ret, n_ret

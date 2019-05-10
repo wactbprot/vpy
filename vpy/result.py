@@ -121,8 +121,6 @@ class Result(Analysis):
         gas = self.ToDo.get_gas()
         p_min, p_max, unit = self.ToDo.get_min_max_pressure()
         
-        self.store_dict(quant="CalibrationData", d={}, dest=None, plain=True)
-
         sec = {
             "PressureRangeBegin": p_min,
             "PressureRangeEnd": p_max,
@@ -264,12 +262,14 @@ class Result(Analysis):
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
+
         ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
         error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
         cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
         u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
+
         u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)
 
         range_str = self.get_reduced_range_str(ana, av_idx)
