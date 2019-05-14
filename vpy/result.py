@@ -44,22 +44,24 @@ class Result(Analysis):
         "mbar": "\\mbar",
         "Pa": "\\Pa"
         }
-    gas = {
-        "de": {
-            "He": "Helium",
-            "Ar": "Argon",
-            "H2": "Wasserstoff",
-            "N2": "Stickstoff",
-            "Ne": "Neon"
-            },
-        "en": {
-            "He": "helium",
-            "Ar": "argon",
-            "H2": "hydrogen",
-            "N2": "nitrogen",
-            "Ne": "neon"
-            }
-        }
+    ## wrong position for that kind of info
+    ## 
+    #gas = {
+    #    "de": {
+    #        "He": "Helium",
+    #        "Ar": "Argon",
+    #        "H2": "Wasserstoff",
+    #        "N2": "Stickstoff",
+    #        "Ne": "Neon"
+    #        },
+    #    "en": {
+    #        "He": "helium",
+    #        "Ar": "argon",
+    #        "H2": "hydrogen",
+    #        "N2": "nitrogen",
+    #        "Ne": "neon"
+    #        }
+    #    }
 
     def __init__(self, doc, result_type="expansion"):
 
@@ -130,7 +132,6 @@ class Result(Analysis):
             "MeasurementDate": self.Date.first_measurement(),
             "RoomTemperature": T_room_mean_str,
             "RoomTemperatureUncertainty": T_room_unc_str,
-            "GasSpecies": self.gas[self.lang][gas],
             "Evis": self.Val.round_to_uncertainty(e_vis, u_vis, 2),
             "CFvis": self.Val.round_to_uncertainty(cf_vis, u_vis, 2),
         }
