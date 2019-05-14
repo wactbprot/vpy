@@ -41,7 +41,8 @@ def main():
                 del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
             
-            res = Result(doc)
+            result_type = doc.get('Calibration').get('Analysis', {}).get("AnalysisType", "default")
+            res = Result(doc, result_type=result_type)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)

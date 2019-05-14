@@ -61,12 +61,13 @@ class Result(Analysis):
             }
         }
 
-    def __init__(self, doc):
+    def __init__(self, doc, result_type="expansion"):
 
         d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         init_dict = {"Date": [{
                     "Type": "generated",
-                    "Value": d}]
+                    "Value": d}],
+                    "ResultType": result_type
              }
 
         self.ToDo = ToDo(doc)
@@ -76,7 +77,6 @@ class Result(Analysis):
         self.lang = doc.get("Calibration",{}).get("Customer",{}).get("Lang", "en")
         self.org = copy.deepcopy(doc)
         super().__init__(doc, init_dict)
-
 
     def gatherby_idx(self, l, compare_function):
         groups = {}

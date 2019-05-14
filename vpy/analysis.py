@@ -11,7 +11,7 @@ class Analysis(Document):
     the calculation results of analysis.
     """
 
-    def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True):
+    def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None):
 
         if init_dict is None:
             d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -27,8 +27,9 @@ class Analysis(Document):
         if git_hash:
             init_dict['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
         
-        
-
+        if analysis_type:
+            init_dict['AnalysisType'] = analysis_type
+             
         if insert_dict:
             for insert_key in insert_dict:
                 init_dict[insert_key] = insert_dict[insert_key]
@@ -323,7 +324,7 @@ class Analysis(Document):
 
                 function returns empty arrays for 
                 ```len(agerage_index) < 3```
-                
+
         """
         error_dict = self.pick_dict(quant='Error', dict_type='ind')
         error = error_dict.get('Value')

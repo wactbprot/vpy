@@ -43,7 +43,7 @@ def main():
 
             # renew the AuxValues
             cal = Cal(doc)
-            res = Analysis(doc)
+            res = Analysis(doc, analysis_type="direct")
 
             cal.temperature_comp(res)
             cal.temperature_gas_direct(res)
