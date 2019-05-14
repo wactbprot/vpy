@@ -81,7 +81,7 @@ def main():
             average_index = ana.coarse_error_filtering(average_index=average_index)
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
 
-            # plot to rm outliers and check evis
+            # plot to rm outliers and check
             x = p_ind_corr
             y =  p_ind_corr/p_cal-1
             plt.xscale('symlog', linthreshx=1e-12)
@@ -103,7 +103,7 @@ def main():
             else:
                  d = {"AverageIndex": average_index}
 
-            ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
                               
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)

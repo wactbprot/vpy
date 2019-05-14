@@ -34,6 +34,8 @@ def main():
     
     if '-a' in args:
         auxval = True
+    else:
+        auxval = False
 
     if not fail and len(ids) >0:
         base_doc = io.get_base_doc("se3")

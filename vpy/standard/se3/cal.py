@@ -485,9 +485,9 @@ class Cal(Se3):
             # get a offset value for each pressure value:
             off = self.Pres.get_value(self.offset_types[i], self.unit)
             # get one offet value for all pressure values:
-            if off is None:
-                off = self.Aux.get_val_by_time(
-                    meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+            #if off is None:
+            #    off = self.Aux.get_val_by_time(
+            #        meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
             if fill_target is not None:
@@ -687,7 +687,7 @@ class Cal(Se3):
         res.store("Temperature", "compare", t_mean, "K", t_stdv, t_N)
         # same same
         res.store("Temperature", "room", t_mean, "K", t_stdv, t_N)
-        
+
     def temperature_gas_expansion(self, res):
         """Defines the gas temperature as the vessel 
          temperature after expansion

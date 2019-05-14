@@ -132,9 +132,9 @@ class Result(Analysis):
         }
 
         if result_type == "expansion":
-            e_vis = ana.doc.get("AuxValues", {}).get("Evis")
-            cf_vis = ana.doc.get("AuxValues", {}).get("CFvis")
-            u_vis = ana.doc.get("AuxValues", {}).get("Uvis")
+            e_vis = self.doc.get("AuxValues", {}).get("Evis")
+            cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
+            u_vis = self.doc.get("AuxValues", {}).get("Uvis")
             sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
             sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
 
@@ -265,7 +265,7 @@ class Result(Analysis):
             return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
-        av_idx = ana.doc["AuxValues"]["AverageIndex"]
+        av_idx = self.doc["AuxValues"]["AverageIndex"]
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
