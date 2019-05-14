@@ -547,15 +547,11 @@ class Cal(Se3):
             self.log.debug("Working on compare pressure of device {}".format(CompareDev.name))
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
-<<<<<<< HEAD
             off = self.Pres.get_value(self.compare_offset_types[i], self.unit)
             # get one offet value for all pressure values:
             if off is None:
                 off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
-=======
-            off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
->>>>>>> 928008c1421308fa8e5acd42dbce1315b78a1078
             p = ind - off
           
             if compare_target is not None:
