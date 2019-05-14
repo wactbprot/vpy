@@ -40,7 +40,7 @@ def main():
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
-            
+
             result_type = doc.get('Calibration').get('Analysis', {}).get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
             
@@ -93,14 +93,18 @@ def main():
             plt.show()
 
             average_index = ana.ask_for_reject(average_index=average_index)
-            e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
+            if result_type == "expansion":
+                e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
             
-            d = {"AverageIndex": average_index,
-                "Evis":e_vis,
-                "CFvis":cf_vis,
-                "Uvis":u_vis,
-                "VisUnit":vis_unit
-            }
+                d = {"AverageIndex": average_index,
+                    "Evis":e_vis,
+                    "CFvis":cf_vis,
+                    "Uvis":u_vis,
+                    "VisUnit":vis_unit
+                 }
+            else:
+                 d = {"AverageIndex": average_index}
+                 
             ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
                               
             # start making data sections
