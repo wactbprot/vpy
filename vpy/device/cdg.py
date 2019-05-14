@@ -76,7 +76,7 @@ class Cdg(Device):
         pressure_value = np.array(pressure_dict.get('Value'))
         
         if pressure_unit == "V":
-           pressure = pressure_value * self.max_p/self.max_voltage
+            pressure = np.multiply(pressure_value , self.max_p/self.max_voltage)
         else:
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         

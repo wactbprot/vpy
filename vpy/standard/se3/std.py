@@ -67,24 +67,31 @@ class Se3(Standard):
                     "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3", ]
 
     
-    fill_types = ["1T_1-fill", "1T_2-fill", "1T_3-fill",
-                  "10T_1-fill",  "10T_2-fill", "10T_3-fill",
-                  "100T_1-fill", "100T_2-fill", "100T_3-fill",
-                  "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", ]
+    fill_types = [
+                    "1T_1-fill", "1T_2-fill", "1T_3-fill",
+                    "10T_1-fill",  "10T_2-fill", "10T_3-fill",
+                    "100T_1-fill", "100T_2-fill", "100T_3-fill",
+                    "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", ]
     
-    compare_types = ["1T_1-compare", "1T_2-compare", "1T_3-compare",
-                  "10T_1-compare",  "10T_2-compare", "10T_3-compare",
-                  "100T_1-compare", 
-                  "100T_2-compare", 
-                  "100T_3-compare",
-                  "1000T_1-compare", "1000T_2-compare", "1000T_3-compare", ]
+    compare_types = [
+                    "1T_1-compare", "1T_2-compare", "1T_3-compare",
+                    "10T_1-compare",  "10T_2-compare", "10T_3-compare",
+                    "100T_1-compare", "100T_2-compare", "100T_3-compare",
+                    "1000T_1-compare", "1000T_2-compare", "1000T_3-compare", ]
+    
+    compare_offset_types = [
+                    "1T_1-compare_offset", "1T_2-compare_offset", "1T_3-compare_offset",
+                    "10T_1-compare_offset",  "10T_2-compare_offset", "10T_3-compare_offset",
+                    "100T_1-compare_offset", "100T_2-compare_offset", "100T_3-compare_offset",
+                    "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset", ]
     
     state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
                   "10T_1-state",  "10T_2-state", "10T_3-state",
                   "100T_1-state", "100T_2-state", "100T_3-state",
                   "1000T_1-state", "1000T_2-state", "1000T_3-state", ]
 
-    offset_types = ["1T_1-offset", "1T_2-offset", "1T_3-offset",
+    offset_types = [
+                    "1T_1-offset", "1T_2-offset", "1T_3-offset",
                     "10T_1-offset",  "10T_2-offset", "10T_3-offset",
                     "100T_1-offset", "100T_2-offset", "100T_3-offset",
                     "1000T_1-offset", "1000T_2-offset", "1000T_3-offset", ]

@@ -482,8 +482,12 @@ class Cal(Se3):
             p_corr = np.full(self.no_of_meas_points, np.nan)
 
             ind = self.Pres.get_value(self.fill_types[i], self.unit)
-            off = self.Aux.get_val_by_time(
-                meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+            # get a offset value for each pressure value:
+            off = self.Pres.get_value(self.offset_types[i], self.unit)
+            # get one offet value for all pressure values:
+            if off is None:
+                off = self.Aux.get_val_by_time(
+                    meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
             if fill_target is not None:
@@ -509,7 +513,6 @@ class Cal(Se3):
             cor_arr.append(p_corr)
             u_arr.append(u)
         
-
         p_mean = self.Pres.weight_array_mean(cor_arr, u_arr)
                 
         def cnt_nan(d):
@@ -544,7 +547,10 @@ class Cal(Se3):
             self.log.debug("Working on compare pressure of device {}".format(CompareDev.name))
             p_corr = np.full(self.no_of_meas_points, np.nan)
             ind = self.Pres.get_value(self.compare_types[i], self.unit)
-            off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
+            off = self.Pres.get_value(self.compare_offset_types[i], self.unit)
+            # get one offet value for all pressure values:
+            if off is None:
+                off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
 
             p = ind - off
           
