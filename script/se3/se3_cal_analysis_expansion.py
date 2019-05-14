@@ -1,5 +1,5 @@
 """
-python script/se3/se3_cal_analysis_expansion.py --ids 'cal-2019-se3-kk-75002_0001'  -a # keep aux values
+python script/se3/se3_cal_analysis_expansion.py --ids 'cal-2019-se3-kk-75002_0001'  # -a #--> new aux values
 """
 import sys
 import os
@@ -34,8 +34,6 @@ def main():
     
     if '-a' in args:
         auxval = True
-    else:
-        auxval = False
 
     if not fail and len(ids) >0:
         base_doc = io.get_base_doc("se3")
@@ -44,24 +42,23 @@ def main():
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
 
-            if auxval: ## keep auxvalues
-                # keep the AuxValues containing related outgasing and additional volumes
-                auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
-                res = Analysis(doc, insert_dict={'AuxValues': auxvalues})
-                cal = Cal(doc)
-            else:
-                # renew the AuxValues
+            if auxval: ## get new the AuxValues from related (meas_date) state measurement 
                 cal = Cal(doc)
                 meas_date = cal.Date.first_measurement()
                 state_doc = io.get_state_doc("se3", date=meas_date) 
-                res = Analysis(doc)
+                res = Analysis(doc, analysis_type="expansion")
                 cal.insert_state_results(res, state_doc)
-              
+            else: ## keep AuxValues from Calibration.Analysis.AuxValues
+                auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
+                res = Analysis(doc, insert_dict={'AuxValues': auxvalues}, analysis_type="expansion")
+                cal = Cal(doc)
+
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
             cal.temperature_after(res)
             cal.temperature_room(res)
+            cal.temperature_gas_expansion(res)
             cal.real_gas_correction(res)
             cal.volume_add(res)
             cal.volume_start(res)
@@ -79,7 +76,6 @@ def main():
         ret = {"error": "no --ids found"}
         # print writes back to relay server by writing to std.out
     
-    print(json.dumps(ret))        
-
+    print(json.dumps(ret))
 if __name__ == "__main__":
     main()

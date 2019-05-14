@@ -44,29 +44,32 @@ class Result(Analysis):
         "mbar": "\\mbar",
         "Pa": "\\Pa"
         }
-    gas = {
-        "de": {
-            "He": "Helium",
-            "Ar": "Argon",
-            "H2": "Wasserstoff",
-            "N2": "Stickstoff",
-            "Ne": "Neon"
-            },
-        "en": {
-            "He": "helium",
-            "Ar": "argon",
-            "H2": "hydrogen",
-            "N2": "nitrogen",
-            "Ne": "neon"
-            }
-        }
+    ## wrong position for that kind of info
+    ## 
+    #gas = {
+    #    "de": {
+    #        "He": "Helium",
+    #        "Ar": "Argon",
+    #        "H2": "Wasserstoff",
+    #        "N2": "Stickstoff",
+    #        "Ne": "Neon"
+    #        },
+    #    "en": {
+    #        "He": "helium",
+    #        "Ar": "argon",
+    #        "H2": "hydrogen",
+    #        "N2": "nitrogen",
+    #        "Ne": "neon"
+    #        }
+    #    }
 
-    def __init__(self, doc):
+    def __init__(self, doc, result_type="expansion"):
 
         d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         init_dict = {"Date": [{
                     "Type": "generated",
-                    "Value": d}]
+                    "Value": d}],
+                    "ResultType": result_type
              }
 
         self.ToDo = ToDo(doc)
@@ -76,7 +79,6 @@ class Result(Analysis):
         self.lang = doc.get("Calibration",{}).get("Customer",{}).get("Lang", "en")
         self.org = copy.deepcopy(doc)
         super().__init__(doc, init_dict)
-
 
     def gatherby_idx(self, l, compare_function):
         groups = {}
@@ -90,20 +92,19 @@ class Result(Analysis):
 
     def make_calibration_data_section(self, ana):
         """The Calibration data section should contain data valid
-        for the entire calibration run
-        """
-        p_min, p_max, unit = self.ToDo.get_min_max_pressure()
-        
-        self.store_dict(quant="CalibrationData", d={"PressureRangeBegin": p_min,
-                                                    "PressureRangeEnd": p_max,
-                                                    "PressureRangeUnit": unit}, dest=None, plain=True)
+        for the entire calibration run.
 
-    def make_measurement_data_section(self, ana):
+        The former p_min, p_max values generated here belong to the
+        measurement (expanstion, direct measurement).
+        """
+        pass
+
+    def make_measurement_data_section(self, ana, k=2, result_type="expansion"):
         """The measurement data section should contain data 
         valid for the measurement only
         """
-        k = 2
-        T_gas = ana.pick("Temperature", "after", "K")
+
+        T_gas = ana.pick("Temperature", "gas", "K")
         T_gas_mean = np.mean(T_gas)
         T_gas_unc = np.std(T_gas)*k
         T_gas_mean_str = self.Val.round_to_uncertainty(T_gas_mean, T_gas_unc, 2)
@@ -115,55 +116,59 @@ class Result(Analysis):
         T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
         T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
 
-        e_vis = ana.doc.get("AuxValues", {}).get("Evis")
-        cf_vis = ana.doc.get("AuxValues", {}).get("CFvis")
-        u_vis = ana.doc.get("AuxValues", {}).get("Uvis")
  
         gas = self.ToDo.get_gas()
-
-        sec = { "GasTemperature": T_gas_mean_str,
-                "GasTemperatureUncertainty": T_gas_unc_str,
-                "MeasurementDate": self.Date.first_measurement(),
-                "RoomTemperature": T_room_mean_str,
-                "RoomTemperatureUncertainty": T_room_unc_str,
-                "GasSpecies": self.gas[self.lang][gas],
-                "Evis": self.Val.round_to_uncertainty(e_vis, u_vis, 2),
-                "CFvis": self.Val.round_to_uncertainty(cf_vis, u_vis, 2),
+        p_min, p_max, unit = self.ToDo.get_min_max_pressure()
+        
+        sec = {
+            "PressureRangeBegin": p_min,
+            "PressureRangeEnd": p_max,
+            "PressureRangeUnit": unit,
+            "GasTemperature": T_gas_mean_str,
+            "GasTemperatureUncertainty": T_gas_unc_str,
+            "MeasurementDate": self.Date.first_measurement(),
+            "RoomTemperature": T_room_mean_str,
+            "RoomTemperatureUncertainty": T_room_unc_str
         }
+
+        if result_type == "expansion":
+            e_vis = ana.doc.get("AuxValues", {}).get("Evis")
+            cf_vis = ana.doc.get("AuxValues", {}).get("CFvis")
+            u_vis = ana.doc.get("AuxValues", {}).get("Uvis")
+            sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
+            sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
+
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
-    def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit):
+    def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_std = self.get_reduced_uncert_std(ana, av_idx, error_unit)
         cal_str = self.Val.round_to_uncertainty_array(cal, u_std*cal, 2, scientific=True)
 
         return cal_str
 
-    def make_ind_entry(self, ana, av_idx, pressure_unit, error_unit):
+    def make_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
         ind_str = self.Val.round_to_uncertainty_array(ind, u_total*ind, 2, scientific=True)
 
         return ind_str
 
-    def make_error_entry(self, ana, av_idx, pressure_unit, error_unit):
-        k=2
+    def make_error_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         error = self.get_reduced_error(ana, av_idx, error_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
         error_str = self.Val.round_to_uncertainty_array(error, u_total*k, 2)
 
         return error_str
     
-    def make_cf_entry(self, ana, av_idx, pressure_unit, error_unit):
-        k=2
+    def make_cf_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         cf = self.get_reduced_cf(ana, av_idx, error_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
         cf_str = self.Val.round_to_uncertainty_array(cf, u_total*k, 2)
 
         return cf_str
 
-    def make_uncert_cal_entry(self, ana, av_idx, pressure_unit, error_unit):      
-        k=2
+    def make_uncert_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_std = self.get_reduced_uncert_std(ana, av_idx, error_unit)
 
@@ -172,8 +177,7 @@ class Result(Analysis):
 
         return  u_std_k2_str     
 
-    def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit):      
-        k=2
+    def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind (ana, av_idx, pressure_unit)
         u_dev = self.get_reduced_uncert_dev(ana, av_idx, error_unit)
 
@@ -182,8 +186,7 @@ class Result(Analysis):
 
         return  u_dev_k2_str     
 
-    def make_uncert_error_entry(self, ana, av_idx, pressure_unit, error_unit):      
-        k=2
+    def make_uncert_error_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):      
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
@@ -193,8 +196,7 @@ class Result(Analysis):
 
         return  u_e_k2_str     
 
-    def make_uncert_cf_entry(self, ana, av_idx, pressure_unit, error_unit):
-        k=2
+    def make_uncert_cf_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
@@ -255,21 +257,26 @@ class Result(Analysis):
         return cf
 
     def get_reduced_range_str(self, ana, av_idx):
-        range_str = ana.pick_dict("Range", "ind").get("Value")
-        if range_str is not None:
+        range_dict = ana.pick_dict("Range", "ind")
+        if range_dict is not None:
+            range_str = range_dict.get("Value")
             return [range_str[v[0]] for v in av_idx]
+        else:
+            return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
         av_idx = ana.doc["AuxValues"]["AverageIndex"]
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
+
         ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
         error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
         cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
         u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
+
         u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)
 
         range_str = self.get_reduced_range_str(ana, av_idx)

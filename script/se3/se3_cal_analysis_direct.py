@@ -43,17 +43,19 @@ def main():
 
             # renew the AuxValues
             cal = Cal(doc)
-            res = Analysis(doc)
+            res = Analysis(doc, analysis_type="direct")
 
-            cal.temperature_comp(res)           
+            cal.temperature_comp(res)
+            cal.temperature_gas_direct(res)
+            
             cal.pressure_comp(res)
             
             cal.offset_from_sample(res)
             offset_dict = res.pick_dict("Pressure","offset_sample")
 
-            temperature_dict = res.pick_dict('Temperature', 'compare')       
+            temperature_dict = res.pick_dict('Temperature', 'compare')
             gas = cal.Aux.get_gas()
-            ind_dict = cal.Pres.get_dict('Type', 'ind' )       
+            ind_dict = cal.Pres.get_dict('Type', 'ind' )
            
             ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
             offset = cal.CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
@@ -68,7 +70,7 @@ def main():
         ret = {"error": "no --ids found"}
         # print writes back to relay server by writing to std.out
     
-    print(json.dumps(ret))        
+    print(json.dumps(ret))
 
 if __name__ == "__main__":
     main()
