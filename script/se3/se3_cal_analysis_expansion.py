@@ -42,14 +42,13 @@ def main():
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
 
-            if auxval: ## renew the AuxValues
-                # keep the AuxValues containing related outgasing and additional volumes 
+            if auxval: ## get new the AuxValues from related (meas_date) state measurement 
                 cal = Cal(doc)
                 meas_date = cal.Date.first_measurement()
                 state_doc = io.get_state_doc("se3", date=meas_date) 
                 res = Analysis(doc, analysis_type="expansion")
                 cal.insert_state_results(res, state_doc)
-            else: ## keep auxvalues
+            else: ## keep AuxValues from Calibration.Analysis.AuxValues
                 auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
                 res = Analysis(doc, insert_dict={'AuxValues': auxvalues}, analysis_type="expansion")
                 cal = Cal(doc)
@@ -77,7 +76,6 @@ def main():
         ret = {"error": "no --ids found"}
         # print writes back to relay server by writing to std.out
     
-    print(json.dumps(ret))        
-
+    print(json.dumps(ret))
 if __name__ == "__main__":
     main()
