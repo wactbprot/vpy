@@ -99,7 +99,7 @@ class Result(Analysis):
         """
         pass
 
-    def make_measurement_data_section(self, ana, k=2):
+    def make_measurement_data_section(self, ana, k=2, result_type="expansion"):
         """The measurement data section should contain data 
         valid for the measurement only
         """
@@ -116,9 +116,6 @@ class Result(Analysis):
         T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
         T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
 
-        e_vis = ana.doc.get("AuxValues", {}).get("Evis")
-        cf_vis = ana.doc.get("AuxValues", {}).get("CFvis")
-        u_vis = ana.doc.get("AuxValues", {}).get("Uvis")
  
         gas = self.ToDo.get_gas()
         p_min, p_max, unit = self.ToDo.get_min_max_pressure()
@@ -131,10 +128,16 @@ class Result(Analysis):
             "GasTemperatureUncertainty": T_gas_unc_str,
             "MeasurementDate": self.Date.first_measurement(),
             "RoomTemperature": T_room_mean_str,
-            "RoomTemperatureUncertainty": T_room_unc_str,
-            "Evis": self.Val.round_to_uncertainty(e_vis, u_vis, 2),
-            "CFvis": self.Val.round_to_uncertainty(cf_vis, u_vis, 2),
+            "RoomTemperatureUncertainty": T_room_unc_str
         }
+
+        if result_type == "expansion":
+            e_vis = ana.doc.get("AuxValues", {}).get("Evis")
+            cf_vis = ana.doc.get("AuxValues", {}).get("CFvis")
+            u_vis = ana.doc.get("AuxValues", {}).get("Uvis")
+            sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
+            sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
+
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
     def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):

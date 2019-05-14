@@ -78,12 +78,10 @@ def main():
             u = ana.pick("Uncertainty", "total_rel", "1")
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-
             average_index = ana.coarse_error_filtering(average_index=average_index)
-          
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
 
-            # plot needed
+            # plot to rm outliers and check evis
             x = p_ind_corr
             y =  p_ind_corr/p_cal-1
             plt.xscale('symlog', linthreshx=1e-12)
@@ -104,12 +102,12 @@ def main():
                  }
             else:
                  d = {"AverageIndex": average_index}
-                 
+
             ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
                               
             # start making data sections
-            res.make_calibration_data_section(ana)
-            res.make_measurement_data_section(ana)
+            ## obsolet res.make_calibration_data_section(ana)
+            res.make_measurement_data_section(ana, result_type=result_type)
             # start build cert table
             p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
             
@@ -119,7 +117,6 @@ def main():
 
             plt.legend()
             plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
-            plt.xlabel('$p_{ind} - p_{r}$ in Pa')
             plt.ylabel('$e$')
             plt.grid(True)
             plt.show()
