@@ -85,6 +85,7 @@ def main():
             x = p_ind_corr
             y =  p_ind_corr/p_cal-1
             plt.xscale('symlog', linthreshx=1e-12)
+            print(u)
             plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
             for i, v in enumerate(x):
                 plt.text(v, y[i], i, rotation=45.)
