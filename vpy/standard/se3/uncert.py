@@ -1,6 +1,6 @@
+import sys
 import numpy as np
 import sympy as sym
-
 from .std import Se3
 
 
@@ -323,9 +323,6 @@ class Uncert(Se3):
             implement cal.offset from sample 
 
         """
-
-        ##### --> sd_offset, _,  = res.pick("Pressure", "offset_sample", with_stats=True)
-        ##### v----- kann raus
         range_offset_trans = {
            "X1":"offset_x1",
            "X0.1":"offset_x0.1",
@@ -343,9 +340,16 @@ class Uncert(Se3):
                     if ind_unit == sample_unit:
                         std = np.nanstd(offset_sample_value)
                         u[i_r] = np.abs(std/ind[i_r])
-            res.store("Uncertainty", "offset", u, "1")
+                    else:
+                        sys.exit("ind measurement unit and sample unit dont match")
         else:
-            sys.exit("ind measurement unit and sample unit dont match")
+            ## simple offset sample stored in Measurement.AuxValues.Pressure
+            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
+            if ind_unit == sample_unit:
+                std = np.nanstd(offset_sample_value)
+                u = np.abs(std/ind)
+           
+        res.store("Uncertainty", "offset", u, "1")
 
     def repeat(self, ana):
         
