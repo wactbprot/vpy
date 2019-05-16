@@ -242,7 +242,7 @@ class Analysis(Document):
                 a = a.tolist()
             b = []
             for v in a:  
-                if not isinstance(v, str) and math.isnan(v):
+                if not isinstance(v, str) and (math.isnan(v) or math.isinf(v)):
                     b.append(None)
                 else:
                     b.append(v)

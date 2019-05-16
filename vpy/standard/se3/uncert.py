@@ -347,7 +347,11 @@ class Uncert(Se3):
             offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
             if ind_unit == sample_unit:
                 std = np.nanstd(offset_sample_value)
-                u = np.abs(std/ind)
+                if std < 1e-10: ## all the same
+                    self.log.warn("standard deviation of offset sample < E-10")
+                    u = np.abs(np.nanmean(offset_sample_value)*0.29/ind)
+                else:
+                    u = np.abs(std/ind)
            
         res.store("Uncertainty", "offset", u, "1")
 
