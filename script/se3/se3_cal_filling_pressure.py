@@ -41,7 +41,7 @@ def get_fill_pressure_uncert_rel(cal, target_fill, target_unit):
     else:
         sys.exit("units dont match")
 
-def skip_by_pressure(cal, p, u, unit, min_p=50, max_p=133322, replacement = np.inf):
+def skip_by_pressure(cal, p, u, unit, min_p=80, max_p=133322, replacement = np.inf):
     if cal.unit == unit:
 
         out = (p <= min_p)  

@@ -26,7 +26,7 @@ def main(cal):
         f_uncert_rel = get_expansion_uncert_rel(cal, target_cal, target_unit)
         fill_uncert_rel = get_fill_pressure_uncert_rel(cal, target_fill, target_unit)
         u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
-        u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=50, max_p=133322.0)
+        u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit)
 
         res_dict = gen_result_dict(target_fill, u_rel, target_unit)
         
