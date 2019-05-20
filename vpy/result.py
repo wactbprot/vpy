@@ -113,8 +113,8 @@ class Result(Analysis):
         T_room = ana.pick("Temperature", "room", "K")
         T_room_mean = np.mean(T_room)
         T_room_unc = np.std(T_room)*k
-        T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
-        T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
+        T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 1)
+        T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 1)
 
         gas = self.ToDo.get_gas()
         p_min, p_max, unit = self.ToDo.get_min_max_pressure()
