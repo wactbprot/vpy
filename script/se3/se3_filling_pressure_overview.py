@@ -40,9 +40,9 @@ def main(cal):
     x = p_cal
     y = p_fill
     plt.plot(x, y, 'o-')
+    plt.title("SE3 $p_{fill}$ and $u(p_{cal})$ vs. $p_{cal}$")
     plt.xscale('symlog', linthreshx=1e-12) 
     plt.yscale('symlog', linthreshx=1e-12)
-    plt.xlabel('$p_{}$ in {}'.format("{cal}", target_unit))
     plt.ylabel('$p_{}$ in {}'.format("{fill}", target_unit))
     for i, v in enumerate(x):
         plt.text(x[i], y[i],  "${}$".format(f_name[i]), 
