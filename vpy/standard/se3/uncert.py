@@ -348,8 +348,8 @@ class Uncert(Se3):
             if ind_unit == sample_unit:
                 std = np.nanstd(offset_sample_value)
                 if std < 1e-10: ## all the same
-                    self.log.warn("standard deviation of offset sample < E-10, est. with 1% of measured value")
-                    u = np.abs(np.nanmean(offset_sample_value)*0.01/ind)
+                    self.log.warn("standard deviation of offset sample < E-10, est. with 5% of measured value")
+                    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
                 else:
                     u = np.abs(std/ind)
            

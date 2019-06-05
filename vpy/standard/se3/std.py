@@ -132,7 +132,10 @@ class Se3(Standard):
           "CDG100T3":{"Type":"100T_3-state", "Unit": "Pa" , "Max":3, "Min": -3,"Description":"Offset of 3rd 100T CDG"},
           "CDG1000T1":{"Type":"1000T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 1000T CDG"},
           "CDG1000T2":{"Type":"1000T_2-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 2nd 1000T CDG"},
-          "CDG1000T3":{"Type":"1000T_3-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 3rd 1000T CDG"}
+          "CDG1000T3":{"Type":"1000T_3-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 3rd 1000T CDG"},
+          "CDG5T1":{"Type":"5T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 5T CDG"},
+          "CDG50T1":{"Type":"50T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 50T CDG"},
+          "CDG500T1":{"Type":"500T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 500T CDG"},
         },
         "OutGasRate":{
           "Vessel":{"Type":"outgas_v", "Unit": "mbar/s" , "Max":1e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel only"},
