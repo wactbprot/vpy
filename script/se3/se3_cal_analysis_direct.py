@@ -13,6 +13,10 @@ from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
 
+from vpy.device.cdg import InfCdg, Cdg
+from vpy.device.srg import Srg
+from vpy.device.rsg import Rsg
+
 def main():
     io = Io()
     io.eval_args()
@@ -45,6 +49,16 @@ def main():
             cal = Cal(doc)
             res = Analysis(doc, analysis_type="direct")
 
+            if 'CustomerObject' in doc['Calibration']:
+                customer_device = doc['Calibration']['CustomerObject']
+                dev_class = customer_device.get('Class', "generic")
+                if dev_class == 'SRG':
+                    CustomerDevice = Srg(doc, customer_device)
+                if dev_class == 'CDG':
+                    CustomerDevice = Cdg(doc, customer_device)
+                if dev_class == 'RSG':
+                    CustomerDevice = Rsg(doc, {})
+      
             cal.temperature_comp(res)
             cal.temperature_gas_direct(res)
             
@@ -57,8 +71,8 @@ def main():
             gas = cal.Aux.get_gas()
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
            
-            ind = cal.CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
-            offset = cal.CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
+            ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
+            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
             
             res.store("Pressure", "ind", ind, unit)
             res.store("Pressure", "ind_corr", ind - offset, unit)

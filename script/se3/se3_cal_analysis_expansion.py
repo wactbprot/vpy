@@ -13,6 +13,12 @@ from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
 
+from vpy.device.dmm import Dmm
+from vpy.device.cdg import InfCdg, Cdg
+from vpy.device.srg import Srg
+from vpy.device.rsg import Rsg
+
+
 def main():
     io = Io()
     io.eval_args()
@@ -54,7 +60,17 @@ def main():
                 auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
                 res = Analysis(doc, insert_dict={'AuxValues': auxvalues}, analysis_type="expansion")
                 cal = Cal(doc)
-
+            
+            if 'CustomerObject' in doc['Calibration']:
+                customer_device = doc['Calibration']['CustomerObject']
+                dev_class = customer_device.get('Class', "generic")
+                if dev_class == 'SRG':
+                    CustomerDevice = Srg(doc, customer_device)
+                if dev_class == 'CDG':
+                    CustomerDevice = Cdg(doc, customer_device)
+                if dev_class == 'RSG':
+                    CustomerDevice = Rsg(doc, {})
+      
             cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
@@ -68,10 +84,28 @@ def main():
             cal.pressure_rise(res)
             cal.range(res)
             cal.pressure_cal(res)
-            cal.pressure_ind(res)
-            cal.error(res)
             cal.error_pressure_rise(res)
             cal.deviation_target_cal(res)
+
+            ## calculate customer indication
+            gas = cal.Aux.get_gas()
+            temperature_dict = res.pick_dict('Temperature', 'after')
+            offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
+            ind_dict = cal.Pres.get_dict('Type', 'ind' )
+            
+            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
+            ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
+            
+            res.store("Pressure", "offset", offset, cal.unit)
+            res.store("Pressure", "ind", ind, cal.unit)
+            res.store("Pressure", "ind_corr", ind - offset, cal.unit)
+            
+            # error for rating procedures
+            ind = res.pick("Pressure", "ind_corr", cal.unit)
+            cal = res.pick("Pressure", "cal" , cal.unit)        
+            res.store('Error', 'ind', ind/cal-1, '1')
+
+
             io.save_doc(res.build_doc())
            
     else:

@@ -273,47 +273,7 @@ class Cal(Se3):
             vol[i_c] = vol[i_c] + vol_c
 
         res.store("Volume", "add",   vol, "cm^3")
-    
-    def error(self, res):
-        """Calculates the error of indication from the calibration pressure and 
-        the corrected indicated pressure.
 
-        :param: instance of a class with methode
-            store(quantity, type, value, unit, [stdev], [N])) and
-            pick(quantity, type, unit)
-            pick_dict(quantity, type)
-        :type: class
-        """
-
-        ind = res.pick("Pressure", "ind_corr",self.unit)
-        cal = res.pick("Pressure", "cal" ,self.unit)
-        
-        res.store('Error', 'ind', ind/cal-1, '1')
-
-    def pressure_ind(self, res):
-        """Calculates the corrected indicated pressure in dependence
-         of the customer device. The offset  and the uncorrected 
-         indication are stored too.
-
-        :param: instance of a class with methode
-            store(quantity, type, value, unit, [stdev], [N])) and
-            pick(quantity, type, unit)
-            pick_dict(quantity, type)
-        :type: class
-        """
-        gas = self.Aux.get_gas()
-
-        temperature_dict = res.pick_dict('Temperature', 'after')
-        offset_dict = self.Pres.get_dict('Type', 'ind_offset' )    
-        ind_dict = self.Pres.get_dict('Type', 'ind' )
-
-        offset = self.CustomerDevice.pressure(offset_dict, temperature_dict, unit = self.unit, gas=gas)
-        ind = self.CustomerDevice.pressure(ind_dict, temperature_dict, unit = self.unit, gas=gas)
-        
-        res.store("Pressure", "offset", offset, self.unit)
-        res.store("Pressure", "ind", ind, self.unit)
-        res.store("Pressure", "ind_corr", ind - offset, self.unit)
-        self.log.debug("indicated pressure in {} is: {}".format(self.unit, ind))
     
     def deviation_target_fill(self, res):
         """Calculates the relative deviation from the target 

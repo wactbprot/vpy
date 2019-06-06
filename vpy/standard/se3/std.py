@@ -258,20 +258,7 @@ class Se3(Standard):
             # define model
             #self.no_of_meas_points = len(self.Pres.get_value("target_pressure", "Pa"))
             self.no_of_meas_points = len(self.Time.get_value("amt_fill", "ms"))
-            
-            ## the customer devices should be initialized in the scripts not here
-            ## customer device
-            #if 'CustomerObject' in doc['Calibration']:
-            #    customer_device = doc['Calibration']['CustomerObject']
-            #    dev_class = customer_device.get('Class', "generic")
-#
-            #    if dev_class == 'SRG':
-            #        self.CustomerDevice = Srg(doc, customer_device)
-            #    if dev_class == 'CDG':
-            #        self.CustomerDevice = Cdg(doc, customer_device)
-            #    if dev_class == 'RSG':
-            #        self.CustomerDevice = Rsg(doc, {})
-                
+          
         if self.temp_dev_name in self.Cobj.cob_by_name:
             self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
         self.FillDevs =[]
