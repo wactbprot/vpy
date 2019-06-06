@@ -11,18 +11,34 @@ class Io(object):
     """
 
     def __init__(self, path="."):
+        """Change the configuration the python way by a 
+        direct access to io.config....
         """
-        Gets the configuration out of the file: ``[path]/config.json``.
-        Default path is ``.``
-        """
-        # open and parse config file
 
-        if not 'config' in dir(self):
-            with open('{}/conf.json'.format(path)) as json_config_file:
-                config = json.load(json_config_file)
-
-        self.make_plot = config["plot"]["make"]
-        self.config = config
+        self.config = {
+                        "plot": {"path": "temppath", "make": True},
+                        "db": {
+                            "url": "http://localhost:5984",
+                            "name": "vl_db"
+                        },
+                        "standards": {
+                            "se3": {
+                                "all_doc_view": "se3_req/doc",
+                                "state_doc_view": "se3_req/state",
+                                "hist_data": "se3_req/group_normal_hist"
+                            },
+                            "se2": {
+                                "all_doc_view": "se2_req/doc"
+                            },
+                             "frs5": {
+                               "all_doc_view": "frs5_req/doc"
+                            },
+                            "dkm_ppc4":{
+                              "all_doc_view": "dkm_ppc4_req/doc"
+                            }
+                        }
+                    }
+        self.make_plot =  self.config["plot"]["make"]
 
     def eval_args(self):
         """

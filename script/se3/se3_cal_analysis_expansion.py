@@ -13,7 +13,6 @@ from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
 
-from vpy.device.dmm import Dmm
 from vpy.device.cdg import InfCdg, Cdg
 from vpy.device.srg import Srg
 from vpy.device.rsg import Rsg
