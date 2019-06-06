@@ -8,6 +8,8 @@ $[vpy]> python script/se3/se3_expansion_eval_fs.py --id "cal-2017-se3|frs5-vg-10
 """
 
 import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -44,7 +46,9 @@ def main():
         frs_uncert. total_standard(res)
 
         # SE3:
+       
         se3_calc = Se3Calc(doc)
+       
 
         se3_calc.temperature_before(res)
         se3_calc.temperature_after(res)

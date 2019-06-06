@@ -63,7 +63,7 @@ class Document(object):
 
         return ret
 
-    def get_value_and_unit(self, type):
+    def get_value_and_unit(self, d_type):
         """Intended use for this method: **extracting values when unit is unknown**.
         Searches ``dict`` by means of method ``get_object()`` and extracts the unit.
         Uses ``get_value()`` to shape values.
@@ -77,20 +77,18 @@ class Document(object):
         value = None
         unit = None
 
-        obj = self.get_object("Type", type)
+        obj = self.get_object("Type", d_type)
         if obj is not None:
             if "Unit" in obj:
                 unit = obj['Unit']
-                value = self.get_value(type, unit, obj)
+                value = self.get_value(d_type, unit, obj)
             else:
-                msg = "Missing Unit propertyfor Type: {}".format(type)
-                self.log.error(msg)
-                sys.exit(msg)
+                msg = "Missing Unit propertyfor Type: {}".format(d_type)
+                self.log.warn(msg)
 
         else:
-            msg = "Type {} not found".format(type)
-            self.log.error(msg)
-            sys.exit(msg)
+            msg = "Type {} not found".format(d_type)
+            self.log.warn(msg)
 
         return value, unit
 

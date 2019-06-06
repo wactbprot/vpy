@@ -481,14 +481,21 @@ class Cal(Se3):
             self.log.debug("Working on filling pressure of device {}".format(FillDev.name))
             p_corr = np.full(self.no_of_meas_points, np.nan)
 
-            ind = self.Pres.get_value(self.fill_types[i], self.unit)
+            v, u_ind = self.Pres.get_value_and_unit(self.fill_types[i])
+            conv = self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
+            ind = v*conv
+    
             # get a offset value for each pressure value:
-            off = self.Pres.get_value(self.offset_types[i], self.unit)
+            v, u_off = self.Pres.get_value_and_unit(self.offset_types[i])
             # get one offet value for all pressure values:
-            #if off is None:
-            #    off = self.Aux.get_val_by_time(
-            #        meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
-
+            if v is None:
+                v = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], u_ind)
+                conv = self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
+                off = v * conv
+            else:
+                conv = self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
+                off = v * conv
+            
             p = ind - off
             if fill_target is not None:
                 e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)

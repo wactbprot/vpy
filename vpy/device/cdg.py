@@ -52,9 +52,15 @@ class Cdg(Device):
                     sys.exit(msg)
 
             if 'Interpol' in dev:
-                self.interpol_p = self.get_value(value_type='p_ind', value_unit=self.unit)
+                # pressure
+                v, u = self.get_value_and_unit('p_ind')
+                conv = self.Const.get_conv(from_unit=u, to_unit=self.unit)
+                self.interpol_p = v * conv
+                # error
                 self.interpol_e = self.get_value(value_type='e', value_unit='1')
+                # uncertainty
                 self.interpol_u = self.get_value(value_type='u', value_unit='1')
+                
                 interpol_min = np.min(self.interpol_p)
                 interpol_max = np.max(self.interpol_p)
                 if self.min_p > interpol_min:
