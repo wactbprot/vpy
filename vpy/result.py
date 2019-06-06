@@ -40,10 +40,11 @@ class Result(Analysis):
         "mbar": "\\hecto\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
         "Pa":"\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
         }
-    unit = {
+    unit_trans = {
         "mbar": "\\mbar",
         "Pa": "\\Pa"
         }
+
     ## wrong position for that kind of info
     ## 
     #gas = {
@@ -99,7 +100,7 @@ class Result(Analysis):
         """
         pass
 
-    def make_measurement_data_section(self, ana, k=2, result_type="expansion"):
+    def make_measurement_data_section(self, ana, k=2, result_type="expansion", pressure_unit="Pa"):
         """The measurement data section should contain data 
         valid for the measurement only
         """
@@ -118,11 +119,11 @@ class Result(Analysis):
 
         gas = self.ToDo.get_gas()
         p_min, p_max, unit = self.ToDo.get_min_max_pressure()
-        
+        conv = float(self.Const.get_conv(from_unit=unit, to_unit=pressure_unit))
         sec = {
-            "PressureRangeBegin": p_min,
-            "PressureRangeEnd": p_max,
-            "PressureRangeUnit": unit,
+            "PressureRangeBegin": p_min*conv,
+            "PressureRangeEnd": p_max*conv,
+            "PressureRangeUnit": self.unit_trans[pressure_unit],
             "GasTemperature": T_gas_mean_str,
             "GasTemperatureUncertainty": T_gas_unc_str,
             "MeasurementDate": self.Date.first_measurement(),
@@ -136,6 +137,8 @@ class Result(Analysis):
             u_vis = self.doc.get("AuxValues", {}).get("Uvis")
             sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
             sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
+            sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
+            sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
 
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
@@ -401,7 +404,7 @@ class Result(Analysis):
 
         target = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Value"]
         target_unit = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Unit"]
-        target_unit = self.unit[target_unit]
+        target_unit = self.unit_trans[target_unit]
         gas = self.org["Calibration"]["ToDo"]["Gas"]
         language = self.org["Calibration"]["Customer"]["Lang"]
         gas = self.gas[language][gas]

@@ -280,7 +280,7 @@ class Analysis(Document):
             r = input("estimate the uncertainty (unit = 1) u(e_vis)={} (empty if ok): ".format(u_vis))
             if r == "":
                 break
-            e_vis = float(r)
+            u_vis = float(r)
         return e_vis, 1/(e_vis +1), u_vis, "1"
 
     def coarse_error_filtering(self, average_index):
