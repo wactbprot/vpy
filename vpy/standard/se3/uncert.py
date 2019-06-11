@@ -111,7 +111,7 @@ class Uncert(Se3):
             vol_start = 1.0
 
         self.val_dict['V_start'] = vol_start
-        self.val_dict['V_start'] = vol_add
+        self.val_dict['V_add'] = vol_add
 
     #def total_standard(self, res):
     #    u_1 = res.pick("Uncertainty", "v_start", "1")
