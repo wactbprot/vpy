@@ -99,12 +99,19 @@ class Uncert(Se3):
         self.val_dict={
         'f': res.pick("Expansion", "uncorr", "1"),
         'p_fill': res.pick("Pressure", "fill", self.unit),
-        'V_start': res.pick("Volume", "start", "cm^3"),
-        'V_add': res.pick("Volume", "add", "cm^3"),
         'T_before': res.pick("Temperature", "before", "K"),
         'T_after': res.pick("Temperature", "after", "K"),
         'rg': res.pick("Correction", "rg", "1"),
         }
+        vol_start = res.pick("Volume", "start", "cm^3")
+        vol_add =res.pick("Volume", "start", "cm^3")
+        
+        if vol_add is None:
+            vol_add = 0.0
+            vol_start = 1.0
+
+        self.val_dict['V_start'] = vol_start
+        self.val_dict['V_start'] = vol_add
 
     #def total_standard(self, res):
     #    u_1 = res.pick("Uncertainty", "v_start", "1")

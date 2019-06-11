@@ -204,6 +204,9 @@ class Analysis(Document):
         :type dict_unit: str
         """
         value_ret = None
+        sd_ret = None
+        n_ret = None
+        
         if dest in self.doc:
             if quant in self.doc[dest]:
                 doc = self.doc[dest][quant]
@@ -215,8 +218,7 @@ class Analysis(Document):
                             value_ret = self.get_value(dict_type, dict_unit, o=d)
             else:
                 msg = "{} not in Values".format(quant)
-                self.log.error(msg)
-                sys.exit(msg)
+                self.log.warn(msg)
         else:
             msg = "{} not in self.doc".format(dest)            
             self.log.warn(msg)
@@ -224,11 +226,11 @@ class Analysis(Document):
         if value_ret is None: 
             msg = "dict with type {} not found".format(dict_type)
             self.log.warn(msg)
+        
+        if with_stats:
+            return value_ret, sd_ret, n_ret
         else:
-            if with_stats:
-                return value_ret, sd_ret, n_ret
-            else:
-                return value_ret
+            return value_ret
     
     def make_writable(self, a):
         """ converts array, nd.array etc. to json writable lists.
