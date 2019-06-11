@@ -62,9 +62,9 @@ def main():
         se3_uncert = Se3Uncert(doc)
         se3_uncert.gen_val_dict(res)
         se3_uncert.gen_val_array(res)
-        #se3_uncert.pressure_fill(res)
-        #se3_uncert.temperature_after(res)
-        #se3_uncert.temperature_before(res)
+        se3_uncert.pressure_fill(res)
+        se3_uncert.temperature_after(res)
+        se3_uncert.temperature_before(res)
 
 
         rg = res.pick("Correction", "rg", "1")
