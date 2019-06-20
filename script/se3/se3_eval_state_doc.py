@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+#sys.path.append(os.environ["VIRTUAL_ENV"])
 
 import json
 from vpy.pkg_io import Io

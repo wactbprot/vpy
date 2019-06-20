@@ -58,6 +58,7 @@ class Cal(Se3):
                     dct = check[quant][head]
 
                     val = compare.pick(quant, dct['Type'], dct['Unit'])
+                    print(dct['Type'])
                     rnd_val = []
                     rtn_val = []
                     min = dct['Min']
@@ -158,6 +159,7 @@ class Cal(Se3):
         """
         self.log.debug("transfer state pressure")
         for state_type in self.state_types:
+            print(state_type)
             p = self.Pres.get_value(state_type, self.unit)
             res.store("Pressure", state_type, p, self.unit)
 

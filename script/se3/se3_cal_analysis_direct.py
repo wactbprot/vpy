@@ -28,7 +28,7 @@ def main():
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
         try:
-            ids = args[idx_ids].split(';')
+            ids = args[idx_ids].split('@')
         except:
            fail = True
 
