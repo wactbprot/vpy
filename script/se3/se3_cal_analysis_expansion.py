@@ -28,7 +28,8 @@ def main():
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
         try:
-            ids = args[idx_ids].split(';')
+            ids = args[idx_ids]
+            ids = ids.split('@')
         except:
            fail = True
 
@@ -45,6 +46,8 @@ def main():
     if not fail and len(ids) >0:
         base_doc = io.get_base_doc("se3")
         for id in ids:
+            id = id.replace("\"", "")
+
             doc = io.get_doc_db(id)
             if update:
                 doc = io.update_cal_doc(doc, base_doc)

@@ -1,5 +1,5 @@
 """
-python script/se3/se3_shape_todo.py --min_pressure 90 --max_pressure 130000 --pressure_unit Pa --ids 'cal-2019-se3-ik-4556_0001;cal-2019-se3-ik-4625_0001' --db 'vl_db_work'
+python script/se3/se3_shape_todo.py --min_pressure 90 --max_pressure 130000 --pressure_unit Pa --ids cal-2019-se3-ik-4556_0001@cal-2019-se3-ik-4625_0001 --db 'vl_db_work'
 """
 
 import sys
@@ -20,7 +20,7 @@ def main():
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
         try:
-            ids = args[idx_ids].split(';')
+            ids = args[idx_ids].split('@')
         except:
            fail = True
     
@@ -51,7 +51,6 @@ def main():
             doc = io.get_doc_db(id)
             todo = ToDo(doc)
             const = Constants(base_doc)
-            
             conv = const.get_conv(from_unit=pressure_unit, to_unit=todo.pressure_unit)
             max_pressure = max_pressure * conv
             min_pressure = min_pressure * conv

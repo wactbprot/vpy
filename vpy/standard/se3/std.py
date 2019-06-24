@@ -88,7 +88,8 @@ class Se3(Standard):
     state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
                   "10T_1-state",  "10T_2-state", "10T_3-state",
                   "100T_1-state", "100T_2-state", "100T_3-state",
-                  "1000T_1-state", "1000T_2-state", "1000T_3-state", ]
+                  "1000T_1-state", "1000T_2-state", "1000T_3-state", 
+                  "5T_1-state", "50T_1-state", "500T_1-state",]
 
     offset_types = [
                     "1T_1-offset", "1T_2-offset", "1T_3-offset",

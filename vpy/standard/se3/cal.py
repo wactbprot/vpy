@@ -455,8 +455,8 @@ class Cal(Se3):
             else:
                 conv = self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
                 off = v * conv
-            
-            p = ind - off
+           
+            p = ind -off
             if fill_target is not None:
                 e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
             else:
@@ -467,7 +467,7 @@ class Cal(Se3):
                 ind[s] = np.nan
            
             p_corr = p / (e + 1.0)
-            
+
             res.store("Pressure", "{}-fill".format(FillDev.name), p_corr, self.unit)
             res.store("Error", "{}-fill".format(FillDev.name), e, '1')
             res.store("Error", "{}-offset".format(FillDev.name), off/p_corr, '1')
@@ -529,7 +529,6 @@ class Cal(Se3):
             if len(s>0):
                 ind[s] = np.nan
 
-           
             p_corr = p / (e + 1.0)
             
             res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
