@@ -23,7 +23,7 @@ class Device(Document):
 
         super().__init__(dev)
 
-    def get_total_uncert(self, meas, unit, runit):
+    def get_total_uncert(self, meas, unit, runit, res=None):
         """ Collects all Uncertainty contrib. for the given
         measurant (m). Calculates the quadratic sum and returns
         a np.array of the length as of m.
@@ -92,6 +92,9 @@ class Device(Document):
 
                 self.log.debug("found type {}, append {} to uncertainty array".format(u_i.get('Type'), u))
                 u_arr.append( u )
+                if res is not None:
+                    uncert_type = "{dev}_{t}".format(dev=self.name, t=u_i.get('Type'))
+                    res.store("Uncertainty" , uncert_type, u, runit, descr=u_i.get("Description"))
 
             u = np.sqrt(np.nansum(np.power(u_arr, 2), axis=0))
 

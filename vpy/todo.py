@@ -98,7 +98,7 @@ class ToDo(Document):
         :rtype: dict
         """
         
-        pressure_dict = self.get_dict(key="Type", value="target")
+        pressure_dict = self.Pres.get_dict(key="Type", value="target")
         p = pressure_dict.get("Value")
         n = pressure_dict.get("N", [1]*len(p))
         u = pressure_dict.get("Unit")

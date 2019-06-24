@@ -125,6 +125,10 @@ class Io(object):
             
         else:
             pass
+    def read_json(self, fname):
+        with open(fname) as json_doc_file:
+            doc = json.load(json_doc_file)
+        return doc
 
     def load_doc(self):
         """Loads the document to analyse from the source
@@ -137,9 +141,7 @@ class Io(object):
             doc = self.get_doc_db(docid)
 
         if self.args.file:
-            fname = self.args.file[0]
-            with open(fname) as json_doc_file:
-                doc = json.load(json_doc_file)
+            doc = self.read_json(self.args.file[0])
 
         if doc:
             return doc
