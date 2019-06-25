@@ -277,7 +277,13 @@ class Analysis(Document):
                     b.append(v)
             return b
         return a
-    
+
+    def rm_nan(self, x):
+        """
+         https://stackoverflow.com/questions/11620914/removing-nan-values-from-an-array
+        """
+        return x[~np.isnan(x)]
+
     def ask_for_reject(self, average_index):
         """ Asks for points to reject. removes this points from average_index.
         Returns the resulting array of arrays.

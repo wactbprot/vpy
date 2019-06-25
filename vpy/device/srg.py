@@ -82,10 +82,13 @@ class Srg(Device):
         
         return pressure
 
-    def sigma_null(self, x x_unit, y, y_unit):
+    def sigma_null(self, x, x_unit, y, y_unit):
         """
         """
-        if x_unit == y:unit:
+        x = x[~np.isnan(x)]
+        y = y[~np.isnan(y)]
+        
+        if x_unit == y_unit:
             m = (len(x) * np.sum(x*y) - np.sum(x) * np.sum(y)) / (len(x)*np.sum(x*x) - np.sum(x) ** 2)
             sigma_0 = (np.sum(y) - m *np.sum(x)) / len(x)
 

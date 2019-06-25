@@ -36,7 +36,8 @@ class Values(Document):
                     super().__init__(doc[name])
                 else:
                     super().__init__({})
-
+    
+   
     def unit_convert(self, val, a, b="1"):
         """Returns value (or numpy array of values) converted from unit a to unit b.
         Returns value in SI units if no third argument is given.
