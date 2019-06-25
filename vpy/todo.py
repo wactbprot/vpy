@@ -23,6 +23,9 @@ class ToDo(Document):
 
         if 'Type' in doc:
             self.type = doc['Type']
+            if self.type == "srg_sigma":
+                self.type = "sigma"        
+
         if 'Values' in doc:
             if 'Pressure' in doc['Values']:
                 self.Pres = Pressure(doc['Values'])

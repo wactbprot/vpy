@@ -5,7 +5,7 @@ class Dmm(Device):
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
-
+        self.name = dev.get('Name') 
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):

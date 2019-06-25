@@ -13,13 +13,23 @@ import matplotlib.pyplot as plt
 def main(cal):
     
     N = 100
-    target_cals = np.logspace(-2, 3, num=50)
+    target_cals = np.logspace(-2, 2, num=150)
     target_unit = cal.unit
     
     p_fill = []
+    p_fill_s = []
+    p_fill_m = []
+    p_fill_l = []
+    
     p_cal = []
-    f_name = []
+    p_cal_s = []
+    p_cal_m = []
+    p_cal_l = []
+    
     u = []
+    u_s = []
+    u_m = []
+    u_l = []
     
     for i, target_cal in enumerate(target_cals):
         target_fill = get_fill_pressures(cal, target_cal, target_unit)
@@ -29,43 +39,43 @@ def main(cal):
         u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit)
 
         res_dict = gen_result_dict(target_fill, u_rel, target_unit)
-        
-        p_cal.append(target_cal)
-        p_fill.append(res_dict["Pressure_fill.Value"])
-        u.append(res_dict["Uncertainty_cal.Value"])
-        f_name.append(res_dict["Expansion.Value"])
+        if res_dict["Expansion.Value"] == "f_s":
+            p_cal_s.append(target_cal)
+            p_fill_s.append(res_dict["Pressure_fill.Value"])
+            u_s.append(res_dict["Uncertainty_cal.Value"])
     
+        if res_dict["Expansion.Value"] == "f_m":
+            p_cal_m.append(target_cal)
+            p_fill_m.append(res_dict["Pressure_fill.Value"])
+            u_m.append(res_dict["Uncertainty_cal.Value"])
+    
+        if res_dict["Expansion.Value"] == "f_l":
+            p_cal_l.append(target_cal)
+            p_fill_l.append(res_dict["Pressure_fill.Value"])
+            u_l.append(res_dict["Uncertainty_cal.Value"])
+    
+        p_cal.append(target_cal)  
+        p_fill.append(res_dict["Pressure_fill.Value"])  
+        u.append(res_dict["Uncertainty_cal.Value"])  
 
-    plt.subplot(211)
-    x = p_cal
-    y = p_fill
-    plt.plot(x, y, 'o-')
-    plt.title("SE3 $p_{fill}$ and $u(p_{cal})$ vs. $p_{cal}$")
-    plt.xscale('symlog', linthreshx=1e-12) 
-    plt.yscale('symlog', linthreshx=1e-12)
-    plt.ylabel('$p_{}$ in {}'.format("{fill}", target_unit))
-    for i, v in enumerate(x):
-        plt.text(x[i], y[i],  "${}$".format(f_name[i]), 
-                            horizontalalignment='left',
-                            verticalalignment='bottom',
-                            rotation=30.
-                            )
-    plt.grid(True)
+    plt.subplot(111)
+    plt.plot(p_cal, u, ':', color="black" )
 
-    plt.subplot(212)
-    x = p_cal
-    y = u
-    plt.plot(x, y, 'o-')
+    plt.plot(p_cal_s, u_s, 'o', color="red"  , label="$f_s$")
+    plt.plot(p_cal_m, u_m, 'o', color="green", label="$f_m$")
+    plt.plot(p_cal_l, u_l, 'o', color="blue" , label="$f_l$")
+
     plt.xscale('symlog', linthreshx=1e-12)
     plt.xlabel('$p_{}$ in {}'.format("{cal}", target_unit))
-    plt.ylabel('$u(p_{cal})$ (relative)')
-    for i, v in enumerate(x):
-        plt.text(x[i], y[i],  "${}$".format(f_name[i]), 
-                            horizontalalignment='left',
-                            verticalalignment='bottom',
-                            rotation=30.
-                            )
+    plt.ylabel('$u(p_{cal})$ (relative, k=1)')
+    #for i, v in enumerate(x):
+    #    plt.text(x[i], y[i],  "${}$".format(f_name[i]), 
+    #                        horizontalalignment='left',
+    #                        verticalalignment='bottom',
+    #                        rotation=30.
+    #                        )
     plt.grid(True)
+    plt.legend()
     plt.savefig("filling_pressure_overview.pdf", orientation='landscape', papertype='a4',)
     plt.show()
 

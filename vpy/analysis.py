@@ -37,14 +37,14 @@ class Analysis(Document):
         super().__init__(init_dict)
         self.org = copy.deepcopy(doc)
 
-    def store(self, quant, type, value, unit, sd=None, n=None, dest='Values'):
+    def store(self, quant, val_type, value, unit, sd=None, n=None, dest='Values', descr=None):
         """Stores the result of a calculation in
         the analysis structure under the given quant[ity]. See function ``store_dict()``
         for a more detailed explanation of ``dest`` and ``quant`` params.
 
         :param quant: quant measurement quantity (Pressure, Temperature ect)
         :type quant: str
-        :param type: name of type to store
+        :param val_type: name of value to store
         :type val: str
         :param value: value of type to store
         :type val: np.array
@@ -60,7 +60,15 @@ class Analysis(Document):
 
         value = self.make_writable(value)
 
-        o = {"Type": type, "Value": value, "Unit": unit}
+        o = {
+                "Type": val_type, 
+                "Value": value, 
+                "Unit": unit
+            }
+        
+        if descr is not None:
+            o["Description"] = descr
+
         if sd is not None:
             o['SdValue'] = self.make_writable(sd)
 
@@ -72,12 +80,12 @@ class Analysis(Document):
                 self.doc[dest][quant] = []
 
             self.doc[dest][quant].append(o)
-            self.log.info("stored values of type {} in {}".format(type, quant))
+            self.log.info("stored values of type {} in {}".format(val_type, quant))
         else:
             if quant not in self.doc:
                 self.doc[quant] = []
             self.doc[quant].append(o)
-            self.log.info("stored values of type {}".format(type))
+            self.log.info("stored values of type {}".format(val_type))
 
     def store_dict(self, quant, d, dest='Values', plain=False):
         """ Appends a dict to document under the given destination. 
@@ -152,7 +160,26 @@ class Analysis(Document):
             self.log.error(msg)
             sys.exit(msg)
 
-   
+    def get_type_array(self, quant, dest='Values', starts_with=None):
+        ret = []
+        if dest in self.doc:
+            if quant in self.doc[dest]:
+                doc = self.doc[dest][quant]
+                for d in doc:
+                    t = d.get('Type')
+                    if starts_with:
+                        if t.startswith(starts_with):
+                            ret.append(t)
+                    else:
+                        ret.append(t)
+            else:
+                msg = "{quant} not in {dest}".format(quant=quant, dest=dest)
+                self.log.warn(msg)
+        else:
+            msg = "{dest} not in self.doc".format(dest=dest)
+            self.log.warn(msg)
+        return ret
+
     def pick_dict(self, quant, dict_type, dest='Values'):
         """Picks and returns an already calculated value. 
         
@@ -250,7 +277,13 @@ class Analysis(Document):
                     b.append(v)
             return b
         return a
-    
+
+    def rm_nan(self, x):
+        """
+         https://stackoverflow.com/questions/11620914/removing-nan-values-from-an-array
+        """
+        return x[~np.isnan(x)]
+
     def ask_for_reject(self, average_index):
         """ Asks for points to reject. removes this points from average_index.
         Returns the resulting array of arrays.

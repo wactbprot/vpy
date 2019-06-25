@@ -133,12 +133,15 @@ class Result(Analysis):
 
         if result_type == "expansion":
             e_vis = self.doc.get("AuxValues", {}).get("Evis")
-            cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
             u_vis = self.doc.get("AuxValues", {}).get("Uvis")
-            sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
-            sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
-            sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
-            sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
+            if e_vis and u_vis:
+                sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
+                sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
+            
+            cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
+            if cf_vis:
+                sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
+                sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
 
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 

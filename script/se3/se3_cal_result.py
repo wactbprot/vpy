@@ -10,10 +10,13 @@ import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.result import Result
+from vpy.todo import ToDo
 from vpy.analysis import Analysis
 from vpy.constants import Constants
 from vpy.standard.se3.uncert import Uncert as UncertSe3 
-from vpy.device.device import Device
+from vpy.device.srg import Srg
+from vpy.device.cdg import Cdg
+
 import matplotlib.pyplot as plt
 def main():
     io = Io()
@@ -35,13 +38,18 @@ def main():
             doc = io.get_doc_db(id)
             
             customer_object = doc.get('Calibration').get('CustomerObject')
-            customer_device = Device(doc, customer_object)
+            if customer_object.get("Class") == "SRG":
+                customer_device = Srg(doc, customer_object)
+            if customer_object.get("Class") == "CDG":
+                customer_device = Cdg(doc, customer_object)
+            tdo = ToDo(doc)
             analysis = doc.get('Calibration').get('Analysis')
+            
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
 
-            result_type = doc.get('Calibration').get('Analysis', {}).get("AnalysisType", "default")
+            result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
@@ -64,9 +72,11 @@ def main():
             
             se3_uncert = UncertSe3(doc)
             if "Uncertainty" in customer_object:
+                print("uncertainty by customer device")
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
+                print("default uncertainty")
                 se3_uncert.offset(ana)
                 se3_uncert.repeat(ana)
                 offset_uncert = ana.pick("Uncertainty", "offset", "1")
@@ -78,12 +88,18 @@ def main():
             u = ana.pick("Uncertainty", "total_rel", "1")
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-            average_index = ana.coarse_error_filtering(average_index=average_index)
-            average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
+            #average_index = ana.coarse_error_filtering(average_index=average_index)
+            #average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
 
             # plot to rm outliers and check
-            x = p_ind_corr
-            y =  p_ind_corr/p_cal-1
+            if tdo.type == "error":
+                x = p_ind_corr
+                y = p_ind_corr/p_cal-1
+
+            if tdo.type == "sigma":
+                x = p_ind_corr
+                y = p_ind_corr/p_cal
+                
             plt.xscale('symlog', linthreshx=1e-12)
             plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
             for i, v in enumerate(x):
@@ -91,35 +107,62 @@ def main():
             plt.show()
 
             average_index = ana.ask_for_reject(average_index=average_index)
-            if result_type == "expansion":
+            d = {"AverageIndex": average_index}
+
+            if result_type == "expansion" and tdo.type == "error":
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
-            
-                d = {"AverageIndex": average_index,
-                    "Evis":e_vis,
-                    "CFvis":cf_vis,
-                    "Uvis":u_vis,
-                    "VisUnit":vis_unit
-                 }
-            else:
-                 d = {"AverageIndex": average_index}
+                d["Evis"] = e_vis,
+                d["CFvis"] = cf_vis,
+                d["Uvis"] = u_vis,
+                d["VisUnit"] =vis_unit
+
+            if result_type == "expansion" and tdo.type == "sigma":
+                p_ind_corr = res.get_reduced_pressure_ind(ana, average_index, unit)
+                p_cal = res.get_reduced_pressure_cal(ana, average_index, unit)
+                u = res.get_reduced_uncert_total(ana, average_index, "1")
+                
+                p_ind_corr =  res.rm_nan(p_ind_corr)
+                p_cal =  res.rm_nan(p_cal)
+                u =  res.rm_nan(u)
+
+                sigma_null, sigma_slope = customer_device.sigma_null(x=p_cal, x_unit=unit, y=p_ind_corr/p_cal, y_unit=unit)
+                d["SigmaNull"]  = sigma_null
+                d["SigmaSlope"] = sigma_slope
 
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
                               
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana, result_type=result_type)
-            # start build cert table
-            p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
-            
-            plt.subplot(111)
-            plt.xscale('symlog', linthreshx=1e-12)
-            plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
 
-            plt.legend()
-            plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
-            plt.ylabel('$e$')
-            plt.grid(True)
-            plt.show()
+            if tdo.type == "error":
+                # start build cert table
+                p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
+            
+                plt.subplot(111)
+                plt.xscale('symlog', linthreshx=1e-12)
+                plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
+
+                plt.legend()
+                plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
+                plt.ylabel('$e$')
+                plt.grid(True)
+                plt.show()
+            
+            if tdo.type == "sigma":
+                def lin_reg(p):
+                    return sigma_slope * p + sigma_null 
+               
+                plt.subplot(111)
+                plt.errorbar(p_cal, p_ind_corr/p_cal,   yerr=u*p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
+                plt.plot(p_cal, lin_reg(p_cal), linestyle="-" )
+                plt.legend()
+                plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
+                plt.ylabel('$\sigma$')
+                plt.xlabel('$p_{}$ in {}'.format("{cal}", unit))
+                plt.grid(True)
+                plt.show()
+            
             
             doc = ana.build_doc("Analysis", doc)
             doc = res.build_doc("Result", doc)

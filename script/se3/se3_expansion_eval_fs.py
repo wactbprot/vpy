@@ -43,7 +43,7 @@ def main():
         frs_calc.pressure_res(res)
         frs_calc.pressure_cal(res)
         frs_calc.pressure_cal(res)
-        frs_uncert. total_standard(res)
+        frs_uncert.total_standard(res)
 
         # SE3:
        
@@ -60,11 +60,12 @@ def main():
 
         # se3 uncert
         se3_uncert = Se3Uncert(doc)
+        se3_uncert.define_model()
         se3_uncert.gen_val_dict(res)
-        #se3_uncert.gen_val_array(res)
-        #se3_uncert.pressure_fill(res)
-        #se3_uncert.temperature_after(res)
-        #se3_uncert.temperature_before(res)
+        se3_uncert.gen_val_array(res)
+        se3_uncert.pressure_fill(res)
+        se3_uncert.temperature_after(res)
+        se3_uncert.temperature_before(res)
 
 
         rg = res.pick("Correction", "rg", "1")
@@ -102,14 +103,14 @@ def main():
 
         res.store("Uncertainty", "outgas",p_rise*u_p_rise/p_1 , "1")
 
-        #u_1 = res.pick("Uncertainty", "p_fill", "1")
-        #u_2 = res.pick("Uncertainty", "t_before", "1")
-        #u_3 = res.pick("Uncertainty", "t_after", "1")
+        u_1 = res.pick("Uncertainty", "p_fill", "1")
+        u_2 = res.pick("Uncertainty", "t_before", "1")
+        u_3 = res.pick("Uncertainty", "t_after", "1")
         u_4 = res.pick("Uncertainty", "nd", "1")
         u_5 = res.pick("Uncertainty", "outgas", "1")
         u_6 = res.pick("Uncertainty", "frs5_total_rel", "1")
 
-        u_t = np.sqrt(u_4**2+ u_5**2+ u_6**2)
+        u_t = np.sqrt(u_1**2+u_2**2+u_3**2+u_4**2+ u_5**2+ u_6**2)
         res.store("Uncertainty", "total", u_t, "1")
 
         #print(u_t)
@@ -134,10 +135,7 @@ def main():
         res.store("Expansion", "f_s", f, "1")
         f_s = np.mean(f[-5:-1])
         u_ex = np.std(f[-5:-1])/f_s
-        print(g_after/g_before)
-      
-        print(f_s)
-        print(u_ex)
+        
         # nd uncert
         #u = 0
         #for u_i in u_t:

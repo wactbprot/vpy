@@ -111,28 +111,28 @@ class Uncert(Se3):
             vol_start = 1.0
 
         self.val_dict['V_start'] = vol_start
-        self.val_dict['V_start'] = vol_add
+        self.val_dict['V_add'] = vol_add
 
-    #def total_standard(self, res):
-    #    u_1 = res.pick("Uncertainty", "v_start", "1")
-    #    u_2 = res.pick("Uncertainty", "v_5", "1")
-    #    u_3 = res.pick("Uncertainty", "p_fill", "1")
-    #    u_4 = res.pick("Uncertainty", "t_before", "1")
-    #    u_5 = res.pick("Uncertainty", "t_after", "1")
-    #    u_6 = res.pick("Uncertainty", "f", "1")
-    #    
-    #    u_t = np.sqrt(np.power(u_1, 2) +
-    #                  np.power(u_2, 2) +
-    #                  np.power(u_3, 2) +
-    #                  np.power(u_4, 2) +
-    #                  np.power(u_5, 2) +
-    #                  np.power(u_6, 2)
-    #                  )
-
-    #    res.store("Uncertainty", "standard", u_t, "1")
-    #    self.log.info("Calibration pressure: {}".format(
-    #        self.val_dict["f"] * self.val_dict["p_fill"]))
-    #    self.log.info("Uncertainty total: {}".format(u_t))
+    def total_standard(self, res):
+        u_1 = res.pick("Uncertainty", "v_start", "1")
+        u_2 = res.pick("Uncertainty", "v_5", "1")
+        u_3 = res.pick("Uncertainty", "p_fill", "1")
+        u_4 = res.pick("Uncertainty", "t_before", "1")
+        u_5 = res.pick("Uncertainty", "t_after", "1")
+        u_6 = res.pick("Uncertainty", "f", "1")
+        
+        u_t = np.sqrt(np.power(u_1, 2) +
+                      np.power(u_2, 2) +
+                      np.power(u_3, 2) +
+                      np.power(u_4, 2) +
+                      np.power(u_5, 2) +
+                      np.power(u_6, 2)
+                      )
+        res.store("Uncertainty", "standard", u_t, "1")
+        
+        self.log.info("Calibration pressure: {}".format(
+        self.val_dict["f"] * self.val_dict["p_fill"]))
+        self.log.info("Uncertainty total: {}".format(u_t))
 
     def temperature_after(self, res):
         """ Calculates the uncertainty of the temperature after expasion.
@@ -156,7 +156,7 @@ class Uncert(Se3):
         s_expr = sym.diff(self.model, sym.Symbol("T_after"))
         u = sym.lambdify(self.symb, s_expr, "numpy")
         # Sicherheitsfaktor
-        val = u(*self.val_arr) * u_pro * 2
+        val = np.abs(u(*self.val_arr) * u_pro * 2)
 
         p_nom = self.val_dict["f"] * self.val_dict["p_fill"]
 
@@ -194,7 +194,7 @@ class Uncert(Se3):
 
         s_expr = sym.diff(self.model, sym.Symbol("T_before"))
         u = sym.lambdify(self.symb, s_expr, "numpy")
-        val = u(*self.val_arr) * u_pro
+        val = np.abs(u(*self.val_arr) * u_pro)
 
         p_nom = self.val_dict["f"] * self.val_dict["p_fill"]
 
@@ -210,7 +210,7 @@ class Uncert(Se3):
         :type: class
         """
 
-        fill_target = self.Pres.get_value("target_fill", self.unit)
+        fill_res = res.pick("Pressure", "fill", self.unit)
 
         N = len(self.fill_dev_names)
         M = self.no_of_meas_points
@@ -218,7 +218,7 @@ class Uncert(Se3):
 
         for i in range(N):
             Dev = self.FillDevs[i]
-            u_i = Dev.get_total_uncert(fill_target, self.unit, self.unit)
+            u_i = Dev.get_total_uncert(fill_res, self.unit, self.unit, res=res)
             u_arr.append(u_i)
 
         u_comb = np.power(np.nansum(np.power(u_arr, -1), axis=0), -1)
