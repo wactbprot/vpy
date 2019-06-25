@@ -64,19 +64,20 @@ def main():
             
             cal.pressure_comp(res)
             
-            cal.offset_from_sample(res)
-            offset_dict = res.pick_dict("Pressure","offset_sample")
+            ## !!cal.offset_from_sample(res)
+            ## !!offset_dict = res.pick_dict("Pressure","offset_sample")
 
             temperature_dict = res.pick_dict('Temperature', 'compare')
             gas = cal.Aux.get_gas()
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
            
             ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
-            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
+            #offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
             
             res.store("Pressure", "ind", ind, unit)
-            res.store("Pressure", "ind_corr", ind - offset, unit)
-            cal.error(res)
+            ## !!    res.store("Pressure", "ind_corr", ind - offset, unit)
+            res.store("Pressure", "ind_corr", ind , unit)
+            #cal.error(res)
             
             io.save_doc(res.build_doc())
            
