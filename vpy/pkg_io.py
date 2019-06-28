@@ -225,7 +225,6 @@ class Io(object):
            
         else:
             err_msg = "wrong data structure"
-            print(err_msg)
             sys.exit(err_msg)
         
         return doc

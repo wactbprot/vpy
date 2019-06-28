@@ -38,7 +38,7 @@ def get_fill_pressure_uncert_rel(cal, target_fill, target_unit):
             u_i = Dev.get_total_uncert(target_fill, target_unit, target_unit)
             u.append(u_i)
         
-        return cal.Pres.invers_array_square_sum(u/target_fill)
+        return cal.Pres.invers_array_sum(u/target_fill)
     else:
         sys.exit("units dont match")
 

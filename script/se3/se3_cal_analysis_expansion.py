@@ -107,7 +107,6 @@ def main():
             cal = res.pick("Pressure", "cal" , cal.unit)        
             res.store('Error', 'ind', ind/cal-1, '1')
 
-
             io.save_doc(res.build_doc())
            
     else:

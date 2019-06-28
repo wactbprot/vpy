@@ -17,7 +17,7 @@ def main():
 
     plt.rc('font', **font)
     io = Io()
-    fname_val = "./vpy/standard/se3/values.json"
+    fname_val = "./vpy/standard/se3/values_sim.json"
     fname_meas_auxval = "./vpy/standard/se3/meas_aux_values.json"
     fname_ana_auxval = "./vpy/standard/se3/ana_aux_values.json"
     base_doc = io.get_base_doc("se3")
@@ -62,17 +62,16 @@ def main():
     uncert.expansion(res)
     uncert.total_standard(res)
     
-    s = 0
-    e = 17
-    p_cal = res.pick("Pressure", "cal", "Pa")[s:e]
-    p_fill = res.pick("Pressure", "fill", "Pa")[s:e]
-    u_1 = res.pick("Uncertainty", "v_start", "1")[s:e]
-    u_2 = res.pick("Uncertainty", "v_5", "1")[s:e]
-    u_3 = res.pick("Uncertainty", "p_fill", "1")[s:e]
-    u_4 = res.pick("Uncertainty", "t_before", "1")[s:e]
-    u_5 = res.pick("Uncertainty", "t_after", "1")[s:e]
-    u_6 = res.pick("Uncertainty", "f", "1")[s:e]
-    u = res.pick("Uncertainty", "standard", "1")[s:e]
+    
+    p_cal = res.pick("Pressure", "cal", "Pa")
+    p_fill = res.pick("Pressure", "fill", "Pa")
+    u_1 = res.pick("Uncertainty", "v_start", "1")
+    u_2 = res.pick("Uncertainty", "v_5", "1")
+    u_3 = res.pick("Uncertainty", "p_fill", "1")
+    u_4 = res.pick("Uncertainty", "t_before", "1")
+    u_5 = res.pick("Uncertainty", "t_after", "1")
+    u_6 = res.pick("Uncertainty", "f", "1")
+    u = res.pick("Uncertainty", "standard", "1")
     
 
     figure(num=None, figsize=(16, 9), dpi=80, facecolor='w', edgecolor='k')
@@ -107,7 +106,7 @@ def main():
     plt.xscale('symlog', linthreshx=1e-12)
     plt.xlabel('$p_{}$ in {}'.format("{cal}", "Pa"))
     plt.ylabel('$u(p_{pfill})$ (relative, k=1)')
-    plt.ylim(0, 0.002)
+    #plt.ylim(0, 0.002)
     plt.grid(True)
     plt.legend(ncol=1, fancybox=True, framealpha=0.2)
     plt.savefig("se3_unert_filling_pressure{}.pdf".format(startsstr))
