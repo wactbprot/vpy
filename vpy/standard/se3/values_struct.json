@@ -1,0 +1,554 @@
+{
+    "Pressure": [
+        {
+            "Type": "target_pressure",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "target_fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1T_2-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1T_3-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "10T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "10T_2-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "10T_3-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "100T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "100T_2-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "100T_3-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1000T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1000T_2-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1000T_3-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "5T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "50T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "500T_1-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "add_0-offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "ind_offset",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1T_2-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1T_3-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "10T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "10T_2-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "10T_3-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "100T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "100T_2-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "100T_3-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1000T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1000T_2-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "1000T_3-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "5T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "50T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "500T_1-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "add_0-fill",
+            "Unit": "Pa"
+        },
+        {
+            "Type": "ind",
+            "Unit": "Pa"
+        }
+    ],
+    "Expansion": [
+        {
+            "Type": "name",
+            "Unit": null
+        }
+    ],
+    "Range": [
+        {
+            "Type": "offset",
+            "Unit": "1"
+        },
+        {
+            "Type": "ind",
+            "Unit": "1"
+        }
+    ],
+    "Position": [
+        {
+            "Type": "dut_a",
+            "Unit": null
+        },
+        {
+            "Type": "dut_b",
+            "Unit": null
+        },
+        {
+            "Type": "dut_c",
+            "Unit": null
+        }
+    ],
+    "Time": [
+        {
+            "Type": "amt_fill",
+            "Unit": "ms"
+        },
+        {
+            "Type": "amt_expansion_start",
+            "Unit": "ms"
+        },
+        {
+            "Type": "amt_expansion_end",
+            "Unit": "ms"
+        }
+    ],
+    "Temperature": [
+        {
+            "Type": "ch_3001_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3002_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3003_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3004_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3005_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3006_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3007_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3008_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3009_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3010_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3011_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3012_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3013_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3014_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3015_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3016_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3017_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3018_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3019_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3020_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3021_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3022_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3023_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3024_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3025_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3026_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3027_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3028_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3029_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_3030_before",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1001_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1002_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1003_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1004_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1005_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1006_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1007_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1008_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1009_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1010_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1011_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1012_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1013_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1014_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1015_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1016_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1017_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1018_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1019_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1020_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1021_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1022_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1023_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1024_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1025_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1026_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1027_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1028_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1029_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_1030_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2001_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2002_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2003_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2004_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2005_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2006_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2007_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2008_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2009_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2010_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2011_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2012_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2013_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2014_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2015_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2016_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2017_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2018_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2019_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2020_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2021_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2022_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2023_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2024_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2025_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2026_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2027_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2028_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2029_after",
+            "Unit": "C"
+        },
+        {
+            "Type": "ch_2030_after",
+            "Unit": "C"
+        }
+    ]
+}

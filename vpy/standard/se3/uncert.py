@@ -335,7 +335,7 @@ class Uncert(Se3):
            "X0.1":"offset_x0.1",
            "X0.01":"offset_x0.01"
         }
-        ind, ind_unit = self.Pres.get_value_and_unit(type="ind")
+        ind, ind_unit = self.Pres.get_value_and_unit(d_type="ind")
         u = np.full(self.no_of_meas_points, np.nan)
         range_str_arr = self.Range.get_str("ind")
         if range_str_arr is not None:
@@ -343,7 +343,7 @@ class Uncert(Se3):
             for r in range_unique:
                 i_r = np.where(range_str_arr == r)
                 if np.shape(i_r)[1] > 0:
-                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
+                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(d_type=range_offset_trans[r])
                     if ind_unit == sample_unit:
                         std = np.nanstd(offset_sample_value)
                         u[i_r] = np.abs(std/ind[i_r])
@@ -351,10 +351,10 @@ class Uncert(Se3):
                         sys.exit("ind measurement unit and sample unit dont match")
         else:
             ## simple offset sample stored in Measurement.AuxValues.Pressure
-            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
+            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(d_type="offset")
             if ind_unit == sample_unit:
                 std = np.nanstd(offset_sample_value)
-                if std < 1e-10: ## all the same
+                if std < 1e-12: ## all the same
                     self.log.warn("standard deviation of offset sample < E-10, est. with 5% of measured value")
                     u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
                 else:

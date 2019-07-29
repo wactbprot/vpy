@@ -11,6 +11,7 @@ import numpy as np
 from vpy.pkg_io import Io
 from vpy.result import Result
 from vpy.todo import ToDo
+from vpy.values import Values
 from vpy.analysis import Analysis
 from vpy.constants import Constants
 from vpy.standard.se3.uncert import Uncert as UncertSe3 
@@ -48,6 +49,8 @@ def main():
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
+            
+            aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
 
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
@@ -72,11 +75,9 @@ def main():
             
             se3_uncert = UncertSe3(doc)
             if "Uncertainty" in customer_object:
-                print("uncertainty by customer device")
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
-                print("default uncertainty")
                 se3_uncert.offset(ana)
                 se3_uncert.repeat(ana)
                 offset_uncert = ana.pick("Uncertainty", "offset", "1")
@@ -111,12 +112,13 @@ def main():
 
             if result_type == "expansion" and tdo.type == "error":
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
-                d["Evis"] = e_vis,
-                d["CFvis"] = cf_vis,
-                d["Uvis"] = u_vis,
+                d["Evis"] = e_vis
+                d["CFvis"] = cf_vis
+                d["Uvis"] = u_vis
                 d["VisUnit"] =vis_unit
 
             if result_type == "expansion" and tdo.type == "sigma":
+
                 p_ind_corr = res.get_reduced_pressure_ind(ana, average_index, unit)
                 p_cal = res.get_reduced_pressure_cal(ana, average_index, unit)
                 u = res.get_reduced_uncert_total(ana, average_index, "1")
@@ -129,8 +131,13 @@ def main():
                 d["SigmaNull"]  = sigma_null
                 d["SigmaSlope"] = sigma_slope
 
+                rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
+                d["OffsetMean"] = np.nanmean(rd)
+                d["OffsetSd"] = np.nanstd(rd)
+                d["OffsetUnit"] = rd_unit
+                
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
-                              
+
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana, result_type=result_type)

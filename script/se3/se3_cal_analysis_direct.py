@@ -61,7 +61,7 @@ def main():
       
             cal.temperature_comp(res)
             cal.temperature_gas_direct(res)
-            
+            cal.range(res)
             cal.pressure_comp(res)
             
             ## !!cal.offset_from_sample(res)
@@ -70,14 +70,17 @@ def main():
             temperature_dict = res.pick_dict('Temperature', 'compare')
             gas = cal.Aux.get_gas()
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-           
+            offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
             ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
-            #offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
+            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
             
             res.store("Pressure", "ind", ind, unit)
-            ## !!    res.store("Pressure", "ind_corr", ind - offset, unit)
-            res.store("Pressure", "ind_corr", ind , unit)
-            #cal.error(res)
+            res.store("Pressure", "ind_corr", ind - offset, unit)
+            
+            # error for rating procedures
+            ind = res.pick("Pressure", "ind_corr", cal.unit)
+            cal = res.pick("Pressure", "cal" , cal.unit)
+            res.store('Error', 'ind', ind/cal-1.0, '1')
             
             io.save_doc(res.build_doc())
            

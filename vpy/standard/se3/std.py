@@ -259,7 +259,7 @@ class Se3(Standard):
             # define model
             #self.no_of_meas_points = len(self.Pres.get_value("target_pressure", "Pa"))
             no_points_indicator = self.Time.get_value("amt_fill", "ms")
-            if not no_points_indicator:
+            if no_points_indicator is None:
                 no_points_indicator = self.Time.get_value("amt_meas", "ms")
             self.no_of_meas_points = len(no_points_indicator)
           

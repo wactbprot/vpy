@@ -100,48 +100,80 @@ class Result(Analysis):
         """
         pass
 
+    def gen_temperature_gas_entry(self, ana, sec, unit="K", k=2):
+        t = ana.pick("Temperature", "gas", unit)
+        t_mean = np.mean(t)
+        t_unc = np.std(t)*k
+
+        sec["GasTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
+        sec["GasTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 2)    
+        sec["GasTemperatureUnit"] = unit
+        
+        return sec
+    
+    def gen_temperature_room_entry(self, ana, sec, unit="K", k=2):
+        t = ana.pick("Temperature", "room", unit)
+        t_mean = np.mean(t)
+        t_unc = np.std(t)*k
+        sec["RoomTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
+        sec["RoomTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 1)
+        sec["RoomTemperatureUnit"] = unit
+
+        return sec
+
+    def gen_meas_date_entry(self, ana, sec):
+
+        sec["MeasurementDate"] = self.Date.first_measurement()
+        
+        return sec 
+    
+    def gen_min_max_entry(self, ana, sec, unit="Pa"):
+
+        p_min, p_max, todo_unit = self.ToDo.get_min_max_pressure()
+        conv = float(self.Const.get_conv(from_unit=todo_unit, to_unit=unit))
+        sec["PressureRangeBegin"] = p_min*conv
+        sec["PressureRangeEnd"] = p_max*conv
+        sec["PressureRangeUnit"] = self.unit_trans[unit]
+        
+        return sec
+    
+    def gen_cdg_entry(self, ana, sec):
+        e_vis = self.doc.get("AuxValues", {}).get("Evis")
+        u_vis = self.doc.get("AuxValues", {}).get("Uvis")
+        if e_vis and u_vis:
+            sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
+            sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
+            
+        cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
+        if cf_vis and u_vis:
+            sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
+            sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
+        
+        return sec
+    
+    def gen_srg_entry(self, ana, sec):
+        sigma_null = self.doc.get("AuxValues", {}).get("SigmaNull")
+        sigma_slope = self.doc.get("AuxValues", {}).get("SigmaSlope")
+        if sigma_null and sigma_slope:
+            sec["SigmaNull"] = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
+            sec["SigmaSlopeAbs"] = self.Val.round_to_uncertainty(np.abs(sigma_slope[0]), 2e-3, 2)
+            sec["OffsetMean"] = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
+            sec["OffsetSd"] = "{:.2E}".format(self.doc.get("AuxValues", {}).get("OffsetSd")[0])
+            sec["OffsetUnit"] = self.doc.get("AuxValues", {}).get("OffsetUnit")
+        
+        return sec
+
     def make_measurement_data_section(self, ana, k=2, result_type="expansion", pressure_unit="Pa"):
         """The measurement data section should contain data 
-        valid for the measurement only
+        belonging to one measurement (gas species, expansion or direct comp. etc) only. 
         """
+        sec = {}
 
-        T_gas = ana.pick("Temperature", "gas", "K")
-        T_gas_mean = np.mean(T_gas)
-        T_gas_unc = np.std(T_gas)*k
-        T_gas_mean_str = self.Val.round_to_uncertainty(T_gas_mean, T_gas_unc, 2)
-        T_gas_unc_str = self.Val.round_to_sig_dig(T_gas_unc, 2)
-
-        T_room = ana.pick("Temperature", "room", "K")
-        T_room_mean = np.mean(T_room)
-        T_room_unc = np.std(T_room)*k
-        T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 1)
-        T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 1)
-
-        gas = self.ToDo.get_gas()
-        p_min, p_max, unit = self.ToDo.get_min_max_pressure()
-        conv = float(self.Const.get_conv(from_unit=unit, to_unit=pressure_unit))
-        sec = {
-            "PressureRangeBegin": p_min*conv,
-            "PressureRangeEnd": p_max*conv,
-            "PressureRangeUnit": self.unit_trans[pressure_unit],
-            "GasTemperature": T_gas_mean_str,
-            "GasTemperatureUncertainty": T_gas_unc_str,
-            "MeasurementDate": self.Date.first_measurement(),
-            "RoomTemperature": T_room_mean_str,
-            "RoomTemperatureUncertainty": T_room_unc_str
-        }
-
-        if result_type == "expansion":
-            e_vis = self.doc.get("AuxValues", {}).get("Evis")
-            u_vis = self.doc.get("AuxValues", {}).get("Uvis")
-            if e_vis and u_vis:
-                sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
-                sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
-            
-            cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
-            if cf_vis:
-                sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
-                sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
+        sec = self.gen_temperature_gas_entry(ana, sec)
+        sec = self.gen_temperature_room_entry(ana, sec)
+        sec = self.gen_min_max_entry(ana, sec)
+        sec = self.gen_cdg_entry(ana, sec)
+        sec = self.gen_srg_entry(ana, sec)    
 
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
@@ -263,6 +295,7 @@ class Result(Analysis):
 
     def get_reduced_range_str(self, ana, av_idx):
         range_dict = ana.pick_dict("Range", "ind")
+        
         if range_dict is not None:
             range_str = range_dict.get("Value")
             return [range_str[v[0]] for v in av_idx]
