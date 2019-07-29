@@ -17,13 +17,36 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def main():
+    io = Io()
+    io.eval_args()
+    args = sys.argv
+    fail = False
+    if '--ids' in args:
+        idx_ids = args.index('--ids') + 1 
+        try:
+            ids = args[idx_ids].split(';')
+        except:
+           fail = True
 
+    if '-u' in args:
+        update = True
+    else:
+        update = False
+
+    if not fail and len(ids) >0:
+        base_doc = io.get_base_doc("dkm_ppc4")
+        for id in ids:
+            doc = io.get_doc_db(id)
+            if update:
+                doc = io.update_cal_doc(doc, base_doc)
+
+   
+    print(doc["_rev"])
+    
     plt.figure(num=None, figsize=(15, 10), facecolor='w', edgecolor='k')
     markers =("o", "D", "s", ">", "^", "1", "2", "3", "4")
     colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k', 'b', 'g')
-    io = Io() 
-    io.eval_args()
-    doc = io.load_doc()
+
     p_unit = 'Pa'
     e_unit = '1'
     u_unit = '1'
@@ -41,25 +64,12 @@ def main():
 
     uncert.total(res)
     heads = (
-            "100T_1","100T_2","100T_3",
-            #"1000T_1","1000T_2","1000T_3"
+            #"100T_1","100T_2","100T_3",
+            "1000T_1","1000T_2","1000T_3"
             )
-    volt_channel = {"100T_1": "107",
-                    "100T_2": "108",
-                    "100T_3": "109",
-                    "1000T_1": "110",
-                    "1000T_2": "111",
-                    "1000T_3": "112",
-                    }
-    volt_conv = {"1000T_1": 133322.0/10.0,
-                 "1000T_2": 133322.0/10.0,
-                 "1000T_3": 133322.0/10.0,
-                 "100T_1": 13332.20/10.0,
-                 "100T_2": 13332.20/10.0,
-                 "100T_3": 13332.20/10.0,
-                }
+    
     p_cal = res.pick("Pressure", "dkm_ppc4", p_unit)
-    u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", u_unit)
+    #u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", u_unit)
     m_time = cal.Time.get_value("amt_meas", "ms")
 
     title = doc.get('_id') + heads[0]
@@ -69,64 +79,51 @@ def main():
         device = io.get_doc_db('cob-cdg-se3_{head}'.format(head=head))
         cdg = InfCdg(doc, device)
 
-        p_off = cal.Aux.get_val_by_time(m_time, "offset_mt", "ms", "{head}-ind_offset".format(head=head), p_unit)
+        p_off = cal.Pres.get_value("{}-offset".format(head), p_unit)
         p_ind = cal.Pres.get_value("{}-ind".format(head), p_unit)
         p_ind_corr = p_ind - p_off
-        
-        p_off_v = cal.Aux.get_val_by_time(m_time, "offset_mt", "ms", "gncdg_{}_offset".format(volt_channel[head]), "V")
-        p_ind_v = cal.Pres.get_value("gncdg_{}_ind".format(volt_channel[head]), "V")
-        p_ind_corr_v = (p_ind_v - p_off_v)*volt_conv[head]
-        
+       
         ## cut values for device
         p_cal_dev = cdg.shape_pressure(p_cal)
         p_cal_dev, l = cdg.rm_nan(p_cal_dev)
         p_ind_corr, _ = cdg.rm_nan(p_ind_corr, l)
-        p_ind_corr_v, _ = cdg.rm_nan(p_ind_corr_v, l)
-        u_std_dev, _ = cdg.rm_nan(u_std, l)
-
+       
         # cal uncertainty
-        u_dev = cdg.get_total_uncert(p_ind_corr, p_unit, p_unit)
-        u = np.divide(np.sqrt(u_std_dev**2 + u_dev**2), p_cal_dev)
+        #u_dev = cdg.get_total_uncert(p_ind_corr, p_unit, p_unit)
+        #u = np.divide(np.sqrt(u_std**2 + u_dev**2), p_cal_dev)
 
         # cal error
         e, e_unit = cdg.error(p_cal_dev,  p_ind_corr, p_unit)
-        e_v, e_unit = cdg.error(p_cal_dev,  p_ind_corr_v, p_unit)
-        
-       
-        plt.semilogx(p_ind_corr, e, marker = markers[i], markersize=5,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
-        plt.semilogx(p_ind_corr, e_v, marker = markers[i], markersize=15,  linestyle = 'None', color=colors[i], label = "{head} meas.".format(head=head))
-        plt.legend() 
+        print(e)
+        print(p_cal_dev)       
            
         # cal interpolation
-        p_ind_corr, e, u = cdg.cal_interpol( p_ind_corr, e, u) 
+        #p_ind_corr, e, u = cdg.cal_interpol( p_ind_corr, e, u) 
         res.store("Pressure", "{head}-ind_corr".format(head=head), p_ind_corr, p_unit)
         res.store("Error", "{head}-ind".format(head=head), e, e_unit)
-        res.store("Uncertainty", "{head}-total".format(head=head), u, u_unit)
+        #res.store("Uncertainty", "{head}-total".format(head=head), u, u_unit)
         io.save_doc(res.build_doc())
         # store and save
-        cdg.store_interpol(p_ind_corr, e, u, p_unit, e_unit, u_unit)
-        io.save_doc(cdg.doc)
-        plt.errorbar(p_ind_corr, e, yerr=u, capsize=5, marker = markers[i], linestyle="None", color=colors[i], label = "{head} interp. and uncert.".format(head=head))
-        plt.legend()
+        #cdg.store_interpol(p_ind_corr, e, u, p_unit, e_unit, u_unit)
+        #io.save_doc(cdg.doc)
+        #plt.errorbar(p_ind_corr, e, yerr=u, capsize=5, marker = markers[i], linestyle="None", color=colors[i], label = "{head} interp. and uncert.".format(head=head))
+        #plt.legend()
 
-    for i, head in enumerate(heads):
+    #for i, head in enumerate(heads):
         # control saved interpolation
+        #device = io.get_doc_db('cob-cdg-se3_{head}'.format(head=head))
+        #cdg = InfCdg(doc, device)
+        #p_ind = cdg.get_value(value_type='p_ind', value_unit=p_unit)
+        #e = cdg.get_value(value_type='e', value_unit=e_unit)
+        #plt.semilogx(p_ind, e, marker = markers[i], markersize=4,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
+        #plt.legend()
 
-        device = io.get_doc_db('cob-cdg-se3_{head}'.format(head=head))
-        cdg = InfCdg(doc, device)
-
-        p_ind = cdg.get_value(value_type='p_ind', value_unit=p_unit)
-        e = cdg.get_value(value_type='e', value_unit=e_unit)
-        
-        plt.semilogx(p_ind, e, marker = markers[i], markersize=4,  linestyle = ':', color=colors[i], label="{head} stored".format(head=head))
-        plt.legend()
-
-    plt.title(title)
-    plt.xlabel(r'$p_{ind} - p_{r}$ in Pa' )
-    plt.ylabel(r'$e$ (relative)')
-    plt.grid()
-    plt.savefig("{title}.pdf".format(title=title))
-    plt.show()
+    #plt.title(title)
+    #plt.xlabel(r'$p_{ind} - p_{r}$ in Pa' )
+    #plt.ylabel(r'$e$ (relative)')
+    #plt.grid()
+    #plt.savefig("{title}.pdf".format(title=title))
+    #plt.show()
 
 if __name__ == "__main__":
     main()

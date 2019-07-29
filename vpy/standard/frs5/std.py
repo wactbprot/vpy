@@ -34,7 +34,7 @@ class Frs5(Standard):
                  m_{cal}\\frac{g}{A_{eff}}\\frac{1}{corr_{rho}corr_{tem}}
     """
     name = "FRS5"
-    unit = "mbar"
+    unit = "Pa"
     range_trans = {
             "X0.01":"offset_x0.01",
             "X0.1":"offset_x0.1",
@@ -49,7 +49,7 @@ class Frs5(Standard):
         self.Time = Time(doc)
         self.Aux = AuxFrs5(doc)
 
-        # residua pressure device
+        # residual pressure device
         amt = self.Time.get_value("amt_meas", "ms")
         self.no_of_meas_points = len(amt)
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS5_4019"))

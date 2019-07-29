@@ -1,5 +1,5 @@
 """
-python script/frs5/frs5_cal_analysis --ids 'cal-2018-frs5-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' # keep aux values; -u 
+python script/frs5/frs5_cal_analysis.py --ids 'cal-2018-frs5-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' #  -u 
 """
 import sys
 from vpy.pkg_io import Io
