@@ -35,11 +35,7 @@ class Frs5(Standard):
     """
     name = "FRS5"
     unit = "Pa"
-    range_trans = {
-            "X0.01":"offset_x0.01",
-            "X0.1":"offset_x0.1",
-            "X1":"offset_x1" 
-        }
+    
     def __init__(self, doc):
         super().__init__(doc, self.name)
         # measurement values

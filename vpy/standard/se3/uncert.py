@@ -321,55 +321,7 @@ class Uncert(Se3):
         res.store("Uncertainty", "v_5", np.absolute(val / p_nom), "1")
         self.log.debug("uncert v_5: {}".format(val / p_nom))
 
-    def offset(self, res):
-        """Calculates the standard deviation of the *single* value of the 
-        offset sample stored in ``Measurement.AuxValues.Pressure``
-        
-        .. todo::
-
-            implement cal.offset from sample 
-
-        """
-        range_offset_trans = {
-           "X1":"offset_x1",
-           "X0.1":"offset_x0.1",
-           "X0.01":"offset_x0.01"
-        }
-        ind, ind_unit = self.Pres.get_value_and_unit(d_type="ind")
-        u = np.full(self.no_of_meas_points, np.nan)
-        range_str_arr = self.Range.get_str("ind")
-        if range_str_arr is not None:
-            range_unique = np.unique(range_str_arr)
-            for r in range_unique:
-                i_r = np.where(range_str_arr == r)
-                if np.shape(i_r)[1] > 0:
-                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(d_type=range_offset_trans[r])
-                    if ind_unit == sample_unit:
-                        std = np.nanstd(offset_sample_value)
-                        u[i_r] = np.abs(std/ind[i_r])
-                    else:
-                        sys.exit("ind measurement unit and sample unit dont match")
-        else:
-            ## simple offset sample stored in Measurement.AuxValues.Pressure
-            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(d_type="offset")
-            if ind_unit == sample_unit:
-                std = np.nanstd(offset_sample_value)
-                if std < 1e-12: ## all the same
-                    self.log.warn("standard deviation of offset sample < E-10, est. with 5% of measured value")
-                    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
-                else:
-                    u = np.abs(std/ind)
-           
-        res.store("Uncertainty", "offset", u, "1")
-
-    def repeat(self, ana):
-        
-        p_list = ana.pick("Pressure", "ind_corr", "Pa")
-        u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
-                                        [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
-
-        ana.store("Uncertainty", "repeat", u, "1")
-
+    
     def cmc(self, ana):
         p_list = ana.pick("Pressure", "cal", "Pa")
         
@@ -378,16 +330,3 @@ class Uncert(Se3):
 
         ana.store("Uncertainty", "standard", u , "1")
 
-    def total(self, ana):
-        
-        p_cal = ana.pick("Pressure", "cal", "Pa")
-        standard_uncert = ana.pick("Uncertainty", "standard", "1")
-        
-        p_ind = ana.pick("Pressure", "ind_corr", "Pa")
-        device_uncert = ana.pick("Uncertainty", "device", "1")
-        
-        u_ind_abs = device_uncert*p_ind
-        u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
-        
-        ana.store("Uncertainty", "total_rel", np.abs(u_rel) , "1")
-        ana.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , "Pa")

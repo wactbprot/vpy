@@ -1,4 +1,10 @@
+"""
+python script/frs5/frs5_cal_result.py --ids 'cal-2019-frs5-kk-75052_0003' 
+"""
 import sys
+import os
+sys.path.append(os.environ["VIRTUAL_ENV"])
+
 import copy
 import json
 import numpy as np
@@ -8,14 +14,18 @@ from vpy.analysis import Analysis
 from vpy.constants import Constants
 from vpy.standard.frs5.uncert import Uncert  
 from vpy.device.device import Device
+from vpy.todo import ToDo
+from vpy.device.srg import Srg
+from vpy.device.cdg import Cdg
 
+import matplotlib.pyplot as plt
 def main():
     io = Io()
     io.eval_args()
     args = sys.argv
     fail = False
     ret = {'ok':True}
-    unit = 'mbar'
+    unit = 'Pa'
 
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
@@ -28,31 +38,61 @@ def main():
         for id in ids:
             doc = io.get_doc_db(id)
             
-            customer_device = Device(doc, doc.get('Calibration').get('CustomerObject'))
+            customer_object = doc.get('Calibration').get('CustomerObject')
+            if customer_object.get("Class") == "SRG":
+                customer_device = Srg(doc, customer_object)
+            if customer_object.get("Class") == "CDG":
+                customer_device = Cdg(doc, customer_object)
+            tdo = ToDo(doc)
             analysis = doc.get('Calibration').get('Analysis')
+            
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
-
             ana = Analysis(doc, init_dict=analysis)
-            res = Result(doc)
+            
+            result_type = analysis.get("AnalysisType", "default")
+            res = Result(doc, result_type=result_type)
 
             uncert = Uncert(doc)
             uncert.total_standard(ana)
-            uncert.offset(ana)
-            uncert.repeat_rel(ana)
-            uncert.total(ana)
-
+            
+            customer_device.offset_uncert(ana) 
+            customer_device.repeat_uncert(ana) 
+            customer_device.device_uncert(ana) 
+            
+            ana.total_uncert() 
             # start build cert table
+            p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
             p_cal = ana.pick("Pressure", "cal", unit)
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-            average_index = ana.coarse_error_filtering(average_index=average_index)
-            average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
-            # plot needed
+
+            m_x = p_ind_corr
+            m_y = p_ind_corr/p_cal-1
+            m_u = ana.pick("Uncertainty", "total_rel", "1")
+
+            plt.xscale('symlog', linthreshx=1e-12)
+            plt.errorbar(m_x, m_y,  yerr=m_u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            for i, v in enumerate(m_x):
+                plt.text(v, m_y[i], i, rotation=45.)
+            plt.legend()
+            plt.grid()
+            plt.show()
+
+            ## reject points
             average_index = ana.ask_for_reject(average_index=average_index)
-            ana.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
-            res.make_error_table(ana, pressure_unit="Pa", error_unit='1', add_n_column=True)
+
+            res.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
+            c_x, c_y, c_u = res.make_error_table(ana, pressure_unit="Pa", error_unit='1', add_n_column=False)
             
+            plt.xscale('symlog', linthreshx=1e-12)
+            plt.plot(m_x, m_y,   marker='o', linestyle="None", markersize=10, label="certificate")
+            plt.errorbar(c_x, c_y,  yerr=c_u,  marker='D', linestyle=":", markersize=10, label="certificate")            
+            
+            plt.legend()
+            plt.grid()
+            plt.show()
+
             doc = ana.build_doc("Analysis", doc)
             doc = res.build_doc("Result", doc)
             io.save_doc(doc)

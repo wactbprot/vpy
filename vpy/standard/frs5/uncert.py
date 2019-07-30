@@ -233,8 +233,7 @@ class Uncert(Frs5):
                     )**0.5
 
         p = res.pick("Pressure", "cal", self.unit)
-        res.store("Uncertainty", "frs5_total_rel", u_total, "1")
-        res.store("Uncertainty", "frs5_total_abs", u_total*p, self.unit)
+        res.store("Uncertainty", "standard", u_total, "1")
         self.log.debug("uncert total: {}".format(u_total))
 
 
@@ -538,50 +537,4 @@ class Uncert(Frs5):
         self.log.debug("uncert ab: {}".format(val/p))
         res.store("Uncertainty", "u_ab", np.absolute(val/p), "1")
 
-
-    def offset(self, res):
-        """Calculates the standard deviation of the *single* value of the 
-        offset sample stored in ``Measurement.AuxValues.Pressure``
-        
-        .. todo::
-
-            anselm needs to store the range a pressure point is measured with
-
-        """
-        off_std = np.full(self.no_of_meas_points, np.nan)
-        p_ind_corr = res.pick("Pressure", "ind_corr", self.unit)
-        range_arr = self.Range.get_str('ind')
-        
-        for i, r in enumerate(range_arr): 
-            val, unit = self.Aux.get_value_and_unit(self.range_trans[r])
-            conv = self.Cons.get_conv(from_unit=unit, to_unit=self.unit)
-            off_std[i] = np.nanstd(val) *conv
-
-        res.store("Uncertainty", "offset", off_std/p_ind_corr, "1")
-
-    def repeat_rel(self, res):
-
-        p_list = res.pick("Pressure", "ind_corr", "mbar")
-        u = np.asarray([np.piecewise(p, [p <= 0.5, (p > 0.5 and p <= 1.0), p > 1.0], [0.0003, 0.0002, 0.0001]).tolist() for p in p_list])
-
-        res.store("Uncertainty", "repeat", u, "1")
-
-    def total(self, res):
-
-        """u_total_rel is defined as ((u(p_ind)/p_ind)^2 + (u(p_cal)/p_cal)^2)^0.5
-        """
-        
-        p_cal = res.pick("Pressure", "cal", self.unit)
-
-        p_ind = res.pick("Pressure", "ind", self.unit)
-
-        offset_uncert = res.pick("Uncertainty", "offset", "1")
-        repeat_uncert = res.pick("Uncertainty", "repeat", "1")
-        standard_uncert = res.pick("Uncertainty", "frs5_total_rel", "1")
-        # digitizing error still missing
-        u_ind_rel = np.sqrt(np.power(repeat_uncert, 2) + np.power(offset_uncert, 2))
-
-        u_total_rel = np.sqrt(np.power(u_ind_rel, 2) + np.power(standard_uncert, 2))
-                
-        res.store("Uncertainty", "total_rel", u_total_rel , "1")
 

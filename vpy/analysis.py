@@ -11,8 +11,9 @@ class Analysis(Document):
     the calculation results of analysis.
     """
 
-    def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None):
-
+    def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None, pressure_unit = "Pa",  error_unit ="1"):
+        self.pressure_unit =  pressure_unit
+        self.error_unit = error_unit
         if init_dict is None:
             d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             init_dict = {
@@ -407,6 +408,20 @@ class Analysis(Document):
         """Calculates the mean value for each target pressure.
         """
         return np.asarray([np.mean(np.take(value, i)) for i in average_index])
+    
+    def total_uncert(self):
+        
+        p_cal = self.pick("Pressure", "cal", self.pressure_unit)
+        standard_uncert = self.pick("Uncertainty", "standard", self.error_unit)
+        
+        p_ind = self.pick("Pressure", "ind_corr", self.pressure_unit)
+        device_uncert = self.pick("Uncertainty", "device", "1")
+        
+        u_ind_abs = device_uncert*p_ind
+        u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
+        
+        self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
+        self.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , self.pressure_unit)
 
     def build_doc(self, dest='Analysis', doc=None):
         """Merges the analysis dict to the original doc and returns it.

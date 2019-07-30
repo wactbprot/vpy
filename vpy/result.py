@@ -152,6 +152,12 @@ class Result(Analysis):
         return sec
     
     def gen_srg_entry(self, ana, sec):
+        """
+            ..todo::
+
+                s. issue https://a75436.berlin.ptb.de/vaclab/vpy/issues/15
+        """
+        
         sigma_null = self.doc.get("AuxValues", {}).get("SigmaNull")
         sigma_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
         sigma_std = self.doc.get("AuxValues", {}).get("SigmaStd")
@@ -260,6 +266,7 @@ class Result(Analysis):
         cal_conv = self.Const.get_conv(from_unit=cal_dict.get("Unit"), to_unit=unit)
         cal = cal_dict.get("Value") * cal_conv 
         cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
+
         return cal
 
     def get_reduced_uncert_total(self, ana, av_idx, unit):
@@ -311,14 +318,12 @@ class Result(Analysis):
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
-
         ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
         error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
         cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
         u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
-
         u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)
 
         range_str = self.get_reduced_range_str(ana, av_idx)
@@ -411,64 +416,3 @@ class Result(Analysis):
         u = self.get_reduced_uncert_total(ana, av_idx, error_unit)
         
         return ind, error, u
-
-    def make_formula_section(self, ana):
-
-        T_after = ana.pick("Temperature", "after", "C")
-        T_room = ana.pick("Temperature", "room", "C")
-        mdate = ana.get_object("Type","measurement")["Value"]
-
-        mm_idx = ana.doc["AuxValues"]["MainMaesurementIndex"]
-
-        av_idx = ana.doc["AuxValues"]["AverageIndex"]
-        offset_unc = ana.pick("Uncertainty", "offset", "mbar")
-
-        offset_uncertainty = np.asarray([np.mean(np.take(offset_unc, i)) for i in av_idx])
-        
-        mdate = np.take(mdate, mm_idx)[0]
-
-        T_after = np.take(T_after, mm_idx)
-        T_after_mean = np.mean(T_after)
-        T_after_unc = np.std(T_after)
-        T_after_mean_str = self.Val.round_to_uncertainty(T_after_mean, T_after_unc, 2)
-        T_after_unc_str = self.Val.round_to_sig_dig(T_after_unc, 2)
-        T_after_mean_K_str = self.Val.round_to_uncertainty(T_after_mean + 273.15, T_after_unc, 2)
-
-        T_room = np.take(T_room, mm_idx)
-        T_room_mean = np.mean(T_room)
-        T_room_unc = np.std(T_room)
-        T_room_mean_str = self.Val.round_to_uncertainty(T_room_mean, T_room_unc, 2)
-        T_room_unc_str = self.Val.round_to_sig_dig(T_room_unc, 2)
-
-        zero_stability_str = self.Val.round_to_sig_dig(min(offset_uncertainty), 2)
-
-        target = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Value"]
-        target_unit = self.org["Calibration"]["ToDo"]["Values"]["Pressure"]["Unit"]
-        target_unit = self.unit_trans[target_unit]
-        gas = self.org["Calibration"]["ToDo"]["Gas"]
-        language = self.org["Calibration"]["Customer"]["Lang"]
-        gas = self.gas[language][gas]
-        print("#")
-        form = {
-            "GasTemperature": T_after_mean_str,
-            "GasTemperatureUncertainty": T_after_unc_str,
-            "MeasurementDate": mdate,
-            "PressureRangeBegin": target[0],
-            "PressureRangeEnd": target[-1],
-            "PressureRangeUnit": target_unit,
-            "GasSpecies": gas,
-            "RoomTemperature": T_room_mean_str,
-            "RoomTemperatureUncertainty": T_room_unc_str,
-            "ZeroStability": zero_stability_str,
-            "ZeroStabilityUnit": target_unit,
-            "Evis": ana.get_value("Error", "evis", "%"),
-            "GasTemperatureEvis": T_after_mean_K_str,
-            "GasTemperatureEvisUncertainty": T_after_unc_str
-            }
-        print("#")
-        self.store_dict(quant="Formula", d=form, dest=None, plain=True)
-
-        self.log.info("Formula section written")
-
-        self.log.info("AuxValues section written")
-

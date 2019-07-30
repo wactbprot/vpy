@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from ..document import Document
 from ..constants import Constants
-
+from ..values import Pressure, AuxValues, Range
 
 class Device(Document):
     """ Class should be complete with
@@ -117,3 +117,57 @@ class Device(Document):
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         
         return pressure
+
+    def offset_uncert(self, ana):
+        """Calculates the standard deviation of the *single* value of the 
+        offset sample stored in ``Measurement.AuxValues.Pressure``
+        """
+       
+        pres = Pressure(ana.org)
+        aux = AuxValues(ana.org)
+        rnge = Range(ana.org)
+
+        ind, ind_unit = pres.get_value_and_unit("ind")
+        range_str = rnge.get_str("ind")
+
+        u = np.full(len(ind), np.nan)
+        if range_str is not None:
+            range_unique = np.unique(range_str)
+            for r in range_unique:
+                i_r = np.where(range_str == r)
+                if np.shape(i_r)[1] > 0:
+                    range_type = self.range_offset_trans[r]
+                    offset_sample_value, sample_unit = aux.get_value_and_unit(d_type=range_type)
+                    if ind_unit == sample_unit:
+                        std = np.nanstd(offset_sample_value)
+                        u[i_r] = np.abs(std/ind[i_r])
+                    else:
+                        sys.exit("ind measurement unit and sample unit dont match")
+        else:
+            ## simple offset sample stored in Measurement.AuxValues.Pressure
+            offset_sample_value, sample_unit = aux.get_value_and_unit(d_type="offset")
+            if ind_unit == sample_unit:
+                std = np.nanstd(offset_sample_value)
+                if std < 1e-12: ## all the same
+                    self.log.warn("standard deviation of offset sample < E-12, est. with 5% of measured value")
+                    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
+                else:
+                    u = np.abs(std/ind)
+        ana.store("Uncertainty", "offset", u, "1")
+
+    def repeat_uncert(self, ana):
+        
+        p_list = ana.pick("Pressure", "ind_corr", "Pa")
+        u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
+                                        [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
+
+        ana.store("Uncertainty", "repeat", u, "1")
+
+    def device_uncert(self, ana):
+        offset_uncert = ana.pick("Uncertainty", "offset", "1")
+        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+        
+        u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+        
+        ana.store("Uncertainty", "device", u, "1")
+            

@@ -78,8 +78,8 @@ def main():
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
-                se3_uncert.offset(ana)
-                se3_uncert.repeat(ana)
+                customer_device.offset_uncert(ana) # <--untested
+                customer_device.repeat_uncert(ana) # <--untested
                 offset_uncert = ana.pick("Uncertainty", "offset", "1")
                 repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
                 ana.store("Uncertainty", "device", np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2)), "1")

@@ -22,6 +22,11 @@ class Cdg(Device):
         "10mbar": 1000.0,
         "100mbar": 10000.0,
     }
+    range_offset_trans = {
+        "X1":"offset_x1",
+        "X0.1":"offset_x0.1",
+        "X0.01":"offset_x0.01"
+    }
     max_voltage = 10.0
     range_extend = 0.005 
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
