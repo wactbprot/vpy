@@ -153,14 +153,18 @@ class Result(Analysis):
     
     def gen_srg_entry(self, ana, sec):
         sigma_null = self.doc.get("AuxValues", {}).get("SigmaNull")
-        sigma_slope = self.doc.get("AuxValues", {}).get("SigmaSlope")
-        if sigma_null and sigma_slope:
-            sec["SigmaNull"] = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
-            sec["SigmaSlopeAbs"] = self.Val.round_to_uncertainty(np.abs(sigma_slope[0]), 2e-3, 2)
-            sec["OffsetMean"] = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
-            sec["OffsetSd"] = "{:.2E}".format(self.doc.get("AuxValues", {}).get("OffsetSd")[0])
-            sec["OffsetUnit"] = self.doc.get("AuxValues", {}).get("OffsetUnit")
+        sigma_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
+        sigma_std = self.doc.get("AuxValues", {}).get("SigmaStd")
         
+        if sigma_null and sigma_slope and sigma_std:
+            sec["SigmaNull"] = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
+            sec["SigmaCorrSlope"] = self.Val.round_to_uncertainty(sigma_slope[0], 2e-3, 2)
+            sec["SigmaStd"] = self.Val.round_to_uncertainty(sigma_std[0], 2e-3, 2)
+        
+        sec["OffsetMean"] = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
+        sec["OffsetStd"] = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
+        sec["OffsetUnit"] = self.doc.get("AuxValues", {}).get("OffsetUnit")
+       
         return sec
 
     def make_measurement_data_section(self, ana, k=2, result_type="expansion", pressure_unit="Pa"):

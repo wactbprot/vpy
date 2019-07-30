@@ -82,14 +82,21 @@ class Srg(Device):
         
         return pressure
 
-    def sigma_null(self, x, x_unit, y, y_unit):
+    def sigma_null(self, p_cal, cal_unit, p_ind, ind_unit):
         """
+        https://de.wikipedia.org/wiki/Lineare_Einfachregression
         """
-        x = x[~np.isnan(x)]
-        y = y[~np.isnan(y)]
+        if cal_unit == ind_unit:
+            x = p_cal
+            y = p_ind/p_cal
+            
+            if len(x) == len(y):
+                n = len(x)
+                avr_x = np.sum(x)/n
+                avr_y = np.sum(y)/n
         
-        if x_unit == y_unit:
-            m = (len(x) * np.sum(x*y) - np.sum(x) * np.sum(y)) / (len(x)*np.sum(x*x) - np.sum(x) ** 2)
-            sigma_0 = (np.sum(y) - m *np.sum(x)) / len(x)
-
-            return sigma_0, m
+                m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
+                b = avr_y - m * avr_x
+                s = np.sqrt(np.sum((y - b - m * x)**2)/(n-2))
+                
+                return b, m, s

@@ -118,22 +118,19 @@ def main():
                 d["VisUnit"] =vis_unit
 
             if result_type == "expansion" and tdo.type == "sigma":
-
-                p_ind_corr = res.get_reduced_pressure_ind(ana, average_index, unit)
-                p_cal = res.get_reduced_pressure_cal(ana, average_index, unit)
-                u = res.get_reduced_uncert_total(ana, average_index, "1")
                 
                 p_ind_corr =  res.rm_nan(p_ind_corr)
                 p_cal =  res.rm_nan(p_cal)
                 u =  res.rm_nan(u)
 
-                sigma_null, sigma_slope = customer_device.sigma_null(x=p_cal, x_unit=unit, y=p_ind_corr/p_cal, y_unit=unit)
+                sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal=p_cal, cal_unit=unit, p_ind=p_ind_corr, ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
-                d["SigmaSlope"] = sigma_slope
-
+                d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
+                d["SigmaStd"] = sigma_std
+        
                 rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
                 d["OffsetMean"] = np.nanmean(rd)
-                d["OffsetSd"] = np.nanstd(rd)
+                d["OffsetStd"] = np.nanstd(rd)
                 d["OffsetUnit"] = rd_unit
                 
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
