@@ -85,22 +85,41 @@ class Srg(Device):
     def sigma_null(self, p_cal, cal_unit, p_ind, ind_unit):
         """
         https://de.wikipedia.org/wiki/Lineare_Einfachregression
+
+        x ... p_cal
+        y ... sigma
+        m ... slope
+        b ... sigma_0
+        var_m ... var(m)
+        var_b ... var(b) 
+        u ... u(m/sigma_0)
         """
         if cal_unit == ind_unit:
             x = p_cal
             y = p_ind/p_cal
+        else:
+            self.log.error("units don't match!")
+            return None, None, None
+          
+        if not len(x) == len(y):
+            self.log.error("length don't match!")
+            return None, None, None
             
-            if len(x) == len(y):
-                n = len(x)
-                avr_x = np.sum(x)/n
-                avr_y = np.sum(y)/n
+        n = len(x)
+        avr_x = np.sum(x)/n
+        avr_y = np.sum(y)/n
+
+        m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
+        b = avr_y - m * avr_x
         
-                m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
-                sigma = avr_y - m * avr_x
-                ss = np.sum((y - sigma - m * x)**2)/(n-2)
-                
-                ssigma = ss * np.sum(x**2) / (n * np.sum((x - avr_x)**2))
-                sm = ss * 1.0 / np.sum((x - avr_x)**2)
-                u = np.sqrt((1/sigma)**2 *sm  + (m/sigma**2) * ssigma)
-                print(u)
-                return sigma, m, u
+        var_s = np.sum((y - b - m * x)**2)/(n-2)
+        
+        var_b = var_s * np.sum(x**2) / (n * np.sum((x - avr_x)**2))
+        var_m = var_s * 1.0 / np.sum((x - avr_x)**2)
+
+        sens_b = (m / b**2)
+        sens_m = (1.0 / b)
+
+        u = np.sqrt(sens_m**2 * var_m  + sens_b**2 * var_b)
+            
+        return b, m, u
