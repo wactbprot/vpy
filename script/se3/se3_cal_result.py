@@ -26,6 +26,7 @@ def main():
     fail = False
     ret = {'ok':True}
     unit = 'Pa'
+    cmc = False
 
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
@@ -49,8 +50,9 @@ def main():
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
+            se3_uncert = UncertSe3(doc)
             
-            aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
+            
 
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
@@ -58,34 +60,33 @@ def main():
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
 
-            # bis update CMC Einträge --> vorh. CMC Einträge  
-            # cal uncertainty of standard
-            ## uncert = Uncert(doc)
-            ## uncert.define_model()
-            ## uncert.gen_val_dict(ana)
-            ## uncert.gen_val_array(ana)
-            ## uncert.volume_start(ana)
-            ## uncert.volume_5(ana)
-            ## uncert.pressure_fill(ana)
-            ## uncert.temperature_after(ana)
-            ## uncert.temperature_before(ana)
-            ## uncert.expansion(ana)
-            ## uncert.total(ana)
-            ## uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
+            if cmc:
+                # bis update CMC Einträge --> vorh. CMC Einträge  
+                # cal uncertainty of standard
+                uncert = Uncert(doc)
+                uncert.define_model()
+                uncert.gen_val_dict(ana)
+                uncert.gen_val_array(ana)
+                uncert.volume_start(ana)
+                uncert.volume_5(ana)
+                uncert.pressure_fill(ana)
+                uncert.temperature_after(ana)
+                uncert.temperature_before(ana)
+                uncert.expansion(ana)
+                uncert.total(ana)
+                uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
             
-            se3_uncert = UncertSe3(doc)
+           
             if "Uncertainty" in customer_object:
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
-                customer_device.offset_uncert(ana) # <--untested
-                customer_device.repeat_uncert(ana) # <--untested
-                offset_uncert = ana.pick("Uncertainty", "offset", "1")
-                repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-                ana.store("Uncertainty", "device", np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2)), "1")
+                customer_device.offset_uncert(ana) 
+                customer_device.repeat_uncert(ana) 
+                customer_device.device_uncert(ana) 
             
-            se3_uncert.cmc(ana)
-            se3_uncert.total(ana)
+            se3_uncert.cmc(ana)    
+            ana.total_uncert() 
             u = ana.pick("Uncertainty", "total_rel", "1")
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
@@ -100,13 +101,13 @@ def main():
             if tdo.type == "sigma":
                 x = p_ind_corr
                 y = p_ind_corr/p_cal
-                
+                u = u*y
             plt.xscale('symlog', linthreshx=1e-12)
             plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
             for i, v in enumerate(x):
                 plt.text(v, y[i], i, rotation=45.)
             plt.show()
-
+    
             average_index = ana.ask_for_reject(average_index=average_index)
             d = {"AverageIndex": average_index}
 
@@ -127,7 +128,8 @@ def main():
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
                 d["SigmaStd"] = sigma_std
-        
+
+                aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
                 rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
                 d["OffsetMean"] = np.nanmean(rd)
                 d["OffsetStd"] = np.nanstd(rd)

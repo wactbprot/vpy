@@ -96,7 +96,11 @@ class Srg(Device):
                 avr_y = np.sum(y)/n
         
                 m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
-                b = avr_y - m * avr_x
-                s = np.sqrt(np.sum((y - b - m * x)**2)/(n-2))
+                sigma = avr_y - m * avr_x
+                ss = np.sum((y - sigma - m * x)**2)/(n-2)
                 
-                return b, m, s
+                ssigma = ss * np.sum(x**2) / (n * np.sum((x - avr_x)**2))
+                sm = ss * 1.0 / np.sum((x - avr_x)**2)
+                u = np.sqrt((1/sigma)**2 *sm  + (m/sigma**2) * ssigma)
+                print(u)
+                return sigma, m, u
