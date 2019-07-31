@@ -92,7 +92,7 @@ class Cdg(Device):
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         
         return pressure
-
+    
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
         Returns the interpolation error at the points where:

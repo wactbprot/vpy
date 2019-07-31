@@ -65,41 +65,6 @@ class Cal(Frs5):
         
         res.store('Error', 'ind', ind/(cal)-1, '1')
 
-    def pressure_offset(self, res):
-        """Calculates an offset vector from the offse samples below
-        Auxvalues
-        """
-        
-        off = np.full(self.no_of_meas_points, np.nan)
-        range_arr = self.Range.get_str('ind')
-        
-        for i, r in enumerate(range_arr): 
-            val, unit = self.Aux.get_value_and_unit(self.range_trans[r])
-            conv = self.Cons.get_conv(from_unit=unit, to_unit=self.unit)
-            off[i] = np.nanmean(val) *conv
-        
-        res.store("Pressure", "offset", off, self.unit)
-
-    def pressure_ind(self, res):
-        """Calculates the corrected indicated pressure in dependence
-         of the customer device. The offset  and the uncorrected 
-         indication are stored too.
-
-        :param: instance of a class with methode
-            store(quantity, type, value, unit, [stdev], [N])) and
-            pick(quantity, type, unit)
-            pick_dict(quantity, type)
-        :type: class
-        """
-        offset = res.pick("Pressure", "offset", self.unit)
-        ind, unit = self.Pres.get_value_and_unit('ind')
-        conv = self.Cons.get_conv(from_unit=unit, to_unit=self.unit)
-        ind = ind * conv 
-        res.store("Pressure", "ind", ind, self.unit)
-        res.store("Pressure", "ind_corr", ind - offset, self.unit)
-        self.log.debug("indicated pressure in {} is: {}".format(self.unit, ind))
-
-
     def pressure_cal(self, res):
         """Calculates the FRS5 calibration pressure from
         lb indication. The equation is:

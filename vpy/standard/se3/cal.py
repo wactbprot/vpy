@@ -358,18 +358,6 @@ class Cal(Se3):
         e_rise = p_rise/p_cal 
         res.store('Error', 'rise', e_rise, '1')
 
-    def range(self, res):
-        """Traverses Range to analysis section.
-        
-        :param: instance of a class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-        range_str = self.Range.get_str("ind")
-        if range_str is not None:
-            res.store('Range', 'ind', range_str, '1')
-
     def pressure_cal(self, res):
         """Calculates the calibration pressure nand stores the
         result under the path *Pressure, cal, mbar*

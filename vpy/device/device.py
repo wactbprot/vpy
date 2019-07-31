@@ -117,6 +117,18 @@ class Device(Document):
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
         
         return pressure
+    
+    def range_trans(self, ana):
+        """Traverses Range to analysis section.
+        
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        range_str = Range(ana.org).get_str("ind")
+        if range_str is not None:
+            ana.store('Range', 'ind', range_str, '1')
 
     def offset_uncert(self, ana):
         """Calculates the standard deviation of the *single* value of the 
@@ -125,10 +137,9 @@ class Device(Document):
        
         pres = Pressure(ana.org)
         aux = AuxValues(ana.org)
-        rnge = Range(ana.org)
 
         ind, ind_unit = pres.get_value_and_unit("ind")
-        range_str = rnge.get_str("ind")
+        range_str = Range(ana.org).get_str("ind")
 
         u = np.full(len(ind), np.nan)
         if range_str is not None:

@@ -84,7 +84,6 @@ def main():
             cal.volume_start(res)
             cal.expansion(res)
             cal.pressure_rise(res)
-            cal.range(res)
             cal.pressure_cal(res)
             cal.error_pressure_rise(res)
             cal.deviation_target_cal(res)
@@ -106,7 +105,9 @@ def main():
             ind = res.pick("Pressure", "ind_corr", cal.unit)
             cal = res.pick("Pressure", "cal" , cal.unit)        
             res.store('Error', 'ind', ind/cal-1, '1')
-
+            
+            CustomerDevice.range_trans(res)
+            
             io.save_doc(res.build_doc())
            
     else:
