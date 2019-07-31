@@ -26,6 +26,7 @@ def main():
     fail = False
     ret = {'ok':True}
     unit = 'Pa'
+    result_type = "pressure_balance"
 
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
@@ -33,6 +34,11 @@ def main():
             ids = args[idx_ids].split(';')
         except:
            fail = True
+    
+    if '--skip' in args:
+        skip = True
+    else:
+        skip = False
 
     if not fail and len(ids) >0:
         for id in ids:
@@ -49,9 +55,7 @@ def main():
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
-            
-            result_type = analysis.get("AnalysisType", "default")
-            res = Result(doc, result_type=result_type)
+            res = Result(doc, result_type=result_type, skip=skip)
 
             uncert = Uncert(doc)
             uncert.total_standard(ana)
@@ -92,7 +96,9 @@ def main():
             plt.legend()
             plt.grid()
             plt.show()
-
+            
+            res.make_measurement_data_section(ana, result_type=result_type)
+            
             doc = ana.build_doc("Analysis", doc)
             doc = res.build_doc("Result", doc)
             io.save_doc(doc)

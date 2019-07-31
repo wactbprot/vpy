@@ -64,10 +64,11 @@ class Result(Analysis):
     #        }
     #    }
 
-    def __init__(self, doc, result_type="expansion"):
+    def __init__(self, doc, result_type="expansion", skip=False):
 
         d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        init_dict = {"Date": [{
+        init_dict = {"Skip":skip,
+                    "Date": [{
                     "Type": "generated",
                     "Value": d}],
                     "ResultType": result_type
@@ -166,10 +167,9 @@ class Result(Analysis):
             sec["SigmaNull"] = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
             sec["SigmaCorrSlope"] = self.Val.round_to_uncertainty(sigma_slope[0], 2e-3, 2)
             sec["SigmaStd"] = self.Val.round_to_uncertainty(sigma_std[0], 2e-3, 2)
-        
-        sec["OffsetMean"] = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
-        sec["OffsetStd"] = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
-        sec["OffsetUnit"] = self.doc.get("AuxValues", {}).get("OffsetUnit")
+            sec["OffsetMean"] = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
+            sec["OffsetStd"] = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
+            sec["OffsetUnit"] = self.doc.get("AuxValues", {}).get("OffsetUnit")
        
         return sec
 
@@ -178,12 +178,20 @@ class Result(Analysis):
         belonging to one measurement (gas species, expansion or direct comp. etc) only. 
         """
         sec = {}
-
-        sec = self.gen_temperature_gas_entry(ana, sec)
-        sec = self.gen_temperature_room_entry(ana, sec)
-        sec = self.gen_min_max_entry(ana, sec)
-        sec = self.gen_cdg_entry(ana, sec)
-        sec = self.gen_srg_entry(ana, sec)    
+        if result_type == "expansion":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_min_max_entry(ana, sec)
+            sec = self.gen_cdg_entry(ana, sec)
+            sec = self.gen_srg_entry(ana, sec)    
+        
+        if result_type == "direct":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_min_max_entry(ana, sec)
+            
+        if result_type == "pressure_balance":
+            sec = self.gen_min_max_entry(ana, sec)
 
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
