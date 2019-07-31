@@ -301,6 +301,18 @@ class Analysis(Document):
 
         return average_index
     
+    def ask_for_skip(self):
+        """ Asks for points to skip. Returns the index array. 
+        """
+        skip = []
+        while True:
+            r = input("Skip datapoint number: ")
+            if r == "":
+                break
+            skip.append(r)
+
+        return skip
+    
     def ask_for_evis(self):
         """ Asks for e_vis
         """

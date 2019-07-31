@@ -101,17 +101,17 @@ def main():
             if tdo.type == "sigma":
                 x = p_ind_corr
                 y = p_ind_corr/p_cal
-                u = u*y
+               
             plt.xscale('symlog', linthreshx=1e-12)
             plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
             for i, v in enumerate(x):
                 plt.text(v, y[i], i, rotation=45.)
             plt.show()
     
-            average_index = ana.ask_for_reject(average_index=average_index)
-            d = {"AverageIndex": average_index}
-
             if result_type == "expansion" and tdo.type == "error":
+                average_index = ana.ask_for_reject(average_index=average_index)
+                d = {"AverageIndex": average_index}
+
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
                 d["Evis"] = e_vis
                 d["CFvis"] = cf_vis
@@ -119,11 +119,12 @@ def main():
                 d["VisUnit"] =vis_unit
 
             if result_type == "expansion" and tdo.type == "sigma":
+                skip = ana.ask_for_skip()
+                d = {"SkipIndex":skip}
                 
-                p_ind_corr =  res.rm_nan(p_ind_corr)
-                p_cal =  res.rm_nan(p_cal)
-                u =  res.rm_nan(u)
-
+                p_ind_corr =  np.delete(p_ind_corr, skip)
+                p_cal =  np.delete(p_cal, skip)
+                u =  np.delete(u, skip)
                 sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal=p_cal, cal_unit=unit, p_ind=p_ind_corr, ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
