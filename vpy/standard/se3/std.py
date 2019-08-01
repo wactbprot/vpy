@@ -61,41 +61,48 @@ class Se3(Standard):
                         "ch_2023_after", "ch_2024_after", "ch_2025_after",
                         "ch_2026_after", "ch_2027_after", "ch_2028_after", ]
 
-    fill_dev_names = ["CDG_1T_1",  "CDG_1T_2", "CDG_1T_3",
+    fill_dev_names = [
+                    "CDG_1T_1",  "CDG_1T_2", "CDG_1T_3",
                     "CDG_10T_1",  "CDG_10T_2",  "CDG_10T_3",
                     "CDG_100T_1", "CDG_100T_2", "CDG_100T_3",
-                    "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3", ]
+                    "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3",
+                    "CDG_5T_1", "CDG_50T_1", "CDG_500T_1",]
 
     
     fill_types = [
                     "1T_1-fill", "1T_2-fill", "1T_3-fill",
                     "10T_1-fill",  "10T_2-fill", "10T_3-fill",
                     "100T_1-fill", "100T_2-fill", "100T_3-fill",
-                    "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", ]
+                    "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", 
+                    "5T_1-fill", "50T_1-fill", "500T_1-fill",]
     
     compare_types = [
                     "1T_1-compare", "1T_2-compare", "1T_3-compare",
                     "10T_1-compare",  "10T_2-compare", "10T_3-compare",
                     "100T_1-compare", "100T_2-compare", "100T_3-compare",
-                    "1000T_1-compare", "1000T_2-compare", "1000T_3-compare", ]
+                    "1000T_1-compare", "1000T_2-compare", "1000T_3-compare",
+                    "5T_1-compare", "50T_1-compare", "500T_1-compare",]
     
     compare_offset_types = [
                     "1T_1-compare_offset", "1T_2-compare_offset", "1T_3-compare_offset",
                     "10T_1-compare_offset",  "10T_2-compare_offset", "10T_3-compare_offset",
                     "100T_1-compare_offset", "100T_2-compare_offset", "100T_3-compare_offset",
-                    "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset", ]
+                    "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset", 
+                    "5T_1-compare_offset", "50T_1-compare_offset", "500T_1-compare_offset",]
     
-    state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
-                  "10T_1-state",  "10T_2-state", "10T_3-state",
-                  "100T_1-state", "100T_2-state", "100T_3-state",
-                  "1000T_1-state", "1000T_2-state", "1000T_3-state", 
-                  "5T_1-state", "50T_1-state", "500T_1-state",]
+    state_types = [
+                    "1T_1-state", "1T_2-state", "1T_3-state",
+                    "10T_1-state",  "10T_2-state", "10T_3-state",
+                    "100T_1-state", "100T_2-state", "100T_3-state",
+                    "1000T_1-state", "1000T_2-state", "1000T_3-state", 
+                    "5T_1-state", "50T_1-state", "500T_1-state",]
 
     offset_types = [
                     "1T_1-offset", "1T_2-offset", "1T_3-offset",
                     "10T_1-offset",  "10T_2-offset", "10T_3-offset",
                     "100T_1-offset", "100T_2-offset", "100T_3-offset",
-                    "1000T_1-offset", "1000T_2-offset", "1000T_3-offset", ]
+                    "1000T_1-offset", "1000T_2-offset", "1000T_3-offset",
+                    "5T_1-offset", "50T_1-offset", "500T_1-offset", ]
    
     analysis_check = {
         "Error":{

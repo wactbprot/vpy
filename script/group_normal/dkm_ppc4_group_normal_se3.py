@@ -1,5 +1,5 @@
 """
-python script/group_normal/dkm_ppc4_group_normal_se3.py --id cal-2019-dkm_ppc4-ik-4050_0001 --db vl_db_work -s
+python script/group_normal/dkm_ppc4_group_normal_se3.py --ids cal-2019-dkm_ppc4-ik-4050_0004 --db vl_db_work -s
 
 """
 import sys
@@ -64,7 +64,7 @@ def main():
 
     uncert.total(res)
     heads = (
-            #"100T_1","100T_2","100T_3",
+            "100T_1","100T_2","100T_3",
             "1000T_1","1000T_2","1000T_3"
             )
     

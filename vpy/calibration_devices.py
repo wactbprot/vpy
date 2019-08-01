@@ -7,7 +7,6 @@ class CalibrationObject(Document):
     """
 
     def __init__(self, doc):
-        calib_object = {}
         self.cob_by_name = {}
         if 'State' in doc:
             doc = doc['State']
@@ -16,15 +15,17 @@ class CalibrationObject(Document):
             doc = doc['Calibration']
 
         if 'CalibrationObject' in doc:
-            calib_object = doc['CalibrationObject']
-
-            if isinstance(calib_object, list):
-                for c in calib_object:
-                    self.cob_by_name[c.get("Name", "NoName")] = c
+            cobs = doc['CalibrationObject']
+            if isinstance(cobs, list):
+                for cob in cobs:
+                    self.cob_by_name[cob.get("Name", "NoName")] = cob
             else:
-                self.cob_by_name[calib_object.get("Name", "NoName")] = calib_object
-            
-        super().__init__(calib_object)
+                self.cob_by_name[cobs.get("Name", "NoName")] = cobs
+        
+        if cobs:
+            super().__init__(cobs)
+        else:
+            super().__init__({})
 
     def get_by_name(self, name):
         if name in self.cob_by_name:

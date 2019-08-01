@@ -45,7 +45,6 @@ def main():
     cal.volume_start(res)
     cal.expansion(res)
     cal.pressure_rise(res)
-    cal.range(res)
     cal.pressure_cal(res)
     cal.error_pressure_rise(res)
     cal.pressure_cal(res)
@@ -99,7 +98,7 @@ def main():
 
     u_is = res.get_type_array("Uncertainty", starts_with="CDG_10T_1")
     for u_i in u_is:
-        u = res.pick("Uncertainty", u_i, "Pa")[s:e]
+        u = res.pick("Uncertainty", u_i, "Pa")
         descr = res.pick_dict("Uncertainty", u_i).get("Description").split(",")[0]
         plt.plot(p_cal, u/p_fill, 'x-', lw=3, label="{}: {}".format(u_i, descr ))
              

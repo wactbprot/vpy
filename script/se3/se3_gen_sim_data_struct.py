@@ -11,7 +11,7 @@ from script.se3.se3_cal_filling_pressure import gen_result_dict, get_expansion_u
 
 """
 renew data struct:
-python script/se3/gen_sim_data_struct.py --id 'cal-2019-se3-kk-75051_0001'
+python script/se3/se3_gen_sim_data_struct.py --id 'cal-2019-se3-kk-75051_0001'
 generate sim data:
 python script/se3/gen_sim_data_struct.py
 """
@@ -145,7 +145,7 @@ def sim_time(struct_dict, target_fill):
 
 def gen_sim_data(cal, target_pressures=[0.01, 0.05, 0.09, 0.1, 0.5, 0.9, 1, 5, 9, 10, 50, 90], target_unit="Pa", struct_file_name="values_struct.json", out_file_name="values_sim.json", path="vpy/standard/se3"):
     
-    with open("{}/{}".format(path,struct_file_name )) as jfn:
+    with open("{}/{}".format(path, struct_file_name)) as jfn:
         val_dict = json.load(jfn)
 
     target_fill, exp_name = get_fill_and_expansion(cal, target_pressures, target_unit)
@@ -184,8 +184,6 @@ def gen_sim_data(cal, target_pressures=[0.01, 0.05, 0.09, 0.1, 0.5, 0.9, 1, 5, 9
 
     with open("{}/{}".format(path, out_file_name), 'w') as f:
         json.dump(val_dict, f, indent=4, ensure_ascii=False)
-
-    print(val_dict)
 
 if __name__ == "__main__":
     io = Io()
