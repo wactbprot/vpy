@@ -475,7 +475,7 @@ class Cal(Se3):
 
         p_std = np.nanstd(cor_arr_nan, axis=0)
         n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
-
+        print(n)
         res.store("Pressure", "fill", p_mean, self.unit, p_std, n)
 
     def pressure_comp(self, res):
