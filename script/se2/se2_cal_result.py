@@ -14,7 +14,7 @@ from vpy.todo import ToDo
 from vpy.values import Values
 from vpy.analysis import Analysis
 from vpy.constants import Constants
-from vpy.standard.se3.uncert import Uncert as UncertSe3 
+from vpy.standard.se2.uncert import Uncert as UncertSe2
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
 import matplotlib.pyplot as plt
@@ -51,7 +51,7 @@ def main():
                 del analysis["Values"]["Uncertainty"]
 
             ana = Analysis(doc, init_dict=analysis)
-            se3_uncert = UncertSe3(doc)
+            se2_uncert = UncertSe2(doc)
             
             
 
@@ -61,23 +61,7 @@ def main():
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
 
-            if cmc:
-                # bis update CMC Einträge --> vorh. CMC Einträge  
-                # cal uncertainty of standard
-                uncert = Uncert(doc)
-                uncert.define_model()
-                uncert.gen_val_dict(ana)
-                uncert.gen_val_array(ana)
-                uncert.volume_start(ana)
-                uncert.volume_5(ana)
-                uncert.pressure_fill(ana)
-                uncert.temperature_after(ana)
-                uncert.temperature_before(ana)
-                uncert.expansion(ana)
-                uncert.total(ana)
-                uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
-            else:
-                se3_uncert.cmc(ana)    
+            se2_uncert.u_PTB_rel(ana)    
            
             if "Uncertainty" in customer_object:
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")

@@ -26,7 +26,7 @@ class Uncert:
         ana.store("Uncertainty", "total_abs", u_rel , "1")
 
     def u_PTB_rel(self, ana):
-        
+       #redefine piecewise 
         p_list = ana.pick("Pressure", "cal", "mbar")
         u = np.asarray([np.piecewise(p, [p <= 0.00027, p <= 0.003, p <= 0.0073, p <= 0.09, p <= 10, p <= 80,  80 < p],
                                         [0.0014, 0.001, 0.00092, 0.00086, 0.00075, 0.00019, 0.00014]).tolist() for p in p_list])
@@ -34,7 +34,7 @@ class Uncert:
         ana.store("Uncertainty", "standard", u , "1")
 
     def repeat_rel(self, ana):
-
+        #redefine piecewise 
         p_list = ana.pick("Pressure", "ind", "mbar")
         u = np.asarray([np.piecewise(p, [p <= 0.1, p <= 9.5, p > 9.5], [0.0008, 0.0003, 0.0001]).tolist() for p in p_list])
 

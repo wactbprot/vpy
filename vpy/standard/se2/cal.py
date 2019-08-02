@@ -79,7 +79,7 @@ class Cal(Se2):
 
         p_cor_val, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
         p_cor_val = p_cor_val * self.Cons.get_conv(p_cor_unit, "mbar")
-        ana.store("Pressure", "ind", p_cor_val, "mbar")
+        ana.store("Pressure", "ind_corr", p_cor_val, "mbar")
 
 
     def pressure_offset(self, ana):
@@ -107,7 +107,7 @@ class Cal(Se2):
         :type: class
         """
 
-        p_ind = ana.pick("Pressure", "ind", "mbar")
+        p_ind = ana.pick("Pressure", "ind_corr", "mbar")
         p_cal = ana.pick("Pressure", "cal", "mbar")
         error = (p_ind - p_cal) / p_cal * 100
 
