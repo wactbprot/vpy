@@ -32,7 +32,6 @@ def get_fill_pressure_uncert_rel(cal, target_fill, target_unit):
     if cal.unit == target_unit:
         N = len(cal.fill_dev_names)
         u = []
-        print(cal.fill_dev_names)
         # loop over all filling pressure CDGs and get the total uncertainty
         for i in range(N):
             Dev = cal.FillDevs[i]
