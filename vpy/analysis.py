@@ -347,7 +347,7 @@ class Analysis(Document):
         
         if found_threshold:
             self.log.debug("average index before coarse error filtering:{}".format(average_index))
-            average_index = [[j for j in i if abs(error_value[j]) < 50] for i in average_index]
+            average_index = [[j for j in i if abs(error_value[j]) < threshold] for i in average_index]
             self.log.debug("average index before coarse error filtering:{}".format(average_index))
         else:
             msg = "No treshold found; see Error(ind) Unit"
@@ -402,7 +402,7 @@ class Analysis(Document):
                     ref_std[i] = np.std(ref)
                     #Only accept indices if error[idx[i][j]] deviates either 
                     #less than 5% or 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[average_index[i][j]]) < max(5, 5 * ref_std[i]):
+                    if abs(ref_mean[i] - error[average_index[i][j]]) < max(0.05, 5 * ref_std[i]):
                         rr.append(average_index[i][j])
                 r.append(rr)
 

@@ -1,5 +1,5 @@
 """
-python script/se3/se3_cal_analysis_expansion.py --ids 'cal-2019-se3-kk-75002_0001'  # -a #--> new aux values
+python script/se2/se2_cal_analysis.py --ids 'cal-2019-se2-kk-75026_0001'  --srv 'http://a73434:5984' -u -s
 """
 import sys
 import os
@@ -33,7 +33,7 @@ def main():
         except:
            fail = True
 
-    if '-u' in args:
+    if '-u' in args:   # erzeugt Einträge für KOnstatne und Calibrierobjekte
         update = True
     else:
         update = False
