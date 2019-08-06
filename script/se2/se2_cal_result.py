@@ -58,38 +58,16 @@ def main():
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-
-            se2_uncert.u_PTB_rel(ana)
-            se2_uncert.make_offset_stability(ana)
-       
-            customer_device.repeat_uncert(ana) 
-            customer_device.device_uncert(ana) 
             
-            ana.total_uncert() 
-            u = ana.pick("Uncertainty", "total_rel", "1")
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
             average_index = ana.coarse_error_filtering(average_index=average_index)
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
+            pressure_range_index = ana.make_pressure_range_index(ana, average_index)
 
-            # plot to rm outliers and check
-            if tdo.type == "error":
-                x = p_ind_corr
-                y = p_ind_corr/p_cal-1
-
-            if tdo.type == "sigma":
-                x = p_ind_corr
-                y = p_ind_corr/p_cal
-               
-            plt.xscale('symlog', linthreshx=1e-12)
-            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
-            for i, v in enumerate(x):
-                plt.text(v, y[i], i, rotation=45.)
-            plt.show()
-    
             if result_type == "expansion" and tdo.type == "error":
                 average_index = ana.ask_for_reject(average_index=average_index)
-                d = {"AverageIndex": average_index}
+                d = {"AverageIndex": average_index, "PressureRangeIndex": pressure_range_index}
 
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
                 d["Evis"] = e_vis
@@ -115,7 +93,35 @@ def main():
                 d["OffsetStd"] = np.nanstd(rd)
                 d["OffsetUnit"] = rd_unit
                 
-            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+            ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)            
+
+            se2_uncert.u_PTB_rel(ana)
+            se2_uncert.make_offset_stability(ana)
+       
+            customer_device.repeat_uncert(ana) 
+            customer_device.device_uncert(ana) 
+            
+            ana.total_uncert() 
+            u = ana.pick("Uncertainty", "total_rel", "1")
+
+            # plot to rm outliers and check
+            if tdo.type == "error":
+                x = p_ind_corr
+                y = p_ind_corr/p_cal-1
+
+            if tdo.type == "sigma":
+                x = p_ind_corr
+                y = p_ind_corr/p_cal
+               
+            plt.xscale('symlog', linthreshx=1e-12)
+            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            for i, v in enumerate(x):
+                plt.text(v, y[i], i, rotation=45.)
+            plt.show()
+
+            print("*******")
+            print(result_type)
 
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)

@@ -331,6 +331,52 @@ class Analysis(Document):
             u_vis = float(r)
         return e_vis, 1/(e_vis +1), u_vis, "1"
 
+
+    def flatten(self, l):
+        """Flattens a list of lists.
+
+        :param l: list of lists
+        :type cal: list
+
+        :returns: a list
+        :rtype: list
+        """
+        return [item for sublist in l for item in sublist]
+
+
+    def make_pressure_range_index(self, ana, average_index):
+        """Collects indices of measurements with the same conversion factor in r1.
+        Collects indices of measurements within the same decade of p_cal in r2.
+        Returns the one with smaller standard deviation in the low pressure range.
+
+        :returns: list of lists of indices
+        :rtype: list
+        """
+
+        faktor = ana.pick_dict("Faktor", "faktor").get("Value")
+        idx = self.flatten(average_index)
+
+        r1 = {}
+        for i in idx:
+            for j in r1:
+                if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
+                    r1[j].append(i)
+                    break
+            else: r1[i] = [i]
+        r1 = list(r1.values())
+
+        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
+        p_off = ana.pick("Pressure", "offset", self.pressure_unit)
+        p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
+        r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(faktor[j])] for i in sorted(list(set(p_cal_log10)))]
+        if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
+        if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
+
+        if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
+        else: r = r2
+        
+        return r
+
     def coarse_error_filtering(self, average_index):
         """Removes indices above threshold.
         """

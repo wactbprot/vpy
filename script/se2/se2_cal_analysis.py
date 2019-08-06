@@ -67,6 +67,7 @@ def main():
             cal.pressure_offset(ana)
             cal.pressure_indication_error(ana)
             cal.measurement_time(ana)
+            cal.faktor(ana)
 
             io.save_doc(ana.build_doc())
            
