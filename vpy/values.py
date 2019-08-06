@@ -73,18 +73,6 @@ class Values(Document):
         return to_target_unit[b]
 
 
-    def flatten(self, l):
-        """Flattens a list of lists.
-
-        :param l: list of lists
-        :type cal: list
-
-        :returns: a list
-        :rtype: list
-        """
-        return [item for sublist in l for item in sublist]
-
-
     def round_to_sig_dig(self, val, n, scientific=False):
         """ Rounds the value ``val`` to ``n`` significant digits
         and outputs a formated string

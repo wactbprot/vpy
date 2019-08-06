@@ -85,6 +85,26 @@ class Cal(Se2):
         ana.store("Pressure", "ind_corr", p_cor_val, self.pressure_unit)
 
 
+    def faktor(self, ana):
+        """Simple translation from Measurement to Analysis
+           "ind" = "p_cor" != "p_ind"   !!!!
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        _, p_ind_unit = self.Pres.get_value_and_unit("p_ind")
+        _, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
+        cf = self.CFaktor.get_value("faktor","")
+        if p_cor_unit==p_ind_unit:
+            unit = "1"
+        else:
+            unit = "{to_unit}/{from_unit}".format(to_unit=p_cor_unit, from_unit=p_ind_unit)
+        ana.store("Faktor", "faktor", cf, unit)
+
+
     def pressure_offset(self, ana):
         """Simple translation from Measurement to Analysis
 
@@ -183,46 +203,6 @@ class Cal(Se2):
         idx = [i for i in idx if mdate0[i] == max_occurrence]
 
         ana.main_maesurement_index = idx
-
-
-    def make_pressure_range_index(self, ana):
-        """Collects indices of measurements with the same conversion factor in r1.
-        Collects indices of measurements within the same decade of p_cal in r2.
-        Returns the one with smaller standard deviation in the low pressure range.
-
-        :returns: list of lists of indices
-        :rtype: list
-        """
-
-        cf = self.CFaktor.get_value("faktor","")
-        idx = self.Val.flatten(ana.average_index)
-
-        r1 = {}
-        for i in idx:
-            for j in r1:
-                if np.isclose(cf[i], cf[j], rtol=1.e-3) and np.isfinite(cf[j]):
-                    r1[j].append(i)
-                    break
-            else: r1[i] = [i]
-        r1 = list(r1.values())
-
-        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
-        p_off = ana.pick("Pressure", "offset", self.pressure_unit)
-        p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
-        r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(cf[j])] for i in sorted(list(set(p_cal_log10)))]
-        if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
-        if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
-
-        print("pressure ranges for offset stability")
-        print(r1)
-        print(r2)
-        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r1])
-        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r2])
-
-        if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
-        else: r = r2
-        
-        ana.pressure_range_index = r
 
     
     def fit_thermal_transpiration(self, ana):
