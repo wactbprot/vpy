@@ -1,5 +1,5 @@
 """
-python script/se3/se3_cal_result.py --ids 'cal-2018-se3-kk-75050_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/se2/se2_cal_result.py --ids 'cal-2019-se2-kk-75026_0001' --db 'vl_db' --srv 'http://a73434:5984' -s
 """
 import sys
 import os
@@ -14,7 +14,7 @@ from vpy.todo import ToDo
 from vpy.values import Values
 from vpy.analysis import Analysis
 from vpy.constants import Constants
-from vpy.standard.se3.uncert import Uncert as UncertSe3 
+from vpy.standard.se2.uncert import Uncert as UncertSe2
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
 import matplotlib.pyplot as plt
@@ -51,67 +51,23 @@ def main():
                 del analysis["Values"]["Uncertainty"]
 
             ana = Analysis(doc, init_dict=analysis)
-            se3_uncert = UncertSe3(doc)
+            se2_uncert = UncertSe2(doc)            
             
-            
-
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-
-            if cmc:
-                # bis update CMC Einträge --> vorh. CMC Einträge  
-                # cal uncertainty of standard
-                uncert = Uncert(doc)
-                uncert.define_model()
-                uncert.gen_val_dict(ana)
-                uncert.gen_val_array(ana)
-                uncert.volume_start(ana)
-                uncert.volume_5(ana)
-                uncert.pressure_fill(ana)
-                uncert.temperature_after(ana)
-                uncert.temperature_before(ana)
-                uncert.expansion(ana)
-                uncert.total(ana)
-                uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
-            else:
-                se3_uncert.cmc(ana)    
-           
-            if "Uncertainty" in customer_object:
-                u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
-                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
-            else:
-                customer_device.offset_uncert(ana) 
-                customer_device.repeat_uncert(ana) 
-                customer_device.device_uncert(ana) 
             
-            ana.total_uncert() 
-            u = ana.pick("Uncertainty", "total_rel", "1")
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-            #average_index = ana.coarse_error_filtering(average_index=average_index)
-            #average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
+            average_index = ana.coarse_error_filtering(average_index=average_index)
+            average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
+            pressure_range_index = ana.make_pressure_range_index(ana, average_index)
 
-            # plot to rm outliers and check
-            if tdo.type == "error":
-                x = p_ind_corr
-                y = p_ind_corr/p_cal-1
-
-            if tdo.type == "sigma":
-                x = p_ind_corr
-                y = p_ind_corr/p_cal
-               
-            plt.xscale('symlog', linthreshx=1e-12)
-            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
-            for i, v in enumerate(x):
-                plt.text(v, y[i], i, rotation=45.)
-            plt.show()
-    
             if result_type == "expansion" and tdo.type == "error":
                 average_index = ana.ask_for_reject(average_index=average_index)
-                d = {"AverageIndex": average_index}
+                d = {"AverageIndex": average_index, "PressureRangeIndex": pressure_range_index}
 
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
                 d["Evis"] = e_vis
@@ -137,7 +93,35 @@ def main():
                 d["OffsetStd"] = np.nanstd(rd)
                 d["OffsetUnit"] = rd_unit
                 
-            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+            ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)            
+
+            se2_uncert.u_PTB_rel(ana)
+            se2_uncert.make_offset_stability(ana)
+       
+            customer_device.repeat_uncert(ana) 
+            customer_device.device_uncert(ana) 
+            
+            ana.total_uncert() 
+            u = ana.pick("Uncertainty", "total_rel", "1")
+
+            # plot to rm outliers and check
+            if tdo.type == "error":
+                x = p_ind_corr
+                y = p_ind_corr/p_cal-1
+
+            if tdo.type == "sigma":
+                x = p_ind_corr
+                y = p_ind_corr/p_cal
+               
+            plt.xscale('symlog', linthreshx=1e-12)
+            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            for i, v in enumerate(x):
+                plt.text(v, y[i], i, rotation=45.)
+            plt.show()
+
+            print("*******")
+            print(result_type)
 
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)
@@ -152,7 +136,7 @@ def main():
                 plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
 
                 plt.legend()
-                plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
+                plt.title('Calib. of {}@SE2'.format(customer_object.get('Name')))
                 plt.ylabel('$e$')
                 plt.grid(True)
                 plt.show()
@@ -165,7 +149,7 @@ def main():
                 plt.errorbar(p_cal, p_ind_corr/p_cal,   yerr=u*p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
                 plt.plot(p_cal, lin_reg(p_cal), linestyle="-" )
                 plt.legend()
-                plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
+                plt.title('Calib. of {}@SE2'.format(customer_object.get('Name')))
                 plt.ylabel('$\sigma$')
                 plt.xlabel('$p_{}$ in {}'.format("{cal}", unit))
                 plt.grid(True)

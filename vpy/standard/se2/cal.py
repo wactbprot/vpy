@@ -15,6 +15,8 @@ class Cal(Se2):
         self.Pres = Pressure(doc)
         self.Date = Date(doc)
         self.CFaktor = Values(doc['Calibration']['Measurement']['Values']['faktor'])
+        self.pressure_unit = "Pa"
+        self.error_unit = "%"
 
     def get_expansion(self):
         """Returns an np.array
@@ -35,8 +37,9 @@ class Cal(Se2):
         """
 
         T_after_val, T_after_unit = self.Temp.get_value_and_unit("T_after")
-        T_after_val = T_after_val + self.Cons.get_conv(T_after_unit, "C")
-        ana.store("Temperature", "after", T_after_val, "C")
+        T_after_val = T_after_val + self.Cons.get_conv(T_after_unit, "K")
+        ana.store("Temperature", "after", T_after_val, "K")
+        ana.store("Temperature", "gas", T_after_val, "K")
 
 
     def temperature_room(self, ana):
@@ -49,8 +52,8 @@ class Cal(Se2):
         """
 
         T_room_val, T_room_unit = self.Temp.get_value_and_unit("T_room")
-        T_room_val = T_room_val + self.Cons.get_conv(T_room_unit, "C")
-        ana.store("Temperature", "room", T_room_val, "C")
+        T_room_val = T_room_val + self.Cons.get_conv(T_room_unit, "K")
+        ana.store("Temperature", "room", T_room_val, "K")
     
     
     def pressure_cal(self, ana):
@@ -63,8 +66,8 @@ class Cal(Se2):
         """
 
         p_cal_val, p_cal_unit = self.Pres.get_value_and_unit("p_cal")
-        p_cal_val = p_cal_val * self.Cons.get_conv(p_cal_unit, "mbar")
-        ana.store("Pressure", "cal", p_cal_val, "mbar")
+        p_cal_val = p_cal_val * self.Cons.get_conv(p_cal_unit, self.pressure_unit)
+        ana.store("Pressure", "cal", p_cal_val, self.pressure_unit)
 
 
     def pressure_ind(self, ana):
@@ -78,8 +81,28 @@ class Cal(Se2):
         """
 
         p_cor_val, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
-        p_cor_val = p_cor_val * self.Cons.get_conv(p_cor_unit, "mbar")
-        ana.store("Pressure", "ind", p_cor_val, "mbar")
+        p_cor_val = p_cor_val * self.Cons.get_conv(p_cor_unit, self.pressure_unit)
+        ana.store("Pressure", "ind_corr", p_cor_val, self.pressure_unit)
+
+
+    def faktor(self, ana):
+        """Simple translation from Measurement to Analysis
+           "ind" = "p_cor" != "p_ind"   !!!!
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        _, p_ind_unit = self.Pres.get_value_and_unit("p_ind")
+        _, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
+        cf = self.CFaktor.get_value("faktor","")
+        if p_cor_unit==p_ind_unit:
+            unit = "1"
+        else:
+            unit = "{to_unit}/{from_unit}".format(to_unit=p_cor_unit, from_unit=p_ind_unit)
+        ana.store("Faktor", "faktor", cf, unit)
 
 
     def pressure_offset(self, ana):
@@ -95,7 +118,10 @@ class Cal(Se2):
         cf = self.CFaktor.get_value("faktor","")
         p_off_val = p_off_val * cf
 
-        ana.store("Pressure", "offset", p_off_val, "mbar")
+        _, p_cor_unit = self.Pres.get_value_and_unit("p_cor")
+        p_off_val = p_off_val * self.Cons.get_conv(p_cor_unit, self.pressure_unit)
+
+        ana.store("Pressure", "offset", p_off_val, self.pressure_unit)
 
 
     def pressure_indication_error(self, ana):
@@ -107,11 +133,11 @@ class Cal(Se2):
         :type: class
         """
 
-        p_ind = ana.pick("Pressure", "ind", "mbar")
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        error = (p_ind - p_cal) / p_cal * 100
+        p_ind = ana.pick("Pressure", "ind_corr",self.pressure_unit)
+        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
+        error = (p_ind - p_cal) / p_cal
 
-        ana.store("Error", "ind", error, "%")
+        ana.store("Error", "ind", error, "1")
 
 
     def measurement_time(self, ana):
@@ -131,9 +157,9 @@ class Cal(Se2):
         """Reject outliers by several filtering algorithms.
         """
 
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        error = ana.pick("Error", "ind", "%")
-        self.ToDo.make_average_index(p_cal, "mbar")
+        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
+        error = ana.pick("Error", "ind", "1")
+        self.ToDo.make_average_index(p_cal, self.pressure_unit)
         idx = self.ToDo.average_index
 
         idx = ana.coarse_error_filtering(average_index=idx)
@@ -152,7 +178,7 @@ class Cal(Se2):
         ax.legend(handles, labels, loc=0)
         plt.title(str(loops) + " mal durchlaufen")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.xlabel(r"$p_\mathrm{cal}$ (?)")
         plt.ylabel(r"$e\;(\%)$")
         plt.savefig("reject_outliers_" + str(ana.org["Calibration"]["Certificate"]) + ".pdf")
         plt.clf()
@@ -178,51 +204,11 @@ class Cal(Se2):
 
         ana.main_maesurement_index = idx
 
-
-    def make_pressure_range_index(self, ana):
-        """Collects indices of measurements with the same conversion factor in r1.
-        Collects indices of measurements within the same decade of p_cal in r2.
-        Returns the one with smaller standard deviation in the low pressure range.
-
-        :returns: list of lists of indices
-        :rtype: list
-        """
-
-        cf = self.CFaktor.get_value("faktor","")
-        idx = self.Val.flatten(ana.average_index)
-
-        r1 = {}
-        for i in idx:
-            for j in r1:
-                if np.isclose(cf[i], cf[j], rtol=1.e-3) and np.isfinite(cf[j]):
-                    r1[j].append(i)
-                    break
-            else: r1[i] = [i]
-        r1 = list(r1.values())
-
-        p_cal = ana.pick("Pressure", "cal", "mbar")
-        p_off = ana.pick("Pressure", "offset", "mbar")
-        p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
-        r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(cf[j])] for i in sorted(list(set(p_cal_log10)))]
-        if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
-        if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
-
-        print("pressure ranges for offset stability")
-        print(r1)
-        print(r2)
-        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r1])
-        print([self.Val.round_to_sig_dig_array(np.take(p_cal, i), 2).tolist() for i in r2])
-
-        if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
-        else: r = r2
-        
-        ana.pressure_range_index = r
-
     
     def fit_thermal_transpiration(self, ana):
 
-        cal = ana.pick("Pressure", "cal", "mbar")
-        ind = ana.pick("Pressure", "ind", "mbar")
+        cal = ana.pick("Pressure", "cal", self.pressure_unit)
+        ind = ana.pick("Pressure", "ind_corr", self.pressure_unit)
         error = 100 * (ind - cal) / cal
 
         def model(p, a, b, c, d):

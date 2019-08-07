@@ -10,10 +10,11 @@ from vpy.standard.se3.cal import Cal
 from script.se3.se3_cal_filling_pressure import gen_result_dict, get_expansion_uncert_rel, get_fill_pressure_uncert_rel, get_fill_pressures, skip_by_pressure
 
 """
-renew data struct:
-python script/se3/se3_gen_sim_data_struct.py --id 'cal-2019-se3-kk-75051_0001'
-generate sim data:
-python script/se3/gen_sim_data_struct.py
+renew data **struct**:
+python script/se3/se3_gen_sim_data.py --id 'cal-2019-se3-kk-75051_0001'
+
+generate sim **data**:
+python script/se3/gen_sim_data.py
 """
 
 def main(io, cal):
