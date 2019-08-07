@@ -3,17 +3,19 @@ from .device import Device
 
 class Srg(Device):
     """ SRG
+    The fix_total_relative_uncertainty is used for the calculation of the
+    uncertainty of the corrected slope.
     """
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 
+        self.total_relative_uncertainty = 2.6e-3
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
         return self.doc['Name']
 
-    
     def dcr_conversion(self, unit="Pa", gas="N2"):
         """
         Calculates the conversion constant :math:`K` between DCR and
@@ -82,10 +84,10 @@ class Srg(Device):
         
         return pressure
 
-    def sigma_null(self, p_cal, cal_unit, p_ind, ind_unit):
+    def sigma_null(self, p_cal, cal_unit, p_ind, ind_unit, k = 2):
         """
         https://de.wikipedia.org/wiki/Lineare_Einfachregression
-
+        k = coverage factor
         x ... p_cal
         y ... sigma
         m ... slope
@@ -120,6 +122,6 @@ class Srg(Device):
         sens_b = (m / b**2)
         sens_m = (1.0 / b)
 
-        u = np.sqrt(sens_m**2 * var_m  + sens_b**2 * var_b)
-            
+        u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty * m/b)**2)**0.5
+
         return b, m, u
