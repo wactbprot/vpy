@@ -80,23 +80,23 @@ class Display:
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])           
         error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
 
-        pcal0 = pressure.get_value('cal', 'mbar')
-        e0 = error.get_value('ind', '%')
+        pcal0 = pressure.get_value('cal', 'Pa')
+        e0 = error.get_value('ind', '1')
 
-        idx = (abs(e0) > 50)
+        idx = (abs(e0) > 0.5)
         if len(idx) > 0:
             e0[idx] = np.nan
 
         result = Document(self.doc['Calibration']['Result']['Table'])
         pcal, pcal_unit = result.get_value_and_unit('cal')
         pcal = np.asarray(pcal, dtype=float)
-        pcal = pcal * self.Cons.get_conv(pcal_unit, "mbar")
+        pcal = pcal * self.Cons.get_conv(pcal_unit, "Pa")
         error, error_unit = result.get_value_and_unit('relative')
         error = np.asarray(error, dtype=float)
-        error = error * self.Cons.get_conv(error_unit, "%")
+        error = error * self.Cons.get_conv(error_unit, "1")
         unc, unc_unit = result.get_value_and_unit('uncertTotal_rel')
         unc = np.asarray(unc, dtype=float)
-        unc = unc * self.Cons.get_conv(unc_unit, "%")            
+        unc = unc * self.Cons.get_conv(unc_unit, "1")            
 
         para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
         residuals = model(pcal, *para_val) - error

@@ -28,7 +28,8 @@ class Io(object):
                                 "hist_data": "se3_req/group_normal_hist"
                             },
                             "se2": {
-                                "all_doc_view": "se2_req/doc"
+                                "all_doc_view": "se2_req/doc",
+                                "pn_view": "se2_req/pn_by_date"
                             },
                              "frs5": {
                                "all_doc_view": "frs5_req/doc"

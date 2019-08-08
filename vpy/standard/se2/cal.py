@@ -206,9 +206,11 @@ class Cal(Se2):
 
     
     def fit_thermal_transpiration(self, ana):
-
+        
         cal = ana.pick("Pressure", "cal", self.pressure_unit)
         ind = ana.pick("Pressure", "ind_corr", self.pressure_unit)
+        print(cal)
+        print(ind)
         error = 100 * (ind - cal) / cal
 
         def model(p, a, b, c, d):
