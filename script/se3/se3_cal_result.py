@@ -108,7 +108,12 @@ def main():
             for i, v in enumerate(x):
                 plt.text(v, y[i], i, rotation=45.)
             plt.show()
-    
+
+            if result_type == "direct" and tdo.type == "error":
+                average_index = ana.ask_for_reject(average_index=average_index)
+                d = {"AverageIndex": average_index}
+
+
             if result_type == "expansion" and tdo.type == "error":
                 average_index = ana.ask_for_reject(average_index=average_index)
                 d = {"AverageIndex": average_index}
@@ -136,9 +141,9 @@ def main():
                 d["OffsetMean"] = np.nanmean(rd)
                 d["OffsetStd"] = np.nanstd(rd)
                 d["OffsetUnit"] = rd_unit
-                
-            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
 
+            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+                
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana, result_type=result_type)
