@@ -67,7 +67,11 @@ def main():
 
             if result_type == "expansion" and tdo.type == "error":
                 average_index = ana.ask_for_reject(average_index=average_index)
-                d = {"AverageIndex": average_index, "PressureRangeIndex": pressure_range_index}
+                d = {
+                    "AverageIndex": average_index,
+                    "AverageIndexFlat": ana.flatten(average_index),
+                    "PressureRangeIndex": pressure_range_index
+                    }
 
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
                 d["Evis"] = e_vis

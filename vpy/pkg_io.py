@@ -313,7 +313,9 @@ class Io(object):
         db = srv[self.config['db']['name']]
         view = self.config['standards'][std]['pn_view']
 
+        doc = None
         for item in db.view(view, key="{date}_{cert}".format(date=date, cert=cert)):
+            print(item)
             doc = item.value
         
         return doc
