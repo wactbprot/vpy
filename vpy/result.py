@@ -66,11 +66,14 @@ class Result(Analysis):
 
     def __init__(self, doc, result_type="expansion", skip=False):
 
-        d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         init_dict = {"Skip":skip,
                     "Date": [{
                     "Type": "generated",
-                    "Value": d}],
+                    "Value": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}],
+                    "AuxValues":{
+                        "AnalysisProgram": "vpy"
+                    },
                     "ResultType": result_type
              }
 

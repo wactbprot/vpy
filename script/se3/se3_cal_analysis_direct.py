@@ -61,8 +61,9 @@ def main():
       
             cal.temperature_comp(res)
             cal.temperature_gas_direct(res)
-            cal.range(res)
-            cal.pressure_comp(res)
+            cal.pressure_gn_corr(res)
+            cal.pressure_gn_mean(res)
+            
             
             ## !!cal.offset_from_sample(res)
             ## !!offset_dict = res.pick_dict("Pressure","offset_sample")
