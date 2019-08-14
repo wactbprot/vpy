@@ -72,6 +72,8 @@ class Values(Document):
             }
         return to_target_unit[b]
 
+    def cnt_nan(self, d):
+        return np.count_nonzero(~np.isnan(d))
 
     def round_to_sig_dig(self, val, n, scientific=False):
         """ Rounds the value ``val`` to ``n`` significant digits

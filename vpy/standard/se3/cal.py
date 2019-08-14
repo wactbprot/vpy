@@ -404,144 +404,98 @@ class Cal(Se3):
         self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
         
         res.store("Pressure", "cal", p_cal, self.unit)
-
-    def pressure_fill(self, res):
-        """Calculates the  mean value of the filling pressure.
-        Stores result under the path *Pressure, fill, Pa*
-
-        :param: instance of a class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
+    
+    def pressure_gn_corr(self, res):
+        """Calculates the corrected pressures of the group normal (gn)
         """
-        self.log.debug("start filling pressure")
-
         meas_time = self.Time.get_value("amt_fill", "ms")
-        fill_target = self.Pres.get_value("target_fill", self.unit)
 
-        N = len(self.fill_types)
+        if res.analysis_type == 'expansion':
+            gn_ind_types = self.fill_types
+            gn_offset_types = self.offset_types
+            gn_target = self.Pres.get_value("target_fill", self.unit)
+            sufix = "fill"
 
-        cor_arr = []
-        cor_arr_nan = []
-        u_arr =[]
-        for i in range(N):
-            FillDev = self.FillDevs[i]
-            self.log.debug("Working on filling pressure of device {}".format(FillDev.name))
-            p_corr = np.full(self.no_of_meas_points, np.nan)
+        if res.analysis_type == 'direct':
+            gn_ind_types = self.compare_types
+            gn_offset_types = self.compare_offset_types
+            gn_target = self.Pres.get_value("target_pressure", self.unit)
+            sufix = "compare"
+        
+        for i in range(len(gn_ind_types)):
+            GNDevice = self.FillDevs[i]
+            self.log.debug("Working on filling pressure of device {}".format(GNDevice.name))
 
-            v, u_ind = self.Pres.get_value_and_unit(self.fill_types[i])
-            conv = self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
-            ind = v*conv
+            # get indicatted pressure and unit
+            p_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i])
+            p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
     
             # get a offset value for each pressure value:
-            v, u_off = self.Pres.get_value_and_unit(self.offset_types[i])
+            p_off, u_off = self.Pres.get_value_and_unit(gn_offset_types[i])
             # get one offet value for all pressure values:
-            if v is None:
-                v = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], u_ind)
-                conv = self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
-                off = v * conv
+            if p_off is None:
+                p_off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", gn_offset_types[i], u_off)
+                p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
             else:
-                conv = self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
-                off = v * conv
+                p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
            
-            p = ind -off
-            if fill_target is not None:
-                e, u = FillDev.get_error_interpol(p, self.unit, fill_target, self.unit)
+            p = p_ind_conv - p_off_conv
+            if gn_target is not None:
+                e, u = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)
             else:
-                e, u = FillDev.get_error_interpol(p, self.unit, p, self.unit)
+                e, u = GNDevice.get_error_interpol(p, self.unit, p, self.unit)
             
-            s = (ind == 0.)
-            if len(s>0):
-                ind[s] = np.nan
-           
+            # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
 
-            res.store("Pressure", "{}-fill".format(FillDev.name), p_corr, self.unit)
-            res.store("Error", "{}-fill".format(FillDev.name), e, '1')
-            res.store("Error", "{}-offset".format(FillDev.name), off/p_corr, '1')
-            
-            cor_arr_nan.append(copy.deepcopy(p_corr))
-
-            p_corr[np.isnan(p_corr)] = 0
-            u[np.isnan(p_corr)] = 1
-
-            cor_arr.append(p_corr)
-            u_arr.append(u)
-        
-        p_mean = self.Pres.weight_array_mean(cor_arr, u_arr)
-                
-        def cnt_nan(d):
-            return np.count_nonzero(~np.isnan(d))
-
-        p_std = np.nanstd(cor_arr_nan, axis=0)
-        n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
-        
-        res.store("Pressure", "fill", p_mean, self.unit, p_std, n)
-
-    def pressure_comp(self, res):
-        """Calculates the  mean value of the compare pressure.
-        Stores result under the path *Pressure, compare, Pa*
-
-        :param: instance of a class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
+            res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
+            res.store("Uncertainty", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), u, '1')            
+            res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
+            res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
+    
+    def pressure_gn_mean(self, res):
         """
-        self.log.debug("start calculation of compare pressure") 
+        *) checked that the function `np.ma.average()` gives the same 
+        result as the function  `self.Pres.weight_array_mean()` 
+        """
+        if res.analysis_type == 'expansion':
+            gn_ind_types = self.fill_types
+            sufix = "fill"
+            res_type ="fill"
 
-        meas_time = self.Time.get_value("amt_meas", "ms")
-        compare_target = self.Pres.get_value("target_pressure", self.unit)
-
-        N = len(self.compare_types)
-
-        cor_arr = []
-        cor_arr_nan = []
-        u_arr =[]
-        for i in range(N):
-            CompareDev = self.FillDevs[i]
-            self.log.debug("Working on compare pressure of device {}".format(CompareDev.name))
-            p_corr = np.full(self.no_of_meas_points, np.nan)
-            ind = self.Pres.get_value(self.compare_types[i], self.unit)
-            off = self.Pres.get_value(self.compare_offset_types[i], self.unit)
-            # get one offet value for all pressure values:
-            if off is None:
-                off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", self.offset_types[i], self.unit)
-
-            p = ind - off
-          
-            if compare_target is not None:
-                e, u = CompareDev.get_error_interpol(p, self.unit, compare_target, self.unit)
-            else:
-                e, u = CompareDev.get_error_interpol(p, self.unit, p, self.unit)
-            s = (ind == 0.)
-            if len(s>0):
-                ind[s] = np.nan
-
-            p_corr = p / (e + 1.0)
-            
-            res.store("Pressure", "{}-compare".format(CompareDev.name), p_corr, self.unit)
-            res.store("Error", "{}-compare".format(CompareDev.name), e, '1')
-            res.store("Error", "{}-offset".format(CompareDev.name), off/p_corr, '1')
-             
-            cor_arr_nan.append(copy.deepcopy(p_corr))
-
-            p_corr[np.isnan(p_corr)] = 0
-            u[np.isnan(p_corr)] = 1
-
-            cor_arr.append(p_corr)
-            u_arr.append(u)
+        if res.analysis_type == 'direct':
+            gn_ind_types = self.compare_types
+            sufix = "compare"
+            res_type ="cal"
         
+        p_arr = []
+        u_arr = []
+        for i in range(len(self.FillDevs)):
+            GNDevice = self.FillDevs[i]
+            p_corr = res.pick("Pressure","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit=self.unit)
+            u_corr =  res.pick("Uncertainty","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
+            p_arr.append(p_corr)
+            u_arr.append(u_corr)
+        
+        p_std = np.nanstd(p_arr, axis=0)
+        p_mean = np.nanmean(p_arr, axis=0)
+       
+        ## d_rel = (p_arr - p_mean)/p_mean
+        ## prep_d_rel = np.ma.array(d_rel,  mask=np.isnan(p_arr))
+       
+        n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=p_arr)
+        
+        ## *) 
+        ## prep_p_arr = np.ma.array(p_arr,  mask=np.isnan(p_arr))
+        ## prep_u_arr = np.ma.array(u_arr,  mask=np.isnan(p_arr))
+        ## p_mean_weight = np.ma.average(prep_p_arr, axis=0, weights=1.0/(prep_u_arr))
+        
+        p_mean_weight = self.Pres.weight_array_mean(p_arr, u_arr)
+        
+        res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
+        res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 
-        p_mean = self.Pres.weight_array_mean(cor_arr, u_arr)
-                
-        def cnt_nan(d):
-            return np.count_nonzero(~np.isnan(d))
-
-        p_std = np.nanstd(cor_arr_nan, axis=0)
-        n = np.apply_along_axis(cnt_nan, 0, cor_arr_nan)
-
-        res.store("Pressure", "cal", p_mean, self.unit, p_std, n)
-
+  
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
         tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")
         cor_arr = self.TDev.get_array(prefix_corr, channels, sufix_corr, "K")

@@ -73,7 +73,10 @@ def main():
                 if dev_class == 'RSG':
                     CustomerDevice = Rsg(doc, {})
       
-            cal.pressure_fill(res)
+            cal.pressure_gn_corr(res)
+            cal.pressure_gn_mean(res)
+
+            #cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
             cal.temperature_after(res)
@@ -87,7 +90,6 @@ def main():
             cal.pressure_cal(res)
             cal.error_pressure_rise(res)
             cal.deviation_target_cal(res)
-
             ## calculate customer indication
             gas = cal.Aux.get_gas()
             temperature_dict = res.pick_dict('Temperature', 'after')

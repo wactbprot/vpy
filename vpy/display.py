@@ -25,13 +25,17 @@ class Display:
         idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
-        pcal0 = pressure.get_value('cal', 'mbar')
-        poff0 = pressure.get_value('offset', 'mbar')
 
-        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
-        offset_unc = pressure.get_value('offset', 'mbar')
+        pcal0, pcal0_unit = pressure.get_value_and_unit('cal')
+        pcal0 = pcal0 * self.Cons.get_conv(pcal0_unit, "Pa")
 
-        plt.clf()
+        poff0, poff0_unit = pressure.get_value_and_unit('offset')
+        poff0 = poff0 * self.Cons.get_conv(poff0_unit, "Pa")        
+
+        uncertainty = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
+        offset_unc, offset_unc_unit = pressure.get_value_and_unit('offset')
+        offset_unc = offset_unc * self.Cons.get_conv(offset_unc_unit, "Pa")  
+
         fig, ax = plt.subplots()
         x = np.take(pcal0, idx)
         y = np.take(poff0, idx)
@@ -40,8 +44,8 @@ class Display:
         ax.semilogx(x, y, 'o')
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
-        plt.ylabel(r"$p_\mathrm{off}$ (mbar)")
+        plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
+        plt.ylabel(r"$p_\mathrm{off}$ (Pa)")
         plt.rcParams['figure.figsize']=8,6
         return plt
 
@@ -51,13 +55,17 @@ class Display:
         idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
-        pcal0 = pressure.get_value('cal', 'mbar')
-        poff0 = pressure.get_value('offset', 'mbar')
 
-        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
-        offset_unc = pressure.get_value('offset', 'mbar')
+        pcal0, pcal0_unit = pressure.get_value_and_unit('cal')
+        pcal0 = pcal0 * self.Cons.get_conv(pcal0_unit, "Pa")
 
-        plt.clf()
+        poff0, poff0_unit = pressure.get_value_and_unit('offset')
+        poff0 = poff0 * self.Cons.get_conv(poff0_unit, "Pa")        
+
+        uncertainty = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
+        offset_unc, offset_unc_unit = pressure.get_value_and_unit('offset')
+        offset_unc = offset_unc * self.Cons.get_conv(offset_unc_unit, "Pa")  
+
         fig, ax = plt.subplots()
         x = np.take(pcal0, idx)
         y = np.take(poff0 / pcal0 * 100, idx)
@@ -66,7 +74,7 @@ class Display:
         ax.semilogx(x, y, 'o')
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
         plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
         plt.rcParams['figure.figsize']=8,6
         return plt
@@ -79,24 +87,23 @@ class Display:
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])           
         error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
+        pcal0 = pressure.get_value('cal', 'Pa')
+        e0 = error.get_value('ind', '1')
 
-        pcal0 = pressure.get_value('cal', 'mbar')
-        e0 = error.get_value('ind', '%')
-
-        idx = (abs(e0) > 50)
+        idx = (abs(e0) > 0.5)
         if len(idx) > 0:
             e0[idx] = np.nan
 
         result = Document(self.doc['Calibration']['Result']['Table'])
         pcal, pcal_unit = result.get_value_and_unit('cal')
         pcal = np.asarray(pcal, dtype=float)
-        pcal = pcal * self.Cons.get_conv(pcal_unit, "mbar")
-        error, error_unit = result.get_value_and_unit('relative')
+        pcal = pcal * self.Cons.get_conv(pcal_unit, "Pa")
+        error, error_unit = result.get_value_and_unit('ind')
         error = np.asarray(error, dtype=float)
         error = error * self.Cons.get_conv(error_unit, "%")
-        unc, unc_unit = result.get_value_and_unit('uncertTotal_rel')
+        unc, unc_unit = result.get_value_and_unit('uncert_total_rel')
         unc = np.asarray(unc, dtype=float)
-        unc = unc * self.Cons.get_conv(unc_unit, "%")            
+        unc = unc * self.Cons.get_conv(unc_unit, "%")
 
         para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
         residuals = model(pcal, *para_val) - error
@@ -110,7 +117,6 @@ class Display:
         else:
             evis = model(100, *para_val)
 
-        plt.clf()
         fig, ax = plt.subplots()
         x = pcal
         xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
@@ -126,7 +132,7 @@ class Display:
         plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05, x=0.25)
         ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
-        plt.xlabel(r"$p_\mathrm{cal}$ (mbar)")
+        plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
         plt.ylabel(r"$e\;(\%)$")
         plt.rcParams['figure.figsize']=8,6
         return plt

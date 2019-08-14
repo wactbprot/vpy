@@ -8,28 +8,29 @@ import math
 
 class Analysis(Document):
     """Holds a deep copy of ``document``. Container for storing
-    the calculation results of analysis.
+    the results of the calculation. 
     """
 
     def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None, pressure_unit = "Pa",  error_unit ="1"):
         self.pressure_unit =  pressure_unit
         self.error_unit = error_unit
+
         if init_dict is None:
-            d = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             init_dict = {
                         "Date": [{
                         "Type": "generated",
-                        "Value": d}],
+                        "Value": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}],
                         "AuxValues":{
                             "AnalysisProgram": "vpy"
                         },
                         "Values": {},
                         }
         if git_hash:
-            init_dict['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
+            init_dict['AuxValues']['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
         
         if analysis_type:
             init_dict['AnalysisType'] = analysis_type
+            self.analysis_type = analysis_type
              
         if insert_dict:
             for insert_key in insert_dict:

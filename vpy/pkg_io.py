@@ -28,7 +28,8 @@ class Io(object):
                                 "hist_data": "se3_req/group_normal_hist"
                             },
                             "se2": {
-                                "all_doc_view": "se2_req/doc"
+                                "all_doc_view": "se2_req/doc",
+                                "pn_view": "se2_req/pn_by_date"
                             },
                              "frs5": {
                                "all_doc_view": "frs5_req/doc"
@@ -300,8 +301,25 @@ class Io(object):
                 doc = item.value
             
         return doc
+    
+    def get_pn_by_date(self, std, cert, date):
+        """
+        Returns the calibration document for a 
+        check standard (cert: 0.1Torr PN SE2: 0118 or
+        10Torr PN SE2: 9911) for the given date (format yyyy-mm-dd) 
+        and std (SE2, SE3)
+        """  
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        view = self.config['standards'][std]['pn_view']
 
-
+        doc = None
+        for item in db.view(view, key="{date}_{cert}".format(date=date, cert=cert)):
+            print(item)
+            doc = item.value
+        
+        return doc
+    
     def get_hist_data(self, std):
         """Gets and returns an array containing history data.
         Please use  the view ``se3_req/views/group_normal_hist/`` as a
