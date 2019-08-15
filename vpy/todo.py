@@ -41,6 +41,9 @@ class ToDo(Document):
 
         self.max_dev = 0.1
 
+    def get_standard(self):
+        return self.doc.get("Standard")
+
     def get_gas(self):
         if 'Gas' in self.doc:
             return self.doc['Gas']

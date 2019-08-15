@@ -49,12 +49,10 @@ def main():
             
             if "Values" in analysis and "Uncertainty" in analysis["Values"]:
                 del analysis["Values"]["Uncertainty"]
-
+            
             ana = Analysis(doc, init_dict=analysis)
             se3_uncert = UncertSe3(doc)
             
-            
-
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
             

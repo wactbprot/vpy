@@ -169,8 +169,12 @@ class Device(Document):
     def repeat_uncert(self, ana):
         
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
-        u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
-                                        [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
+        # *) bis 14.8.19
+        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
+        #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
+
+        u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
+                                        [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
 
         ana.store("Uncertainty", "repeat", u, "1")
 
