@@ -58,7 +58,8 @@ def main():
                     CustomerDevice = Cdg(doc, customer_device)
                 if dev_class == 'RSG':
                     CustomerDevice = Rsg(doc, {})
-      
+            
+            CustomerDevice.range_trans(res)
             cal.temperature_comp(res)
             cal.temperature_gas_direct(res)
             cal.pressure_gn_corr(res)
