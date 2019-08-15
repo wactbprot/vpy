@@ -109,8 +109,8 @@ class Device(Document):
     
     def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
         pressure_unit = pressure_dict.get('Unit')
-        pressure_value = np.array(pressure_dict.get('Value'))
-        
+        pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
+
         if pressure_unit == "V":
            pressure = pressure_value * self.max_p/self.max_voltage
         else:
