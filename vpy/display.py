@@ -153,7 +153,7 @@ class Display:
             r_idx = self.doc['Calibration']['Analysis']['AuxValues']['RejectIndex']
         except:
             r_idx = []
-        a_idx = np.setdiff1d(idx, r_idx)
+        u_idx = np.union1d(idx, r_idx)
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
         error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
@@ -164,10 +164,23 @@ class Display:
         e0, e0_unit = error.get_value_and_unit('ind')
         e0 = e0 * self.Cons.get_conv(e0_unit, "%")
 
+        result = Document(self.doc['Calibration']['Result']['Table'])
+        pcal, pcal_unit = result.get_value_and_unit('cal')
+        pcal = np.asarray(pcal, dtype=float)
+        pcal = pcal * self.Cons.get_conv(pcal_unit, "Pa")
+        error, error_unit = result.get_value_and_unit('ind')
+        error = np.asarray(error, dtype=float)
+        error = error * self.Cons.get_conv(error_unit, "%")
+        unc, unc_unit = result.get_value_and_unit('uncert_total_rel')
+        unc = np.asarray(unc, dtype=float)
+        unc = unc * self.Cons.get_conv(unc_unit, "%")
+
         fig, ax = plt.subplots()
-        x = np.take(pcal0, a_idx)
-        y = np.take(e0, a_idx)
+        x = np.take(pcal0, idx)
+        y = np.take(e0, idx)
         ax.semilogx(x, y, 'o', label="accept")
+
+        ax.errorbar(pcal, error, unc, fmt='o', label="result")
 
         x = np.take(pcal0, r_idx)
         y = np.take(e0, r_idx)
@@ -175,8 +188,8 @@ class Display:
 
         x = np.take(pcal0, idx)
         y = np.take(e0, idx)
-        for i in range(len(idx)):
-            plt.text(x[i], y[i], idx[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
+        for i in range(len(u_idx)):
+            plt.text(x[i], y[i], idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
 
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels, loc=0)
