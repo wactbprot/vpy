@@ -71,11 +71,12 @@ def main():
             print(loops)
 
             if result_type == "expansion" and tdo.type == "error":
-                average_index = ana.ask_for_reject(average_index=average_index)
+                average_index, reject_index = ana.ask_for_reject(average_index=average_index)
                 d = {
                     "AverageIndex": average_index,
                     "AverageIndexFlat": ana.flatten(average_index),
-                    "PressureRangeIndex": pressure_range_index
+                    "PressureRangeIndex": pressure_range_index,
+                    "RejectIndex": reject_index
                     }
 
                 if np.take(p_cal, ana.flatten(average_index)).min() < 95:
