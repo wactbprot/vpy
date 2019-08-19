@@ -153,41 +153,6 @@ class Cal(Se2):
         ana.store("Date", "measurement", time, "date")
 
 
-    def reject_outliers_index(self, ana):
-        """Reject outliers by several filtering algorithms.
-        """
-
-        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
-        error = ana.pick("Error", "ind", "1")
-        self.ToDo.make_average_index(p_cal, self.pressure_unit)
-        idx = self.ToDo.average_index
-
-        idx = ana.coarse_error_filtering(average_index=idx)
-        idx, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=idx)
-
-        fig, ax = plt.subplots()
-        x = [np.mean(np.take(p_cal, i).tolist()) for i in idx]
-        ax.errorbar(x, ref_mean, ref_std, fmt='o', label="ref_mean")
-        x = np.take(p_cal, self.Val.flatten(idx)).tolist()
-        y = np.take(error, self.Val.flatten(idx)).tolist()
-        ax.semilogx(x, y, 'o', label="after refinement!")
-        point_label = self.Val.flatten(idx)
-        for i in range(len(x)):
-            plt.text(x[i], y[i], point_label[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles, labels, loc=0)
-        plt.title(str(loops) + " mal durchlaufen")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
-        plt.xlabel(r"$p_\mathrm{cal}$ (?)")
-        plt.ylabel(r"$e\;(\%)$")
-        plt.savefig("reject_outliers_" + str(ana.org["Calibration"]["Certificate"]) + ".pdf")
-        plt.clf()
-
-        idx = ana.ask_for_reject(average_index=idx)
-        
-        ana.average_index = idx
-
-
     def make_main_maesurement_index(self, ana):
         """Collects indices of the main measurement in average_index.
 
@@ -204,42 +169,3 @@ class Cal(Se2):
 
         ana.main_maesurement_index = idx
 
-    
-    def fit_thermal_transpiration(self, ana):
-        
-        cal = ana.pick("Pressure", "cal", self.pressure_unit)
-        ind = ana.pick("Pressure", "ind_corr", self.pressure_unit)
-        print(cal)
-        print(ind)
-        error = 100 * (ind - cal) / cal
-
-        def model(p, a, b, c, d):
-            return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
-
-        para_val, covariance = curve_fit(model, cal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
-        residuals = model(cal, *para_val) - error
-        para_unc = np.sqrt(np.diag(covariance))
-
-        viscous_idx = [i for i in range(len(error)) if 0.8 < cal[i] < max(cal)]
-        if len(viscous_idx) >= 4 and abs(np.mean(residuals[viscous_idx])) > 0.1:
-            #if the deviation is high and there are enough data points in the viscous regime
-            #take the mean of the smallest 3 values (excluding the one at highest pressure)
-            evis = np.mean(sorted(error[viscous_idx])[0:3])
-        else:
-            evis = model(100, *para_val)
-        
-        evis_dict = {"Type": "evis", "Value": evis, "Unit": "%"}
-
-        ana.store_dict(quant="Error", d=evis_dict, dest="AuxValues", plain=True)
-
-
-    def make_AuxValues_section(self, ana):
-
-        aux = {
-            "MainMaesurementIndex": ana.main_maesurement_index,
-            "PressureRangeIndex": ana.pressure_range_index,
-            "AverageIndex": ana.average_index,
-            "AverageIndexFlat": self.Val.flatten(ana.average_index)
-            }
-
-        ana.store_dict(quant="AuxValues", d=aux, dest=None, plain=True)

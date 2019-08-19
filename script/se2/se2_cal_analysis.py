@@ -25,6 +25,9 @@ def main():
     fail = False
     ret = {'ok':True}
 
+    with open(".\script\se2\input.json") as input_json:
+        print(json.load(input_json))
+
     if '--ids' in args:
         idx_ids = args.index('--ids') + 1 
         try:

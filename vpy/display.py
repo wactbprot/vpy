@@ -23,6 +23,7 @@ class Display:
     def SE2_CDG_offset_abs(self):
 
         idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
+        pr_idx = self.doc['Calibration']['Analysis']['AuxValues']['PressureRangeIndex']
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
 
@@ -33,26 +34,29 @@ class Display:
         poff0 = poff0 * self.Cons.get_conv(poff0_unit, "Pa")        
 
         uncertainty = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
-        offset_unc, offset_unc_unit = pressure.get_value_and_unit('offset')
+        offset_unc, offset_unc_unit = uncertainty.get_value_and_unit('offset_abs')
         offset_unc = offset_unc * self.Cons.get_conv(offset_unc_unit, "Pa")  
 
         fig, ax = plt.subplots()
-        x = np.take(pcal0, idx)
-        y = np.take(poff0, idx)
-        y_err = np.take(offset_unc, idx)
-        ax.errorbar(x, y, y_err, fmt='o')
+        for i in pr_idx:
+            i_idx = np.intersect1d(idx,i)
+            x = np.take(pcal0, i_idx)
+            y = np.take(poff0, i_idx)
+            y_err = np.take(offset_unc, i_idx)
+            ax.errorbar(x, y, y_err, fmt='o')
         ax.semilogx(x, y, 'o')
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
         plt.ylabel(r"$p_\mathrm{off}$ (Pa)")
         plt.rcParams['figure.figsize']=8,6
-        return plt
+        return plt        
 
 
     def SE2_CDG_offset_rel(self):
 
         idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
+        pr_idx = self.doc['Calibration']['Analysis']['AuxValues']['PressureRangeIndex']
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
 
@@ -63,17 +67,19 @@ class Display:
         poff0 = poff0 * self.Cons.get_conv(poff0_unit, "Pa")        
 
         uncertainty = Document(self.doc['Calibration']['Analysis']['Values']['Uncertainty'])
-        offset_unc, offset_unc_unit = pressure.get_value_and_unit('offset')
+        offset_unc, offset_unc_unit = uncertainty.get_value_and_unit('offset_abs')
         offset_unc = offset_unc * self.Cons.get_conv(offset_unc_unit, "Pa")  
 
         fig, ax = plt.subplots()
-        x = np.take(pcal0, idx)
-        y = np.take(poff0 / pcal0 * 100, idx)
-        y_err = np.take(offset_unc, idx) / np.take(pcal0, idx) * 100
-        ax.errorbar(x, y, y_err, fmt='o')
+        for i in pr_idx:
+            i_idx = np.intersect1d(idx,i)
+            x = np.take(pcal0, i_idx)
+            y = np.take(poff0 / pcal0 * 100, i_idx)
+            y_err = np.take(offset_unc, i_idx) / np.take(pcal0, i_idx) * 100
+            ax.errorbar(x, y, y_err, fmt='o')
         ax.semilogx(x, y, 'o')
         plt.title("offset stability")
-        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')                
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
         plt.ylabel(r"$p_\mathrm{off}\,/\,p_\mathrm{cal}$ (%)")
         plt.rcParams['figure.figsize']=8,6
@@ -133,6 +139,50 @@ class Display:
         ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
+        plt.ylabel(r"$e\;(\%)$")
+        plt.rcParams['figure.figsize']=8,6
+        return plt
+
+
+    def SE2_CDG_error_reject(self):
+        """Reject outliers by several filtering algorithms.
+        """
+
+        idx = self.doc['Calibration']['Analysis']['AuxValues']['AverageIndexFlat']
+        try:
+            r_idx = self.doc['Calibration']['Analysis']['AuxValues']['RejectIndex']
+        except:
+            r_idx = []
+        a_idx = np.setdiff1d(idx, r_idx)
+
+        pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
+        error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
+
+        pcal0, pcal0_unit = pressure.get_value_and_unit('cal')
+        pcal0 = pcal0 * self.Cons.get_conv(pcal0_unit, "Pa")
+
+        e0, e0_unit = error.get_value_and_unit('ind')
+        e0 = e0 * self.Cons.get_conv(e0_unit, "%")
+
+        fig, ax = plt.subplots()
+        x = np.take(pcal0, a_idx)
+        y = np.take(e0, a_idx)
+        ax.semilogx(x, y, 'o', label="accept")
+
+        x = np.take(pcal0, r_idx)
+        y = np.take(e0, r_idx)
+        ax.semilogx(x, y, 'o', label="reject")      
+
+        x = np.take(pcal0, idx)
+        y = np.take(e0, idx)
+        for i in range(len(idx)):
+            plt.text(x[i], y[i], idx[i], fontsize=8, horizontalalignment='center', verticalalignment='center')
+
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles, labels, loc=0)
+        plt.title("reject outliers")
+        plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
+        plt.xlabel(r"$p_\mathrm{cal}$ (?)")
         plt.ylabel(r"$e\;(\%)$")
         plt.rcParams['figure.figsize']=8,6
         return plt
