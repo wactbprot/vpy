@@ -65,6 +65,11 @@ def main():
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
             pressure_range_index = ana.make_pressure_range_index(ana, average_index)
 
+            print(average_index)
+            print(ref_mean)
+            print(ref_std)
+            print(loops)
+
             if result_type == "expansion" and tdo.type == "error":
                 average_index = ana.ask_for_reject(average_index=average_index)
                 d = {
@@ -73,11 +78,12 @@ def main():
                     "PressureRangeIndex": pressure_range_index
                     }
 
-                e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
-                d["Evis"] = e_vis
-                d["CFvis"] = cf_vis
-                d["Uvis"] = u_vis
-                d["VisUnit"] =vis_unit
+                if np.take(p_cal, ana.flatten(average_index)).min() < 95:
+                    e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
+                    d["Evis"] = e_vis
+                    d["CFvis"] = cf_vis
+                    d["Uvis"] = u_vis
+                    d["VisUnit"] =vis_unit
 
             if result_type == "expansion" and tdo.type == "sigma":
                 skip = ana.ask_for_skip()
@@ -127,8 +133,6 @@ def main():
             print("*******")
             print(result_type)
 
-            # start making data sections
-            ## obsolet res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana, result_type=result_type)
 
             if tdo.type == "error":
