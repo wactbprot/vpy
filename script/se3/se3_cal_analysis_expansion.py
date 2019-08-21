@@ -12,7 +12,7 @@ from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
-
+from vpy.standard.se3.uncert import Uncert
 from vpy.device.cdg import InfCdg, Cdg
 from vpy.device.srg import Srg
 from vpy.device.rsg import Rsg
@@ -43,6 +43,8 @@ def main():
     else:
         auxval = False
 
+    cmc = False
+    
     if not fail and len(ids) >0:
         base_doc = io.get_base_doc("se3")
         for id in ids:
@@ -73,10 +75,9 @@ def main():
                 if dev_class == 'RSG':
                     CustomerDevice = Rsg(doc, {})
       
+            #cal.pressure_fill(res)
             cal.pressure_gn_corr(res)
             cal.pressure_gn_mean(res)
-
-            #cal.pressure_fill(res)
             cal.deviation_target_fill(res)
             cal.temperature_before(res)
             cal.temperature_after(res)
@@ -90,6 +91,25 @@ def main():
             cal.pressure_cal(res)
             cal.error_pressure_rise(res)
             cal.deviation_target_cal(res)
+            
+            ## uncert. calculation
+            uncert = Uncert(doc)
+            if cmc:
+                # bis update CMC Einträge --> vorh. CMC Einträge  
+                # cal uncertainty of standard
+                uncert.define_model()
+                uncert.gen_val_dict(res)
+                uncert.gen_val_array(res)
+                uncert.volume_start(res)
+                uncert.volume_5(res)
+                uncert.pressure_fill(res)
+                uncert.temperature_after(res)
+                uncert.temperature_before(res)
+                uncert.expansion(res)
+                uncert.total(res)
+            else:
+                uncert.cmc(res)    
+
             ## calculate customer indication
             gas = cal.Aux.get_gas()
             temperature_dict = res.pick_dict('Temperature', 'after')
