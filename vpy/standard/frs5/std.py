@@ -44,7 +44,7 @@ class Frs5(Standard):
         self.Range = Range(doc)
         self.Time = Time(doc)
         self.Aux = AuxFrs5(doc)
-
+        
         # residual pressure device
         amt = self.Time.get_value("amt_meas", "ms")
         self.no_of_meas_points = len(amt)

@@ -26,11 +26,11 @@ class Cal(DkmPpc4):
 
         g = self.get_value("g_dkmppc4", "m/s^2")
         A = self.get_value("A_0_dkmppc4", "m^2")
-
+        
         conv = self.Cons.get_conv("Pa", self.unit)
         p_cal = g * m / (A * corr) * conv + p_res
 
-        res.store("Pressure", "dkm_ppc4", p_cal, self.unit)
+        res.store("Pressure", "cal", p_cal, self.unit)
 
     def pressure_res(self, res):
         """Transfers the pressure above the piston.

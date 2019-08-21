@@ -1,5 +1,5 @@
 """
-python script/frs5/frs5_cal_analysis.py --ids 'cal-2018-frs5-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' #  -u 
+python script/dkm_ppc4/dkm_ppc4_cal_analysis.py --ids 'cal-2018-dkm_ppc4-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' #  -u 
 """
 import sys
 import os
@@ -7,8 +7,8 @@ sys.path.append(os.environ["VIRTUAL_ENV"])
 
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
-from vpy.standard.frs5.cal import Cal
-from vpy.standard.frs5.uncert import Uncert
+from vpy.standard.dkm_ppc4.cal import Cal
+from vpy.standard.dkm_ppc4.uncert import Uncert
 from vpy.device.cdg import InfCdg
 import numpy as np
 import matplotlib.pyplot as plt
@@ -38,7 +38,7 @@ def main():
         update = False
 
     if not fail and len(ids) >0:
-        base_doc = io.get_base_doc("frs5")
+        base_doc = io.get_base_doc("dkm_ppc4")
         for id in ids:
             doc = io.get_doc_db(id)
            
@@ -53,16 +53,17 @@ def main():
                 if dev_class == 'CDG':
                     CustomerDevice = Cdg(doc, customer_device)
                 if dev_class == 'RSG':
-                    CustomerDevice = Rsg(doc, {})
+                    CustomerDevice = Rsg(doc, customer_device)
                 if dev_class == 'QBS':
-                    CustomerDevice = Qbs(doc, {})
+                    CustomerDevice = Qbs(doc, customer_device)
             
-            cal = Cal(doc)  
             res = Analysis(doc)
+            cal = Cal(doc)
             uncert = Uncert(doc)
-        
             cal.temperature(res)
+            cal.temperature_correction(res)
             cal.pressure_res(res)
+            cal.mass_total(res)
             cal.pressure_cal(res)
 
             ## calculate customer indication
@@ -80,13 +81,14 @@ def main():
             res.store("Pressure", "ind", ind, cal.unit)
             res.store("Pressure", "ind_corr", ind - offset, cal.unit)
             
+            
             # error for rating procedures
-            ind = res.pick("Pressure", "ind_corr", cal.unit)
-            cal = res.pick("Pressure", "cal" , cal.unit)        
-            res.store('Error', 'ind', ind/cal-1, '1')
-            print(ind/cal-1)
+            p_ind = res.pick("Pressure", "ind_corr", cal.unit)
+            p_cal = res.pick("Pressure", "cal" , cal.unit)        
+            res.store('Error', 'ind', p_ind/p_cal-1, '1')
             CustomerDevice.range_trans(res)
 
+            print(p_ind/p_cal-1)
             io.save_doc(res.build_doc())
 
 if __name__ == "__main__":
