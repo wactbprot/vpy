@@ -75,6 +75,19 @@ class Values(Document):
     def cnt_nan(self, d):
         return np.count_nonzero(~np.isnan(d))
 
+    def gatherby_idx(self, l, compare_function):
+        groups = {}
+        for i in range(len(l)):
+            for j in groups:
+                if compare_function(l[i], l[j]):
+                    groups[j].append(i)
+                    break
+            else: groups[i] = [i]
+        return list(groups.values())
+    
+    def diff_less(d):
+        return lambda x, y: abs(x-y)/((x+y)/2)<d
+
     def round_to_sig_dig(self, val, n, scientific=False):
         """ Rounds the value ``val`` to ``n`` significant digits
         and outputs a formated string

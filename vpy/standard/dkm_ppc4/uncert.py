@@ -26,15 +26,14 @@ class Uncert(DkmPpc4):
         self.pressure_cal(res)
         self.longterm(res)
 
-        p_cal = res.pick("Pressure", "dkm_ppc4", self.unit)
+        p_cal = res.pick("Pressure", "cal", self.unit)
 
         u = (res.pick("Uncertainty", "u_res", "1")**2
               + res.pick("Uncertainty", "u_cal", "1")**2
               + res.pick("Uncertainty", "u_lt", "1")**2
               )**0.5
 
-        res.store("Uncertainty", "dkm_ppc4_total_rel", u, "1")
-        res.store("Uncertainty", "dkm_ppc4_total_abs", u*p_cal, self.unit)
+        res.store("Uncertainty", "standard", u, "1")
         self.log.debug("uncert total: {}".format(u))
 
     def pressure_res(self, res):
@@ -49,8 +48,8 @@ class Uncert(DkmPpc4):
         conv = self.Cons.get_conv("Pa", self.unit)
 
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit) * conv2Pa
-        p_cal = res.pick("Pressure", "dkm_ppc4", self.unit)
-
+        p_cal = res.pick("Pressure", "cal", self.unit)
+ 
         u_expr = self.get_expression("u_p_res", "Pa")
         f = sym.lambdify(sym.Symbol('p_res'), u_expr , "numpy")
 
@@ -83,7 +82,7 @@ class Uncert(DkmPpc4):
         """
         conv2Pa = self.Cons.get_conv(self.unit, "Pa")
 
-        p_cal = res.pick("Pressure", "dkm_ppc4", self.unit)* conv2Pa
+        p_cal = res.pick("Pressure", "cal", self.unit)* conv2Pa
         u_expr = self.get_expression("u_p_cal", "Pa")
         f = sym.lambdify(sym.Symbol('p_cal'), u_expr , "numpy")
         u = f(p_cal) / p_cal # Pa/Pa

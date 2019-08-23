@@ -33,6 +33,8 @@ class Cdg(Device):
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
+        self.val = Values({})
+
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
         if dev:
@@ -145,7 +147,8 @@ class Cdg(Device):
         error of indication and the uncertainty.
 
         This is done as follows:
-            # conv_smooth
+            # conv_smooth ( --> no longer!, absorbs e-characteristics!) replaced by:
+            # mean of mult meas. points
             # extrapolate values to the borders
             # get_default_values
             # gen. interp. functions
@@ -153,9 +156,18 @@ class Cdg(Device):
 
         """
         # smooth
-        p = self.conv_smooth(pressure)
-        e = self.conv_smooth(error)       
-        u = self.conv_smooth(uncertainty)
+        ## p = self.conv_smooth(pressure)
+        ## e = self.conv_smooth(error)       
+        ## u = self.conv_smooth(uncertainty)
+        p = pressure
+        e = error
+        u = uncertainty
+
+        ## mean of mult meas. points
+        idx = self.val.gatherby_idx(p, self.val.diff_less(0.005))
+        p = [np.mean(p[i]) for i in idx]
+        e = [np.mean(e[i]) for i in idx]
+        u = [np.mean(u[i]) for i in idx]
         
         # extrapolate
         p, e, u = self.fill_to_dev_borders(p, e, u)

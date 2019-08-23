@@ -40,8 +40,6 @@ def main():
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
 
-   
-    print(doc["_rev"])
     
     plt.figure(num=None, figsize=(15, 10), facecolor='w', edgecolor='k')
     markers =("o", "D", "s", ">", "^", "1", "2", "3", "4")
@@ -57,7 +55,6 @@ def main():
 
     cal.temperature(res)
     cal.temperature_correction(res)
-
     cal.pressure_res(res)
     cal.mass_total(res)
     cal.pressure_cal(res)
@@ -68,7 +65,7 @@ def main():
             "1000T_1","1000T_2","1000T_3"
             )
     
-    p_cal = res.pick("Pressure", "dkm_ppc4", p_unit)
+    p_cal = res.pick("Pressure", "cal", p_unit)
     #u_std = res.pick("Uncertainty", "dkm_ppc4_total_rel", u_unit)
     m_time = cal.Time.get_value("amt_meas", "ms")
 

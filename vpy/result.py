@@ -83,17 +83,14 @@ class Result(Analysis):
         self.Date = Date(doc)
         self.lang = doc.get("Calibration",{}).get("Customer",{}).get("Lang", "en")
         self.org = copy.deepcopy(doc)
+       
         super().__init__(doc, init_dict)
 
-    def gatherby_idx(self, l, compare_function):
-        groups = {}
-        for i in range(len(l)):
-            for j in groups:
-                if compare_function(l[i], l[j]):
-                    groups[j].append(i)
-                    break
-            else: groups[i] = [i]
-        return list(groups.values())
+    ## (vpy) bock04@i75464:~/vpy$ grep -r gatherby .
+    ##     ./vpy/result.py:    def gatherby_idx(self, l, compare_function):
+    ##     ./jupyter_utils.py:def gatherby_idx(l, compare_function):
+    ##
+    ## --> shipped function to values.py
 
     def make_calibration_data_section(self, ana):
         """The Calibration data section should contain data valid
