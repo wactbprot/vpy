@@ -187,7 +187,7 @@ class Cdg(Device):
     
     def get_dmin_idx(self, d):
         m = np.amin(d)
-        return np.where(d == m)[0] 
+        return np.where(d == m)[0][0]
 
     def fill_to_dev_borders(self, p, e, u):
         """Use the first/last value in the array of e and u
