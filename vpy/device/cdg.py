@@ -164,7 +164,7 @@ class Cdg(Device):
         u = uncertainty
 
         ## mean of mult meas. points
-        idx = self.val.gatherby_idx(p, self.val.diff_less(0.25))
+        idx = self.val.gatherby_idx(p, self.val.diff_less(0.05))
         p = [np.mean(p[i]) for i in idx]
         e = [np.mean(e[i]) for i in idx]
         u = [np.mean(u[i]) for i in idx]
