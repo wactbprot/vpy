@@ -195,14 +195,16 @@ class Cdg(Device):
         value of p by `self.range_extend` to overcome possible intervall issues.
         """
         extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
-        i = self.get_dmin_idx(p - extr_p_low)
+        d = p - extr_p_low
+        i = self.get_dmin_idx(d[0])
         
         extr_e_low = np.array([e[i]])
         extr_u_low = np.array([u[i]])
 
         extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
-        j = self.get_dmin_idx(extr_p_high - p)
-
+        d = extr_p_high - p
+        j = self.get_dmin_idx(d[0])
+       
         extr_e_high = np.array([e[j]])
         extr_u_high = np.array([u[j]])
 
