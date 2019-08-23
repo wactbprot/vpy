@@ -11,4 +11,3 @@ if module_path not in sys.path:
     sys.path.append(module_path)
 
 from vpy.pkg_io import Io
-io = Io(path=vpy_path)

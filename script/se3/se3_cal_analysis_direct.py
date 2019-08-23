@@ -12,6 +12,8 @@ from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
+from vpy.standard.se3.uncert import Uncert
+
 
 from vpy.device.cdg import InfCdg, Cdg
 from vpy.device.srg import Srg
@@ -37,6 +39,7 @@ def main():
     else:
         update = False
     
+    cmc = False
 
     if not fail and len(ids) >0:
         base_doc = io.get_base_doc("se3")
@@ -64,7 +67,18 @@ def main():
             cal.temperature_gas_direct(res)
             cal.pressure_gn_corr(res)
             cal.pressure_gn_mean(res)
-            
+             
+            ## uncert. calculation
+            uncert = Uncert(doc)
+            if cmc:
+                # bis update CMC Einträge --> vorh. CMC Einträge  
+                # cal uncertainty of standard
+
+                ## compare press. --> Todo
+                uncert.pressure_fill(res)
+            else:
+                uncert.cmc(res)    
+
             
             ## !!cal.offset_from_sample(res)
             ## !!offset_dict = res.pick_dict("Pressure","offset_sample")

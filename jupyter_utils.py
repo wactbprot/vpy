@@ -34,3 +34,20 @@ def store_uncert_list(doc, uncert_list):
     doc["CalibrationObject"]["Uncertainty"] = uncert_list
     
     return doc
+
+def gen_interpol_list(p, e, u, p_unit, e_unit, u_unit):
+    return [{
+                "Type": "p_ind",
+                "Unit": p_unit,
+                "Value": list(p)
+            },
+                {
+                "Type": "e",
+                "Unit": e_unit,
+                "Value": list(e)
+            },
+                {
+                "Type": "u",
+                "Unit": u_unit,
+                "Value": list(u)
+            }]

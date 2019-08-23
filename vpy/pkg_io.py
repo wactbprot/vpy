@@ -10,7 +10,7 @@ class Io(object):
     output issues of the pkg.
     """
 
-    def __init__(self, path="."):
+    def __init__(self, db_url="http://localhost:5984", db_name = "vl_db"):
         """Change the configuration the python way by a 
         direct access to io.config....
         """
@@ -18,8 +18,8 @@ class Io(object):
         self.config = {
                         "plot": {"path": "temppath", "make": True},
                         "db": {
-                            "url": "http://localhost:5984",
-                            "name": "vl_db"
+                            "url": db_url ,
+                            "name": db_name
                         },
                         "standards": {
                             "se3": {
