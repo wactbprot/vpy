@@ -184,6 +184,10 @@ class Cdg(Device):
         u_default = f_u( p_default )
 
         return  p_default, e_default, u_default
+    
+    def get_dmin_idx(self, d):
+        m = np.amin(d)
+        return np.where(d == m)[0] 
 
     def fill_to_dev_borders(self, p, e, u):
         """Use the first/last value in the array of e and u
@@ -191,12 +195,16 @@ class Cdg(Device):
         value of p by `self.range_extend` to overcome possible intervall issues.
         """
         extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
-        extr_e_low = np.array([e[0]])
-        extr_u_low = np.array([u[0]])
+        i = self.get_dmin_idx(p - extr_p_low)
+        
+        extr_e_low = np.array([e[i]])
+        extr_u_low = np.array([u[i]])
 
         extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
-        extr_e_high = np.array([e[-1]])
-        extr_u_high = np.array([u[-1]])
+        j = self.get_dmin_idx(extr_p_high - p)
+
+        extr_e_high = np.array([e[j]])
+        extr_u_high = np.array([u[j]])
 
         ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
         ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
