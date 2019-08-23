@@ -85,7 +85,7 @@ class Values(Document):
             else: groups[i] = [i]
         return list(groups.values())
     
-    def diff_less(d):
+    def diff_less(self, d):
         return lambda x, y: abs(x-y)/((x+y)/2)<d
 
     def round_to_sig_dig(self, val, n, scientific=False):
