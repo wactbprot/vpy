@@ -10,6 +10,7 @@ class Cdg(Device):
     usable_decades = 3
     max_type_head = {
         "0.001Torr":  0.13,
+        "001Torr":   1.33,
         "0.01Torr":   1.33,
         "0.1Torr":   13.33,  
         "01Torr":   13.33,     
