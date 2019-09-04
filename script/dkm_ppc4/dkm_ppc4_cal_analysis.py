@@ -58,29 +58,29 @@ def main():
                     CustomerDevice = Qbs(doc, customer_device)
             
             res = Analysis(doc)
-            cal = Cal(doc)
             uncert = Uncert(doc)
+            cal = Cal(doc)
             cal.temperature(res)
             cal.temperature_correction(res)
             cal.pressure_res(res)
             cal.mass_total(res)
             cal.pressure_cal(res)
+            
+            # cal uncert of standard
+            uncert.total(res)
 
             ## calculate customer indication
             gas = cal.Aux.get_gas()
-
             ## todo meas temp room, gas
             temperature_dict = {}
             
             offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-            
             offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
             ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
             res.store("Pressure", "offset", offset, cal.unit)
             res.store("Pressure", "ind", ind, cal.unit)
             res.store("Pressure", "ind_corr", ind - offset, cal.unit)
-            
             
             # error for rating procedures
             p_ind = res.pick("Pressure", "ind_corr", cal.unit)

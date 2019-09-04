@@ -13,8 +13,7 @@ from vpy.result import Result
 from vpy.todo import ToDo
 from vpy.values import Values
 from vpy.analysis import Analysis
-from vpy.constants import Constants
-from vpy.standard.se3.uncert import Uncert as UncertSe3 
+from vpy.constants import Constants 
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
 import matplotlib.pyplot as plt
@@ -46,37 +45,14 @@ def main():
                 customer_device = Cdg(doc, customer_object)
             tdo = ToDo(doc)
             analysis = doc.get('Calibration').get('Analysis')
-            
-            if "Values" in analysis and "Uncertainty" in analysis["Values"]:
-                del analysis["Values"]["Uncertainty"]
-            
             ana = Analysis(doc, init_dict=analysis)
-            se3_uncert = UncertSe3(doc)
             
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-
-            if cmc:
-                # bis update CMC Einträge --> vorh. CMC Einträge  
-                # cal uncertainty of standard
-                uncert = Uncert(doc)
-                uncert.define_model()
-                uncert.gen_val_dict(ana)
-                uncert.gen_val_array(ana)
-                uncert.volume_start(ana)
-                uncert.volume_5(ana)
-                uncert.pressure_fill(ana)
-                uncert.temperature_after(ana)
-                uncert.temperature_before(ana)
-                uncert.expansion(ana)
-                uncert.total(ana)
-                uncert_standard = ana.pick(quant='Uncertainty', dict_type='standard', dict_unit='1')
-            else:
-                se3_uncert.cmc(ana)    
-           
+            
             if "Uncertainty" in customer_object:
                 u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa")
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
@@ -84,13 +60,14 @@ def main():
                 customer_device.offset_uncert(ana) 
                 customer_device.repeat_uncert(ana) 
                 customer_device.device_uncert(ana) 
-            
+
+            ## the uncertainty of the standard is 
+            # already calculated at analysis step            
             ana.total_uncert() 
             u = ana.pick("Uncertainty", "total_rel", "1")
+
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-            #average_index = ana.coarse_error_filtering(average_index=average_index)
-            #average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
 
             # plot to rm outliers and check
             if tdo.type == "error":
@@ -108,12 +85,12 @@ def main():
             plt.show()
 
             if result_type == "direct" and tdo.type == "error":
-                average_index = ana.ask_for_reject(average_index=average_index)
+                average_index, _ = ana.ask_for_reject(average_index=average_index)
                 d = {"AverageIndex": average_index}
 
 
             if result_type == "expansion" and tdo.type == "error":
-                average_index = ana.ask_for_reject(average_index=average_index)
+                average_index, _ = ana.ask_for_reject(average_index=average_index)
                 d = {"AverageIndex": average_index}
 
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
@@ -126,9 +103,9 @@ def main():
                 skip = ana.ask_for_skip()
                 d = {"SkipIndex":skip}
                 
-                p_ind_corr =  np.delete(p_ind_corr, skip)
-                p_cal =  np.delete(p_cal, skip)
-                u =  np.delete(u, skip)
+                p_ind_corr = np.delete(p_ind_corr, skip)
+                p_cal = np.delete(p_cal, skip)
+                u = np.delete(u, skip)
                 sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal=p_cal, cal_unit=unit, p_ind=p_ind_corr, ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)

@@ -17,6 +17,7 @@ from vpy.device.device import Device
 from vpy.todo import ToDo
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
+from vpy.device.qbs import Qbs
 
 import matplotlib.pyplot as plt
 def main():
@@ -49,22 +50,32 @@ def main():
                 customer_device = Srg(doc, customer_object)
             if customer_object.get("Class") == "CDG":
                 customer_device = Cdg(doc, customer_object)
+            if customer_object.get("Class") == "QBS":
+                customer_device = Qbs(doc, customer_object)
+            
             tdo = ToDo(doc)
             analysis = doc.get('Calibration').get('Analysis')
             
-            if "Values" in analysis and "Uncertainty" in analysis["Values"]:
-                del analysis["Values"]["Uncertainty"]
             ana = Analysis(doc, init_dict=analysis)
             res = Result(doc, result_type=result_type, skip=skip)
-
-            uncert = Uncert(doc)
-            uncert.total_standard(ana)
             
-            customer_device.offset_uncert(ana) 
-            customer_device.repeat_uncert(ana) 
-            customer_device.device_uncert(ana) 
-            
+            # calculate customer uncertainty
+            if "Uncertainty" in customer_object:
+                # the function ana.total_uncert does not work
+                # if uncert of standard does not exist already
+                # hence:
+                # 
+                # --> skip_source="standard"
+                u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa", skip_source="standard")
+                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
+            else:
+                customer_device.offset_uncert(ana) 
+                customer_device.repeat_uncert(ana) 
+                customer_device.device_uncert(ana) 
+           
+            # combine u(standard) an u(device)
             ana.total_uncert() 
+
             # start build cert table
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
             p_cal = ana.pick("Pressure", "cal", unit)
@@ -84,7 +95,7 @@ def main():
             plt.show()
 
             ## reject points
-            average_index = ana.ask_for_reject(average_index=average_index)
+            average_index, _ = ana.ask_for_reject(average_index=average_index)
 
             res.store_dict(quant="AuxValues", d={"AverageIndex": average_index}, dest=None, plain=True)
             c_x, c_y, c_u = res.make_error_table(ana, pressure_unit="Pa", error_unit='1', add_n_column=False)

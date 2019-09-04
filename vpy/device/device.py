@@ -23,10 +23,44 @@ class Device(Document):
 
         super().__init__(dev)
 
-    def get_total_uncert(self, meas, unit, runit, res=None):
+    def check_skip(self, ucert_dict, prop, skip):
+        if prop in uncert_dict:
+            if type(skip) is list:
+                if uncert_dict[prop] in skip:
+                    return True
+                else:
+                    return False
+            if type(skip) is str:
+                if  uncert_dict[prop] == skip:
+                    return True
+                else:
+                    return False
+            sys.exit("skip must be a list or string")
+        else:
+            return False
+
+    def check_source_skip(self, uncert_dict, skip ): 
+        if skip is not None:
+            return self.check_skip(uncert_dict, "Source", skip)
+        else:
+            return False
+    
+    def check_type_skip(self, uncert_dict, skip ):
+        if skip is not None:
+            return self.check_skip(uncert_dict, "Source", skip)
+        else:
+            return False
+
+    def get_total_uncert(self, meas, unit, runit, res=None, skip_source=None, skip_type=None):
         """ Collects all Uncertainty contrib. for the given
         measurant (m). Calculates the quadratic sum and returns
-        a np.array of the length as of m.
+        a np.array of the length as of m. Contributions with a certain source 
+        (e.g. standard) or a certain type (e.g. B) can be skipped.
+
+        .. note::
+
+            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer statistisch unabhängiger Messwerte aus einer Messwiederholung.
+            * Typ-B: Ermittlung ohne statistische Methoden, beispielsweise durch Entnahme der Werte aus einem Kalibrierschein...
 
         .. todo::
                 rewrite expression branch
@@ -44,12 +78,17 @@ class Device(Document):
         :rtype: np.array
         """
         range_enlarge = 0.1
-        u_arr = []
+        uncert_arr = []
         N = np.shape(meas)[0]
 
         if "uncert_dict" in self.__dict__:
             u_dict = self.uncert_dict
             for u_i in u_dict:
+                if self.check_source_skip(u_i, skip_source):
+                    continue
+                if self.check_type_skip(u_i, skip_type):
+                    continue
+                
                 u = np.full(N, np.nan)
                 idx = np.full(N, True)
 
@@ -90,19 +129,19 @@ class Device(Document):
                         else:
                             u = u * meas * conv
 
-                self.log.debug("found type {}, append {} to uncertainty array".format(u_i.get('Type'), u))
-                u_arr.append( u )
+                self.log.debug("Found type {}, append {} to uncertainty array".format(u_i.get('Type'), u))
+                uncert_arr.append( u )
                 if res is not None:
                     uncert_type = "{dev}_{t}".format(dev=self.name, t=u_i.get('Type'))
                     res.store("Uncertainty" , uncert_type, u, runit, descr=u_i.get("Description"))
 
-            u = np.sqrt(np.nansum(np.power(u_arr, 2), axis=0))
+            uncert_total = np.sqrt(np.nansum(np.power(uncert_arr, 2), axis=0))
 
-            i = (u == 0.0)
-            if len(i) > 0:
-                u[i] = np.nan
+            i_nan = (uncert_total == 0.0)
+            if len(i_nan) > 0:
+                uncert_total[i_nan] = np.nan
 
-            return u
+            return uncert_total
         else:
             sys.exit("No uncertainty dict available")
 
@@ -183,6 +222,6 @@ class Device(Document):
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
         
         u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
-        
+       
         ana.store("Uncertainty", "device", u, "1")
             

@@ -64,6 +64,9 @@ def main():
             cal.temperature(res)
             cal.pressure_res(res)
             cal.pressure_cal(res)
+            
+            ## calculate the uncertainty of the standard
+            uncert.total_standard(res)
 
             ## calculate customer indication
             gas = cal.Aux.get_gas()
@@ -84,7 +87,6 @@ def main():
             ind = res.pick("Pressure", "ind_corr", cal.unit)
             cal = res.pick("Pressure", "cal" , cal.unit)        
             res.store('Error', 'ind', ind/cal-1, '1')
-            print(ind/cal-1)
             CustomerDevice.range_trans(res)
 
             io.save_doc(res.build_doc())
