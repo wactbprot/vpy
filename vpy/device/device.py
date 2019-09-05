@@ -20,10 +20,11 @@ class Device(Document):
 
         if "Uncertainty" in dev:
             self.uncert_dict = dev.get('Uncertainty')
-
+        
+        self.name = dev.get("Name")
         super().__init__(dev)
 
-    def check_skip(self, ucert_dict, prop, skip):
+    def check_skip(self, uncert_dict, prop, skip):
         if prop in uncert_dict:
             if type(skip) is list:
                 if uncert_dict[prop] in skip:
@@ -77,7 +78,7 @@ class Device(Document):
         :returns: quadratic sum of uncertainties
         :rtype: np.array
         """
-        range_enlarge = 0.1
+
         uncert_arr = []
         N = np.shape(meas)[0]
 
@@ -101,7 +102,7 @@ class Device(Document):
                         f = float(u_i.get('From')) * range_conv
                         t = float(u_i.get('To')) * range_conv
 
-                    i = (meas > f*(1-range_enlarge)) & (meas < t*(1+range_enlarge))
+                    i = ((meas > f) & (meas < t))
                     if len(i) > 0:
                         idx = i
 
