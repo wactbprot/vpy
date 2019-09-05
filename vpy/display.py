@@ -186,10 +186,10 @@ class Display:
         y = np.take(e0, r_idx)
         ax.semilogx(x, y, 'o', label="reject")      
 
-        x = np.take(pcal0, idx)
-        y = np.take(e0, idx)
+        x = np.take(pcal0, u_idx)
+        y = np.take(e0, u_idx)
         for i in range(len(u_idx)):
-            plt.text(x[i], y[i], idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
+            plt.text(x[i], y[i], u_idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
 
         handles, labels = ax.get_legend_handles_labels()
         ax.legend(handles, labels, loc=0)
