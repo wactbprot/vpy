@@ -291,39 +291,25 @@ class Analysis(Document):
         """ Asks for points to reject. removes this points from average_index.
         Returns the resulting array of arrays.
         """
-        #try:
-        #    reject = self.org['Calibration']['Analysis']['AuxValues']['RejectIndex']
-        #except:
-        #    reject = []
         
-        #text = input("Do you want to keep the current set of rejected data points with indices: " + str(reject) + " (type enter if ok)? ")
-        #if text != "":
-        #    text = input("Type in new list: ").replace("[","").replace("]","").split(",")
-        #    try:
-        #        reject = np.asarray(text, dtype=int).tolist()
-        #    except:
-        #        reject = []
-        #    print("New list is: " + str(reject))
-
-        #self.log.debug("average index before manual remove:{}".format(average_index))
-        #average_index = [[j for j in i if not str(j) in reject] for i in average_index]
-        #self.log.debug("average index after manual remove:{}".format(average_index))
-
-        #return average_index, reject
+        reject = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('RejectIndex', [])
         
-        reject = []
-        while True:
-            r = input("Reject datapoint number: ")
-            if r == "":
-                break
-            reject.append(r)
+        text = input("Do you want to keep the current set of rejected data points with indices: " + str(reject) + " (type enter if ok)? ")
+        if text != "":
+            text = input("Type in new list: ").replace("[","").replace("]","").split(",")
+            try:
+                reject = np.asarray(text, dtype=int).tolist()
+            except:
+                reject = []
+            print("New list is: " + str(reject))
+
         self.log.debug("average index before manual remove:{}".format(average_index))
-        average_index = [[j for j in i if not str(j) in reject] for i in average_index]
+        print(average_index)
+        average_index = [[j for j in i if not j in reject] for i in average_index]
+        print(average_index)
         self.log.debug("average index after manual remove:{}".format(average_index))
 
-        return average_index, []
- 
-
+        return average_index, reject
 
     def ask_for_skip(self):
         """ Asks for points to skip. Returns the index array. 
@@ -340,19 +326,13 @@ class Analysis(Document):
     def ask_for_evis(self):
         """ Asks for e_vis
         """
-        try:
-            e_vis = self.org['Calibration']['Analysis']['AuxValues']['Evis']
-        except:
-            e_vis = 0
+        e_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Evis', 0)
         
         text = input("estimate the relative (unit = 1) value for e_vis={} (type enter if ok): ".format(e_vis))
         if text != "":
             e_vis = float(text)
 
-        try:
-            u_vis = self.org['Calibration']['Analysis']['AuxValues']['Uvis']
-        except:
-            u_vis = 2e-3    
+        u_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Uvis', 2e-3) 
 
         text = input("estimate the uncertainty (unit = 1) u(e_vis)={} (type enter if ok): ".format(u_vis))
         if text != "":
