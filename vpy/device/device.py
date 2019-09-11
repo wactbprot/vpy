@@ -204,6 +204,7 @@ class Device(Document):
                     u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
                 else:
                     u = np.abs(std/ind)
+                   
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):

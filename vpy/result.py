@@ -192,7 +192,12 @@ class Result(Analysis):
             
         if result_type == "pressure_balance":
             sec = self.gen_min_max_entry(ana, sec)
-
+            sec = self.gen_min_max_entry(ana, sec)
+    
+        if result_type == "rotary_piston_gauge":
+            sec = self.gen_min_max_entry(ana, sec)
+            sec = self.gen_min_max_entry(ana, sec)
+    
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
     def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
@@ -322,8 +327,6 @@ class Result(Analysis):
             return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
-        print("****")
-        print(self.doc)
         av_idx = self.doc["AuxValues"]["AverageIndex"]
         k = 2
         prob = 0.95

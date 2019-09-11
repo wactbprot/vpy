@@ -291,25 +291,38 @@ class Analysis(Document):
         """ Asks for points to reject. removes this points from average_index.
         Returns the resulting array of arrays.
         """
-        try:
-            reject = self.org['Calibration']['Analysis']['AuxValues']['RejectIndex']
-        except:
-            reject = []
+        #try:
+        #    reject = self.org['Calibration']['Analysis']['AuxValues']['RejectIndex']
+        #except:
+        #    reject = []
         
-        text = input("Do you want to keep the current set of rejected data points with indices: " + str(reject) + " (type enter if ok)? ")
-        if text != "":
-            text = input("Type in new list: ").replace("[","").replace("]","").split(",")
-            try:
-                reject = np.asarray(text, dtype=int).tolist()
-            except:
-                reject = []
-            print("New list is: " + str(reject))
+        #text = input("Do you want to keep the current set of rejected data points with indices: " + str(reject) + " (type enter if ok)? ")
+        #if text != "":
+        #    text = input("Type in new list: ").replace("[","").replace("]","").split(",")
+        #    try:
+        #        reject = np.asarray(text, dtype=int).tolist()
+        #    except:
+        #        reject = []
+        #    print("New list is: " + str(reject))
 
+        #self.log.debug("average index before manual remove:{}".format(average_index))
+        #average_index = [[j for j in i if not str(j) in reject] for i in average_index]
+        #self.log.debug("average index after manual remove:{}".format(average_index))
+
+        #return average_index, reject
+        
+        reject = []
+        while True:
+            r = input("Reject datapoint number: ")
+            if r == "":
+                break
+            reject.append(r)
         self.log.debug("average index before manual remove:{}".format(average_index))
         average_index = [[j for j in i if not str(j) in reject] for i in average_index]
         self.log.debug("average index after manual remove:{}".format(average_index))
 
-        return average_index, reject
+        return average_index, []
+ 
 
 
     def ask_for_skip(self):
@@ -367,30 +380,28 @@ class Analysis(Document):
         :returns: list of lists of indices
         :rtype: list
         """
-
-        faktor = ana.pick_dict("Faktor", "faktor").get("Value")
-        idx = self.flatten(average_index)
-
-        r1 = {}
-        for i in idx:
-            for j in r1:
-                if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
-                    r1[j].append(i)
-                    break
-            else: r1[i] = [i]
-        r1 = list(r1.values())
-
-        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
-        p_off = ana.pick("Pressure", "offset", self.pressure_unit)
-        p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
-        r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(faktor[j])] for i in sorted(list(set(p_cal_log10)))]
-        if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
-        if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
-
-        if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
-        else: r = r2
-        
-        return r
+        pass
+        #faktor = ana.pick_dict("Faktor", "faktor").get("Value")
+        #idx = self.flatten(average_index)
+        #r1 = {}
+        #for i in idx:
+        #    for j in r1:
+        #        if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
+        #            r1[j].append(i)
+        #            break
+        #    else: r1[i] = [i]
+        #r1 = list(r1.values())
+        #p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
+        #p_off = ana.pick("Pressure", "offset", self.pressure_unit)
+        #p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
+        #r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(faktor[j])] for i in sorted(list(set(p_cal_log10)))]
+        #if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
+        #if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
+#
+        #if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
+        #else: r = r2
+        #
+        #return r
 
     def coarse_error_filtering(self, average_index):
         """Removes indices above threshold.
@@ -489,8 +500,8 @@ class Analysis(Document):
         
         p_ind = self.pick("Pressure", "ind_corr", self.pressure_unit)
         device_uncert = self.pick("Uncertainty", "device", "1")
-        
         u_ind_abs = device_uncert*p_ind
+       
         u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
         
         self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
