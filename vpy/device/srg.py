@@ -123,5 +123,6 @@ class Srg(Device):
         sens_m = (1.0 / b)
 
         u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty_k2/2.0 * m/b)**2)**0.5
-
+       
+       
         return b, m, u
