@@ -37,14 +37,13 @@ class Display:
         offset_unc, offset_unc_unit = uncertainty.get_value_and_unit('offset_abs')
         offset_unc = offset_unc * self.Cons.get_conv(offset_unc_unit, "Pa")  
 
-        fig, ax = plt.subplots()
         for i in pr_idx:
             i_idx = np.intersect1d(idx,i)
             x = np.take(pcal0, i_idx)
             y = np.take(poff0, i_idx)
             y_err = np.take(offset_unc, i_idx)
-            ax.errorbar(x, y, y_err, fmt='o')
-        ax.semilogx(x, y, 'o')
+            plt.errorbar(x, y, y_err, fmt='o')
+        plt.semilogx(x, y, 'o')
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
@@ -70,14 +69,13 @@ class Display:
         offset_unc, offset_unc_unit = uncertainty.get_value_and_unit('offset_abs')
         offset_unc = offset_unc * self.Cons.get_conv(offset_unc_unit, "Pa")  
 
-        fig, ax = plt.subplots()
         for i in pr_idx:
             i_idx = np.intersect1d(idx,i)
             x = np.take(pcal0, i_idx)
             y = np.take(poff0 / pcal0 * 100, i_idx)
             y_err = np.take(offset_unc, i_idx) / np.take(pcal0, i_idx) * 100
-            ax.errorbar(x, y, y_err, fmt='o')
-        ax.semilogx(x, y, 'o')
+            plt.errorbar(x, y, y_err, fmt='o')
+        plt.semilogx(x, y, 'o')
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')                
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
@@ -123,20 +121,18 @@ class Display:
         else:
             evis = model(100, *para_val)
 
-        fig, ax = plt.subplots()
         x = pcal
         xdata = np.exp(np.linspace(np.log(min(x)), np.log(max(x)), 200))
-        ax.errorbar(pcal, error, unc, fmt='o', label="error")
-        ax.semilogx(xdata, model(xdata, *para_val), '-', label="model")
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles, labels, loc=9, bbox_to_anchor=(0.95, 1.1))
+        plt.errorbar(pcal, error, unc, fmt='o', label="error")
+        plt.semilogx(xdata, model(xdata, *para_val), '-', label="model")
+        plt.legend(loc=9, bbox_to_anchor=(0.95, 1.1))
         para_names = ["a", "b", "c", "d"]
         para_val_str = self.Val.round_to_uncertainty_array(para_val, para_unc, 2)
         para_unc_str = self.Val.round_to_sig_dig_array(para_unc, 2)
         text = "\n".join(["$" + para_names[i] + " = " + para_val_str[i] + "±" + para_unc_str[i] + "$" for i in range(len(para_names))])
         text = text + "\n\n" r"$e_\mathrm{vis}=" + self.Val.round_to_sig_dig(evis, 2) + "$"
         plt.title(r"model: $d + \frac{3.5}{a p^2 + b p + c \sqrt{p} + 1}$", y=1.05, x=0.25)
-        ax.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
+        plt.annotate(text, xy=(0.6, 0.6), xycoords='figure fraction')
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
         plt.ylabel(r"$e\;(\%)$")
@@ -153,7 +149,7 @@ class Display:
             r_idx = self.doc['Calibration']['Analysis']['AuxValues']['RejectIndex']
         except:
             r_idx = []
-        u_idx = np.union1d(idx, r_idx)
+        u_idx = np.asarray(np.union1d(idx, r_idx), dtype=int)
 
         pressure = Document(self.doc['Calibration']['Analysis']['Values']['Pressure'])
         error = Document(self.doc['Calibration']['Analysis']['Values']['Error'])
@@ -175,24 +171,22 @@ class Display:
         unc = np.asarray(unc, dtype=float)
         unc = unc * self.Cons.get_conv(unc_unit, "%")
 
-        fig, ax = plt.subplots()
         x = np.take(pcal0, idx)
         y = np.take(e0, idx)
-        ax.semilogx(x, y, 'o', label="accept")
+        plt.semilogx(x, y, 'o', label="accept")
 
-        ax.errorbar(pcal, error, unc, fmt='o', label="result")
+        plt.errorbar(pcal, error, unc, fmt='o', label="result")
 
         x = np.take(pcal0, r_idx)
         y = np.take(e0, r_idx)
-        ax.semilogx(x, y, 'o', label="reject")      
+        plt.semilogx(x, y, 'o', label="reject")
 
         x = np.take(pcal0, u_idx)
         y = np.take(e0, u_idx)
         for i in range(len(u_idx)):
             plt.text(x[i], y[i], u_idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
 
-        handles, labels = ax.get_legend_handles_labels()
-        ax.legend(handles, labels, loc=0)
+        plt.legend(loc=0)
         plt.title("reject outliers")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')
         plt.xlabel(r"$p_\mathrm{cal}$ (?)")
