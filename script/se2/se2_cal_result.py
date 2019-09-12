@@ -116,55 +116,12 @@ def main():
             ana.total_uncert() 
             u = ana.pick("Uncertainty", "total_rel", "1")
 
-            # plot to rm outliers and check
-            if tdo.type == "error":
-                x = p_ind_corr
-                y = p_ind_corr/p_cal-1
-
-            if tdo.type == "sigma":
-                x = p_ind_corr
-                y = p_ind_corr/p_cal
-               
-            plt.xscale('symlog', linthreshx=1e-12)
-            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
-            for i, v in enumerate(x):
-                plt.text(v, y[i], i, rotation=45.)
-            plt.show()
-
-            print("*******")
-            print(result_type)
-
             res.make_measurement_data_section(ana, result_type=result_type)
 
             if tdo.type == "error":
                 # start build cert table
                 p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
-            
-                plt.subplot(111)
-                plt.xscale('symlog', linthreshx=1e-12)
-                plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
 
-                plt.legend()
-                plt.title('Calib. of {}@SE2'.format(customer_object.get('Name')))
-                plt.ylabel('$e$')
-                plt.grid(True)
-                plt.show()
-            
-            if tdo.type == "sigma":
-                def lin_reg(p):
-                    return sigma_slope * p + sigma_null 
-               
-                plt.subplot(111)
-                plt.errorbar(p_cal, p_ind_corr/p_cal,   yerr=u*p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
-                plt.plot(p_cal, lin_reg(p_cal), linestyle="-" )
-                plt.legend()
-                plt.title('Calib. of {}@SE2'.format(customer_object.get('Name')))
-                plt.ylabel('$\sigma$')
-                plt.xlabel('$p_{}$ in {}'.format("{cal}", unit))
-                plt.grid(True)
-                plt.show()
-            
-            
             doc = ana.build_doc("Analysis", doc)
             doc = res.build_doc("Result", doc)
             io.save_doc(doc)
