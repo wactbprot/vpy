@@ -315,7 +315,6 @@ class Io(object):
 
         doc = None
         for item in db.view(view, key="{date}_{cert}".format(date=date, cert=cert)):
-            print(item)
             doc = item.value
         
         return doc

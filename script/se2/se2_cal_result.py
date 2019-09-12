@@ -58,10 +58,12 @@ def main():
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-            
+
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
+            print(average_index)
             average_index = ana.coarse_error_filtering(average_index=average_index)
+            print(average_index)
             average_index, ref_mean, ref_std, loops = ana.fine_error_filtering(average_index=average_index)
             pressure_range_index = ana.make_pressure_range_index(ana, average_index)
 
@@ -103,19 +105,19 @@ def main():
                 d["OffsetMean"] = np.nanmean(rd)
                 d["OffsetStd"] = np.nanstd(rd)
                 d["OffsetUnit"] = rd_unit
-                
+             
             ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)            
-
+              
             se2_uncert.u_PTB_rel(ana)
             se2_uncert.make_offset_stability(ana)
-       
+            
             customer_device.repeat_uncert(ana) 
             customer_device.device_uncert(ana) 
             
             ana.total_uncert() 
             u = ana.pick("Uncertainty", "total_rel", "1")
-
+            
             res.make_measurement_data_section(ana, result_type=result_type)
 
             if tdo.type == "error":
