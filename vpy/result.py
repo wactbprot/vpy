@@ -327,6 +327,7 @@ class Result(Analysis):
             return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
+        
         av_idx = self.doc["AuxValues"]["AverageIndex"]
         k = 2
         prob = 0.95

@@ -360,28 +360,30 @@ class Analysis(Document):
         :returns: list of lists of indices
         :rtype: list
         """
-        pass
-        #faktor = ana.pick_dict("Faktor", "faktor").get("Value")
-        #idx = self.flatten(average_index)
-        #r1 = {}
-        #for i in idx:
-        #    for j in r1:
-        #        if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
-        #            r1[j].append(i)
-        #            break
-        #    else: r1[i] = [i]
-        #r1 = list(r1.values())
-        #p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
-        #p_off = ana.pick("Pressure", "offset", self.pressure_unit)
-        #p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
-        #r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(faktor[j])] for i in sorted(list(set(p_cal_log10)))]
-        #if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
-        #if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
-#
-        #if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
-        #else: r = r2
-        #
-        #return r
+
+        faktor = ana.pick_dict("Faktor", "faktor").get("Value")
+        idx = self.flatten(average_index)
+
+        r1 = {}
+        for i in idx:
+            for j in r1:
+                if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
+                    r1[j].append(i)
+                    break
+            else: r1[i] = [i]
+        r1 = list(r1.values())
+
+        # p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
+        # p_off = ana.pick("Pressure", "offset", self.pressure_unit)
+        # p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
+        # r2 = [[j for j in idx if p_cal_log10[j]==i and np.isfinite(faktor[j])] for i in sorted(list(set(p_cal_log10)))]
+        # if len(r2[0]) < 5: r2 = [[*r2[0], *r2[1]], *r2[2:]]
+        # if len(r2[-1]) < 5: r2 = [*r2[:-2], [*r2[-2], *r2[-1]]]
+
+        # if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
+        # else: r = r2
+        
+        return r1
 
     def coarse_error_filtering(self, average_index):
         """Removes indices above threshold.
@@ -443,18 +445,20 @@ class Analysis(Document):
                 if i > len(average_index) - 3:
                     s[i] = len(average_index) - 2
                 # collect indices of neighbors
-                l = average_index[s[i] - 1: s[i] + 1]
-                ref_idx = [item for sublist in l for item in sublist] # flatten
+                #print("s["+str(i)+"]="+str(s[i]))
+                l = average_index[s[i] - 1: s[i] + 2]
+                ref_idx = [item for sublist in l for item in sublist] # flatten                
                 rr = []
                 for j in range(len(average_index[i])):
                     # indices of neighbors only
                     ref_idx0 = [a for a in ref_idx if a != average_index[i][j]]
+                    #print(ref_idx0)
                     ref = np.take(error, ref_idx0).tolist()
                     ref_mean[i] = np.mean(ref)
                     ref_std[i] = np.std(ref)
-                    #Only accept indices if error[idx[i][j]] deviates either 
-                    #less than 5% or 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[average_index[i][j]]) < max(0.05, 5 * ref_std[i]):
+                    #Only accept indices if error[idx[i][j]] deviates 
+                    #less than 5*sigma from neighbors
+                    if abs(ref_mean[i] - error[average_index[i][j]]) < 5 * ref_std[i]:
                         rr.append(average_index[i][j])
                 r.append(rr)
 
