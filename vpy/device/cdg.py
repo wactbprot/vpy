@@ -8,7 +8,7 @@ from ..values import Values
 class Cdg(Device):
     unit = "Pa"
     usable_decades = 3
-    max_type_head = {
+    type_head_factor = {
         "0.001Torr":  0.13,
         "001Torr":   1.33,
         "0.01Torr":   1.33,
@@ -20,23 +20,32 @@ class Cdg(Device):
         "1000Torr": 133320.0,
         "01mbar": 10.0,
         "1mbar": 100.0,
-        "1.1mbar": 110.0,
-        "10mbar": 1000.0,
-        "11mbar": 1100.0,
+        "10mbar": 1000.0, 
         "100mbar": 10000.0,
-        "1100mbar": 110000.0
     }
+    max_voltage = 10.0 # v
+    type_head_cmr = {
+        "1.1mbar": 110.0,
+        "11mbar": 1100.0, 
+        "110mbar": 11000.0,
+        "1100mbar": 110000.0,
+    }
+    cmr_base_factor =  {
+        "1.1mbar": 100.0,
+        "11mbar": 1000.0, 
+        "110mbar": 10000.0,
+        "1100mbar": 100000.0,
+    }
+    cmr_offset = -1.0 # v
+    cmr_factor = 0.125 # 1/v
+
     range_offset_trans = {
         "X1":"offset_x1",
         "X0.1":"offset_x0.1",
-        "X0.01":"offset_x0.01"
+        "X0.01":"offset_x0.01",
     }
     
-    max_voltage = 10.0
-    cmr_offset = -1.0
-    cmr_factor = 1.25
-
-    range_extend = 0.005 
+    range_extend = 0.005 # relativ
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
 
     def __init__(self, doc, dev):
@@ -60,12 +69,23 @@ class Cdg(Device):
                     conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
                     self.max_p = float(use_to) * conv
                     self.min_p = float(use_from) * conv
+                
                 elif type_head:
-                    if type_head in self.max_type_head:
-                        self.max_p = self.max_type_head.get(type_head)
+
+                    if type_head in self.type_head_factor:
+                        self.max_p = self.type_head_factor.get(type_head)
                         self.min_p = self.max_p / 10.0**self.usable_decades
+                
                         if not conversion_type:
                             self.conversion_type = "factor"
+
+                    if type_head in self.type_head_cmr:
+                        self.max_p = self.type_head_factor.get(type_head)
+                        self.min_p = self.max_p / 10.0**self.usable_decades
+                
+                        if not conversion_type:
+                            self.conversion_type = "cmr"
+                    
                 else:
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)
@@ -73,7 +93,9 @@ class Cdg(Device):
 
                 if conversion_type:
                     self.conversion_type = conversion_type
-
+                
+                if type_head:
+                    self.type_head = type_head
                     
             if 'Interpol' in dev:
                 # pressure
@@ -87,6 +109,7 @@ class Cdg(Device):
                 
                 interpol_min = np.min(self.interpol_p)
                 interpol_max = np.max(self.interpol_p)
+
                 if self.min_p > interpol_min:
                     self.interpol_min = self.min_p
                 else:
@@ -95,13 +118,18 @@ class Cdg(Device):
                     self.interpol_max =  interpol_max
                 else:
                     self.interpol_max =  self.max_p
-
         else:
             msg = "Can't find device"
             self.log.error(msg)
             sys.exit(msg)
 
     def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
+        """Converts the measured pressure in self.unit. If the unit is V
+        this conversions are implemented: 
+        
+            * factor ... u * max_p / max_voltage
+            * cmr ... (u + cmr_offset) * cmr_factor * cmr_base_factor[type_head]
+        """
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'))
         
@@ -110,7 +138,7 @@ class Cdg(Device):
                 return pressure_value * self.max_p/self.max_voltage)
 
             if self.conversion_type == "cmr":
-                return (pressure_value + self.cmr_offset) * self.cmr_factor
+                return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
 
             msg = "conversion type not implemented"
             self.log.error(msg)
