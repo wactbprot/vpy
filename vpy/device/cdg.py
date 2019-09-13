@@ -28,9 +28,14 @@ class Cdg(Device):
         "X0.1":"offset_x0.1",
         "X0.01":"offset_x0.01"
     }
+    
     max_voltage = 10.0
+    cmr_offset = -1.0
+    cmr_factor = 1.25
+
     range_extend = 0.005 
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
+
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
@@ -46,6 +51,8 @@ class Cdg(Device):
                 use_to = dev_setup.get('UseTo')
                 use_unit = dev_setup.get('UseUnit')
                 type_head = dev_setup.get('TypeHead')
+                conversion_type =  dev_setup.get('ConversionType')
+
                 if use_from and use_to and use_unit:
                     conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
                     self.max_p = float(use_to) * conv
@@ -54,11 +61,17 @@ class Cdg(Device):
                     if type_head in self.max_type_head:
                         self.max_p = self.max_type_head.get(type_head)
                         self.min_p = self.max_p / 10.0**self.usable_decades
+                        if not conversion_type:
+                            self.conversion_type = "factor"
                 else:
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)
                     sys.exit(msg)
 
+                if conversion_type:
+                    self.conversion_type = conversion_type
+
+                    
             if 'Interpol' in dev:
                 # pressure
                 v, u = self.get_value_and_unit('p_ind')
@@ -90,12 +103,18 @@ class Cdg(Device):
         pressure_value = np.array(pressure_dict.get('Value'))
         
         if pressure_unit == "V":
-            pressure = np.multiply(pressure_value , self.max_p/self.max_voltage)
+            if self.conversion_type == "factor":
+                return pressure_value * self.max_p/self.max_voltage)
+
+            if self.conversion_type == "cmr":
+                return (pressure_value + self.cmr_offset) * self.cmr_factor
+
+            msg = "conversion type not implemented"
+            self.log.error(msg)
+            sys.exit(msg)
         else:
-            pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
-        
-        return pressure
-    
+            return pressure_value * self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
+            
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
         Returns the interpolation error at the points where:
