@@ -9,27 +9,6 @@ class TestValues(unittest.TestCase):
     def setUp(self):
         pass
 
-    @unittest.skip("methode will be removed")
-    def test_date_labview(self):
-        """
-        """
-        doc = {"Calibration":{"Measurement":{"Values":{"Date": {
-          "Type": "Date",
-          "Value": [
-            "Mo, Mai 28, 2018",
-            "Di, Mai 29, 2018",
-            "Mi, Mai 30, 2018",
-            " Mai 30, 2018",
-            "Mi, Mai 30",
-          ]}}}}}
-        date = Date(doc)
-        d = date.parse_labview_date()
-        self.assertEqual(d[0], "2018-05-28")
-        self.assertEqual(d[1], "2018-05-29")
-        self.assertEqual(d[2], "2018-05-30")
-        self.assertEqual(d[3], "error")
-        self.assertEqual(d[4], "error")
-
 
     def test_round_to_sig_dig(self):
 
