@@ -10,7 +10,7 @@ class Srg(Device):
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 
-        self.total_relative_uncertainty = 2.6e-3
+        self.total_relative_uncertainty_k2 = 2.6e-3
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
@@ -95,6 +95,22 @@ class Srg(Device):
         var_m ... var(m)
         var_b ... var(b) 
         u ... u(m/sigma_0)
+
+        print(sens_m * var_m**0.5)
+        print(sens_b * var_b**0.5)
+        print(var_m**0.5)
+        print(var_b**0.5)
+        print((self.total_relative_uncertainty_k2/2.0 * m/b))
+        print((self.total_relative_uncertainty_k2/2.0 * b * sens_b))
+
+        python script/se3/se3_cal_result.py --ids 'cal-2019-se3-kk-75138_0001' --db 'vl_db' --srv 'http://a73434.berlin.ptb.de:5984'
+        0.0001747977356194887
+        -1.954144020125424e-06
+        0.0001720421398635844
+        0.00011476238813591167
+        -2.17870974810604e-05
+        -2.1787097481060404e-05        
+
         """
         if cal_unit == ind_unit:
             x = p_cal
@@ -121,7 +137,8 @@ class Srg(Device):
 
         sens_b = (m / b**2)
         sens_m = (1.0 / b)
-
-        u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty * m/b)**2)**0.5
-
+       
+        u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty_k2/2.0 * m/b)**2)**0.5
+       
+       
         return b, m, u

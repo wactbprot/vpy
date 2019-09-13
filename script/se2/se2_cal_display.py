@@ -40,8 +40,7 @@ def main():
             date = "2019-07-10"#doc[""]
             pn_doc1 = io.get_pn_by_date(std="se2", date=date, cert="9911")
             pn_doc2 = io.get_pn_by_date(std="se2", date=date, cert="0118")
-            print(pn_doc1)
-            print(pn_doc2)
+
             disp = Display(doc)
             disp.SE2_CDG_error_plot().show()
             disp.SE2_CDG_offset_abs().show()
