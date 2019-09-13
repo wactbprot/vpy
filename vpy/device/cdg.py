@@ -20,8 +20,11 @@ class Cdg(Device):
         "1000Torr": 133320.0,
         "01mbar": 10.0,
         "1mbar": 100.0,
+        "1.1mbar": 110.0,
         "10mbar": 1000.0,
+        "11mbar": 1100.0,
         "100mbar": 10000.0,
+        "1100mbar": 110000.0
     }
     range_offset_trans = {
         "X1":"offset_x1",
