@@ -132,8 +132,8 @@ class Result(Analysis):
 
         p_min, p_max, todo_unit = self.ToDo.get_min_max_pressure()
         conv = float(self.Const.get_conv(from_unit=todo_unit, to_unit=unit))
-        sec["PressureRangeBegin"] = p_min*conv
-        sec["PressureRangeEnd"] = p_max*conv
+        sec["PressureRangeBegin"] = "{:.1e}".format(p_min*conv)
+        sec["PressureRangeEnd"] = "{:.1e}".format(p_max*conv)
         sec["PressureRangeUnit"] = self.unit_trans[unit]
         
         return sec
