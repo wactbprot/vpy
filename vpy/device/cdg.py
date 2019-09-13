@@ -8,7 +8,7 @@ from ..values import Values
 class Cdg(Device):
     unit = "Pa"
     usable_decades = 3
-    type_head_factor = {
+    type_head_factor = { # Pa
         "0.001Torr":  0.13,
         "001Torr":   1.33,
         "0.01Torr":   1.33,
@@ -24,13 +24,13 @@ class Cdg(Device):
         "100mbar": 10000.0,
     }
     max_voltage = 10.0 # v
-    type_head_cmr = {
+    type_head_cmr = { # Pa
         "1.1mbar": 110.0,
         "11mbar": 1100.0, 
         "110mbar": 11000.0,
         "1100mbar": 110000.0,
     }
-    cmr_base_factor =  {
+    cmr_base_factor =  { # Pa
         "1.1mbar": 100.0,
         "11mbar": 1000.0, 
         "110mbar": 10000.0,
@@ -55,6 +55,7 @@ class Cdg(Device):
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
+        
         if dev:
             self.name = dev.get('Name')
             dev_setup = dev.get('Setup')
@@ -80,7 +81,7 @@ class Cdg(Device):
                             self.conversion_type = "factor"
 
                     if type_head in self.type_head_cmr:
-                        self.max_p = self.type_head_factor.get(type_head)
+                        self.max_p = self.type_head_cmr.get(type_head)
                         self.min_p = self.max_p / 10.0**self.usable_decades
                 
                         if not conversion_type:
@@ -135,7 +136,7 @@ class Cdg(Device):
         
         if pressure_unit == "V":
             if self.conversion_type == "factor":
-                return pressure_value * self.max_p/self.max_voltage)
+                return pressure_value * self.max_p/self.max_voltage
 
             if self.conversion_type == "cmr":
                 return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
