@@ -53,6 +53,9 @@ class Io(object):
         # --ids
         parser.add_argument("--ids", type=str, nargs=1,
                             help=";-separated ids of the documents to handle")
+        # --skip
+        parser.add_argument("--skip", action='store_true',
+                            help="results are not included in certificate")
         # --db
         parser.add_argument("--db", type=str, nargs=1,
                             help="name of the database")
