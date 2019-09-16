@@ -27,10 +27,25 @@ class Uncert:
 
     def u_PTB_rel(self, ana):
 
+        p = ana.pick("Pressure", "cal", "Pa")
+        ex = ana.org["Calibration"]["Measurement"]["Values"]["Expansion"]["Value"]
+        u = np.full(len(p), np.nan)
+        for i in range(len(p)):
+            if ex[i] == "direkt":
+                u[i] = np.piecewise(p[i], [p[i] <= 8000.,  8000. < p[i]]
+                                        , [      0.00019,       0.00014])
+            else:
+                u[i] = np.piecewise(p[i], [p[i] <= 0.027, 0.027 < p[i] <= 0.3, 0.3 < p[i] <= 0.73, 0.73 < p[i] <= 9., p[i] > 9.]
+                                        , [       0.0014,               0.001,            0.00092,           0.00086,   0.00075])
+        #print(np.transpose([p,ex,u]))                                
+        ana.store("Uncertainty", "standard", u , "1")
+
+    def u_PTB_rel_old(self, ana):
+
         p_list = ana.pick("Pressure", "cal", "Pa")
         u = np.asarray([np.piecewise(p, [p <= 0.027, (p > 0.027 and p <= 0.3), (p > 0.3 and p <= 0.73), (p >0.73 and p <= 9.), (p > 9. and p <= 1000.), (p > 1000. and p <= 8000.),  8000. < p]
                                        ,[0.0014,                        0.001,                 0.00092,              0.00086,                 0.00075,                   0.00019,  0.00014] ).tolist() for p in p_list])
-        ana.store("Uncertainty", "standard", u , "1")
+        ana.store("Uncertainty", "standard", u , "1")        
 
     def make_offset_stability(self, ana):
 
