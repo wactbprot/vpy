@@ -140,7 +140,7 @@ class Cdg(Device):
 
             if self.conversion_type == "cmr":
                 return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
-
+                
             msg = "conversion type not implemented"
             self.log.error(msg)
             sys.exit(msg)

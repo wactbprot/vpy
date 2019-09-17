@@ -61,12 +61,11 @@ class Analysis(Document):
         """
 
         value = self.make_writable(value)
+        append = True
 
-        o = {
-                "Type": val_type, 
-                "Value": value, 
-                "Unit": unit
-            }
+        o = {"Type": val_type, 
+             "Value": value, 
+             "Unit": unit}
         
         if descr is not None:
             o["Description"] = descr
@@ -78,16 +77,42 @@ class Analysis(Document):
             o['N'] = self.make_writable(n)
 
         if dest is not None:
+            # simply set if new
             if quant not in self.doc[dest]:
-                self.doc[dest][quant] = []
+                self.doc[dest][quant] = [o]
+                append = False
+                self.log.info("set values of type {}".format(val_type))
 
-            self.doc[dest][quant].append(o)
-            self.log.info("stored values of type {} in {}".format(val_type, quant))
+            # search type and replace if existing
+            for i, d in enumerate(self.doc[dest][quant]):
+                if d.get("Type") == val_type:
+                    self.doc[dest][quant][i] = o
+                    append = False
+                    break
+                    self.log.info("replace values of type {}".format(val_type))
+
+            # append if not exist
+            if append:    
+                self.doc[dest][quant].append(o)
+                self.log.info("append values of type {} in {}".format(val_type, quant))
         else:
+            # new
             if quant not in self.doc:
-                self.doc[quant] = []
-            self.doc[quant].append(o)
-            self.log.info("stored values of type {}".format(val_type))
+                self.doc[quant] = [o]
+                append = False
+                self.log.info("set values of type {}".format(val_type))
+
+            # replace
+            for i, d in enumerate(self.doc[quant]):
+                if d.get("Type") == val_type:
+                    self.doc[quant][i] = o
+                    append = False
+                    break
+                    self.log.info("replace values of type {}".format(val_type))
+            # append
+            if append:
+                self.doc[quant].append(o)
+                self.log.info("append values of type {}".format(val_type))
 
     def store_dict(self, quant, d, dest='Values', plain=False):
         """ Appends a dict to document under the given destination. 
