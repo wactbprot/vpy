@@ -8,6 +8,7 @@ sys.path.append(".")
 import copy
 import json
 import numpy as np
+import collections as cl
 from vpy.pkg_io import Io
 from vpy.result import Result
 from vpy.todo import ToDo
@@ -107,7 +108,10 @@ def main():
                 d["OffsetUnit"] = rd_unit
              
             ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
-            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)            
+            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+
+            maesurement_date = cl.Counter(doc["Calibration"]["Measurement"]["Values"]["Date"]["Value"]).most_common(1)[0][0]
+            doc["Calibration"]["Measurement"]["Date"] = [{"Type": "measurement", "Value": [maesurement_date]}]
               
             se2_uncert.u_PTB_rel(ana)
             se2_uncert.make_offset_stability(ana)
