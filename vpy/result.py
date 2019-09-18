@@ -238,7 +238,7 @@ class Result(Analysis):
         return  u_std_k2_str     
 
     def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
-        ind = self.get_reduced_pressure_ind (ana, av_idx, pressure_unit)
+        ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         u_dev = self.get_reduced_uncert_dev(ana, av_idx, error_unit)
 
         u_dev_k2 = u_dev*ind*k #pressure_unit

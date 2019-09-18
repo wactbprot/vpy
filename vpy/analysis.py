@@ -349,19 +349,24 @@ class Analysis(Document):
         return skip
     
     def ask_for_evis(self):
-        """ Asks for e_vis
+        """ Asks for e_vis.  
         """
-        e_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Evis', 0)
+        e_vis = self.org.get('Calibration', {}).get('Result', {}).get('AuxValues', {}).get('Evis')
+        if e_vis is None:
+            e_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Evis', 0)
         
         text = input("estimate the relative (unit = 1) value for e_vis={} (type enter if ok): ".format(e_vis))
         if text != "":
             e_vis = float(text)
 
-        u_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Uvis', 2e-3) 
+        u_vis = self.org.get('Calibration', {}).get('Result', {}).get('AuxValues', {}).get('Uvis')
+        if u_vis is None:
+            u_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Uvis', 2e-3) 
 
         text = input("estimate the uncertainty (unit = 1) u(e_vis)={} (type enter if ok): ".format(u_vis))
         if text != "":
             u_vis = float(text)
+        
         return e_vis, 1/(e_vis +1), u_vis, "1"
 
 
