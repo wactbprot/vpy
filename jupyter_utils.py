@@ -4,7 +4,7 @@ def print_uncert(u):
     p_str = d_str.format(tp=u.get("Type"),val=u.get("Value"), unit=u.get("Unit"), f=u.get("From"), t=u.get("To"), runit=u.get("RangeUnit"), descr=u.get("Comment",u.get("Description")))
     print(p_str)
     
-def gen_uncert_contrib(tp, val, unit, f, t, runit, descr, source="device", uncert_type="A", dist="norm"):
+def gen_uncert_contrib(tp, val, unit, f, t, runit, descr, source="device", uncert_type="B", dist="norm"):
     r_str = "valid in the range from {f}{runit} to {t}{runit}"
     r_statement = r_str.format(f=f, t=t, runit=runit)
     return {

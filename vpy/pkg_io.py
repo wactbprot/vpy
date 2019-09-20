@@ -357,12 +357,12 @@ class Io(object):
         """
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
-        dat = {}
+        dat = []
 
         view = self.config['standards'][std]['device_info']
         for item in db.view(view):
 
-            dat[item.value["id"]] = item.value
+            dat.append(item.value)
 
 
         return dat
