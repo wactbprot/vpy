@@ -74,7 +74,6 @@ def main():
                     CustomerDevice = Cdg(doc, customer_device)
                 if dev_class == 'RSG':
                     CustomerDevice = Rsg(doc, {})
-      
             #cal.pressure_fill(res)
             cal.pressure_gn_corr(res)
             cal.pressure_gn_mean(res)

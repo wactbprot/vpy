@@ -227,6 +227,17 @@ class Pressure(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Pressure', quant)
 
+class Flow(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Flow', quant)
+
+class Conductance(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Conductance', quant)
+
+class Drift(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Drift', quant)
 
 class OutGasRate(Values):
     def __init__(self, doc, quant="Measurement"):

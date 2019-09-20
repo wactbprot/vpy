@@ -25,7 +25,8 @@ class Io(object):
                             "se3": {
                                 "all_doc_view": "se3_req/doc",
                                 "state_doc_view": "se3_req/state",
-                                "hist_data": "se3_req/group_normal_hist"
+                                "hist_data": "se3_req/group_normal_hist",
+                                "device_info": "se3_req/group_normal_info"
                             },
                             "se2": {
                                 "all_doc_view": "se2_req/doc",
@@ -341,6 +342,27 @@ class Io(object):
         for item in db.view(view):
 
             dat[item.value["IdentString"]] = item.value
+
+
+        return dat
+    
+    def get_device_info(self, std):
+        """Gets and returns an array containing info data.
+
+        :param std: name of the calibration standard
+        :type std: str
+
+        :returns: document
+        :rtype: dict
+        """
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        dat = {}
+
+        view = self.config['standards'][std]['device_info']
+        for item in db.view(view):
+
+            dat[item.value["id"]] = item.value
 
 
         return dat
