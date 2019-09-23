@@ -122,6 +122,15 @@ class Result(Analysis):
 
         return sec
 
+    def gen_temperature_correction(self, ana, sec):
+        p = ana.pick("Pressure", "cal", "Pa")
+        if np.min(p) < 95:
+            sec["TemperatureCorrection"] = "yes"
+        else:
+            sec["TemperatureCorrection"] ="no"
+
+        return sec
+
     def gen_meas_date_entry(self, ana, sec):
 
         sec["MeasurementDate"] = self.Date.first_measurement()
@@ -181,10 +190,34 @@ class Result(Analysis):
         if result_type == "expansion":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_temperature_correction(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
-            sec = self.gen_srg_entry(ana, sec)    
-        
+            sec = self.gen_srg_entry(ana, sec)
+
+        if result_type == "se2_expansion":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_temperature_correction(ana, sec)            
+            sec = self.gen_min_max_entry(ana, sec)
+            sec = self.gen_cdg_entry(ana, sec)
+            sec = self.gen_srg_entry(ana, sec)
+
+        if result_type == "se2_direct":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)    
+            sec = self.gen_min_max_entry(ana, sec)
+            sec = self.gen_cdg_entry(ana, sec)
+            sec = self.gen_srg_entry(ana, sec)  
+
+        if result_type == "se2_expansion_direct":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_temperature_correction(ana, sec)            
+            sec = self.gen_min_max_entry(ana, sec)
+            sec = self.gen_cdg_entry(ana, sec)
+            sec = self.gen_srg_entry(ana, sec)  
+
         if result_type == "direct":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)

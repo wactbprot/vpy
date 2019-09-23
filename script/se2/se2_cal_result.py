@@ -55,6 +55,7 @@ def main():
             se2_uncert = UncertSe2(doc)            
             
             result_type = analysis.get("AnalysisType", "default")
+            result_type = "se2_expansion_direct"
             res = Result(doc, result_type=result_type)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
@@ -73,7 +74,7 @@ def main():
             print(ref_std)
             print(loops)
 
-            if result_type == "expansion" and tdo.type == "error":
+            if result_type == "se2_expansion_direct" and tdo.type == "error":
                 average_index, reject_index = ana.ask_for_reject(average_index=average_index)
                 d = {
                     "AverageIndex": average_index,
