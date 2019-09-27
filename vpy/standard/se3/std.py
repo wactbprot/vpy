@@ -46,7 +46,7 @@ class Se3(Standard):
                         "ch_1010_after", "ch_1011_after", "ch_1012_after",
                         "ch_1013_after", "ch_1014_after", "ch_1015_after",
                         "ch_1016_after", "ch_1017_after", "ch_1018_after",
-                        "ch_1019_after", "ch_1020_after", "ch_1020_after",
+                        "ch_1019_after", "ch_1020_after", 
                         "ch_1021_after", "ch_1022_after", "ch_1023_after",
                         "ch_1024_after", "ch_1025_after", "ch_1026_after",
                         "ch_1027_after", "ch_1028_after", "ch_1029_after",
@@ -56,7 +56,7 @@ class Se3(Standard):
                         "ch_2009_after", "ch_2010_after", "ch_2011_after",
                         "ch_2012_after", "ch_2013_after", "ch_2014_after",
                         "ch_2015_after", "ch_2016_after", "ch_2017_after",
-                        "ch_2018_after", "ch_2019_after", "ch_2020_after",
+                        "ch_2018_after", "ch_2019_after", 
                         "ch_2020_after", "ch_2021_after", "ch_2022_after",
                         "ch_2023_after", "ch_2024_after", "ch_2025_after",
                         "ch_2026_after", "ch_2027_after", "ch_2028_after", ]
@@ -258,6 +258,7 @@ class Se3(Standard):
         self.Exp = Expansion(doc)
         self.Date = Date(doc)
         self.Range = Range(doc)
+
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
@@ -318,20 +319,20 @@ class Se3(Standard):
         :type: class
         """
 
-        f=np.full(self.no_of_meas_points, np.nan)
-        f_name=self.get_expansion_name()
-        i_s=np.where(f_name == "f_s")
-        i_m=np.where(f_name == "f_m")
-        i_l=np.where(f_name == "f_l")
+        f = np.full(self.no_of_meas_points, np.nan)
+        f_name = self.get_expansion_name()
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
 
         if np.shape(i_s)[1] > 0:
-            f[i_s]=self.get_value("f_s", "1")
+            f[i_s] = self.get_value("f_s", "1")
 
         if np.shape(i_m)[1] > 0:
-            f[i_m]=self.get_value("f_m", "1")
+            f[i_m] = self.get_value("f_m", "1")
 
         if np.shape(i_l)[1] > 0:
-            f[i_l]=self.get_value("f_l", "1")
+            f[i_l] = self.get_value("f_l", "1")
 
         res.store("Expansion", "uncorr", f, "1")
 

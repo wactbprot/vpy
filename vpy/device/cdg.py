@@ -9,15 +9,15 @@ class Cdg(Device):
     unit = "Pa"
     usable_decades = 3
     type_head_factor = { # Pa
-        "0.001Torr":  0.13,
-        "001Torr":   1.33,
-        "0.01Torr":   1.33,
-        "0.1Torr":   13.33,  
-        "01Torr":   13.33,     
-        "1Torr":    133.32,
-        "10Torr":   1333.2,
-        "100Torr":  13332.0,
-        "1000Torr": 133320.0,
+        "0.001Torr":  0.133322,
+        "001Torr":   1.33322,
+        "0.01Torr":   1.33322,
+        "0.1Torr":   13.3322,  
+        "01Torr":   13.3322,     
+        "1Torr":    133.322,
+        "10Torr":   1333.22,
+        "100Torr":  13332.2,
+        "1000Torr": 133322.0,
         "01mbar": 10.0,
         "1mbar": 100.0,
         "10mbar": 1000.0, 
@@ -33,7 +33,7 @@ class Cdg(Device):
     cmr_base_factor =  { # Pa
         "1.1mbar": 100.0,
         "11mbar": 1000.0, 
-        "110mbar": 10000.0,
+        "110mbar":  10000.0,
         "1100mbar": 100000.0,
     }
     cmr_offset = -1.0 # v
@@ -71,7 +71,7 @@ class Cdg(Device):
                     self.max_p = float(use_to) * conv
                     self.min_p = float(use_from) * conv
                 
-                elif type_head:
+                if type_head:
 
                     if type_head in self.type_head_factor:
                         self.max_p = self.type_head_factor.get(type_head)
@@ -87,7 +87,7 @@ class Cdg(Device):
                         if not conversion_type:
                             self.conversion_type = "cmr"
                     
-                else:
+                if not self.max_p:
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)
                     sys.exit(msg)
