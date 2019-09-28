@@ -3,7 +3,7 @@ python script/balance_cal_result.py --ids 'cal-2019-frs5-kk-75052_0003'
 """
 import sys
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 
 import copy
 import json

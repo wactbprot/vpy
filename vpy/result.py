@@ -109,6 +109,18 @@ class Result(Analysis):
         sec["GasTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
         sec["GasTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 2)    
         sec["GasTemperatureUnit"] = unit
+
+        return sec        
+
+    def gen_temperature_gas_entry_se2(self, ana, sec, unit="K", k=2):
+        t = ana.pick("Temperature", "gas", unit)
+        t = [i for i in t if i>274]
+        t_mean = np.mean(t)
+        t_unc = np.std(t)*k
+
+        sec["GasTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
+        sec["GasTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 2)    
+        sec["GasTemperatureUnit"] = unit
         
         return sec
     
@@ -204,14 +216,13 @@ class Result(Analysis):
             sec = self.gen_srg_entry(ana, sec)
 
         if result_type == "se2_direct":
-            sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)    
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)  
 
         if result_type == "se2_expansion_direct":
-            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_gas_entry_se2(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)            
             sec = self.gen_min_max_entry(ana, sec)

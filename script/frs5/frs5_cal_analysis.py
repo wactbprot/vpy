@@ -3,7 +3,7 @@ python script/frs5/frs5_cal_analysis.py --ids 'cal-2018-frs5-kk-75001_0001' --db
 """
 import sys
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis

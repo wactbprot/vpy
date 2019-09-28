@@ -487,8 +487,8 @@ class Analysis(Document):
                     ref_mean[i] = np.mean(ref)
                     ref_std[i] = np.std(ref)
                     #Only accept indices if error[idx[i][j]] deviates either
-                    #less than 0.001 or less than 5*sigma from neighbors
-                    if abs(ref_mean[i] - error[average_index[i][j]]) < max(0.001, 5 * ref_std[i]):
+                    #less than 0.001 or less than 10*sigma from neighbors
+                    if abs(ref_mean[i] - error[average_index[i][j]]) < max(0.001, 10 * ref_std[i]):
                         rr.append(average_index[i][j])
                 r.append(rr)
 
