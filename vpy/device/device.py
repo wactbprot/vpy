@@ -227,9 +227,7 @@ class Device(Document):
                 ##    self.log.warn("standard deviation of offset sample < E-12, est. with 5% of measured value")
                 ##    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
                 ## else:
-        print("--------------------------")         
-        print(u)         
-        print("--------------------------")         
+     
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):
