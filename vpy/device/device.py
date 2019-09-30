@@ -203,11 +203,11 @@ class Device(Document):
                    
                     ## later: offset_sample_value, offset_unit = aux.get_value_and_unit(d_type=range_type)
                     if ind_unit == offset_unit:
-                        m = np.nanmean(np.diff(offset[i_r]))
+                        m = np.nanmean(np.abs(np.diff(offset[i_r])))
                         ## later:
                         ## std = np.nanstd(offset_sample_value)
                         ## u[i_r] = np.abs(std/ind[i_r])
-                        u[i_r] = np.abs(m/ind[i_r])
+                        u[i_r] = m/ind[i_r]
                     else:
                         sys.exit("ind measurement unit and sample unit dont match")
         else:
@@ -219,8 +219,8 @@ class Device(Document):
                 if len(offset) < 2:
                     u = np.full(len(offset), 1.0e-5)
                 else:
-                    m = np.nanmean(np.diff(offset))
-                    u = np.abs(m/ind)
+                    m = np.nanmean(np.abs(np.diff(offset)))
+                    u = m/ind
                 ## later: 
                 ## std = np.nanstd(offset_sample_value)
                 ## if std < 1e-12: ## all the same
