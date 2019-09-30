@@ -158,6 +158,20 @@ class Result(Analysis):
         sec["PressureRangeUnit"] = self.unit_trans[unit]
         
         return sec
+
+    def gen_min_max_entry_direct_se2(self, ana, sec, unit="Pa"):
+
+        ex = ana.org["Calibration"]["Measurement"]["Values"]["Expansion"]["Value"]
+        av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
+        p_cal = ana.pick("Pressure", "cal", "Pa")
+
+        p_cal = [p_cal[i] for i in av_idx if ex[i]=="direkt"]
+
+        if len(p_cal)>0:
+            sec["PressureRangeDirectBegin"] = "{:.1e}".format(min(p_cal))
+            sec["PressureRangeDirectEnd"] = "{:.1e}".format(max(p_cal))
+        
+        return sec        
     
     def gen_cdg_entry(self, ana, sec):
         e_vis = self.doc.get("AuxValues", {}).get("Evis")
@@ -226,6 +240,7 @@ class Result(Analysis):
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)            
             sec = self.gen_min_max_entry(ana, sec)
+            sec = self.gen_min_max_entry_direct_se2(ana, sec)            
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)  
 

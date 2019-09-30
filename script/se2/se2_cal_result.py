@@ -83,7 +83,16 @@ def main():
                     "RejectIndex": reject_index
                     }
 
-                if np.take(p_cal, ana.flatten(average_index)).min() < 95:
+                p_tdo = np.asarray(tdo.doc["Values"]["Pressure"]["Value"], float)
+                p_tdo_unit = tdo.doc["Values"]["Pressure"]["Unit"]
+                conv = float(res.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa"))
+
+                p_tdo = conv * p_tdo
+                p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
+                print("******")
+                print(p_tdo_evis)
+
+                if len(p_tdo_evis) > 1:
                     e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
                     d["Evis"] = e_vis
                     d["CFvis"] = cf_vis
