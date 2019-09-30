@@ -214,8 +214,18 @@ class Device(Document):
         #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
         #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
 
-        u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
-                                        [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
+        producer = ana.org.get("Calibration", {}).get("CustomerObject", {}).get("Device", {}).get("Producer", "missing")
+        
+        if producer == "missing":
+            self.log.warn("No Producer in Device")
+            sys.exit("No Producer in Device")
+
+        if producer.lower() == "inficon":
+            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
+                                            [0.0008,   0.0003,                0.0001,                   0.000029]).tolist() for p in p_list])
+        else: #MKS und andere
+            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
+                                            [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
 
         ana.store("Uncertainty", "repeat", u, "1")
 
