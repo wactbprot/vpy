@@ -53,18 +53,26 @@ class Uncert:
         # measurement range for offset but switched for p_ind
 
         pr_idx = ana.doc["AuxValues"]["PressureRangeIndex"]
-        av_idx = ana.doc["AuxValues"]["AverageIndex"]
+        av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
 
-        idx = [item for sublist in av_idx for item in sublist]
-
+        ex = ana.org["Calibration"]["Measurement"]["Values"]["Expansion"]["Value"]
         p_off = ana.pick("Pressure", "offset", "Pa")
         p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+        p_ind_corr_max = max([p_ind_corr[i] for i in av_idx])
 
         # offset_unc = np.nanstd(p_off)
+        print(p_off)
+        print(p_ind_corr)
+        print(p_ind_corr_max)
+        print(pr_idx)
 
         offset_unc = np.full(len(p_off), np.nan)
         for i in pr_idx:
-            unc = np.std([p_off[j] for j in i])
+            unc_old = np.std([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max])
+            unc = np.mean(np.abs(np.diff([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max])))
+            print("offset vector: " + str([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max]))
+            print("offset std: " + str(unc_old))
+            print("offset diff: " + str(unc))
             for j in i:
                 offset_unc[j] = unc
 
