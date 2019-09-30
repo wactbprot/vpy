@@ -91,6 +91,7 @@ def main():
             offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
             
             res.store("Pressure", "ind", ind, unit)
+            res.store("Pressure", "offset", offset, unit)
             res.store("Pressure", "ind_corr", ind - offset, unit)
             
             # error for rating procedures

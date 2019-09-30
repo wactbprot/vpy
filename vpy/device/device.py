@@ -171,15 +171,26 @@ class Device(Document):
             ana.store('Range', 'ind', range_str, '1')
 
     def offset_uncert(self, ana):
-        """Calculates the standard deviation of the *single* value of the 
+        """
+        for now: offset uncertainty is calculated from the measured 
+        offset values (measurements between the calibration points)
+
+        later (if repeat. measurm. are available):
+        Calculates the standard deviation of the *single* value of the 
         offset sample stored in ``Measurement.AuxValues.Pressure``
         """
        
-        pres = Pressure(ana.org)
-        aux = AuxValues(ana.org)
-
-        ind, ind_unit = pres.get_value_and_unit("ind")
         range_str = Range(ana.org).get_str("ind")
+        ## later: aux = AuxValues(ana.org)
+        ## pres = Pressure(ana.org)
+        ## ind, ind_unit = pres.get_value_and_unit("ind")
+        ## offset, offset_unit = pres.get_value_and_unit("ind_offset")
+        
+        ## now:
+        ind_unit = self.unit
+        offset_unit = self.unit
+        ind = ana.pick("Pressure", "ind_corr", self.unit)
+        offset = ana.pick("Pressure", "offset", self.unit) 
 
         u = np.full(len(ind), np.nan)
         if range_str is not None:
@@ -187,24 +198,38 @@ class Device(Document):
             for r in range_unique:
                 i_r = np.where(range_str == r)
                 if np.shape(i_r)[1] > 0:
-                    range_type = self.range_offset_trans[r]
-                    offset_sample_value, sample_unit = aux.get_value_and_unit(d_type=range_type)
-                    if ind_unit == sample_unit:
-                        std = np.nanstd(offset_sample_value)
-                        u[i_r] = np.abs(std/ind[i_r])
+                    ## range_type = self.range_offset_trans[r]
+                    ## now:
+                   
+                    ## later: offset_sample_value, offset_unit = aux.get_value_and_unit(d_type=range_type)
+                    if ind_unit == offset_unit:
+                        m = np.nanmean(np.diff(offset[i_r]))
+                        ## later:
+                        ## std = np.nanstd(offset_sample_value)
+                        ## u[i_r] = np.abs(std/ind[i_r])
+                        u[i_r] = np.abs(m/ind[i_r])
                     else:
                         sys.exit("ind measurement unit and sample unit dont match")
         else:
+            ## later:
             ## simple offset sample stored in Measurement.AuxValues.Pressure
-            offset_sample_value, sample_unit = aux.get_value_and_unit(d_type="offset")
-            if ind_unit == sample_unit:
-                std = np.nanstd(offset_sample_value)
-                if std < 1e-12: ## all the same
-                    self.log.warn("standard deviation of offset sample < E-12, est. with 5% of measured value")
-                    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
+            ## offset_sample_value, offset_unit = aux.get_value_and_unit(d_type="offset")
+            if ind_unit == offset_unit:
+                ## i_r = np.where(ind < self.max_p*0.95) << 50% FS --> but: has to work for calib. with 1 point only
+                if len(offset) < 2:
+                    u = np.full(len(offset), 1.0e-5)
                 else:
-                    u = np.abs(std/ind)
-                   
+                    m = np.nanmean(np.diff(offset))
+                    u = np.abs(m/ind)
+                ## later: 
+                ## std = np.nanstd(offset_sample_value)
+                ## if std < 1e-12: ## all the same
+                ##    self.log.warn("standard deviation of offset sample < E-12, est. with 5% of measured value")
+                ##    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
+                ## else:
+        print("--------------------------")         
+        print(u)         
+        print("--------------------------")         
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):
@@ -214,15 +239,26 @@ class Device(Document):
         #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
         #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
 
-        producer = ana.org.get("Calibration", {}).get("CustomerObject", {}).get("Device", {}).get("Producer", "missing")
-        
-        if producer == "missing":
-            self.log.warn("No Producer in Device")
-            sys.exit("No Producer in Device")
+        producer = ana.org.get("Calibration", {}).get("CustomerObject", {}).get("Device", {}).get("Producer", "missing").lower().replace("\s", "")
+        type_head = ana.org.get("Calibration", {}).get("CustomerObject", {}).get("Setup", {}).get("TypeHead", "missing")
+        standard = ana.org.get("Calibration", {}).get("ToDo", {}).get("Standard", "missing")
 
-        if producer.lower() == "inficon":
-            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
-                                            [0.0008,   0.0003,                0.0001,                   0.000029]).tolist() for p in p_list])
+        if producer == "missing":
+            msg = "No Producer in Device"
+            self.log.warn(msg)
+            sys.exit(msg)
+        
+        if standard == "missing":
+            msg = "No Standard in ToDo"
+            self.log.warn(msg)
+            sys.exit(msg)
+
+        if producer == "inficon" and standard == "FRS5":
+            if type_head == "10Torr" or type_head == "100Torr":
+                u = np.full(len(p_list), 2.9e-5)
+            else:
+                u = np.full(len(p_list), 1.0e-4)
+         
         else: #MKS und andere
             u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
