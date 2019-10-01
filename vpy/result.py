@@ -133,6 +133,16 @@ class Result(Analysis):
         sec["RoomTemperatureUnit"] = unit
 
         return sec
+    
+    def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
+        t = ana.pick("Temperature", "frs5", "C")
+        t_mean = np.mean(t) - 3. +273.15
+        t_unc = 0.5
+        sec["EstimatedTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
+        sec["EstimatedTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 1)
+        sec["EstimatedTemperatureUnit"] = unit
+
+        return sec
 
     def gen_temperature_correction(self, ana, sec):
         p = ana.pick("Pressure", "cal", "Pa")
@@ -252,7 +262,8 @@ class Result(Analysis):
         if result_type == "pressure_balance":
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
-    
+            sec = self.gen_temperature_estimated_entry(ana, sec)
+
         if result_type == "rotary_piston_gauge":
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
