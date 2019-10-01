@@ -136,7 +136,7 @@ class Result(Analysis):
     
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
-        t_mean = np.mean(t) - 3. +273.15
+        t_mean = np.mean(t) - 4. + 273.15
         t_unc = 0.5
         sec["EstimatedTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
         sec["EstimatedTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 1)
