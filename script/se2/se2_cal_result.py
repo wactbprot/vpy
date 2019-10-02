@@ -89,8 +89,6 @@ def main():
 
                 p_tdo = conv * p_tdo
                 p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
-                print("******")
-                print(p_tdo_evis)
 
                 if len(p_tdo_evis) > 1:
                     e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
