@@ -24,19 +24,20 @@ class Cdg(Device):
         "1mbar": 100.0,
         "10mbar": 1000.0, 
         "100mbar": 10000.0,
+        "1000mbar": 100000.0
     }
     max_voltage = 10.0 # v
     type_head_cmr = { # Pa
         "1.1mbar": 110.0,
         "11mbar": 1100.0, 
         "110mbar": 11000.0,
-        "1100mbar": 110000.0,
+        "1100mbar": 110000.0
     }
     cmr_base_factor =  { # Pa
         "1.1mbar": 100.0,
         "11mbar": 1000.0, 
         "110mbar":  10000.0,
-        "1100mbar": 100000.0,
+        "1100mbar": 100000.0
     }
     cmr_offset = -1.0 # v
     cmr_factor = 0.125 # 1/v

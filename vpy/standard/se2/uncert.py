@@ -54,6 +54,7 @@ class Uncert:
 
         pr_idx = ana.doc["AuxValues"]["PressureRangeIndex"]
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
+        reject_offset_idx = ana.doc["AuxValues"]["RejectIndexOffset"]
 
         ex = ana.org["Calibration"]["Measurement"]["Values"]["Expansion"]["Value"]
         p_off = ana.pick("Pressure", "offset", "Pa")
@@ -68,9 +69,9 @@ class Uncert:
 
         offset_unc = np.full(len(p_off), np.nan)
         for i in pr_idx:
-            unc_old = np.std([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max])
-            unc = np.mean(np.abs(np.diff([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max])))
-            print("offset vector: " + str([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max]))
+            unc_old = np.std([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)])
+            unc = np.mean(np.abs(np.diff([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)])))
+            print("offset vector: " + str([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)]))
             print("offset std: " + str(unc_old))
             print("offset diff: " + str(unc))
             for j in i:

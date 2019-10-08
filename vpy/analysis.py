@@ -336,6 +336,25 @@ class Analysis(Document):
 
         return average_index, reject
 
+    def ask_for_reject_offset(self, average_index):
+        """ Asks for points to reject. removes this points from average_index.
+        Returns the resulting array of arrays.
+        """
+        
+        reject_offset = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('RejectIndexOffset', [])
+        
+        print("offset index before manual remove: " + str(self.flatten(average_index)))
+        text = input("Do you want to keep the current set of rejected offset points with indices: " + str(reject_offset) + " (type enter if ok)? ")
+        if text != "":
+            text = input("Type in new list: ").replace("[","").replace("]","").split(",")
+            try:
+                reject_offset = np.asarray(text, dtype=int).tolist()
+            except:
+                reject_offset = []
+            print("New list is: " + str(reject_offset))
+
+        return reject_offset        
+
     def ask_for_skip(self):
         """ Asks for points to skip. Returns the index array. 
         """

@@ -76,11 +76,13 @@ def main():
 
             if result_type == "se2_expansion_direct" and tdo.type == "error":
                 average_index, reject_index = ana.ask_for_reject(average_index=average_index)
+                reject_index_offset = ana.ask_for_reject_offset(average_index=average_index)
                 d = {
                     "AverageIndex": average_index,
                     "AverageIndexFlat": ana.flatten(average_index),
                     "PressureRangeIndex": pressure_range_index,
-                    "RejectIndex": reject_index
+                    "RejectIndex": reject_index,
+                    "RejectIndexOffset": reject_index_offset
                     }
 
                 p_tdo = np.asarray(tdo.doc["Values"]["Pressure"]["Value"], float)

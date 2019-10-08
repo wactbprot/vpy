@@ -44,6 +44,12 @@ class Display:
             y_err = np.take(offset_unc, i_idx)
             plt.errorbar(x, y, y_err, fmt='o')
         plt.semilogx(x, y, 'o')
+
+        x = np.take(pcal0, idx)
+        y = np.take(poff0, idx)
+        for i in range(len(idx)):
+            plt.text(x[i], y[i], idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
+                    
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')          
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
@@ -76,6 +82,12 @@ class Display:
             y_err = np.take(offset_unc, i_idx) / np.take(pcal0, i_idx) * 100
             plt.errorbar(x, y, y_err, fmt='o')
         plt.semilogx(x, y, 'o')
+
+        x = np.take(pcal0, idx)
+        y = np.take(poff0, idx)
+        for i in range(len(idx)):
+            plt.text(x[i], y[i], idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
+
         plt.title("offset stability")
         plt.grid(True, which='both', linestyle='-', linewidth=0.1, color='0.85')                
         plt.xlabel(r"$p_\mathrm{cal}$ (Pa)")
