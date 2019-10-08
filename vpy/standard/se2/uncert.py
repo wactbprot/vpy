@@ -32,8 +32,8 @@ class Uncert:
         u = np.full(len(p), np.nan)
         for i in range(len(p)):
             if ex[i] == "direkt":
-                u[i] = np.piecewise(p[i], [p[i] <= 8000.,  8000. < p[i]]
-                                        , [      0.00019,       0.00014])
+                u[i] = np.piecewise(p[i], [p[i] <= 950., 950. < p[i] <= 8000.,  8000. < p[i]]
+                                        , [     0.00035,              0.00019,       0.00014])
             else:
                 u[i] = np.piecewise(p[i], [p[i] <= 0.027, 0.027 < p[i] <= 0.3, 0.3 < p[i] <= 0.73, 0.73 < p[i] <= 9., p[i] > 9.]
                                         , [       0.0014,               0.001,            0.00092,           0.00086,   0.00075])
