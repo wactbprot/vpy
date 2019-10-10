@@ -422,6 +422,15 @@ class Analysis(Document):
             else: r1[i] = [i]
         r1 = list(r1.values())
 
+        if len(r1) > 1:
+            faktor = faktor / np.max(faktor)
+            rangemultiplier = np.full(len(faktor), "nothing")
+            for i in range(len(faktor)):
+                if np.isclose(1., faktor[i], rtol=1.e-3): rangemultiplier[i] = "X1"
+                elif np.isclose(0.1, faktor[i], rtol=1.e-3): rangemultiplier[i] = "X0.1"
+                elif np.isclose(0.01, faktor[i], rtol=1.e-3): rangemultiplier[i] = "X0.01"
+            ana.store("Range", "ind", rangemultiplier, "1")
+
         # p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
         # p_off = ana.pick("Pressure", "offset", self.pressure_unit)
         # p_cal_log10 = [int(i) for i in np.floor(np.log10(p_cal))]
