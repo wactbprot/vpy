@@ -44,7 +44,7 @@ def main():
             disp = Display(doc)
             disp.SE2_CDG_error_plot().show()
             disp.SE2_CDG_offset_abs().show()
-            #disp.SE2_CDG_offset_rel().show()
+            disp.SE2_CDG_offset_rel().show()
             disp.SE2_CDG_error_reject().show()
 
     else:

@@ -55,27 +55,32 @@ class Uncert:
         pr_idx = ana.doc["AuxValues"]["PressureRangeIndex"]
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
         reject_offset_idx = ana.doc["AuxValues"]["RejectIndexOffset"]
+        faktor = ana.pick_dict("Faktor", "faktor").get("Value")
 
         ex = ana.org["Calibration"]["Measurement"]["Values"]["Expansion"]["Value"]
         p_off = ana.pick("Pressure", "offset", "Pa")
         p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
         p_ind_corr_max = max([p_ind_corr[i] for i in av_idx])
 
-        # offset_unc = np.nanstd(p_off)
-        print(p_off)
-        print(p_ind_corr)
-        print(p_ind_corr_max)
+        print(pr_idx)
+        if len(pr_idx) > 1:
+            p_range_order_idx = np.argsort([np.mean(np.take(faktor, i)) for i in pr_idx])
+            pr_idx = np.take(pr_idx, p_range_order_idx).tolist() #make sure to start with the lowest range
         print(pr_idx)
 
         offset_unc = np.full(len(p_off), np.nan)
         for i in pr_idx:
-            unc_old = np.std([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)])
-            unc = np.mean(np.abs(np.diff([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)])))
-            print("offset vector: " + str([p_off[j] for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)]))
-            print("offset std: " + str(unc_old))
-            print("offset diff: " + str(unc))
-            for j in i:
-                offset_unc[j] = unc
+            ii = [j for j in i if ex[j]!="direkt" and p_ind_corr[j] < 0.5*p_ind_corr_max and (not j in reject_offset_idx)]
+            #falls weniger als 4 Werte, nehme Unsicherheit der nächstkleineren Range
+            if len(ii) > 3:
+                unc_old = np.std([p_off[j] for j in ii])
+                unc0 = unc = np.mean(np.abs(np.diff([p_off[j] for j in ii])))
+                print("offset vector: " + str([p_off[j] for j in ii]))
+                print("offset std: " + str(unc_old))
+                print("offset diff: " + str(unc))
+                for j in i: offset_unc[j] = unc
+            else:
+                for j in i: offset_unc[j] = unc0
 
         ana.store("Uncertainty", "offset", offset_unc / p_ind_corr, "1")
         ana.store("Uncertainty", "offset_abs", offset_unc, "Pa")
