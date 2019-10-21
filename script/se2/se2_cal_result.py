@@ -60,6 +60,7 @@ def main():
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
+            p_off = ana.pick('Pressure', 'offset', unit)
 
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
@@ -85,9 +86,8 @@ def main():
                     "RejectIndexOffset": reject_index_offset
                     }
 
-                p_tdo = np.asarray(tdo.doc["Values"]["Pressure"]["Value"], float)
-                p_tdo_unit = tdo.doc["Values"]["Pressure"]["Unit"]
-                conv = float(res.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa"))
+                p_tdo, p_tdo_unit = tdo.Pres.get_value_and_unit("target")
+                conv = res.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
 
                 p_tdo = conv * p_tdo
                 p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
@@ -99,38 +99,47 @@ def main():
                     d["Uvis"] = u_vis
                     d["VisUnit"] =vis_unit
 
-            if result_type == "expansion" and tdo.type == "sigma":
-                skip = ana.ask_for_skip()
-                d = {"SkipIndex":skip}
+                se2_uncert.u_PTB_rel(ana)
+                se2_uncert.make_offset_stability(ana)
+            
+                customer_device.repeat_uncert(ana) 
+                customer_device.device_uncert(ana) 
                 
-                p_ind_corr =  np.delete(p_ind_corr, skip)
-                p_cal =  np.delete(p_cal, skip)
-                u =  np.delete(u, skip)
+                ana.total_uncert() 
+                u = ana.pick("Uncertainty", "total_rel", "1")            
+            
+            print("ffffffffffffffffffffffffffffff")
+            print(tdo.type)
+            print(result_type)
+            if result_type == "se2_expansion_direct" and tdo.type == "sigma":
+                
+                
+                p_ind_corr =  np.take(p_ind_corr, ana.flatten(average_index))
+                p_cal =  np.take(p_cal, ana.flatten(average_index))
+                p_off =  np.take(p_off, ana.flatten(average_index))
+                d = {
+                    "AverageIndex": average_index,
+                    "AverageIndexFlat": ana.flatten(average_index)
+                }                
+                print(p_ind_corr)
+                print(p_cal)
+                #u =  np.delete(u, skip)
                 sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal=p_cal, cal_unit=unit, p_ind=p_ind_corr, ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
                 d["SigmaStd"] = sigma_std
 
-                aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
-                rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
-                d["OffsetMean"] = np.nanmean(rd)
-                d["OffsetStd"] = np.nanstd(rd)
-                d["OffsetUnit"] = rd_unit
+                # aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
+                # rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
+                # d["OffsetMean"] = np.nanmean(rd)
+                # d["OffsetStd"] = np.nanstd(rd)
+                # d["OffsetUnit"] = rd_unit
              
             ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
 
             maesurement_date = cl.Counter(doc["Calibration"]["Measurement"]["Values"]["Date"]["Value"]).most_common(1)[0][0]
             doc["Calibration"]["Measurement"]["Date"] = [{"Type": "measurement", "Value": [maesurement_date]}]
-              
-            se2_uncert.u_PTB_rel(ana)
-            se2_uncert.make_offset_stability(ana)
-            
-            customer_device.repeat_uncert(ana) 
-            customer_device.device_uncert(ana) 
-            
-            ana.total_uncert() 
-            u = ana.pick("Uncertainty", "total_rel", "1")
             
             res.make_measurement_data_section(ana, result_type=result_type)
 

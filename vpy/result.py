@@ -145,8 +145,14 @@ class Result(Analysis):
         return sec
 
     def gen_temperature_correction(self, ana, sec):
-        p = ana.pick("Pressure", "cal", "Pa")
-        if np.min(p) < 95:
+
+        p_tdo, p_tdo_unit = self.ToDo.Pres.get_value_and_unit("target")
+        conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
+
+        p_tdo = conv * p_tdo
+        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
+
+        if len(p_tdo_evis) > 1:
             sec["TemperatureCorrection"] = "yes"
         else:
             sec["TemperatureCorrection"] ="no"

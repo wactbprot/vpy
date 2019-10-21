@@ -84,7 +84,7 @@ class Display:
         plt.semilogx(x, y, 'o')
 
         x = np.take(pcal0, idx)
-        y = np.take(poff0, idx)
+        y = np.take(poff0 / pcal0 * 100, idx)
         for i in range(len(idx)):
             plt.text(x[i], y[i], idx[i], fontsize=10, horizontalalignment='center', verticalalignment='center')
 
