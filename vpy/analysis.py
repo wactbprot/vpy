@@ -411,25 +411,35 @@ class Analysis(Document):
         """
 
         faktor = ana.pick_dict("Faktor", "faktor").get("Value")
+        rn = ana.pick_dict("Range", "ind")
         idx = self.flatten(average_index)
 
         r1 = {}
-        for i in idx:
-            for j in r1:
-                if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
-                    r1[j].append(i)
-                    break
-            else: r1[i] = [i]
-        r1 = list(r1.values())
-
-        if len(r1) > 1:
-            faktor = faktor / np.max(faktor)
-            rangemultiplier = np.full(len(faktor), "nothing")
-            for i in range(len(faktor)):
-                if np.isclose(1., faktor[i], rtol=1.e-3): rangemultiplier[i] = "X1"
-                elif np.isclose(0.1, faktor[i], rtol=1.e-3): rangemultiplier[i] = "X0.1"
-                elif np.isclose(0.01, faktor[i], rtol=1.e-3): rangemultiplier[i] = "X0.01"
-            ana.store("Range", "ind", rangemultiplier, "1")
+        if rn != None:
+            rn = rn.get("Value")
+            for i in idx:
+                for j in r1:
+                    if rn[i] == rn[j]:
+                        r1[j].append(i)
+                        break
+                else: r1[i] = [i]
+            r1 = list(r1.values())
+        else:
+            for i in idx:
+                for j in r1:
+                    if np.isclose(faktor[i], faktor[j], rtol=1.e-3) and np.isfinite(faktor[j]):
+                        r1[j].append(i)
+                        break
+                else: r1[i] = [i]
+            r1 = list(r1.values())    
+            if len(r1) > 1:
+                faktor = faktor / np.max(faktor)
+                rangemultiplier = np.full(len(faktor), "nothing")
+                for i in range(len(faktor)):
+                    if np.isclose(1., faktor[i], rtol=1.e-3): rangemultiplier[i] = "X1"
+                    elif np.isclose(0.1, faktor[i], rtol=1.e-3): rangemultiplier[i] = "X0.1"
+                    elif np.isclose(0.01, faktor[i], rtol=1.e-3): rangemultiplier[i] = "X0.01"
+                ana.store("Range", "ind", rangemultiplier, "1")
 
         # p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
         # p_off = ana.pick("Pressure", "offset", self.pressure_unit)

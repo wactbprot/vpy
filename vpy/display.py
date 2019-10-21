@@ -119,7 +119,7 @@ class Display:
         error = error * self.Cons.get_conv(error_unit, "%")
         unc, unc_unit = result.get_value_and_unit('uncert_total_rel')
         unc = np.asarray(unc, dtype=float)
-        unc = unc * self.Cons.get_conv(unc_unit, "%")
+        unc = unc / 2 * self.Cons.get_conv(unc_unit, "%") #k=1
 
         para_val, covariance = curve_fit(model, pcal, error, bounds=([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf]), maxfev=1000)
         residuals = model(pcal, *para_val) - error

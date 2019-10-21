@@ -1,5 +1,5 @@
 """
-python script/se2/se2_cal_display.py --ids 'cal-2019-se2-kk-75026_0001' --db 'vl_db' --srv 'http://a73434:5984'
+python script/se2/se2_cal_display.py --db 'vl_db' --srv 'http://a73434:5984' --ids 'cal-2019-se2-kk-75026_0001'
 """
 import sys
 import os

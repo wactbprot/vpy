@@ -1,5 +1,5 @@
 """
-python script/se2/se2_cal_analysis.py --ids 'cal-2019-se2-kk-75026_0001'  --srv 'http://a73434:5984' -u -s
+python script/se2/se2_cal_analysis.py --srv 'http://a73434:5984' --ids 'cal-2019-se2-kk-75026_0001'  -u -s
 """
 import sys
 import os
@@ -71,6 +71,7 @@ def main():
             cal.pressure_indication_error(ana)
             #cal.measurement_time(ana)
             cal.faktor(ana)
+            cal.range(ana)
 
             io.save_doc(ana.build_doc())
            

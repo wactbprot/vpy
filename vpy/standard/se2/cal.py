@@ -15,6 +15,7 @@ class Cal(Se2):
         self.Pres = Pressure(doc)
         self.Date = Date(doc)
         self.CFaktor = Values(doc['Calibration']['Measurement']['Values']['faktor'])
+        self.Range = doc['Calibration']['Measurement']['Values'].get('Range',{})
         self.pressure_unit = "Pa"
         self.error_unit = "%"
 
@@ -104,6 +105,20 @@ class Cal(Se2):
             unit = "{to_unit}/{from_unit}".format(to_unit=p_cor_unit, from_unit=p_ind_unit)
         ana.store("Faktor", "faktor", cf, unit)
 
+    def range(self, ana):
+        """Simple translation from Measurement to Analysis
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        if self.Range != {}:
+            r = self.Range['Value']
+            ana.store("Range", "ind", r, "1")
+        else:
+            pass
 
     def pressure_offset(self, ana):
         """Simple translation from Measurement to Analysis
