@@ -21,8 +21,6 @@ class CalibrationObject(Document):
                     self.cob_by_name[cob.get("Name", "NoName")] = cob
             else:
                 self.cob_by_name[cobs.get("Name", "NoName")] = cobs
-        
-        if cobs:
             super().__init__(cobs)
         else:
             super().__init__({})

@@ -2,7 +2,6 @@ import sys
 import copy
 import json
 import numpy as np
-import sympy as sym
 
 from ...device.dmm import Dmm
 from ...device.cdg import InfCdg, Cdg

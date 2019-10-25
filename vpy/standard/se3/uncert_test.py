@@ -8,17 +8,6 @@ class TestUncertSE3(unittest.TestCase):
     def setUp(self):
         self.ana = Analysis({})
         self.uncert = UncertSe3({})
-
-    def test_repeat(self):
-        """tests the piecewise repeatability 
-        """
-        self.ana.store("Pressure", "ind_corr", [9, 10, 940, 960], "Pa" )
-        self.uncert.repeat(self.ana)
-        u = self.ana.pick("Uncertainty",  "repeat", "1" )
-        self.assertEqual(u[0], 0.0008)
-        self.assertEqual(u[1], 0.0008)
-        self.assertEqual(u[2], 0.0003)
-        self.assertEqual(u[3], 0.0001)
     
     def test_cmc(self):
         """tests the piecewise repeatability 
