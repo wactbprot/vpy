@@ -6,6 +6,7 @@ class Uncert(Se3):
 
     volume_unit = "cm^3"
     pressure_unit = "Pa"
+    temperature_unit = "K"
     rel_unit = "1"    
 
     def __init__(self, doc):
@@ -13,6 +14,12 @@ class Uncert(Se3):
 
     # -------------------------
     ## add volume
+    #
+    #
+    ## s(V_5):	(p_1 - p_r)/(p_0 - p_1)
+    ## s(p_0):	-V_5*(p_1 - p_r)/(p_0 - p_1)**2
+    ## s(p_1):	V_5/(p_0 - p_1) + V_5*(p_1 - p_r)/(p_0 - p_1)**2
+    ## s(p_r):	-V_5/(p_0 - p_1)
     # -------------------------
     def sens_volume_5(self, V_5, p_0, p_1, p_r):
         return (p_1 - p_r)/(p_0 - p_1)
@@ -73,6 +80,132 @@ class Uncert(Se3):
             sys.exit(msg)
 
         return self.sens_pressure_r(V_5, p_0, p_1, p_r) * u
+    
+    # -------------------------
+    ## calib. pressure
+    #
+    #
+    # s(p_fill):	F*T_after*T_before/(V_add/V_start + 1/f)
+    # s(p_rise):	1
+    # s(f):	F*T_after/T_before*p_fill/(f**2*(V_add/V_start + 1/f)**2)
+    # s(V_add):	-F*T_after/T_before*p_fill/(V_start*(V_add/V_start + 1/f)**2)
+    # s(V_start):	F*T_after/T_before*V_add*p_fill/(V_start**2*(V_add/V_start + 1/f)**2)
+    # s(T_after):	F/T_before*p_fill/(V_add/V_start + 1/f)
+    # s(T_before):	-F*T_after*p_fill/(T_before**2*(V_add/V_start + 1/f))
+    # s(F):	T_after/T_before*p_fill/(V_add/V_start + 1/f)
+    # -------------------------
+    def sens_pressure_fill(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return F*T_after/T_before/(V_add/V_start + 1/f)
+    
+    def sens_pressure_rise(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return np.array([1])
+    
+    def sens_expansion(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return F*T_after/T_before*p_fill/(f**2*(V_add/V_start + 1/f)**2)
+
+    def sens_volume_add(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return -F*T_after/T_before*p_fill/(V_start*(V_add/V_start + 1/f)**2)
+    
+    def sens_volume_start(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return F*T_after/T_before*V_add*p_fill/(V_start**2*(V_add/V_start + 1/f)**2)
+    
+    def sens_temperature_after(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return F/T_before*p_fill/(V_add/V_start + 1./f)
+
+    def sens_temperature_before(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return -F*T_after*p_fill/(T_before**2*(V_add/V_start + 1/f))
+    
+    def sens_corr_factors(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        return 	T_after/T_before*p_fill/(V_add/V_start + 1/f)
+    
+    def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        if p_fill_unit == self.rel_unit:
+            u = u_p_fill * p_fill
+        elif p_fill_unit == self.pressure_unit:
+            u = u_p_fill
+        else:
+            msg = "wrong unit in uncert.pressure_fill"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return self.sens_pressure_fill(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+
+    def pressure_rise(self, u_p_rise, p_rise_unit,  p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        if p_rise_unit == self.rel_unit:
+            u = u_p_rise * p_rise
+        elif p_rise_unit == self.pressure_unit:
+            u = u_p_rise
+        else:
+            msg = "wrong unit in uncert.pressure_rise"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return self.sens_pressure_rise(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+    
+    def expansion(self, u_f_abs, f_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        """
+        .. note::
+
+                unit for abs. and rel. uncert. both = 1 (!)
+        """
+        return self.sens_expansion(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u_f_abs
+
+    def volume_add(self, u_V_add, V_add_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        if V_add_unit == self.rel_unit:
+            u = u_V_add * V_add
+        elif V_add_unit == self.volume_unit:
+            u = u_V_add
+        else:
+            msg = "wrong unit in uncert.volume_add"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return self.sens_volume_add(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+    
+    def volume_start(self, u_V_start, V_start_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        if V_start_unit == self.rel_unit:
+            u = u_V_start * V_start
+        elif V_start_unit == self.volume_unit:
+            u = u_V_start
+        else:
+            msg = "wrong unit in uncert.volume_start"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return self.sens_volume_start(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+    
+
+    def temperature_after(self, u_T_after, T_after_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        if T_after_unit == self.rel_unit:
+            u = u_T_after * T_after
+        elif T_after_unit == self.temperature_unit:
+            u = u_T_after
+        else:
+            msg = "wrong unit in uncert.temperature_after"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return self.sens_volume_start(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+
+    def temperature_before(self, u_T_before, T_before_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        if T_before_unit == self.rel_unit:
+            u = u_T_before * T_before
+        elif T_before_unit == self.temperature_unit:
+            u = u_T_before
+        else:
+            msg = "wrong unit in uncert.temperature_after"
+            self.log.error(msg)
+            sys.exit(msg)
+
+        return self.sens_volume_start(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+    
+    def corr_factors(self, u_F_abs, F_unit,  p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
+        """
+        .. note::
+
+                unit for abs. and rel. uncert. both = 1 (!)
+        """
+        return self.sens_corr_factors(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u_F_abs
     
     # -------------------------
     ## vaclab cmc records
