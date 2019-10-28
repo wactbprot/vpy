@@ -26,7 +26,7 @@ class Uncert(Se3):
     def sens_pressure_r(self, V_5, p_0, p_1, p_r):
         return -V_5/(p_0 - p_1)
     
-    def uncert_volume_5(self, u_V_5, V_5_unit, V_5, p_0, p_1, p_r):
+    def volume_5(self, u_V_5, V_5_unit, V_5, p_0, p_1, p_r):
         if V_5_unit == "1":
             u = u_V_5 * V_5
         elif V_5_unit == self.volume_unit:
@@ -38,7 +38,7 @@ class Uncert(Se3):
 
         return self.sens_volume_5(V_5, p_0, p_1, p_r) * u
     
-    def uncert_pressure_0(self, u_p_0, p_0_unit, V_5, p_0, p_1, p_r):
+    def pressure_0(self, u_p_0, p_0_unit, V_5, p_0, p_1, p_r):
         if p_0_unit == self.rel_unit:
             u = u_p_0 * p_0
         elif p_0_unit == self.pressure_unit:
@@ -50,7 +50,7 @@ class Uncert(Se3):
 
         return self.sens_pressure_0(V_5, p_0, p_1, p_r) * u
     
-    def uncert_pressure_1(self, u_p_1, p_1_unit, V_5, p_0, p_1, p_r):
+    def pressure_1(self, u_p_1, p_1_unit, V_5, p_0, p_1, p_r):
         if p_1_unit == self.rel_unit:
             u = u_p_1 * p_1
         elif p_1_unit == self.pressure_unit:
@@ -62,7 +62,7 @@ class Uncert(Se3):
 
         return self.sens_pressure_1(V_5, p_0, p_1, p_r) * u
     
-    def uncert_pressure_r(self, u_p_r, p_r_unit, V_5, p_0, p_1, p_r):
+    def pressure_r(self, u_p_r, p_r_unit, V_5, p_0, p_1, p_r):
         if p_r_unit == self.rel_unit:
             u = u_p_r * p_r
         elif p_r_unit == self.pressure_unit:
