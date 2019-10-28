@@ -23,7 +23,7 @@ class Uncert(Se3):
     def sens_pressure_1(self, V_5, p_0, p_1, p_r):
         return V_5/(p_0 - p_1) + V_5*(p_1 - p_r)/(p_0 - p_1)**2
     
-    def sens_pressure_1(self, V_5, p_0, p_1, p_r):
+    def sens_pressure_r(self, V_5, p_0, p_1, p_r):
         return -V_5/(p_0 - p_1)
     
     def uncert_volume_5(self, u_V_5, V_5_unit, V_5, p_0, p_1, p_r):
