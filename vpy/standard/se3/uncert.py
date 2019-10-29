@@ -87,7 +87,7 @@ class Uncert(Se3):
     #
     # s(p_fill):	F*T_after*T_before/(V_add/V_start + 1/f)
     # s(p_rise):	1
-    # s(f):	F*T_after/T_before*p_fill/(f**2*(V_add/V_start + 1/f)**2)
+    # s(f):	F*T_after*p_fill/(T_before*f**2*(V_add/V_start + 1/f)**2)
     # s(V_add):	-F*T_after/T_before*p_fill/(V_start*(V_add/V_start + 1/f)**2)
     # s(V_start):	-F*T_after*p_fill/(T_before*V_start*(V_add/V_start + 1/f)**2)
     # s(T_after):	F/T_before*p_fill/(V_add/V_start + 1/f)
@@ -101,7 +101,7 @@ class Uncert(Se3):
         return np.array([1])
     
     def sens_expansion(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
-        return F*T_after/T_before*p_fill/(f**2*(V_add/V_start + 1/f)**2)
+        return F*T_after*p_fill/(T_before*f**2*(V_add/V_start + 1/f)**2)
 
     def sens_volume_add(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         return -F*T_after*p_fill/(T_before*V_start*(V_add/V_start + 1/f)**2)
