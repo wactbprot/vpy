@@ -263,15 +263,16 @@ class Se3(Standard):
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
         
         if 'Calibration' in doc:
-            # define model
-            #self.no_of_meas_points = len(self.Pres.get_value("target_pressure", "Pa"))
             no_points_indicator = self.Time.get_value("amt_fill", "ms")
             if no_points_indicator is None:
                 no_points_indicator = self.Time.get_value("amt_meas", "ms")
             self.no_of_meas_points = len(no_points_indicator)
-          
+        
+        ## Temperature device  
         if self.temp_dev_name in self.Cobj.cob_by_name:
             self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
+        
+        ## Filling pressure
         self.FillDevs =[]
         for d in self.fill_dev_names:
             if d in self.Cobj.cob_by_name:

@@ -118,6 +118,17 @@ class Uncert(Se3):
     def sens_corr_factors(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         return 	T_after/T_before*p_fill/(V_add/V_start + 1/f)
     
+    def group_normal_array(self, p, unit):
+        N = len(self.fill_dev_names)
+        u_arr = []
+
+        for i in range(N):
+            Dev = self.FillDevs[i]
+            u_i = Dev.get_total_uncert(p, unit, self.pressure_unit)
+            u_arr.append(u_i)
+
+        return u_arr
+
     def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if p_fill_unit == self.rel_unit:
             u = u_p_fill * p_fill
