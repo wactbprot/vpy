@@ -48,11 +48,20 @@ class Device(Document):
     
     def check_type_skip(self, uncert_dict, skip ):
         if skip is not None:
-            return self.check_skip(uncert_dict, "Source", skip)
+            return self.check_skip(uncert_dict, "UncertType", skip)
         else:
             return False
 
-    def get_total_uncert(self, meas, unit, runit, res=None, skip_source=None, skip_type=None):
+    def check_take_list(self, uncert_dict, type_list):
+        if type_list:
+            for t in type_list:
+                if uncert_dict["Type"].startswith(t):
+                    return True
+            return False
+        else:
+            return True ## all in case type_list is None
+
+    def get_total_uncert(self, meas, unit, runit, res=None, skip_source=None, skip_type=None, take_type_list=None):
         """ Collects all Uncertainty contrib. for the given
         measurant (m). Calculates the quadratic sum and returns
         a np.array of the length as of m. Contributions with a certain source 
@@ -89,7 +98,8 @@ class Device(Document):
                     continue
                 if self.check_type_skip(u_i, skip_type):
                     continue
-                
+                if not self.check_take_list(u_i, take_list):
+                    continue
                 u = np.full(N, np.nan)
                 idx = np.full(N, True)
 
