@@ -98,7 +98,7 @@ class Device(Document):
                     continue
                 if self.check_type_skip(u_i, skip_type):
                     continue
-                if not self.check_take_list(u_i, take_list):
+                if not self.check_take_list(u_i, take_type_list):
                     continue
                 u = np.full(N, np.nan)
                 idx = np.full(N, True)
