@@ -75,6 +75,13 @@ class Values(Document):
     def cnt_nan(self, d):
         return np.count_nonzero(~np.isnan(d))
 
+    def replace_zero_by_nan(self, a):
+        ## todo: way too clumsy
+        i = (a == 0.0)
+        if len(i) > 0:
+            a[i] = np.nan
+        return a
+
     def gatherby_idx(self, l, compare_function):
         groups = {}
         for i in range(len(l)):
@@ -170,7 +177,6 @@ class Values(Document):
 
         return self.round_to_sig_dig(val, n, scientific)
 
-
     def round_to_uncertainty_array(self, val_arr, unc_arr, n, scientific=False):
         """ Applies ``round_to_uncertainty`` to the array of values ``val_arr``
         using the array of uncertainties ``unc_arr``
@@ -200,6 +206,9 @@ class Values(Document):
                         ]) = 1/sqrt([1/a1^2 +1/b1^2, 1/a2^2 + 1/b2^2, 1/a2^2 + 1/b2^2 ])
         """
         return 1/np.sqrt(np.nansum(1/np.power(np.array(a), 2), axis=0))
+
+    def square_array_sum(self, a):
+        return np.sqrt(np.nansum(np.power(a, 2), axis=0))
 
     def weight_array_mean(self, x, w):
         """ Calculates  a w weighted array mean following 

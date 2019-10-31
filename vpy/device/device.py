@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from ..document import Document
 from ..constants import Constants
-from ..values import Pressure, AuxValues, Range
+from ..values import Values, Pressure, AuxValues, Range
 
 class Device(Document):
     """ Class should be complete with
@@ -11,6 +11,7 @@ class Device(Document):
 
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
+        self.Vals = Values({})
 
         if "CalibrationObject" in dev:
             dev = dev.get('CalibrationObject')
@@ -123,8 +124,8 @@ class Device(Document):
                     res.store("Uncertainty" , "{dev}_{u_type}".format(dev=self.name, u_type=u_type), u, return_unit, descr=u_descr)
 
             
-            uncert_total = self.square_array_sum(uncert_arr)
-            uncert_total = self.replace_zero_by_nan(uncert_total)
+            uncert_total = self.Vals.square_array_sum(uncert_arr)
+            uncert_total = self.Vals.replace_zero_by_nan(uncert_total)
 
             return uncert_total
         else:
@@ -140,15 +141,6 @@ class Device(Document):
                 return j 
         else:
             return j
-
-    def replace_zero_by_nan(self, a):
-        i = (a == 0.0)
-        if len(i) > 0:
-            a[i] = np.nan
-        return a
-
-    def square_array_sum(self, a):
-        return np.sqrt(np.nansum(np.power(a, 2), axis=0))
 
     def convert_range_to_meas_unit(self, meas_unit, range_unit, from_val, to_val):
         if from_val and to_val and meas_unit and range_unit:
