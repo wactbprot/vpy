@@ -61,7 +61,7 @@ class Device(Document):
         else:
             return True ## all in case type_list is None
 
-    def get_total_uncert(self, meas, unit, runit, res=None, skip_source=None, skip_type=None, take_type_list=None):
+    def get_total_uncert(self, meas_vec, meas_unit, return_unit, res=None, skip_source=None, skip_type=None, take_type_list=None):
         """ Collects all Uncertainty contrib. for the given
         measurant (m). Calculates the quadratic sum and returns
         a np.array of the length as of m. Contributions with a certain source 
@@ -75,21 +75,21 @@ class Device(Document):
         .. todo::
                 rewrite expression branch
 
-        :param meas: array containing values of the measurand the uncertainties are related to 
-        :type meas: np.array
+        :param meas_vec: array containing values of the measurand the uncertainties are related to 
+        :type meas_vec: np.array
 
-        :param unit: unit of the  measurand
-        :type unit: str
+        :param  meas_unit: unit of the  measurand
+        :type  meas_unit: str
 
-        :param runit: unit of the return values
-        :type runit: str
+        :param return_unit: unit of the return values
+        :type return_unit: str
 
         :returns: quadratic sum of uncertainties
         :rtype: np.array
         """
 
         uncert_arr = []
-        N = np.shape(meas)[0]
+       
 
         if "uncert_dict" in self.__dict__:
             u_dict = self.uncert_dict
@@ -98,65 +98,89 @@ class Device(Document):
                     continue
                 if self.check_type_skip(u_i, skip_type):
                     continue
-                if not self.check_take_list(u_i, take_list):
+                if not self.check_take_list(u_i, take_type_list):
                     continue
-                u = np.full(N, np.nan)
-                idx = np.full(N, True)
 
-                if "From" in u_i and "To" in u_i and "RangeUnit" in u_i:
-                    range_conv = self.Const.get_conv(u_i.get('RangeUnit'), unit)
-                    if unit == "K":
-                        f = float(u_i.get('From')) + range_conv
-                        t = float(u_i.get('To')) + range_conv
-                    else:
-                        f = float(u_i.get('From')) * range_conv
-                        t = float(u_i.get('To')) * range_conv
+                u = np.full(np.shape(meas_vec)[0], np.nan)
+                u_val = u_i.get('Value', np.nan)
+                range_unit = u_i.get('RangeUnit')
+                from_val = u_i.get('From')
+                to_val = u_i.get('To')
+                u_unit = u_i.get('Unit')
+                u_type = u_i.get('Type')
+                u_descr = u_i.get("Description")
 
-                    i = ((meas > f) & (meas < t))
-                    if len(i) > 0:
-                        idx = i
-
-                if "Value" in u_i:
-                    u[idx] = float(u_i.get('Value'))
-
-                if "Expression" in u_i:
-                    # untested
-                    #fn = sym.lambdify(self.symb, u_i["Expression"], "numpy")
-                    # check units before use meas
-                    #u = fn(meas)
-                    pass
-
-                if "Unit" in u_i:
-                    if u_i.get('Unit') != "1":
-                        conv = self.Const.get_conv(u_i.get('Unit'), runit)
-                        if unit == "C" and runit == "K":
-                            u = u + conv
-                        else:
-                            u = u * conv
-                    else:
-                        conv = self.Const.get_conv(unit, runit)
-                        if unit == "C" and runit == "K":
-                            u = (u + conv) * meas
-                        else:
-                            u = u * meas * conv
-
-                self.log.debug("Found type {}, append {} to uncertainty array".format(u_i.get('Type'), u))
+                from_val, to_val = self.convert_range_to_meas_unit(meas_unit, range_unit, from_val, to_val)
+                range_index = self.get_match_index(meas_vec, from_val, to_val)
+                u[range_index] = float(u_val)
+                
+                u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
+                
                 uncert_arr.append( u )
+                self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
+                
                 if res is not None:
-                    uncert_type = "{dev}_{t}".format(dev=self.name, t=u_i.get('Type'))
-                    res.store("Uncertainty" , uncert_type, u, runit, descr=u_i.get("Description"))
+                    res.store("Uncertainty" , "{dev}_{u_type}".format(dev=self.name, u_type=u_type), u, return_unit, descr=u_descr)
 
-            uncert_total = np.sqrt(np.nansum(np.power(uncert_arr, 2), axis=0))
-
-            i_nan = (uncert_total == 0.0)
-            if len(i_nan) > 0:
-                uncert_total[i_nan] = np.nan
+            
+            uncert_total = self.square_array_sum(uncert_arr)
+            uncert_total = self.replace_zero_by_nan(uncert_total)
 
             return uncert_total
         else:
             sys.exit("No uncertainty dict available")
 
-    
+    def get_match_index(self, meas_vec, from_val, to_val):
+        j = np.full(np.shape(meas_vec)[0], True)
+        if from_val and to_val:
+            i = ((meas_vec > from_val) & (meas_vec < to_val))
+            if len(i) > 0:
+                return i
+            else:
+                return j 
+        else:
+            return j
+
+    def replace_zero_by_nan(self, a):
+        i = (a == 0.0)
+        if len(i) > 0:
+            a[i] = np.nan
+        return a
+
+    def square_array_sum(self, a):
+        return np.sqrt(np.nansum(np.power(a, 2), axis=0))
+
+    def convert_range_to_meas_unit(self, meas_unit, range_unit, from_val, to_val):
+        if from_val and to_val and meas_unit and range_unit:
+            range_conv = self.Const.get_conv(from_unit=range_unit, to_unit=meas_unit)
+            if meas_unit == "K":
+                f = float(from_val) + range_conv
+                t = float(to_val) + range_conv
+            else:
+                f = float(from_val) * range_conv
+                t = float(to_val) * range_conv
+            return f, t
+        else:
+            return None, None
+
+    def convert_to_return_unit(self, u, u_unit, meas_vec, meas_unit, return_unit):
+        if u_unit and meas_unit and return_unit:
+            if u_unit != "1":
+                conv = self.Const.get_conv(from_unit=u_unit, to_unit=return_unit)
+                if u_unit == "C" and return_unit == "K":
+                    u = u + conv
+                else:
+                    u = u * conv
+            else:
+                conv = self.Const.get_conv(from_unit=meas_unit, to_unit=return_unit)
+                if meas_unit == "C" and return_unit == "K":
+                    u = (u + conv) * meas_vec
+                else:
+                    u = u * meas_vec * conv
+            return u, return_unit
+        else:
+            sys.exit("No uncertainty unit")
+
     def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)

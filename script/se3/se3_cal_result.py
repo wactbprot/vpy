@@ -59,7 +59,7 @@ def main():
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
             
             if "Uncertainty" in customer_object:
-                u_dev = customer_device.get_total_uncert(meas=p_ind_corr, unit="Pa", runit="Pa", res=ana, skip_source="standard")
+                u_dev = customer_device.get_total_uncert(meas_vec=p_ind_corr, meas_unit="Pa", return_unit="Pa", res=ana, skip_source="standard")
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
                 customer_device.offset_uncert(ana) 
