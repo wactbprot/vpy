@@ -10,7 +10,6 @@ class Uncert(Se3):
     rel_unit = "1"    
 
     def __init__(self, doc):
-        self.Vals = Values({})
         super().__init__(doc)
 
     # -------------------------

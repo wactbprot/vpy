@@ -1,6 +1,7 @@
 import copy
 from ..document import Document
 from ..constants import Constants
+from ..values import Values
 from ..todo import ToDo
 from ..calibration_devices import CalibrationObject
 
@@ -26,7 +27,8 @@ class Standard(Document):
 
         self.Cons = Constants(doc)
         self.Cobj = CalibrationObject(doc)
-
+        self.Vals = Values({}) ## provides many usful functions
+        
         if 'State' in doc:
             doc = doc['State']
 
