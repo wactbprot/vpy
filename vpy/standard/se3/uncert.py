@@ -21,19 +21,19 @@ class Uncert(Se3):
     ## s(p_1):	V_5/(p_0 - p_1) + V_5*(p_1 - p_r)/(p_0 - p_1)**2
     ## s(p_r):	-V_5/(p_0 - p_1)
     # -------------------------
-    def sens_volume_5(self, V_5, p_0, p_1, p_r):
+    def volume_add_sens_volume_5(self, V_5, p_0, p_1, p_r):
         return (p_1 - p_r)/(p_0 - p_1)
     
-    def sens_pressure_0(self, V_5, p_0, p_1, p_r):
+    def volume_add_sens_pressure_0(self, V_5, p_0, p_1, p_r):
         return -V_5*(p_1 - p_r)/(p_0 - p_1)**2
 
-    def sens_pressure_1(self, V_5, p_0, p_1, p_r):
+    def volume_add_sens_pressure_1(self, V_5, p_0, p_1, p_r):
         return V_5/(p_0 - p_1) + V_5*(p_1 - p_r)/(p_0 - p_1)**2
     
-    def sens_pressure_r(self, V_5, p_0, p_1, p_r):
+    def volume_add_sens_pressure_r(self, V_5, p_0, p_1, p_r):
         return -V_5/(p_0 - p_1)
     
-    def volume_5(self, u_V_5, V_5_unit, V_5, p_0, p_1, p_r):
+    def volume_add_volume_5(self, u_V_5, V_5_unit, V_5, p_0, p_1, p_r):
         if V_5_unit == "1":
             u = u_V_5 * V_5
         elif V_5_unit == self.volume_unit:
@@ -43,9 +43,9 @@ class Uncert(Se3):
             self.log.error(msg)
             sys.exit(msg)
 
-        return self.sens_volume_5(V_5, p_0, p_1, p_r) * u
+        return self.volume_add_sens_volume_5(V_5, p_0, p_1, p_r) * u
     
-    def pressure_0(self, u_p_0, p_0_unit, V_5, p_0, p_1, p_r):
+    def volume_add_pressure_0(self, u_p_0, p_0_unit, V_5, p_0, p_1, p_r):
         if p_0_unit == self.rel_unit:
             u = u_p_0 * p_0
         elif p_0_unit == self.pressure_unit:
@@ -55,9 +55,9 @@ class Uncert(Se3):
             self.log.error(msg)
             sys.exit(msg)
 
-        return self.sens_pressure_0(V_5, p_0, p_1, p_r) * u
+        return self.volume_add_sens_pressure_0(V_5, p_0, p_1, p_r) * u
     
-    def pressure_1(self, u_p_1, p_1_unit, V_5, p_0, p_1, p_r):
+    def volume_add_pressure_1(self, u_p_1, p_1_unit, V_5, p_0, p_1, p_r):
         if p_1_unit == self.rel_unit:
             u = u_p_1 * p_1
         elif p_1_unit == self.pressure_unit:
@@ -67,9 +67,9 @@ class Uncert(Se3):
             self.log.error(msg)
             sys.exit(msg)
 
-        return self.sens_pressure_1(V_5, p_0, p_1, p_r) * u
+        return self.volume_add_sens_pressure_1(V_5, p_0, p_1, p_r) * u
     
-    def pressure_r(self, u_p_r, p_r_unit, V_5, p_0, p_1, p_r):
+    def volume_add_pressure_r(self, u_p_r, p_r_unit, V_5, p_0, p_1, p_r):
         if p_r_unit == self.rel_unit:
             u = u_p_r * p_r
         elif p_r_unit == self.pressure_unit:
@@ -79,7 +79,7 @@ class Uncert(Se3):
             self.log.error(msg)
             sys.exit(msg)
 
-        return self.sens_pressure_r(V_5, p_0, p_1, p_r) * u
+        return self.volume_add_sens_pressure_r(V_5, p_0, p_1, p_r) * u
     
     # -------------------------
     ## calib. pressure
@@ -131,6 +131,18 @@ class Uncert(Se3):
             u_arr.append(u_i)
         
         return u_arr
+
+    def contrib_pressure_fill(self, p_fill, p_fill_unit):
+        w =  np.power(self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ]), -1)
+        sum_w = np.nansum(w, axis = 0)
+
+        u_p_cal_abs = self.Vals.square_array_sum(u_p_cal_abs)
+        u_p_ind_abs = self.Vals.square_array_sum(np.divide(np.multiply(w, u_p_ind_abs), sum_w))
+        u_p_fill_abs = self.Vals.square_array_sum(np.divide(np.multiply(w, u_p_fill_abs), sum_w))
+
+        u_total_w = np.sqrt(np.power(u_p_cal_abs, 2) +  np.power(u_p_ind_abs, 2) + np.power(u_p_fill_abs, 2))
+
+        return u_total_w
 
     def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if p_fill_unit == self.rel_unit:

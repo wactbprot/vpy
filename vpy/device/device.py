@@ -286,7 +286,7 @@ class Device(Document):
         else: #MKS und andere
             u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
-
+        print(u)
         ana.store("Uncertainty", "repeat", u, "1")
 
     def device_uncert(self, ana):

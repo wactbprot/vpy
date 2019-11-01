@@ -53,7 +53,10 @@ class ToDo(Document):
     def get_min_max_pressure(self):
         if "Pres" in dir(self):
             target_pressures = self.Pres.get_value("target", self.pressure_unit)
-            return float(target_pressures[0]), float(target_pressures[-1]),  self.pressure_unit
+            if len(target_pressures) > 0:
+                return float(target_pressures[0]), float(target_pressures[-1]),  self.pressure_unit
+            else:
+                 return np.nan, np.nan, self.pressure_unit
         else:
             self.log.error("Not a pressure todo")
             return None, None, None
