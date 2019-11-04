@@ -133,7 +133,7 @@ class Uncert(Se3):
         return u_arr
 
     def contrib_temperature_after(self, T, T_unit):
-         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+        """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
         """
         N = len(self.vessel_temp_types)
@@ -145,7 +145,7 @@ class Uncert(Se3):
         u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.power(1/N*u_T_ch_cal, 2) + np.power(1/N*u_T_ch, 2))
 
         return u_total
-        
+
     def contrib_pressure_fill(self, p_fill, p_fill_unit):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
