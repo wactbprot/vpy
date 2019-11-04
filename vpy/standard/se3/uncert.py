@@ -132,6 +132,20 @@ class Uncert(Se3):
         
         return u_arr
 
+    def contrib_temperature_after(self, T, T_unit):
+         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+        (http://a73435.berlin.ptb.de:82/lab)
+        """
+        N = len(self.vessel_temp_types)
+
+        u_T_ptb = TDev.get_total_uncert(T, T_unit, self.pressure_unit, take_type_list=["u1"])
+        u_T_ch_cal = TDev.get_total_uncert(T, T_unit, self.pressure_unit, take_type_list=["u2", "u3", "u6"])
+        u_T_ch = TDev.get_total_uncert(T, T_unit, self.pressure_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
+
+        u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.power(1/N*u_T_ch_cal, 2) + np.power(1/N*u_T_ch, 2))
+
+        return u_total
+        
     def contrib_pressure_fill(self, p_fill, p_fill_unit):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
@@ -142,6 +156,7 @@ class Uncert(Se3):
 
         w =  np.power(self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ]), -1)
         sum_w = np.nansum(w, axis = 0)
+        
         u_p_cal_abs = self.Vals.square_array_sum(u_p_cal_abs)
         u_p_ind_abs = self.Vals.square_array_sum(np.divide(np.multiply(w, u_p_ind_abs), sum_w))
         u_p_fill_abs = self.Vals.square_array_sum(np.divide(np.multiply(w, u_p_fill_abs), sum_w))
