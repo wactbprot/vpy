@@ -133,9 +133,9 @@ class Uncert(Se3):
         return u_arr
 
     def contrib_pressure_fill(self, p_fill, p_fill_unit):
-        u_p_cal_abs = uncert.group_normal_array(val_p_fill, "Pa", take_type_list=["u1"])
-        u_p_fill_abs = uncert.group_normal_array(val_p_fill, "Pa", take_type_list=["u2", "u3", "u4", "u5", "u6" ])
-        u_p_ind_abs = uncert.group_normal_array(val_p_fill, "Pa", take_type_list=["u2", "u4", "u5", "u6" ])
+        u_p_cal_abs = self.group_normal_array(val_p_fill, "Pa", take_type_list=["u1"])
+        u_p_fill_abs = self.group_normal_array(val_p_fill, "Pa", take_type_list=["u2", "u3", "u4", "u5", "u6" ])
+        u_p_ind_abs = self.group_normal_array(val_p_fill, "Pa", take_type_list=["u2", "u4", "u5", "u6" ])
 
         w =  np.power(self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ]), -1)
         sum_w = np.nansum(w, axis = 0)
