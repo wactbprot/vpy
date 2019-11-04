@@ -133,6 +133,9 @@ class Uncert(Se3):
         return u_arr
 
     def contrib_pressure_fill(self, p_fill, p_fill_unit):
+        """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+        (http://a73435.berlin.ptb.de:82/lab)
+        """
         u_p_cal_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1"])
         u_p_fill_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u3", "u4", "u5", "u6" ])
         u_p_ind_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u4", "u5", "u6" ])
