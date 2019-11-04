@@ -138,9 +138,9 @@ class Uncert(Se3):
         """
         N = len(self.vessel_temp_types)
 
-        u_T_ptb = TDev.get_total_uncert(T, T_unit, self.pressure_unit, take_type_list=["u1"])
-        u_T_ch_cal = TDev.get_total_uncert(T, T_unit, self.pressure_unit, take_type_list=["u2", "u3", "u6"])
-        u_T_ch = TDev.get_total_uncert(T, T_unit, self.pressure_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
+        u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"])
+        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"])
+        u_T_ch = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
 
         u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.power(1/N*u_T_ch_cal, 2) + np.power(1/N*u_T_ch, 2))
 
