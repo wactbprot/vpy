@@ -137,15 +137,43 @@ class Uncert(Se3):
         (http://a73435.berlin.ptb.de:82/lab)
         
         
-        The contributions u_T_ch_cal u_T_ch (here u) appear N times so that: 1/N * sqrtN * u = u
+        The contributions u_T_ch_cal u_T_ch (here u) appear N times so that:  sqrt 1/N^2 * N * u 
         """
         N = len(self.vessel_temp_types) 
 
         u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"])
-        u_T_ch_cal = np.sqrt(N * self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"]))/N
-        u_T_ch = np.sqrt(N * self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"]))/N
+        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"])
+        u_T_ch = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
 
-        u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.power(u_T_ch_cal, 2) + np.power(u_T_ch, 2))
+        ## sqrt 1/N^2 * N * u
+        u_total = np.sqrt(np.power(u_T_ptb, 2) +  1/N*np.power(u_T_ch_cal, 2) + 1/N*np.power(u_T_ch, 2))
+
+        return u_total
+
+    def contrib_temperature_volume_start(self, T, T_unit, f_name):
+        """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+        (http://a73435.berlin.ptb.de:82/lab)
+       
+        """
+        N = np.full(len(T), np.nan)
+
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+        
+        if len(i_s) > 0:
+            N[i_s] = len(self.small_temp_types) 
+        if len(i_m) > 0:
+            N[i_m] = len(self.medium_temp_types) 
+        if len(i_l) > 0:
+            N[i_l] = len(self.large_temp_types) 
+
+        u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"])
+        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"])
+        u_T_ch =  self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
+
+        ## sqrt 1/N^2 * N * u
+        u_total = np.sqrt(np.power(u_T_ptb, 2) +  1/N*np.power(u_T_ch_cal, 2) + 1/N*np.power(u_T_ch, 2))
 
         return u_total
 
