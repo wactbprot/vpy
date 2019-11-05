@@ -137,12 +137,13 @@ class Uncert(Se3):
         (http://a73435.berlin.ptb.de:82/lab)
         
         
-        The contributions u_T_ch_cal u_T_ch (here u) appear N times so that: 1/N * N * u = u
+        The contributions u_T_ch_cal u_T_ch (here u) appear N times so that: 1/N * sqrtN * u = u
         """
+        N = len(self.vessel_temp_types) 
 
         u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"])
-        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"])
-        u_T_ch = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
+        u_T_ch_cal = np.sqrt(N * self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"]))/N
+        u_T_ch = np.sqrt(N * self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"]))/N
 
         u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.power(u_T_ch_cal, 2) + np.power(u_T_ch, 2))
 
