@@ -14,12 +14,6 @@ class Uncert(Se3):
 
     # -------------------------
     ## add volume
-    #
-    #
-    ## s(V_5):	(p_1 - p_r)/(p_0 - p_1)
-    ## s(p_0):	-V_5*(p_1 - p_r)/(p_0 - p_1)**2
-    ## s(p_1):	V_5/(p_0 - p_1) + V_5*(p_1 - p_r)/(p_0 - p_1)**2
-    ## s(p_r):	-V_5/(p_0 - p_1)
     # -------------------------
     def volume_add_sens_volume_5(self, V_5, p_0, p_1, p_r):
         return (p_1 - p_r)/(p_0 - p_1)
@@ -83,16 +77,6 @@ class Uncert(Se3):
     
     # -------------------------
     ## calib. pressure
-    #
-    #
-    # s(p_fill):	F*T_after*T_before/(V_add/V_start + 1/f)
-    # s(p_rise):	1
-    # s(f):	F*T_after*p_fill/(T_before*f**2*(V_add/V_start + 1/f)**2)
-    # s(V_add):	-F*T_after/T_before*p_fill/(V_start*(V_add/V_start + 1/f)**2)
-    # s(V_start):	-F*T_after*p_fill/(T_before*V_start*(V_add/V_start + 1/f)**2)
-    # s(T_after):	F/T_before*p_fill/(V_add/V_start + 1/f)
-    # s(T_before):	-F*T_after*p_fill/(T_before**2*(V_add/V_start + 1/f))
-    # s(F):	T_after/T_before*p_fill/(V_add/V_start + 1/f)
     # -------------------------
     def sens_pressure_fill(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         return F*T_after/T_before/(V_add/V_start + 1/f)
