@@ -173,7 +173,7 @@ class Uncert(Se3):
         u_T_ch =  self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
 
         ## sqrt 1/N^2 * N * u
-        u_total = np.sqrt(np.power(u_T_ptb, 2) +  1/N*np.power(u_T_ch_cal, 2) + 1/N*np.power(u_T_ch, 2))
+        u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.divide(np.power(u_T_ch_cal, 2),N) + np.divide(np.power(u_T_ch, 2),N))
 
         return u_total
 
