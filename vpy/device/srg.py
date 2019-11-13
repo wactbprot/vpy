@@ -118,22 +118,11 @@ class Srg(Device):
         else:
             self.log.error("units don't match!")
             return None, None, None
-          
         if not len(x) == len(y):
             self.log.error("length don't match!")
             return None, None, None
-            
-        n = len(x)
-        avr_x = np.sum(x)/n
-        avr_y = np.sum(y)/n
-
-        m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
-        b = avr_y - m * avr_x
         
-        var_s = np.sum((y - b - m * x)**2)/(n-2)
-        
-        var_b = var_s * np.sum(x**2) / (n * np.sum((x - avr_x)**2))
-        var_m = var_s * 1.0 / np.sum((x - avr_x)**2)
+        m, b, var_m, var_b = self.Vals.lin_reg(x, y)
 
         sens_b = (m / b**2)
         sens_m = (1.0 / b)

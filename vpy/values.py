@@ -216,6 +216,25 @@ class Values(Document):
         """
         return np.nansum(np.array(x)/np.power(np.array(w), 2), axis=0)/np.nansum(1/np.power(np.array(w), 2), axis=0)
 
+    def lin_reg(self, x, y):
+        """ Follows:
+         https://de.wikipedia.org/wiki/Lineare_Einfachregression
+         """
+        n = len(x)
+        
+        avr_x = np.sum(x)/n
+        avr_y = np.sum(y)/n
+
+        m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
+        b = avr_y - m * avr_x
+        
+        var_s = np.sum((y - b - m * x)**2)/(n-2)
+        
+        var_b = var_s * np.sum(x**2) / (n * np.sum((x - avr_x)**2))
+        var_m = var_s * 1.0 / np.sum((x - avr_x)**2)
+
+        return m, b, var_m, var_b
+
 class Expansion(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Expansion', quant)
