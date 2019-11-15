@@ -519,8 +519,6 @@ class Cal(Se3):
         p = p * self.Cons.get_conv(from_unit=p_unit, to_unit="Pa")
 
         M = self.Cons.get_value("molWeight_{gas}".format(gas=gas), "kg/mol")
-        print(M)
-        print("molWeight_{gas}".format(gas=gas))
         R = self.Cons.get_value("R","Pa m^3/mol/K" )
         T = self.Cons.get_value("referenceTemperature", "K")
         g = self.Cons.get_value("g", "m/s^2")
