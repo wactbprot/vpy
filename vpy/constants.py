@@ -48,12 +48,12 @@ class Constants(Document):
     def __init__(self, doc):
         const = None
         if 'Calibration' in doc:
-            const = doc['Calibration']
+            doc = doc['Calibration']
 
         if 'State' in doc:
-            const = doc['State']
+            doc = doc['State']
 
-        if 'Constants' in const:
+        if 'Constants' in doc:
             const = const['Constants'] 
 
         if const:
