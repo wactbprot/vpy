@@ -53,7 +53,7 @@ class Constants(Document):
         if 'State' in doc:
             const = doc['State']
 
-        if const and 'Constants' in const:
+        if 'Constants' in const:
             const = const['Constants'] 
 
         if const:
