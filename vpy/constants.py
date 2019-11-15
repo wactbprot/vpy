@@ -54,7 +54,7 @@ class Constants(Document):
             doc = doc['State']
 
         if 'Constants' in doc:
-            const = const['Constants'] 
+            const = doc['Constants'] 
 
         if const:
             super().__init__(const)
