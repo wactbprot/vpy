@@ -495,7 +495,37 @@ class Cal(Se3):
         res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
         res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 
-  
+    def pressure_delta_height(self, p, p_unit, f_name, gas="N2"):
+        """ Follows QSE-SE3-19-3 at http://a73435.berlin.ptb.de:82/lab?
+        """
+        n = np.shape(p)[1] 
+        dp = np.full(n, np.nan)
+        h_i = np.full(n, np.nan)
+
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+
+        if np.shape(i_s)[1] > 0:
+            h_i[i_s] = self.get_value("h_s", "m")
+
+        if np.shape(i_m^)[1] > 0:
+            h_i[i_m] = self.get_value("h_m", "m")
+
+        if np.shape(i_l)[1] > 0:
+            h_i[i_l] = self.get_value("h_l", "m")
+
+        p = p * self.Cons.get_conv(from_unit=p_unit, to_unit="Pa")
+
+        M = self.Cons.get_value("molWeight_{gas}".format(gas=gas), "kg/mol")
+        R = self.Cons.get_value("R","Pa m^3/mol/K" )
+        T = self.Cons.get_value("referenceTemperature", "K")
+        g = self.Cons.get_value("g", "m/s^2")
+
+        dp = - h_i * p * M * g /R / T
+
+        return dp * self.Cons.get_conv(from_unit="Pa", to_unit=self.unit)
+
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
         tem_arr = self.Temp.get_array(prefix, channels, sufix, "C")
         cor_arr = self.TDev.get_array(prefix_corr, channels, sufix_corr, "K")

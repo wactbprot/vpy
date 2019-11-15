@@ -27,7 +27,7 @@ class Standard(Document):
 
         self.Cons = Constants(doc)
         self.Cobj = CalibrationObject(doc)
-        self.Vals = Values({}) ## provides many usful functions
+        self.Vals = Values({}) ## provides many useful functions
         
         if 'State' in doc:
             doc = doc['State']
