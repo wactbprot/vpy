@@ -509,7 +509,7 @@ class Cal(Se3):
         if np.shape(i_s)[1] > 0:
             h_i[i_s] = self.get_value("h_s", "m")
 
-        if np.shape(i_m^)[1] > 0:
+        if np.shape(i_m)[1] > 0:
             h_i[i_m] = self.get_value("h_m", "m")
 
         if np.shape(i_l)[1] > 0:
