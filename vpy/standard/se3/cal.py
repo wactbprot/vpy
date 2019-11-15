@@ -498,7 +498,7 @@ class Cal(Se3):
     def pressure_delta_height(self, p, p_unit, f_name, gas="N2"):
         """ Follows QSE-SE3-19-3 at http://a73435.berlin.ptb.de:82/lab?
         """
-        n = np.shape(p)[1] 
+        n = len(p) 
         dp = np.full(n, np.nan)
         h_i = np.full(n, np.nan)
 
