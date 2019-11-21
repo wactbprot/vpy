@@ -197,9 +197,9 @@ class Cdg(Device):
     def error(self, p_cal, p_ind, p_unit):
         return np.divide(p_ind, p_cal) - 1.0, '1'
 
-    def cal_interpol(self, pressure, error, uncertainty):
+    def cal_interpol(self, pressure, error):
         """Calculates a interpolation vector for the relative
-        error of indication and the uncertainty.
+        error of indication.
 
         This is done as follows:
             # conv_smooth ( --> no longer!, absorbs e-characteristics!) replaced by:
@@ -213,38 +213,33 @@ class Cdg(Device):
         # smooth
         ## p = self.conv_smooth(pressure)
         ## e = self.conv_smooth(error)       
-        ## u = self.conv_smooth(uncertainty)
         p = pressure
         e = error
-        u = uncertainty
 
         ## mean of mult meas. points
         idx = self.val.gatherby_idx(p, self.val.diff_less(0.05))
         p = [np.mean(p[i]) for i in idx]
         e = [np.mean(e[i]) for i in idx]
-        u = [np.mean(u[i]) for i in idx]
         
         # extrapolate
-        p, e, u = self.fill_to_dev_borders(p, e, u)
+        p, e = self.fill_to_dev_borders(p, e, u)
 
         #interpolate function
         f_e = self.interp_function(p, e)
-        f_u = self.interp_function(p, u)
         
         # default values
         p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
         
         # cal. interpol on default values
         e_default = f_e( p_default )
-        u_default = f_u( p_default )
 
-        return  p_default, e_default, u_default
+        return  p_default, e_default
     
     def get_dmin_idx(self, d):
         m = np.amin(d)
         return np.where(d == m)[0][0]
 
-    def fill_to_dev_borders(self, p, e, u):
+    def fill_to_dev_borders(self, p, e):
         """Use the first/last value in the array of e and u
         as an extrapolation to the devive borders. Reduce the start/end
         value of p by `self.range_extend` to overcome possible intervall issues.
@@ -254,20 +249,17 @@ class Cdg(Device):
         i = self.get_dmin_idx(d[0])
         
         extr_e_low = np.array([e[i]])
-        extr_u_low = np.array([u[i]])
 
         extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
         d = extr_p_high - p
         j = self.get_dmin_idx(d[0])
        
         extr_e_high = np.array([e[j]])
-        extr_u_high = np.array([u[j]])
 
         ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
         ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
-        ret_u = np.concatenate( (extr_u_low, u, extr_u_high), axis=None)
         
-        return ret_p, ret_e, ret_u
+        return ret_p, ret_e
 
     def conv_smooth(self, data, n=3):
         """Generates smooth data by a convolution.
@@ -276,9 +268,9 @@ class Cdg(Device):
         """
         
         weights = np.ones(n) / n
+        
         start_array = np.array([np.nanmean(data[0:n])])
         med_array = np.convolve(data, weights, mode='valid')
-     
         end_array = np.array([np.nanmean(data[-n-1:-1])])
 
         return np.concatenate((start_array, med_array, end_array ))
