@@ -213,8 +213,8 @@ class Cdg(Device):
         # smooth
         ## p = self.conv_smooth(pressure)
         ## e = self.conv_smooth(error)       
-        ## p = pressure
-        ## e = error
+        p = pressure
+        e = error
 
         ## mean of mult meas. points
         idx = self.val.gatherby_idx(p, self.val.diff_less(0.2))
