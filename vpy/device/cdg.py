@@ -222,7 +222,7 @@ class Cdg(Device):
         e = [np.mean(e[i]) for i in idx]
         
         # extrapolate
-        p, e = self.fill_to_dev_borders(p, e, u)
+        p, e = self.fill_to_dev_borders(p, e)
 
         #interpolate function
         f_e = self.interp_function(p, e)
@@ -268,7 +268,7 @@ class Cdg(Device):
         """
         
         weights = np.ones(n) / n
-        
+
         start_array = np.array([np.nanmean(data[0:n])])
         med_array = np.convolve(data, weights, mode='valid')
         end_array = np.array([np.nanmean(data[-n-1:-1])])
