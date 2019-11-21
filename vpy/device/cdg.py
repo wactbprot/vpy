@@ -237,6 +237,8 @@ class Cdg(Device):
     
     def get_dmin_idx(self, d):
         m = np.amin(d)
+        print(m)
+        print(d)
         return np.where(d == m)[0][0]
 
     def fill_to_dev_borders(self, p, e):
@@ -252,9 +254,7 @@ class Cdg(Device):
 
         extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
         d = extr_p_high - p
-        print(d)
         j = self.get_dmin_idx(d[0])
-        print(j)
         extr_e_high = np.array([e[j]])
 
         ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
