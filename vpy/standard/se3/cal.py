@@ -444,15 +444,14 @@ class Cal(Se3):
            
             p = p_ind_conv - p_off_conv
             if gn_target is not None:
-                e, u = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)
+                e = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)
             else:
-                e, u = GNDevice.get_error_interpol(p, self.unit, p, self.unit)
+                e = GNDevice.get_error_interpol(p, self.unit, p, self.unit)
             
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
-
+            
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
-            res.store("Uncertainty", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), u, '1')            
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
     
@@ -476,7 +475,8 @@ class Cal(Se3):
         for i in range(len(self.FillDevs)):
             GNDevice = self.FillDevs[i]
             p_corr = res.pick("Pressure","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit=self.unit)
-            u_corr =  res.pick("Uncertainty","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
+            u_corr = GNDevice.get_total_uncert(p_corr, self.unit, self.unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ])
+            
             p_arr.append(p_corr)
             u_arr.append(u_corr)
         

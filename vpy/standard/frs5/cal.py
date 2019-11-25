@@ -101,7 +101,7 @@ class Cal(Frs5):
 
         # Temperature in C
         T = res.pick("Temperature", "frs5", "C")
-        
+       
         # correction buoyancy  piston
         approx_p = self.Pres.get_value("frs_p", "lb") * 10.0  # mbar
         gas = self.get_gas()

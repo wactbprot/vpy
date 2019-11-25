@@ -111,9 +111,7 @@ class Cdg(Device):
                 self.interpol_p = v * conv
                 # error
                 self.interpol_e = self.get_value(value_type='e', value_unit='1')
-                # uncertainty
-                self.interpol_u = self.get_value(value_type='u', value_unit='1')
-                
+                                
                 interpol_min = np.min(self.interpol_p)
                 interpol_max = np.max(self.interpol_p)
 
@@ -165,7 +163,6 @@ class Cdg(Device):
         """
         N = len(p_interpol)
         e = np.full(N, np.nan)
-        u = np.full(N, np.nan)
         
         if unit_target is None and p_target is None:
             unit_target = unit_interpol
@@ -182,17 +179,16 @@ class Cdg(Device):
             conv_target = self.Const.get_conv(unit_target, self.unit)
 
         f_e = self.interp_function(self.interpol_p, self.interpol_e)
-        f_u = self.interp_function(self.interpol_p, self.interpol_u)
+        
         idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
         odx = (p_interpol*conv_target > self.interpol_min) & (p_interpol*conv_target < self.interpol_max)
         ndx = idx & odx
        
         if len(ndx) > 0:
             e[ndx] = f_e(p_interpol[ndx]*conv_interpol)
-            u[ndx] = f_u(p_interpol[ndx]*conv_interpol)
+            
 
-
-        return e, u
+        return e
 
     def interp_function(self, x, y):
         return interp1d(x, y, kind="linear")

@@ -214,10 +214,17 @@ class Document(object):
 
             if "Value" in obj:
                 value_ret = self.safe_float_array(obj['Value'])
+            else:
+                value_ret = None
             if "SdValue" in obj:
                 sd_ret = self.safe_float_array(obj['SdValue'])
+            else:
+                sd_ret = None
+            
             if "N" in obj:
                 n_ret = self.safe_float_array(obj['N'])
+            else:
+                n_ret = None
         else:
             self.log.warning("Value of Type {} not found".format(value_type))
         
