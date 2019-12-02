@@ -428,7 +428,7 @@ class Cal(Se3):
         for i in range(len(gn_ind_types)):
             GNDevice = self.FillDevs[i]
             self.log.debug("Working on filling pressure of device {}".format(GNDevice.name))
-
+           
             # get indicatted pressure and unit
             p_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i])
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
@@ -443,14 +443,15 @@ class Cal(Se3):
                 p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
            
             p = p_ind_conv - p_off_conv
+          
             if gn_target is not None:
                 e = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)
             else:
                 e = GNDevice.get_error_interpol(p, self.unit, p, self.unit)
-            
+
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
-            
+            print(e)
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
@@ -476,25 +477,24 @@ class Cal(Se3):
             GNDevice = self.FillDevs[i]
             p_corr = res.pick("Pressure","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit=self.unit)
             u_corr = GNDevice.get_total_uncert(p_corr, self.unit, self.unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ])
-            
+
             p_arr.append(p_corr)
             u_arr.append(u_corr)
         
+        ## only use p if u exist
+        p_arr = np.array(p_arr)
+        u_arr = np.array(u_arr)
+       
+        p_arr = u_arr * p_arr / u_arr
         p_std = np.nanstd(p_arr, axis=0)
-        p_mean = np.nanmean(p_arr, axis=0)
-       
-        ## d_rel = (p_arr - p_mean)/p_mean
-        ## prep_d_rel = np.ma.array(d_rel,  mask=np.isnan(p_arr))
-       
-        n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=p_arr)
+        n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=u_arr)
+           
+        w =  np.power(u_arr/p_arr, -1)
+        sum_w = np.nansum(w, axis = 0) ## ok
+        prod_pw = np.multiply(w, p_arr) ## ok
+        p_mean_weight = np.nansum(prod_pw, axis = 0) / sum_w
         
-        ## *) 
-        ## prep_p_arr = np.ma.array(p_arr,  mask=np.isnan(p_arr))
-        ## prep_u_arr = np.ma.array(u_arr,  mask=np.isnan(p_arr))
-        ## p_mean_weight = np.ma.average(prep_p_arr, axis=0, weights=1.0/(prep_u_arr))
-        
-        p_mean_weight = self.Pres.weight_array_mean(p_arr, u_arr)
-        
+
         res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
         res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 

@@ -99,7 +99,11 @@ def main(cal):
         ## cal filling pressures uncertainties u(p_fill_i)
         fill_uncert_rel = get_fill_pressure_uncert_rel(cal, target_fill, target_unit)
         ## cal total uncert from u(f) and u(p_fill_i)
-        u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
+        ## 
+        ## choose filling pressure without f uncert 
+        ## until they are determined again
+        ## u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
+        u_rel = fill_uncert_rel
         ## skip low and high filling pressures
         u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=50, max_p=133322.0)
 

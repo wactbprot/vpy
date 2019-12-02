@@ -57,20 +57,7 @@ def main():
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-            
-            if "Uncertainty" in customer_object:
-                u_dev = customer_device.get_total_uncert(meas_vec=p_ind_corr, meas_unit="Pa", return_unit="Pa", res=ana, skip_source="standard")
-                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
-            else:
-                customer_device.offset_uncert(ana) 
-                customer_device.repeat_uncert(ana) 
-                customer_device.device_uncert(ana) 
-
-            ## the uncertainty of the standard is 
-            # already calculated at analysis step            
-            ana.total_uncert() 
-            u = ana.pick("Uncertainty", "total_rel", "1")
-
+           
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
@@ -84,7 +71,7 @@ def main():
                 y = p_ind_corr/p_cal
                
             plt.xscale('symlog', linthreshx=1e-12)
-            plt.errorbar(x, y,  yerr=u,  marker='o', linestyle="None", markersize=10, label="measurement")
+            plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
             for i, v in enumerate(x):
                 plt.text(v, y[i], i, rotation=45.)
             plt.show()
@@ -92,7 +79,6 @@ def main():
             if result_type == "direct" and tdo.type == "error":
                 average_index, _ = ana.ask_for_reject(average_index=average_index)
                 d = {"AverageIndex": average_index}
-
 
             if result_type == "expansion" and tdo.type == "error":
                 average_index, _ = ana.ask_for_reject(average_index=average_index)
@@ -110,7 +96,7 @@ def main():
                 
                 p_ind_corr = np.delete(p_ind_corr, skip)
                 p_cal = np.delete(p_cal, skip)
-                u = np.delete(u, skip)
+               
                 sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal=p_cal, cal_unit=unit, p_ind=p_ind_corr, ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
@@ -123,7 +109,19 @@ def main():
                 d["OffsetUnit"] = rd_unit
 
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
-                
+             
+            if "Uncertainty" in customer_object:
+                u_dev = customer_device.get_total_uncert(meas_vec=p_ind_corr, meas_unit="Pa", return_unit="Pa", res=ana, skip_source="standard")
+                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
+            else:
+                customer_device.offset_uncert(ana, use_idx = ana.flatten(average_index))
+                customer_device.repeat_uncert(ana)
+                customer_device.device_uncert(ana) 
+
+            ## the uncertainty of the standard is 
+            # already calculated at analysis step            
+            ana.total_uncert() 
+   
             # start making data sections
             ## obsolet res.make_calibration_data_section(ana)
             res.make_measurement_data_section(ana, result_type=result_type)
@@ -147,7 +145,7 @@ def main():
                     return sigma_slope * p + sigma_null 
                
                 plt.subplot(111)
-                plt.errorbar(p_cal, p_ind_corr/p_cal,   yerr=u*p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
+                plt.plot(p_cal, p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
                 plt.plot(p_cal, lin_reg(p_cal), linestyle="-" )
                 plt.legend()
                 plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))

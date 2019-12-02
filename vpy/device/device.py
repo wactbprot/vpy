@@ -132,16 +132,20 @@ class Device(Document):
             sys.exit("No uncertainty dict available")
 
     def get_match_index(self, meas_vec, from_val, to_val):
-        j = np.full(np.shape(meas_vec)[0], True)
+        N = np.shape(meas_vec)[0]
+        n = np.full(N, False)
+        a = np.full(N, True)
+
+        if self.Vals.cnt_nan(meas_vec) == 0: ## todo rrename cnt_nan to cnt_not_nan
+            return n
         if from_val and to_val:
             i = ((meas_vec > from_val) & (meas_vec < to_val))
             if len(i) > 0:
                 return i
             else:
-                return j 
+                return n
         else:
-            return j
-
+            return a
     def convert_range_to_meas_unit(self, meas_unit, range_unit, from_val, to_val):
         if from_val and to_val and meas_unit and range_unit:
             range_conv = self.Const.get_conv(from_unit=range_unit, to_unit=meas_unit)
@@ -196,7 +200,7 @@ class Device(Document):
         if range_str is not None:
             ana.store('Range', 'ind', range_str, '1')
 
-    def offset_uncert(self, ana):
+    def offset_uncert(self, ana, use_idx = None):
         """
         for now: offset uncertainty is calculated from the measured 
         offset values (measurements between the calibration points)
@@ -205,7 +209,7 @@ class Device(Document):
         Calculates the standard deviation of the *single* value of the 
         offset sample stored in ``Measurement.AuxValues.Pressure``
         """
-       
+
         range_str = Range(ana.org).get_str("ind")
         ## later: aux = AuxValues(ana.org)
         ## pres = Pressure(ana.org)
@@ -217,8 +221,8 @@ class Device(Document):
         offset_unit = self.unit
         ind = ana.pick("Pressure", "ind_corr", self.unit)
         offset = ana.pick("Pressure", "offset", self.unit) 
-
         u = np.full(len(ind), np.nan)
+       
         if range_str is not None:
             range_unique = np.unique(range_str)
             for r in range_unique:
@@ -245,7 +249,7 @@ class Device(Document):
                 if len(offset) < 2:
                     u = np.full(len(offset), 1.0e-5)
                 else:
-                    m = np.nanmean(np.abs(np.diff(offset)))
+                    m = np.nanmean(np.abs(np.diff(np.take(offset, use_idx))))
                     u = m/ind
                 ## later: 
                 ## std = np.nanstd(offset_sample_value)
@@ -253,7 +257,7 @@ class Device(Document):
                 ##    self.log.warn("standard deviation of offset sample < E-12, est. with 5% of measured value")
                 ##    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
                 ## else:
-     
+        
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):
@@ -286,7 +290,7 @@ class Device(Document):
         else: #MKS und andere
             u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
-        print(u)
+
         ana.store("Uncertainty", "repeat", u, "1")
 
     def device_uncert(self, ana):
