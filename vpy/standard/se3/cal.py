@@ -451,7 +451,7 @@ class Cal(Se3):
 
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
-            print(e)
+       
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
@@ -494,7 +494,7 @@ class Cal(Se3):
         prod_pw = np.multiply(w, p_arr) ## ok
         p_mean_weight = np.nansum(prod_pw, axis = 0) / sum_w
         
-
+        p_mean_weight = np.nanmean(p_arr, axis=0)
         res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
         res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 

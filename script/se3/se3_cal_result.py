@@ -74,6 +74,7 @@ def main():
             plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
             for i, v in enumerate(x):
                 plt.text(v, y[i], i, rotation=45.)
+            plt.grid()
             plt.show()
 
             if result_type == "direct" and tdo.type == "error":
@@ -93,11 +94,8 @@ def main():
             if result_type == "expansion" and tdo.type == "sigma":
                 skip = ana.ask_for_skip()
                 d = {"SkipIndex":skip}
-                
-                p_ind_corr = np.delete(p_ind_corr, skip)
-                p_cal = np.delete(p_cal, skip)
                
-                sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal=p_cal, cal_unit=unit, p_ind=p_ind_corr, ind_unit=unit)
+                sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal= np.delete(p_cal, skip), cal_unit=unit, p_ind=np.delete(p_ind_corr, skip), ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
                 d["SigmaStd"] = sigma_std
@@ -146,7 +144,11 @@ def main():
                
                 plt.subplot(111)
                 plt.plot(p_cal, p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
-                plt.plot(p_cal, lin_reg(p_cal), linestyle="-" )
+                if len(skip) > 0:
+                    print(skip)
+                    plt.plot(p_cal[skip], p_ind_corr[skip]/p_cal[skip],  marker='D', linestyle=":", markersize=10, label="points skipped")
+                
+                plt.plot(p_cal, lin_reg(p_cal), linestyle="-", label="linear reg.")
                 plt.legend()
                 plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
                 plt.ylabel('$\sigma$')

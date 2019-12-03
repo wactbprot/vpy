@@ -68,18 +68,7 @@ def main():
             cal.pressure_gn_corr(res)
             cal.pressure_gn_mean(res)
              
-            ## uncert. calculation
-            uncert = Uncert(doc)
-            if cmc:
-                # bis update CMC Einträge --> vorh. CMC Einträge  
-                # cal uncertainty of standard
-
-                ## compare press. --> Todo
-                uncert.pressure_fill(res)
-            else:
-                uncert.cmc(res)    
-
-            
+           
             ## !!cal.offset_from_sample(res)
             ## !!offset_dict = res.pick_dict("Pressure","offset_sample")
 
@@ -95,10 +84,16 @@ def main():
             res.store("Pressure", "ind_corr", ind - offset, unit)
             
             # error for rating procedures
-            ind = res.pick("Pressure", "ind_corr", cal.unit)
-            cal = res.pick("Pressure", "cal" , cal.unit)
-            res.store('Error', 'ind', ind/cal-1.0, '1')
+            p_ind = res.pick("Pressure", "ind_corr", cal.unit)
+            p_cal = res.pick("Pressure", "cal" , cal.unit)
+            res.store('Error', 'ind', p_ind/p_cal-1.0, '1')
             
+            ## uncert. calculation
+            uncert = Uncert(doc)
+            ## we have cmc entries for the FRS
+            ## so we can use the GN uncertainty
+            u = uncert.contrib_pressure_fill(p_cal, cal.unit)
+            res.store("Uncertainty", "standard", u/p_cal, "1")
             io.save_doc(res.build_doc())
            
     else:

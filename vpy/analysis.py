@@ -363,7 +363,7 @@ class Analysis(Document):
             r = input("Skip datapoint number: ")
             if r == "":
                 break
-            skip.append(r)
+            skip.append(int(r))
 
         return skip
     
