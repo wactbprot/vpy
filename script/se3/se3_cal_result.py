@@ -57,7 +57,7 @@ def main():
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-           
+            err = p_ind_corr/p_cal - 1  
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
@@ -69,29 +69,53 @@ def main():
             if tdo.type == "sigma":
                 x = p_ind_corr
                 y = p_ind_corr/p_cal
-               
-            plt.xscale('symlog', linthreshx=1e-12)
-            plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
-            for i, v in enumerate(x):
-                plt.text(v, y[i], i, rotation=45.)
-            plt.grid()
-            plt.show()
 
             if result_type == "direct" and tdo.type == "error":
+                plt.xscale('symlog', linthreshx=1e-12)
+                plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
+                for i, v in enumerate(x):
+                    plt.text(v, y[i], i, rotation=45.)
+                plt.grid()
+                plt.show()
+            
                 average_index, _ = ana.ask_for_reject(average_index=average_index)
                 d = {"AverageIndex": average_index}
-
+                
             if result_type == "expansion" and tdo.type == "error":
-                average_index, _ = ana.ask_for_reject(average_index=average_index)
-                d = {"AverageIndex": average_index}
+                plt.xscale('symlog', linthreshx=1e-12)
+                plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
+                for i, v in enumerate(x):
+                    plt.text(v, y[i], i, rotation=45.)
+                
+                ## e_vis fit
+                params = customer_device.get_e_vis_fit_params(p_cal, err*100)
+                plt.semilogx(p_cal, customer_device.e_vis_model(p_cal, *params)/100, '-', label="model")
+                e_vis_cal =  customer_device.e_vis_model(100., *params)/100.
+                plt.axhline(y=e_vis_cal,label="e_vis = {}".format(round(e_vis_cal, 5)))
 
-                e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
+                plt.legend()
+                plt.grid()
+                plt.show()
+                
+                average_index, _ = ana.ask_for_reject(average_index=average_index)
+                d = {"AverageIndex": average_index}            
+                
+                e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis(e_vis_cal)
                 d["Evis"] = e_vis
                 d["CFvis"] = cf_vis
                 d["Uvis"] = u_vis
                 d["VisUnit"] =vis_unit
 
             if result_type == "expansion" and tdo.type == "sigma":
+                
+                plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
+                for i, v in enumerate(x):
+                    plt.text(v, y[i], i, rotation=45.)
+                
+                plt.legend()
+                plt.grid()
+                plt.show()
+                
                 skip = ana.ask_for_skip()
                 d = {"SkipIndex":skip}
                
@@ -145,7 +169,7 @@ def main():
                 plt.subplot(111)
                 plt.plot(p_cal, p_ind_corr/p_cal,  marker='8', linestyle=":", markersize=10, label="certificate")
                 if len(skip) > 0:
-                    print(skip)
+                   
                     plt.plot(p_cal[skip], p_ind_corr[skip]/p_cal[skip],  marker='D', linestyle=":", markersize=10, label="points skipped")
                 
                 plt.plot(p_cal, lin_reg(p_cal), linestyle="-", label="linear reg.")

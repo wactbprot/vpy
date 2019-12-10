@@ -367,10 +367,10 @@ class Analysis(Document):
 
         return skip
     
-    def ask_for_evis(self):
+    def ask_for_evis(self, e_vis=None):
         """ Asks for e_vis.  
         """
-        e_vis = self.org.get('Calibration', {}).get('Result', {}).get('AuxValues', {}).get('Evis')
+        e_vis = self.org.get('Calibration', {}).get('Result', {}).get('AuxValues', {}).get('Evis', e_vis)
         if e_vis is None:
             e_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Evis', 0)
         

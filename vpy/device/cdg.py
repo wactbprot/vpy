@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from scipy.interpolate import interp1d
+from scipy.optimize import curve_fit
 from ..device.device import Device
 from ..values import Values
 
@@ -53,6 +54,16 @@ class Cdg(Device):
     
     range_extend = 0.005 # relativ
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
+
+    def e_vis_model(self, p, a, b, c, d):
+        return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
+    
+    def e_vis_bounds(self):
+        return ([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf])
+
+    def get_e_vis_fit_params(self, p, e):
+        params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=1000)
+        return params
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
