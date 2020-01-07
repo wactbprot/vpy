@@ -16,6 +16,7 @@ from vpy.analysis import Analysis
 from vpy.constants import Constants 
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
+from vpy.device.rsg import Rsg
 import matplotlib.pyplot as plt
 
 def main():
@@ -48,6 +49,8 @@ def main():
                 customer_device = Srg(doc, customer_object)
             if customer_object.get("Class") == "CDG":
                 customer_device = Cdg(doc, customer_object)
+            if customer_object.get("Class") == "RSG":
+                customer_device = Rsg(doc, customer_object)   
             tdo = ToDo(doc)
             analysis = doc.get('Calibration').get('Analysis')
             ana = Analysis(doc, init_dict=analysis)
@@ -107,7 +110,7 @@ def main():
                 d["VisUnit"] =vis_unit
 
             if result_type == "expansion" and tdo.type == "sigma":
-                
+
                 plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
                 for i, v in enumerate(x):
                     plt.text(v, y[i], i, rotation=45.)
