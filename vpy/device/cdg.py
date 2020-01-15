@@ -105,6 +105,7 @@ class Cdg(Device):
                     
                             if not conversion_type:
                                 self.conversion_type = "factor"
+
                     if "pfeiffer" in dev_device["Producer"].lower():
                         if type_head in self.type_head_cmr:
                             self.max_p = self.type_head_cmr.get(type_head)
