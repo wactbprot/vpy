@@ -35,13 +35,21 @@ class Cdg(Device):
         "1.1mbar": 110.0,
         "11mbar": 1100.0, 
         "110mbar": 11000.0,
-        "1100mbar": 110000.0
+        "1100mbar": 110000.0,
+        "1mbar": 100.0,
+        "10mbar": 1000.0, 
+        "100mbar": 10000.0,
+        "1000mbar": 100000.0
     }
     cmr_base_factor =  { # Pa
         "1.1mbar": 100.0,
         "11mbar": 1000.0, 
         "110mbar":  10000.0,
-        "1100mbar": 100000.0
+        "1100mbar": 100000.0,
+        "1mbar": 100.0,
+        "10mbar": 1000.0, 
+        "100mbar":  10000.0,
+        "1000mbar": 100000.0
     }
     cmr_offset = -1.0 # v
     cmr_factor = 0.125 # 1/v
@@ -76,6 +84,7 @@ class Cdg(Device):
         if dev:
             self.name = dev.get('Name')
             dev_setup = dev.get('Setup')
+            dev_device = dev.get('Device')
             if dev_setup:
                 use_from = dev_setup.get('UseFrom')
                 use_to = dev_setup.get('UseTo')
@@ -89,21 +98,21 @@ class Cdg(Device):
                     self.min_p = float(use_from) * conv
                 
                 if type_head:
-
-                    if type_head in self.type_head_factor:
-                        self.max_p = self.type_head_factor.get(type_head)
-                        self.min_p = self.max_p / 10.0**self.usable_decades
-                
-                        if not conversion_type:
-                            self.conversion_type = "factor"
-
-                    if type_head in self.type_head_cmr:
-                        self.max_p = self.type_head_cmr.get(type_head)
-                        self.min_p = self.max_p / 10.0**self.usable_decades
-                
-                        if not conversion_type:
-                            self.conversion_type = "cmr"
+                    if "mks" in dev_device["Producer"].lower():
+                        if type_head in self.type_head_factor:
+                            self.max_p = self.type_head_factor.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
                     
+                            if not conversion_type:
+                                self.conversion_type = "factor"
+                    if "pfeiffer" in dev_device["Producer"].lower():
+                        if type_head in self.type_head_cmr:
+                            self.max_p = self.type_head_cmr.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
+                    
+                            if not conversion_type:
+                                self.conversion_type = "cmr"
+                        
                 if not self.max_p:
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)

@@ -89,19 +89,28 @@ def main():
                 plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
                 for i, v in enumerate(x):
                     plt.text(v, y[i], i, rotation=45.)
+                plt.legend()
+                plt.grid()
+                plt.show()
+                
+                average_index, reject_index = ana.ask_for_reject(average_index=average_index)
+                d = {"AverageIndex": average_index}            
                 
                 ## e_vis fit
-                params = customer_device.get_e_vis_fit_params(p_cal, err*100)
+                params = customer_device.get_e_vis_fit_params(np.delete(p_cal, reject_index), np.delete(err, reject_index)*100)
+                
+                plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
+                for i, v in enumerate(x):
+                    plt.text(v, y[i], i, rotation=45.)
                 plt.semilogx(p_cal, customer_device.e_vis_model(p_cal, *params)/100, '-', label="model")
+ 
+ 
                 e_vis_cal =  customer_device.e_vis_model(100., *params)/100.
                 plt.axhline(y=e_vis_cal,label="e_vis = {}".format(round(e_vis_cal, 5)))
 
                 plt.legend()
                 plt.grid()
                 plt.show()
-                
-                average_index, _ = ana.ask_for_reject(average_index=average_index)
-                d = {"AverageIndex": average_index}            
                 
                 e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis(e_vis_cal)
                 d["Evis"] = e_vis
