@@ -451,7 +451,6 @@ class Cal(Se3):
 
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
-            print(e)
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
