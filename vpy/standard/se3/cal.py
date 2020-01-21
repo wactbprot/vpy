@@ -435,6 +435,7 @@ class Cal(Se3):
     
             # get a offset value for each pressure value:
             p_off, u_off = self.Pres.get_value_and_unit(gn_offset_types[i])
+
             # get one offet value for all pressure values:
             if p_off is None:
                 p_off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", gn_offset_types[i], u_off)
@@ -451,6 +452,10 @@ class Cal(Se3):
 
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
+<<<<<<< HEAD
+=======
+       
+>>>>>>> aa4f48164138fd160d8c2c64677917650c78df4d
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
@@ -475,16 +480,26 @@ class Cal(Se3):
         for i in range(len(self.FillDevs)):
             GNDevice = self.FillDevs[i]
             p_corr = res.pick("Pressure","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit=self.unit)
+            e      = res.pick("Error","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
+            e_off  = res.pick("Error","{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
             u_corr = GNDevice.get_total_uncert(p_corr, self.unit, self.unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ])
+            
+            ## only use p if u exist
+            np.put(p_corr, np.where(np.isnan(u_corr)), np.nan)
+            np.put(e, np.where(np.isnan(u_corr)), np.nan)
+            np.put(e_off, np.where(np.isnan(u_corr)), np.nan)
+            
+            res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
+            res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
+            res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), e_off, '1')
+    
 
             p_arr.append(p_corr)
             u_arr.append(u_corr)
         
-        ## only use p if u exist
         p_arr = np.array(p_arr)
         u_arr = np.array(u_arr)
        
-        p_arr = u_arr * p_arr / u_arr
         p_std = np.nanstd(p_arr, axis=0)
         n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=u_arr)
            
@@ -493,7 +508,7 @@ class Cal(Se3):
         prod_pw = np.multiply(w, p_arr) ## ok
         p_mean_weight = np.nansum(prod_pw, axis = 0) / sum_w
         
-
+        p_mean_weight = np.nanmean(p_arr, axis=0)
         res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
         res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 

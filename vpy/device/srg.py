@@ -6,7 +6,7 @@ class Srg(Device):
     The fix_total_relative_uncertainty is used for the calculation of the
     uncertainty of the corrected slope.
     """
-
+    unit = "Pa"
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 

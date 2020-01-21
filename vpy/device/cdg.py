@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from scipy.interpolate import interp1d
+from scipy.optimize import curve_fit
 from ..device.device import Device
 from ..values import Values
 
@@ -34,13 +35,21 @@ class Cdg(Device):
         "1.1mbar": 110.0,
         "11mbar": 1100.0, 
         "110mbar": 11000.0,
-        "1100mbar": 110000.0
+        "1100mbar": 110000.0,
+        "1mbar": 100.0,
+        "10mbar": 1000.0, 
+        "100mbar": 10000.0,
+        "1000mbar": 100000.0
     }
     cmr_base_factor =  { # Pa
         "1.1mbar": 100.0,
         "11mbar": 1000.0, 
         "110mbar":  10000.0,
-        "1100mbar": 100000.0
+        "1100mbar": 100000.0,
+        "1mbar": 100.0,
+        "10mbar": 1000.0, 
+        "100mbar":  10000.0,
+        "1000mbar": 100000.0
     }
     cmr_offset = -1.0 # v
     cmr_factor = 0.125 # 1/v
@@ -54,6 +63,16 @@ class Cdg(Device):
     range_extend = 0.005 # relativ
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
 
+    def e_vis_model(self, p, a, b, c, d):
+        return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
+    
+    def e_vis_bounds(self):
+        return ([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf])
+
+    def get_e_vis_fit_params(self, p, e):
+        params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=1000)
+        return params
+
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
         self.doc = dev
@@ -65,6 +84,7 @@ class Cdg(Device):
         if dev:
             self.name = dev.get('Name')
             dev_setup = dev.get('Setup')
+            dev_device = dev.get('Device')
             if dev_setup:
                 use_from = dev_setup.get('UseFrom')
                 use_to = dev_setup.get('UseTo')
@@ -78,21 +98,22 @@ class Cdg(Device):
                     self.min_p = float(use_from) * conv
                 
                 if type_head:
-
-                    if type_head in self.type_head_factor:
-                        self.max_p = self.type_head_factor.get(type_head)
-                        self.min_p = self.max_p / 10.0**self.usable_decades
-                
-                        if not conversion_type:
-                            self.conversion_type = "factor"
-
-                    if type_head in self.type_head_cmr:
-                        self.max_p = self.type_head_cmr.get(type_head)
-                        self.min_p = self.max_p / 10.0**self.usable_decades
-                
-                        if not conversion_type:
-                            self.conversion_type = "cmr"
+                    if "mks" in dev_device["Producer"].lower():
+                        if type_head in self.type_head_factor:
+                            self.max_p = self.type_head_factor.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
                     
+                            if not conversion_type:
+                                self.conversion_type = "factor"
+
+                    if "pfeiffer" in dev_device["Producer"].lower():
+                        if type_head in self.type_head_cmr:
+                            self.max_p = self.type_head_cmr.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
+                    
+                            if not conversion_type:
+                                self.conversion_type = "cmr"
+                        
                 if not self.max_p:
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)
