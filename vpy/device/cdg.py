@@ -91,11 +91,6 @@ class Cdg(Device):
                 use_unit = dev_setup.get('UseUnit')
                 type_head = dev_setup.get('TypeHead')
                 conversion_type =  dev_setup.get('ConversionType')
-
-                if use_from and use_to and use_unit:
-                    conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
-                    self.max_p = float(use_to) * conv
-                    self.min_p = float(use_from) * conv
                 
                 if type_head:
                     if "mks" in dev_device["Producer"].lower():
@@ -113,6 +108,12 @@ class Cdg(Device):
                     
                             if not conversion_type:
                                 self.conversion_type = "cmr"
+                                
+                if use_from and use_to and use_unit:
+                    conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
+                    self.max_p = float(use_to) * conv
+                    self.min_p = float(use_from) * conv
+
                         
                 if not self.max_p:
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
@@ -157,14 +158,15 @@ class Cdg(Device):
             * cmr ... (u + cmr_offset) * cmr_factor * cmr_base_factor[type_head]
         """
         pressure_unit = pressure_dict.get('Unit')
-        pressure_value = np.array(pressure_dict.get('Value'))
-        
+        pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
+  
         if pressure_unit == "V":
             if self.conversion_type == "factor":
                 return pressure_value * self.max_p/self.max_voltage
 
             if self.conversion_type == "cmr":
-                return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
+
+                return (pressure_value +self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
                 
             msg = "conversion type not implemented"
             self.log.error(msg)

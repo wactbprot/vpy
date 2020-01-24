@@ -249,7 +249,10 @@ class Device(Document):
                 if len(offset) < 2:
                     u = np.full(len(offset), 1.0e-5)
                 else:
-                    m = np.nanmean(np.abs(np.diff(np.take(offset, use_idx))))
+                    if use_idx:
+                        m = np.nanmean(np.abs(np.diff(np.take(offset, use_idx))))
+                    else:
+                        m = np.nanmean(np.abs(np.diff(offset)))
                     u = m/ind
                 ## later: 
                 ## std = np.nanstd(offset_sample_value)

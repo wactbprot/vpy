@@ -345,7 +345,7 @@ class Result(Analysis):
     def get_reduced_pressure_ind(self, ana, av_idx, unit):
         ind_dict = ana.pick_dict("Pressure", "ind_corr")
         ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=unit)
-        ind = ind_dict.get("Value") * ind_conv 
+        ind = np.array(ind_dict.get("Value"), dtype=np.float)  * ind_conv 
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
         
         return ind
