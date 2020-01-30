@@ -105,13 +105,13 @@ class Uncert(Se3):
     def group_normal_n_vec(self, u_array):
         return  np.apply_along_axis(self.Vals.cnt_nan, axis=0, arr=u_array)
 
-    def group_normal_array(self, p, unit, take_type_list=None):
+    def group_normal_array(self, p, unit, take_type_list=None, skip_type=None):
         N = len(self.fill_dev_names)
         u_arr = []
 
         for i in range(N):
             Dev = self.FillDevs[i]
-            u_i = Dev.get_total_uncert(p, unit, self.pressure_unit, take_type_list=take_type_list)
+            u_i = Dev.get_total_uncert(p, unit, self.pressure_unit, take_type_list=take_type_list, skip_type=skip_type)
             u_arr.append(u_i)
         
         return u_arr
