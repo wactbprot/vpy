@@ -88,10 +88,8 @@ class Device(Document):
         :returns: quadratic sum of uncertainties
         :rtype: np.array
         """
-
+        
         uncert_arr = []
-       
-
         if "uncert_dict" in self.__dict__:
             u_dict = self.uncert_dict
             for u_i in u_dict:

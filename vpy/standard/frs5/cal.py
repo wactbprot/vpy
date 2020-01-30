@@ -24,7 +24,7 @@ class Cal(Frs5):
             gas = self.ToDo.get_gas()
 
         mt = self.Time.get_value('amt_meas', 'ms')
-        pressure_offset_dict= self.Aux.get_obj_by_time(mt, "amt_offset", "ms", "frs_res_off", "DCR")
+        pressure_offset_dict= self.Aux.get_obj_by_time(mt, "offset_mt", "ms", "frs_res_off", "DCR")
         pressure_ind_dict = self.Pres.get_dict("Type", "frs_res_ind")
         
         res_off = self.ResDev.pressure(pressure_offset_dict, temperatur_dict, unit=self.unit, gas=gas)
@@ -113,7 +113,7 @@ class Cal(Frs5):
 
         # correction offset drift: get measure time for r_zc0
         meas_time = self.Time.get_value("amt_meas", "ms")
-        r_zc0 = self.Aux.get_val_by_time(meas_time, "amt_offset", "ms", "frs_zc0_p", "lb")
+        r_zc0 = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", "frs_zc0_p", "lb")
         r_zc = self.Pres.get_value("frs_zc_p", "lb")
         r_0 = r_zc - r_zc0
        

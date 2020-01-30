@@ -1,14 +1,22 @@
 """
-python script/frs5/frs5_cal_analysis_group_normal.py --ids 'cal-2020-frs5-ik-4050_0001'  -u  # --db 'vl_db' --srv 'http://localhost:5984'
+python script/dkm_ppc4/dkm_ppc4_cal_analysis.py --ids 'cal-2018-dkm_ppc4-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' #  -u 
 """
 import sys
 import os
-sys.path.append(".")
+sys.path.append(os.environ["VIRTUAL_ENV"])
 
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
-from vpy.standard.frs5.cal import Cal
-from vpy.standard.frs5.uncert import Uncert
+from vpy.standard.dkm_ppc4.cal import Cal
+from vpy.standard.dkm_ppc4.uncert import Uncert
+from vpy.device.cdg import InfCdg
+import numpy as np
+import matplotlib.pyplot as plt
+
+from vpy.device.cdg import InfCdg, Cdg
+from vpy.device.srg import Srg
+from vpy.device.rsg import Rsg
+from vpy.device.qbs import Qbs
 
 def main():
     io = Io()
@@ -30,29 +38,44 @@ def main():
         update = False
 
     if not fail and len(ids) >0:
-        base_doc = io.get_base_doc("frs5")
+        base_doc = io.get_base_doc("dkm_ppc4")
         for id in ids:
             doc = io.get_doc_db(id)
            
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
             
-            cal = Cal(doc)  
+            if 'CustomerObject' in doc['Calibration']:
+                customer_device = doc['Calibration']['CustomerObject']
+                dev_class = customer_device.get('Class', "generic")
+                if dev_class == 'SRG':
+                    CustomerDevice = Srg(doc, customer_device)
+                if dev_class == 'CDG':
+                    CustomerDevice = Cdg(doc, customer_device)
+                if dev_class == 'RSG':
+                    CustomerDevice = Rsg(doc, customer_device)
+                if dev_class == 'QBS':
+                    CustomerDevice = Qbs(doc, customer_device)
+            
             res = Analysis(doc)
             uncert = Uncert(doc)
-        
+            cal = Cal(doc)
             cal.temperature(res)
+            cal.temperature_correction(res)
             cal.pressure_res(res)
+            cal.mass_total(res)
             cal.pressure_cal(res)
-            uncert.total_standard(res)
+            
+            # cal uncert of standard
+            uncert.total(res)
+
+            ## calculate customer indication
             gas = cal.Aux.get_gas()
 
             devs = (
-                "1T_1", "1T_2", "1T_3",
-                "5T_1",
-                "10T_1", "10T_2", "10T_3",
-                "50T_1",
                 "100T_1", "100T_2", "100T_3",
+                "500T_1",
+                "1000T_1", "1000T_2", "1000T_3",
                 )
 
             p_cal = res.pick("Pressure", "cal", cal.unit)

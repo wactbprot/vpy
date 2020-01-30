@@ -284,14 +284,15 @@ class Se3(Standard):
         .. todo::
 
                 get gas from todo if nothing found in AuxValues
+                done
 
         :returns: gas (N2, He etc.)
         :rtype: str
         """
-
-        gas=self.Aux.get_gas()
-        if gas is not None:
-            return gas
+        gas = self.Aux.get_gas()
+        if not gas:
+            gas = self.ToDo.get_gas()
+        return gas
 
     def get_expansion_name(self):
         """Returns an np.array containing

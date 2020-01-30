@@ -412,7 +412,7 @@ class Cal(Se3):
         """Calculates the corrected pressures of the group normal (gn)
         """
         meas_time = self.Time.get_value("amt_fill", "ms")
-
+  
         if res.analysis_type == 'expansion':
             gn_ind_types = self.fill_types
             gn_offset_types = self.offset_types
@@ -432,14 +432,14 @@ class Cal(Se3):
             # get indicatted pressure and unit
             p_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i])
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
-    
+
             # get a offset value for each pressure value:
             p_off, u_off = self.Pres.get_value_and_unit(gn_offset_types[i])
 
             # get one offet value for all pressure values:
             if p_off is None:
-                p_off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", gn_offset_types[i], u_off)
-                p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
+                p_off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", gn_offset_types[i], self.unit)
+                p_off_conv = p_off ## already in self.unit
             else:
                 p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
            
@@ -452,10 +452,7 @@ class Cal(Se3):
 
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
-<<<<<<< HEAD
-=======
        
->>>>>>> aa4f48164138fd160d8c2c64677917650c78df4d
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
@@ -523,7 +520,10 @@ class Cal(Se3):
         :type: class
         """
         f_name = self.get_expansion_name()
+       
         p_fill = res.pick("Pressure", "fill", self.unit)
+        
+        
         gas = self.get_gas()
         
         dp = self.pressure_delta_height(p=p_fill, p_unit=self.unit, f_name=f_name, gas=gas)
