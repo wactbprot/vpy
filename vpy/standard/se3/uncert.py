@@ -116,7 +116,7 @@ class Uncert(Se3):
         
         return u_arr
 
-    def contrib_temperature_vessel(self, T, T_unit):
+    def contrib_temperature_vessel(self, T, T_unit, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
         
@@ -125,16 +125,16 @@ class Uncert(Se3):
         """
         N = len(self.vessel_temp_types) 
 
-        u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"])
-        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"])
-        u_T_ch = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
+        u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"], skip_type=skip_type)
+        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"], skip_type=skip_type)
+        u_T_ch = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"], skip_type=skip_type)
 
         ## sqrt 1/N^2 * N * u
         u_total = np.sqrt(np.power(u_T_ptb, 2) +  1/N*np.power(u_T_ch_cal, 2) + 1/N*np.power(u_T_ch, 2))
 
         return u_total
 
-    def contrib_temperature_volume_start(self, T, T_unit, f_name):
+    def contrib_temperature_volume_start(self, T, T_unit, f_name, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
        
@@ -152,23 +152,24 @@ class Uncert(Se3):
         if len(i_l) > 0:
             N[i_l] = len(self.large_temp_types) 
 
-        u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"])
-        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"])
-        u_T_ch =  self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"])
+        u_T_ptb = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u1"], skip_type=skip_type)
+        u_T_ch_cal = self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u2", "u3", "u6"], skip_type=skip_type)
+        u_T_ch =  self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"], skip_type=skip_type)
 
         ## sqrt 1/N^2 * N * u
         u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.divide(np.power(u_T_ch_cal, 2),N) + np.divide(np.power(u_T_ch, 2),N))
 
         return u_total
 
-    def contrib_pressure_fill(self, p_fill, p_fill_unit):
+    def contrib_pressure_fill(self, p_fill, p_fill_unit, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
         """
-        u_p_cal_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1"])
-        u_p_fill_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u3", "u4", "u5", "u6" ])
-        u_p_ind_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u4", "u5", "u6" ])
+        u_p_cal_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1"], skip_type=skip_type)
+        u_p_fill_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u3", "u4", "u5", "u6" ], skip_type=skip_type)
+        u_p_ind_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u4", "u5", "u6" ], skip_type=skip_type)
 
+        ## no need to skip_types for weights
         w =  np.power(self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ]), -1)
         sum_w = np.nansum(w, axis = 0)
         
