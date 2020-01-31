@@ -190,7 +190,7 @@ class Uncert(Frs5):
         self.log.info("value array derived from dict_arr")
         self.log.debug(self.val_arr)
 
-    def total_standard(self, res):
+    def total_standard(self, res, no_type_a=False):
         """Calculates the total uncertainty.
         sympy derives the sensitivity coefficients.
 
@@ -216,22 +216,40 @@ class Uncert(Frs5):
         self.uncert_r_cal0(res)
         self.uncert_ab(res)
 
-        u_total = (
-                    res.pick("Uncertainty", "u_ab", "1")**2
-                    + res.pick("Uncertainty", "u_r", "1")**2
-                    + res.pick("Uncertainty", "u_r_zc", "1")**2
-                    + res.pick("Uncertainty", "u_r_zc0", "1")**2
-                    + res.pick("Uncertainty", "u_ub", "1")**2
-                    + res.pick("Uncertainty", "u_m_cal", "1")**2
-                    + res.pick("Uncertainty", "u_r_cal", "1")**2
-                    + res.pick("Uncertainty", "u_r_cal0", "1")**2
-                    + res.pick("Uncertainty", "u_g", "1")**2
-                    + res.pick("Uncertainty", "u_A", "1")**2
-                    + res.pick("Uncertainty", "u_T", "1")**2
-                    + res.pick("Uncertainty", "u_rho_gas", "1")**2
-                    + res.pick("Uncertainty", "u_rho_frs", "1")**2
-                    )**0.5
-
+        if no_type_a:
+            ## 1/2 offset scatter and 1/2 of ub is type a
+            u_total = (
+                res.pick("Uncertainty", "u_ab", "1")**2
+                + res.pick("Uncertainty", "u_r", "1")**2
+                + res.pick("Uncertainty", "u_r_zc", "1")**2
+                + (res.pick("Uncertainty", "u_ub", "1")/2)**2
+                + (res.pick("Uncertainty", "u_r_zc0", "1")/2)**2
+                + res.pick("Uncertainty", "u_m_cal", "1")**2
+                + res.pick("Uncertainty", "u_r_cal", "1")**2
+                + res.pick("Uncertainty", "u_r_cal0", "1")**2
+                + res.pick("Uncertainty", "u_g", "1")**2
+                + res.pick("Uncertainty", "u_A", "1")**2
+                + res.pick("Uncertainty", "u_T", "1")**2
+                + res.pick("Uncertainty", "u_rho_gas", "1")**2
+                + res.pick("Uncertainty", "u_rho_frs", "1")**2
+            )**0.5
+        else:
+            u_total = (
+                res.pick("Uncertainty", "u_ab", "1")**2
+                + res.pick("Uncertainty", "u_r", "1")**2
+                + res.pick("Uncertainty", "u_r_zc", "1")**2
+                + res.pick("Uncertainty", "u_r_zc0", "1")**2
+                + res.pick("Uncertainty", "u_ub", "1")**2
+                + res.pick("Uncertainty", "u_m_cal", "1")**2
+                + res.pick("Uncertainty", "u_r_cal", "1")**2
+                + res.pick("Uncertainty", "u_r_cal0", "1")**2
+                + res.pick("Uncertainty", "u_g", "1")**2
+                + res.pick("Uncertainty", "u_A", "1")**2
+                + res.pick("Uncertainty", "u_T", "1")**2
+                + res.pick("Uncertainty", "u_rho_gas", "1")**2
+                + res.pick("Uncertainty", "u_rho_frs", "1")**2
+            )**0.5
+            
         p = res.pick("Pressure", "cal", self.unit)
         res.store("Uncertainty", "standard", u_total, "1")
         self.log.debug("uncert total: {}".format(u_total))
