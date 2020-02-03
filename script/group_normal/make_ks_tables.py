@@ -27,7 +27,7 @@ for _,d in enumerate(devs):
     e_arr = interp_dict[1].get("Value")
 
     f.write("\\begin{table}\\begin{tabular}{l l }\n\\toprule\n")
-    f.write("$p$&$F$\\\\\n Pa & relativ & relativ\\\\\\midrule\n")
+    f.write("$p$&$F$\\\\\n Pa & relativ \\\\\\midrule\n")
     for i,_ in enumerate(ind_arr):
         p = "{:.3E}".format(ind_arr[i])
         e = "{:.4f}".format(e_arr[i])
