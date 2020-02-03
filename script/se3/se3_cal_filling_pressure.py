@@ -7,6 +7,9 @@ sys.path.append(os.environ["VIRTUAL_ENV"])
 from vpy.pkg_io import Io
 from vpy.standard.se3.cal import Cal
 
+## ---
+## python script/se3/se3_cal_filling_pressure.py --target_pressure 10 --pressure_unit "Pa"
+## ---
 
 def get_expansion_uncert_rel(cal, target_pressure, target_unit):
     if cal.unit == target_unit:
@@ -42,7 +45,7 @@ def get_fill_pressure_uncert_rel(cal, target_fill, target_unit):
     else:
         sys.exit("units dont match")
 
-def skip_by_pressure(cal, p, u, unit, min_p=80, max_p=133322, replacement = np.inf):
+def skip_by_pressure(cal, p, u, unit="Pa", min_p=80, max_p=133322, replacement = np.inf):
     if cal.unit == unit:
 
         out = (p <= min_p)  
@@ -63,19 +66,25 @@ def get_min_idx(x):
     else:
         return np.nan
 
-def gen_result_dict(target_fill, u_rel, target_unit):
+def gen_result_dict(target_fill, u_rel, target_unit, force=None):
+    f_list = ["f_s", "f_m", "f_l"]
+    if force and force in f_list:
+        i = f_list.index(force)
+    else:
         i = get_min_idx(u_rel)
-        if np.isnan(i):
-            return {"error": "all expasion sequences deliver nan"}
-        else:
-            return {"Pressure_fill.Value": target_fill[i], 
-                    "Pressure_fill.Type":  "target_fill", 
-                    "Pressure_fill.Unit":  target_unit, 
-                    "Uncertainty_cal.Value": u_rel[i],
-                    "Uncertainty_cal.Type": "cal_estimated",
-                    "Uncertainty_cal.Unit": "1",
-                    "Expansion.Type" : 'name',
-                    "Expansion.Value": ["f_s", "f_m", "f_l"][i]}
+        
+    if np.isnan(i):
+        return {"error": "all expasion sequences deliver nan"}
+    else:
+        return {"Pressure_fill.Value":   target_fill[i], 
+                "Pressure_fill.Type":    "target_fill", 
+                "Pressure_fill.Unit":    target_unit, 
+                "Uncertainty_cal.Value": u_rel[i],
+                "Uncertainty_cal.Type":  "cal_estimated",
+                "Uncertainty_cal.Unit":  "1",
+                "Expansion.Type" :       "name",
+                "Expansion.Value":       f_list[i]}
+
 def main(cal):
     args = sys.argv
     fail = False
@@ -102,12 +111,16 @@ def main(cal):
         ## 
         ## choose filling pressure without f uncert 
         ## until they are determined again
-        ## u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
-        u_rel = fill_uncert_rel
+        ## done
+        ## determined see QSE-SE3-20-2
+        ## u_rel = fill_uncert_rel
+        u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
+        
         ## skip low and high filling pressures
-        u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=50, max_p=133322.0)
+        u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=80, max_p=133322.0)
 
-        print(json.dumps(gen_result_dict(target_fill, u_rel, target_unit)))
+        res = gen_result_dict(target_fill, u_rel, target_unit, force="f_s")
+        print(json.dumps(res))
 
 if __name__ == "__main__":
 
