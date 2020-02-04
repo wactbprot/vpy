@@ -188,15 +188,24 @@ class Result(Analysis):
             sec["PressureRangeDirectEnd"] = "{:.1e}".format(max(p_cal))
         
         return sec        
+
+    def extr_val(self, x):
+        if type(x) is list:
+            return x[0]
+        else:
+            return x
+       
     
     def gen_cdg_entry(self, ana, sec):
-        e_vis = self.doc.get("AuxValues", {}).get("Evis")
-        u_vis = self.doc.get("AuxValues", {}).get("Uvis")
+        e_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Evis"))
+        u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
+        cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
+
         if e_vis and u_vis:
             sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
             sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
             
-        cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
+        
         if cf_vis and u_vis:
             sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
             sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
