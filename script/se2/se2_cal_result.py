@@ -1,5 +1,5 @@
 """
-python script/se2/se2_cal_result.py --srv 'http://a73434:5984' --db 'vl_db' --ids 'cal-2019-se2-kk-75026_0001' -s
+python script/se2/se2_cal_result.py --srv 'http://a73434:5984' --db 'vl_db' --ids 'cal-2020-se2-kk-75015_0001' -s
 """
 import sys
 import os
@@ -99,6 +99,9 @@ def main():
                     d["Uvis"] = u_vis
                     d["VisUnit"] =vis_unit
 
+                ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+                res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+
                 se2_uncert.u_PTB_rel(ana)
                 se2_uncert.make_offset_stability(ana)
             
@@ -107,7 +110,7 @@ def main():
                 
                 ana.total_uncert() 
                 u = ana.pick("Uncertainty", "total_rel", "1")            
-            
+            print(customer_device.doc)
             print("ffffffffffffffffffffffffffffff")
             print(tdo.type)
             print(result_type)
@@ -135,8 +138,8 @@ def main():
                 # d["OffsetStd"] = np.nanstd(rd)
                 # d["OffsetUnit"] = rd_unit
              
-            ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
-            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+                ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+                res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
 
             maesurement_date = cl.Counter(doc["Calibration"]["Measurement"]["Values"]["Date"]["Value"]).most_common(1)[0][0]
             doc["Calibration"]["Measurement"]["Date"] = [{"Type": "measurement", "Value": [maesurement_date]}]

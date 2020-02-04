@@ -1,5 +1,5 @@
 """
-python script/se2/se2_cal_display.py --db 'vl_db' --srv 'http://a73434:5984' --ids 'cal-2019-se2-kk-75026_0001'
+python script/se2/se2_cal_display.py --db 'vl_db' --srv 'http://a73434:5984' --ids 'cal-2020-se2-kk-75015_0001'
 """
 import sys
 import os
@@ -42,7 +42,7 @@ def main():
             pn_doc2 = io.get_pn_by_date(std="se2", date=date, cert="0118")
 
             disp = Display(doc)
-            disp.SE2_CDG_error_plot().show()
+            #disp.SE2_CDG_error_plot().show()
             disp.SE2_CDG_offset_abs().show()
             disp.SE2_CDG_offset_rel().show()
             disp.SE2_CDG_error_reject().show()
