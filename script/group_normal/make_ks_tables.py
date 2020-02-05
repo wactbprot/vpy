@@ -25,14 +25,13 @@ for _,d in enumerate(devs):
     interp_dict = cob_doc.get("CalibrationObject").get("Interpol")
     ind_arr = interp_dict[0].get("Value")
     e_arr = interp_dict[1].get("Value")
-    u_arr = interp_dict[2].get("Value")
-    f.write("\\begin{table}\\begin{tabular}{l l l }\n\\toprule\n")
-    f.write("$p$&$F$&u(k=1)\\\\\n Pa & relativ & relativ\\\\\\midrule\n")
+
+    f.write("\\begin{table}\\begin{tabular}{l l }\n\\toprule\n")
+    f.write("$p$&$F$\\\\\n Pa & relativ \\\\\\midrule\n")
     for i,_ in enumerate(ind_arr):
         p = "{:.3E}".format(ind_arr[i])
         e = "{:.4f}".format(e_arr[i])
-        u = "{:.4f}".format(u_arr[i])
-        f.write("{}&{}&{}\\\\\n".format(numify(p), numify(e), numify(u)))
+        f.write("{}&{}\\\\\n".format(numify(p), numify(e)))
     f.write("\\bottomrule\n\\end{tabular}\\caption{Ergebnisse "+ d["Name"].replace("_", " ") + "}\\end{table}")
 
 f.close()

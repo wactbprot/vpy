@@ -1,5 +1,5 @@
 """
-python script/se2/se2_cal_analysis.py --srv 'http://a73434:5984' --ids 'cal-2019-se2-kk-75026_0001'  -u -s
+python script/se2/se2_cal_analysis.py --srv 'http://a73434:5984' --ids 'cal-2020-se2-kk-75015_0001'  -u -s
 """
 import sys
 import os

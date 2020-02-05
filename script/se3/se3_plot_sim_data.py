@@ -34,7 +34,8 @@ def main():
     res = Analysis(doc, insert_dict={'AuxValues': io.read_json(fname_ana_auxval)}, analysis_type="expansion")
     cal = Cal(doc)
 
-    cal.pressure_fill(res)
+    cal.pressure_gn_corr(res)
+    cal.pressure_gn_mean(res) 
     cal.deviation_target_fill(res)
     cal.temperature_before(res)
     cal.temperature_after(res)
