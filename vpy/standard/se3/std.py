@@ -65,7 +65,8 @@ class Se3(Standard):
                     "CDG_10T_1",  "CDG_10T_2",  "CDG_10T_3",
                     "CDG_100T_1", "CDG_100T_2", "CDG_100T_3",
                     "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3",
-                    "CDG_5T_1", "CDG_50T_1", "CDG_500T_1",]
+                    #"CDG_5T_1", "CDG_50T_1", "CDG_500T_1",
+    ]
 
     
     fill_types = [
@@ -73,7 +74,8 @@ class Se3(Standard):
                     "10T_1-fill",  "10T_2-fill", "10T_3-fill",
                     "100T_1-fill", "100T_2-fill", "100T_3-fill",
                     "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", 
-                    "5T_1-fill", "50T_1-fill", "500T_1-fill",]
+    #                "5T_1-fill", "50T_1-fill", "500T_1-fill",
+    ]
     
     compare_types = [
                     "1T_1-compare", "1T_2-compare", "1T_3-compare",
@@ -101,7 +103,8 @@ class Se3(Standard):
                     "10T_1-offset",  "10T_2-offset", "10T_3-offset",
                     "100T_1-offset", "100T_2-offset", "100T_3-offset",
                     "1000T_1-offset", "1000T_2-offset", "1000T_3-offset",
-                    "5T_1-offset", "50T_1-offset", "500T_1-offset", ]
+    #                "5T_1-offset", "50T_1-offset", "500T_1-offset",
+    ]
    
     analysis_check = {
         "Error":{
