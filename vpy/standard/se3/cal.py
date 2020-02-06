@@ -403,7 +403,7 @@ class Cal(Se3):
         self.log.debug("Heigth correction is: {}".format(F_delta_heigth))
         
         ## calibration pressure:
-        p_cal = f_prime * p_fill / F_real_gas * T_corr * F_delta_heigth + p_rise
+        p_cal = f_prime * p_fill * F_real_gas * T_corr * F_delta_heigth + p_rise
         self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
         
         res.store("Pressure", "cal", p_cal, self.unit)

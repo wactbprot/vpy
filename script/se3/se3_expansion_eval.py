@@ -113,18 +113,18 @@ def main():
             ## -------------------------
             corr_tem = T_0 / T_1
             f = (p_1 - p_nd ) / (p_0 * rg * dh) * corr_tem
-
+            
             s_p_1 = 1/p_0*corr_tem
-            s_p_0 = -(p_1 - p_nd )/ (p_0**2) * corr_tem
+            s_p_0 = - (p_1 - p_nd )/ (p_0**2) * corr_tem
             s_p_nd = 1/p_0*corr_tem
             s_T_0 = (p_1 - p_nd ) / (p_0)/T_1
-            s_T_1 = (p_1 - p_nd ) / (p_0)*T_1/T_1**2
+            s_T_1 = - (p_1 - p_nd ) / (p_0)*T_0/T_1**2
             
-            uc_p_1  = (s_p_1*u_p_1)
-            uc_p_0  = (s_p_0*u_p_0)
-            uc_p_nd = (s_p_nd*u_p_nd)
-            uc_T_1  = (s_T_1*u_T_1)
-            uc_T_0  = (s_T_0*u_T_0)
+            uc_p_1  = (s_p_1 *u_p_1)
+            uc_p_0  = (s_p_0 *u_p_0)
+            uc_p_nd = (s_p_nd *u_p_nd)
+            uc_T_1  = (s_T_1 *u_T_1)
+            uc_T_0  = (s_T_0 *u_T_0)
 
             # print(uc_p_1 ) 
             # print(uc_p_0 ) 
