@@ -159,18 +159,18 @@ def main():
             else:
                 #x[i] = p_a[i - 1]/T_1[i -1]*T_0[i]/p_0[i] ## okish
                 y[i] = p_a[i] - p_a[i-1]*T_1[i]/T_1[i-1]
-                x[i] = p_b[i]*T_1[i]/T_0[i] - p_a[i-1]*T_1[i]/T_1[i-1]
+                x[i] = p_b[i] * T_1[i]/T_0[i] - p_a[i-1] * T_1[i]/T_1[i-1]
 
         f = y/x
         f = np.delete(f, f.argmin())
         f = np.delete(f, f.argmax())
+
         print(np.mean(f))
         print(np.std(f)/np.mean(f))
 
-        
-        doc = res.build_doc()
-                
-        io.save_doc(doc)
+        ## -------------------------
+        # save
+        ## -------------------------
         io.save_doc(res.build_doc())
 
 
