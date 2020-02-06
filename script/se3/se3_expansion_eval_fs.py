@@ -80,6 +80,12 @@ def main():
         res.store("Uncertainty", "before", u_T_0, "K")
         res.store("Uncertainty", "after", u_T_1, "K")
         res.store("Correction", "rg", rg,  "1")
+
+        ## old Standard section does not have delta_heigth
+        ## values
+        ## dh correction for f_s = 0.9999609272217588
+        dh = 0.9999609272217588
+        res.store("Correction", "delta_heigth" , np.full(len(p_0), dh) ,  "1")
         
         ## -------------------------
         ## frs5
@@ -135,9 +141,12 @@ def main():
         
         res.store("Pressure", "rise", p_rise , unit)
         res.store("Uncertainty", "rise", p_rise*u_p_rise/p_1 , "1")
-       
+
+        ## -------------------------
+        # f:
+        ## -------------------------
         p_a = p_1 - p_nd + p_rise
-        p_b = p_0 * rg
+        p_b = p_0 * rg * dh
         n = len(p_a)
         x = np.full(n, 0.0)
         y = np.full(n, 0.0)
