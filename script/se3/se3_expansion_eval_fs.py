@@ -101,7 +101,7 @@ def main():
         uncert.total_standard(res, no_type_a=True)
         
         p_1 = res.pick("Pressure", "cal", unit)
-        u_p_1 = res.pick("Uncertainty", "standard", "1")*p_1
+        u_p_1 = res.pick("Uncertainty", "standard", "1")
 
         res.store("Pressure", "cal", p_1, unit)
         res.store("Uncertainty", "cal", u_p_1*p_1, unit)
