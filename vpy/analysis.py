@@ -411,8 +411,11 @@ class Analysis(Document):
         """
 
         faktor = ana.pick_dict("Faktor", "faktor").get("Value")
-        rn = ana.pick_dict("Range", "ind")
+        rn = ana.pick_dict("Range", "range")
         idx = self.flatten(average_index)
+
+        print("->here<-")
+        print(rn)
 
         r1 = {}
         if rn != None:

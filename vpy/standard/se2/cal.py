@@ -15,7 +15,7 @@ class Cal(Se2):
         self.Pres = Pressure(doc)
         self.Date = Date(doc)
         self.CFaktor = Values(doc['Calibration']['Measurement']['Values']['faktor'])
-        self.Range = doc['Calibration']['Measurement']['Values'].get('Range',{})
+        self.Range = doc['Calibration']['Measurement']['Values'].get('range',{})
         self.pressure_unit = "Pa"
         self.error_unit = "%"
 
@@ -116,7 +116,7 @@ class Cal(Se2):
 
         if self.Range != {}:
             r = self.Range['Value']
-            ana.store("Range", "ind", r, "1")
+            ana.store("Range", "range", r, "1")
         else:
             pass
 
