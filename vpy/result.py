@@ -212,6 +212,23 @@ class Result(Analysis):
         
         return sec
     
+    def gen_uncert_offset_entry(self, ana, sec):
+        uncert_contribs = ana.doc.get("AuxValues", {}).get("OffsetUncertContrib")
+        if uncert_contribs and "Unit" in uncert_contribs:
+            if uncert_contribs["Unit"] is not "Pa":
+                sys.exit("Expect Pa as offset uncert contrib unit")
+            else:
+                unit = "\\pascal"
+            entr = {}
+            for cont in uncert_contribs:
+                if cont is not "Unit":
+                    value =  "{:.1E}".format(uncert_contribs[cont])
+                    entr[cont] = "\\SI{"+value+"}{"+unit+"}"
+
+            sec["OffsetUncertContrib"] = entr
+
+        return sec  
+
     def gen_srg_entry(self, ana, sec):
         """
             ..todo::
@@ -282,7 +299,9 @@ class Result(Analysis):
         if result_type == "rotary_piston_gauge":
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
-    
+
+        sec = self.gen_uncert_offset_entry(ana, sec)
+        
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
     def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):

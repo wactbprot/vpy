@@ -173,15 +173,31 @@ class Analysis(Document):
                 if dest is not None and quant is not None:
                     if quant not in self.doc[dest]:
                         self.doc[dest][quant] = []
-                    self.doc[dest][quant].append(d)
+
+                    if isinstance(self.doc[dest][quant], list):
+                        self.doc[dest][quant].append(d)
+                    if isinstance(self.doc[dest][quant], dict):
+                        self.doc[dest][quant].update(d)
+                        
                 if dest is None and quant is not None:
                     if quant not in self.doc:
                         self.doc[quant] = []
-                    self.doc[quant].append(d)
+                    
+                    if isinstance(self.doc[quant], list):
+                        self.doc[quant].append(d)
+                    if isinstance(self.doc[quant], dict):
+                        self.doc[quant].update(d)
+
+                    
                 if dest is not None and quant is None:
                     if dest not in self.doc:
                         self.doc[dest] = []
-                    self.doc[dest].append(d)
+                    
+                    if isinstance(self.doc[dest], list):
+                        self.doc[dest].append(d)
+                    if isinstance(self.doc[dest], dict):
+                        self.doc[dest].update(d)
+
         else:
             msg = "given value is not a dictionary"
             self.log.error(msg)
