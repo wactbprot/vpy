@@ -213,17 +213,22 @@ class Result(Analysis):
         return sec
     
     def gen_uncert_offset_entry(self, ana, sec):
-        uncert_contribs = ana.doc.get("AuxValues", {}).get("OffsetUncertContrib")
+
+        ana_aux_values = ana.doc.get("AuxValues", {})
+        res_aux_values = self.doc.get("AuxValues", {})
+        av_idx = res_aux_values.get("AverageIndex")
+        uncert_contribs = ana_aux_values.get("OffsetUncertContrib")
+        range_str = self.get_reduced_range_str(ana, av_idx)
         if uncert_contribs and "Unit" in uncert_contribs:
             if uncert_contribs["Unit"] is not "Pa":
                 sys.exit("Expect Pa as offset uncert contrib unit")
             else:
                 unit = "\\pascal"
             entr = {}
-            for cont in uncert_contribs:
-                if cont is not "Unit":
-                    value =  "{:.1E}".format(uncert_contribs[cont])
-                    entr[cont] = "\\SI{"+value+"}{"+unit+"}"
+            for r in uncert_contribs:
+                if r is not "Unit" and r in range_str:
+                    value =  "{:.1E}".format(uncert_contribs[r])
+                    entr[r] = "\\SI{"+value+"}{"+unit+"}"
 
             sec["OffsetUncertContrib"] = entr
 
