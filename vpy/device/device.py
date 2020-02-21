@@ -231,6 +231,7 @@ class Device(Document):
                 uncert_contrib["all"] = m
                 u = m/ind
 
+
         ana.store_dict(quant=None, d={'OffsetUncertContrib':uncert_contrib}, dest='AuxValues')
         ana.store("Uncertainty", "offset", u, "1")
 
