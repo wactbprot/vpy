@@ -45,11 +45,10 @@ def main():
             res = Analysis(doc, analysis_type="expansion")
             uncert_se3 = UncertSe3(doc)
             cal_se3 = CalSe3(doc)
-
+            
             f_names = cal_se3.get_expansion_name()
             f_name = f_names[0] 
 
-            
             cal_se3.pressure_gn_corr(res)
             cal_se3.pressure_gn_mean(res) 
             cal_se3.temperature_before(res)
@@ -122,13 +121,7 @@ def main():
             uc_T_1  = (s_T_1 *u_T_1)
             uc_T_0  = (s_T_0 *u_T_0)
 
-            # print(uc_p_1 ) 
-            # print(uc_p_0 ) 
-            # print(uc_p_nd) 
-            # print(uc_T_1 ) 
-            # print(uc_T_0 )
-            # print(s_T_0)
-            # print(u_T_0)
+
             u = (uc_p_1**2 + uc_p_0**2 + uc_p_nd**2 + uc_T_1**2 + uc_T_0**2)**0.5
             
             res.store("Expansion", f_name, f, "1")

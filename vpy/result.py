@@ -188,21 +188,47 @@ class Result(Analysis):
             sec["PressureRangeDirectEnd"] = "{:.1e}".format(max(p_cal))
         
         return sec        
+
+    def extr_val(self, x):
+        if type(x) is list:
+            return x[0]
+        else:
+            return x
+       
     
     def gen_cdg_entry(self, ana, sec):
-        e_vis = self.doc.get("AuxValues", {}).get("Evis")
-        u_vis = self.doc.get("AuxValues", {}).get("Uvis")
+        e_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Evis"))
+        u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
+        cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
+
         if e_vis and u_vis:
             sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
             sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
             
-        cf_vis = self.doc.get("AuxValues", {}).get("CFvis")
+        
         if cf_vis and u_vis:
             sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
             sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
         
         return sec
     
+    def gen_uncert_offset_entry(self, ana, sec):
+        uncert_contribs = ana.doc.get("AuxValues", {}).get("OffsetUncertContrib")
+        if uncert_contribs and "Unit" in uncert_contribs:
+            if uncert_contribs["Unit"] is not "Pa":
+                sys.exit("Expect Pa as offset uncert contrib unit")
+            else:
+                unit = "\\pascal"
+            entr = {}
+            for cont in uncert_contribs:
+                if cont is not "Unit":
+                    value =  "{:.1E}".format(uncert_contribs[cont])
+                    entr[cont] = "\\SI{"+value+"}{"+unit+"}"
+
+            sec["OffsetUncertContrib"] = entr
+
+        return sec  
+
     def gen_srg_entry(self, ana, sec):
         """
             ..todo::
@@ -273,7 +299,9 @@ class Result(Analysis):
         if result_type == "rotary_piston_gauge":
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
-    
+
+        sec = self.gen_uncert_offset_entry(ana, sec)
+        
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
     def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):

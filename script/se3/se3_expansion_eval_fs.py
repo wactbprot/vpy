@@ -4,7 +4,10 @@ measurement.
 
 run:
 
-$[vpy]> python script/se3/se3_expansion_eval_fs.py --id "cal-2017-se3|frs5-vg-1001_0007"
+$[vpy]> python script/se3/se3_expansion_eval_fs.py --id "cal-2019-se3|frs5-vg-1001_0001"
+
+see http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-4-f_s.ipynb
+
 """
 
 import sys
@@ -17,65 +20,95 @@ from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.constants import Constants
 
-from vpy.values import Pressure, AuxValues, Time
+from vpy.values import Pressure, AuxValues, Time, Values
 
 from vpy.standard.frs5.cal import Cal as FrsCalc
 from vpy.standard.frs5.uncert import Uncert as FrsUncert
 from vpy.standard.se3.cal import Cal as Se3Calc
 from vpy.standard.se3.uncert import Uncert as Se3Uncert
-
+from vpy.device.cdg import Cdg
 
 
 def main():
     io = Io()
     io.eval_args()
     doc = io.load_doc()
-
+    unit = "Pa"
     if doc:
-        res = Analysis(doc)
+
+        ## save the doc in ana.org
+        res = Analysis(doc, analysis_type = 'expansion')
         const = Constants(doc=doc)
+        val = Values({})
 
-        # FRS5:
-        frs_calc = FrsCalc(doc)
-        frs_uncert = FrsUncert(doc)
-        ## pressure_cal runs all necessary methods
-        frs_calc.temperature(res)
-        frs_calc.pressure_res(res)
-        frs_calc.pressure_cal(res)
-        frs_calc.pressure_cal(res)
-        frs_uncert.total_standard(res)
+        ## -------------------------
+        ## SE3
+        ## -------------------------
+        base_doc_se3 = io.get_base_doc("se3")
+        se3_doc = io.update_cal_doc(doc, base_doc_se3)
+        
+        se3_calc = Se3Calc(se3_doc)
+        uncert_se3 = Se3Uncert(se3_doc)
 
-        # SE3:
-       
-        se3_calc = Se3Calc(doc)
-       
+        f_names = se3_calc.get_expansion_name()
+        f_name = f_names[0] 
 
         se3_calc.temperature_before(res)
         se3_calc.temperature_after(res)
         se3_calc.temperature_room(res)
-        se3_calc.pressure_fill(res)
+
+        se3_calc.pressure_gn_corr(res)
+        se3_calc.pressure_gn_mean(res) 
         se3_calc.expansion(res)
         se3_calc.time_meas(res)
         se3_calc.real_gas_correction(res)
 
-        # se3 uncert
-        se3_uncert = Se3Uncert(doc)
-        se3_uncert.define_model()
-        se3_uncert.gen_val_dict(res)
-        se3_uncert.gen_val_array(res)
-        se3_uncert.pressure_fill(res)
-        se3_uncert.temperature_after(res)
-        se3_uncert.temperature_before(res)
-
-
         rg = res.pick("Correction", "rg", "1")
         p_0 = res.pick("Pressure", "fill", "Pa")
-        p_0 = p_0/100.
-        p_1 = res.pick("Pressure", "cal", "mbar")
+        p_1 = res.pick("Pressure", "cal", "Pa")
         T_0 = res.pick("Temperature", "before", "K")
         T_1 = res.pick("Temperature", "after", "K")
+        
+        u_p_0 = uncert_se3.contrib_pressure_fill(p_0, unit, skip_type="A")
+        u_T_1 = uncert_se3.contrib_temperature_vessel(T_1, "K" , skip_type="A")
+        u_T_0 = uncert_se3.contrib_temperature_volume_start(T_0, "K", f_names,  skip_type="A")
 
-        ## null indicator:
+        res.store("Pressure", "fill", p_0, unit)
+        res.store("Uncertainty", "fill", u_p_0, unit)
+        res.store("Temperature", "before", T_0, "K")
+        res.store("Temperature", "after", T_1, "K")
+        res.store("Uncertainty", "before", u_T_0, "K")
+        res.store("Uncertainty", "after", u_T_1, "K")
+        res.store("Correction", "rg", rg,  "1")
+
+        ## old Standard section does not have delta_heigth
+        ## values
+        ## dh correction for f_s = 0.9999609272217588
+        dh = 0.9999609272217588
+        res.store("Correction", "delta_heigth" , np.full(len(p_0), dh) ,  "1")
+        
+        ## -------------------------
+        ## frs5
+        ## -------------------------
+        base_doc_frs5 = io.get_base_doc("frs5")
+        frs_doc = io.update_cal_doc(doc, base_doc_frs5)
+        cal_frs = FrsCalc(frs_doc)  
+        uncert = FrsUncert(frs_doc)
+        
+        cal_frs.temperature(res)
+        cal_frs.pressure_res(res)
+        cal_frs.pressure_cal(res)            
+        uncert.total_standard(res, no_type_a=True)
+        
+        p_1 = res.pick("Pressure", "cal", unit)
+        u_p_1 = res.pick("Uncertainty", "standard", "1")
+
+        res.store("Pressure", "cal", p_1, unit)
+        res.store("Uncertainty", "cal", u_p_1*p_1, unit)
+
+        ## -------------------------
+        ## p_nd
+        ## ------------------------- 
         pres = Pressure(doc)
         auxval = AuxValues(doc)
         time = Time(doc)
@@ -88,66 +121,56 @@ def main():
             p_nd_offset = p_nd_offset_before
 
         p_nd_ind = pres.get_value("nd_ind", "mbar")
-        res.store("Pressure", "nd", p_nd_ind - p_nd_offset, "mbar")
-        
-        u_nd_rel = 1.0e-2
-        res.store("Uncertainty", "nd", np.abs(p_nd_ind  * u_nd_rel), "1")
-        p_nd = res.pick("Pressure", "nd", "mbar")
+        conv = const.get_conv(from_unit="mbar", to_unit=unit)
+        p_nd = (p_nd_ind - p_nd_offset)*conv
 
+        CustomerDevice = Cdg( doc, io.get_doc_db("cob-cdg-nd_se3"))
+        u_p_nd = CustomerDevice.get_total_uncert(p_nd_ind, unit, unit, skip_type="A")
+
+        res.store("Pressure", "nd_corr", p_nd, unit)
+        res.store("Uncertainty", "nd_corr", u_p_nd, unit)
+
+        ## -------------------------
         # Unsicherheit Ausgasung:
-        p_rise_rate = 1e-10 #mbar/s
+        ## -------------------------
+        p_rise_rate = 3e-8 #Pa/s gemessen: 2019-01-18 08:40:27 (s. state docs)
         t = time.get_rmt("amt_meas", "ms")
         conv = const.get_conv(from_unit="ms",to_unit="s")
         p_rise = p_rise_rate * t * conv
         u_p_rise = 0.2 # Druckanstieg 20% Unsicher
-
-        res.store("Uncertainty", "outgas",p_rise*u_p_rise/p_1 , "1")
-
-        u_1 = res.pick("Uncertainty", "p_fill", "1")
-        u_2 = res.pick("Uncertainty", "t_before", "1")
-        u_3 = res.pick("Uncertainty", "t_after", "1")
-        u_4 = res.pick("Uncertainty", "nd", "1")
-        u_5 = res.pick("Uncertainty", "outgas", "1")
-        u_6 = res.pick("Uncertainty", "frs5_total_rel", "1")
-
-        u_t = np.sqrt(u_1**2+u_2**2+u_3**2+u_4**2+ u_5**2+ u_6**2)
-        res.store("Uncertainty", "total", u_t, "1")
-
-        #print(u_t)
-        p_after = p_1 - p_nd
-        g_after = np.full(len(p_after), 0.0)
-        g_before = np.full(len(p_after), 0.0)
-        for i in range(len(p_after)):
-            if i == 0:
-                g_after[i] = p_after[i] / T_1[i]
-                g_before[i] = (p_0[i] * rg[i]) / T_0[i]
-            else:
-                # Ein Teil des nach dem 1. Schritt angestaute Gases strömt
-                # beim 2. Expasionsschritt zurück in das Startvolumen. Dies
-                # reduziert den Angestauten Druck um p_after*f_s was zur Korrektur
-                # (1.0-1.0e-4) führt
-                g_after[i] = p_after[i] *(1.0-1.0e-4)/ T_1[i]
-                #g_before[i] = (p_0[i] * rg[i]) / T_0[i] + g_before[i-1]
-                g_before[i] =  (g_before[i-1] * T_0[i-1] +  (p_0[i] * rg[i])) / T_0[i]
-
-
-        f = g_after/g_before
-        res.store("Expansion", "f_s", f, "1")
-        f_s = np.mean(f[-5:-1])
-        u_ex = np.std(f[-5:-1])/f_s
         
-        # nd uncert
-        #u = 0
-        #for u_i in u_t:
-        #    if u == 0:
-        #        u = 1/u_i**2
-        #    else:
-        #        u = u +1/u_i**2
-        #u_sys = 1/u**0.5
-        #print((u_ex**2 + u_sys**2)**0.5)
-        #V_s = 20.69
-        #print(V_s*(1/f_s -1))
+        res.store("Pressure", "rise", p_rise , unit)
+        res.store("Uncertainty", "rise", p_rise*u_p_rise/p_1 , "1")
 
+        ## -------------------------
+        # f:
+        ## -------------------------
+        p_a = p_1 - p_nd + p_rise
+        p_b = p_0 * rg * dh
+        n = len(p_a)
+        x = np.full(n, 0.0)
+        y = np.full(n, 0.0)
+        for i in range(n):
+            # y[i] = p_a[i]/p_b[i]*T_0[i]/T_1[i] ## okish
+            if i == 0:
+                
+                y[i] = p_a[i]
+                x[i] = p_b[i]*T_0[i]/T_1[i]
+            else:
+                #x[i] = p_a[i - 1]/T_1[i -1]*T_0[i]/p_0[i] ## okish
+                y[i] = p_a[i] - p_a[i-1]*T_1[i]/T_1[i-1]
+                x[i] = p_b[i] * T_1[i]/T_0[i] - p_a[i-1] * T_1[i]/T_1[i-1]
+
+        f = y/x
+        f = np.delete(f, f.argmin())
+        f = np.delete(f, f.argmax())
+
+        print(np.mean(f))
+        print(np.std(f)/np.mean(f))
+
+        ## -------------------------
+        # save
+        ## -------------------------
         io.save_doc(res.build_doc())
 
 

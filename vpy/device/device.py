@@ -200,65 +200,38 @@ class Device(Document):
 
     def offset_uncert(self, ana, use_idx = None):
         """
-        for now: offset uncertainty is calculated from the measured 
-        offset values (measurements between the calibration points)
-
-        later (if repeat. measurm. are available):
-        Calculates the standard deviation of the *single* value of the 
-        offset sample stored in ``Measurement.AuxValues.Pressure``
+        The offset uncertainty is calculated by means of `np.diff()`.
+        Drift influences are avoided.
         """
 
-        range_str = Range(ana.org).get_str("ind")
-        ## later: aux = AuxValues(ana.org)
-        ## pres = Pressure(ana.org)
-        ## ind, ind_unit = pres.get_value_and_unit("ind")
-        ## offset, offset_unit = pres.get_value_and_unit("ind_offset")
-        
-        ## now:
-        ind_unit = self.unit
-        offset_unit = self.unit
+        range_str = Range(ana.org).get_str("offset")
+               
         ind = ana.pick("Pressure", "ind_corr", self.unit)
-        offset = ana.pick("Pressure", "offset", self.unit) 
+        offset = ana.pick("Pressure", "offset", self.unit)
+
         u = np.full(len(ind), np.nan)
-       
+        uncert_contrib = {"Unit":self.unit}
+        
         if range_str is not None:
             range_unique = np.unique(range_str)
             for r in range_unique:
                 i_r = np.where(range_str == r)
                 if np.shape(i_r)[1] > 0:
-                    ## range_type = self.range_offset_trans[r]
-                    ## now:
-                   
-                    ## later: offset_sample_value, offset_unit = aux.get_value_and_unit(d_type=range_type)
-                    if ind_unit == offset_unit:
-                        m = np.nanmean(np.abs(np.diff(offset[i_r])))
-                        ## later:
-                        ## std = np.nanstd(offset_sample_value)
-                        ## u[i_r] = np.abs(std/ind[i_r])
-                        u[i_r] = m/ind[i_r]
-                    else:
-                        sys.exit("ind measurement unit and sample unit dont match")
+                    m = np.nanmean(np.abs(np.diff(offset[i_r])))
+                    u[i_r] = m/ind[i_r]
+                    uncert_contrib[r] = m
         else:
-            ## later:
-            ## simple offset sample stored in Measurement.AuxValues.Pressure
-            ## offset_sample_value, offset_unit = aux.get_value_and_unit(d_type="offset")
-            if ind_unit == offset_unit:
-                ## i_r = np.where(ind < self.max_p*0.95) << 50% FS --> but: has to work for calib. with 1 point only
-                if len(offset) < 2:
-                    u = np.full(len(offset), 1.0e-5)
+            if len(offset) < 2:
+                u = np.full(len(offset), 1.0e-5)
+            else:
+                if use_idx:
+                    m = np.nanmean(np.abs(np.diff(np.take(offset, use_idx))))
                 else:
-                    if use_idx:
-                        m = np.nanmean(np.abs(np.diff(np.take(offset, use_idx))))
-                    else:
-                        m = np.nanmean(np.abs(np.diff(offset)))
-                    u = m/ind
-                ## later: 
-                ## std = np.nanstd(offset_sample_value)
-                ## if std < 1e-12: ## all the same
-                ##    self.log.warn("standard deviation of offset sample < E-12, est. with 5% of measured value")
-                ##    u = np.abs(np.nanmean(offset_sample_value)*0.05/ind)
-                ## else:
-        
+                    m = np.nanmean(np.abs(np.diff(offset)))
+                uncert_contrib["all"] = m
+                u = m/ind
+
+        ana.store_dict(quant=None, d={'OffsetUncertContrib':uncert_contrib}, dest='AuxValues')
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):
@@ -267,9 +240,9 @@ class Device(Document):
         # *) bis 14.8.19
         #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
         #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
-
-        producer = ana.org.get("Calibration", {}).get("CustomerObject", {}).get("Device", {}).get("Producer", "missing").lower().replace("\s", "")
-        type_head = ana.org.get("Calibration", {}).get("CustomerObject", {}).get("Setup", {}).get("TypeHead", "missing")
+        cob = ana.org.get("Calibration", {}).get("CustomerObject", {})
+        producer = cob.get("Device", {}).get("Producer", "missing").lower().replace("\s", "")
+        type_head = cob.get("Setup", {}).get("TypeHead", "missing")
         standard = ana.org.get("Calibration", {}).get("ToDo", {}).get("Standard", "missing")
 
         if producer == "missing":
