@@ -46,11 +46,11 @@ def main():
             
             customer_object = doc.get('Calibration').get('CustomerObject')
             if customer_object.get("Class") == "SRG":
-                customer_device = Srg(doc, customer_object)
+                cus_dev = Srg(doc, customer_object)
             if customer_object.get("Class") == "CDG":
-                customer_device = Cdg(doc, customer_object)
+                cus_dev = Cdg(doc, customer_object)
             if customer_object.get("Class") == "RSG":
-                customer_device = Rsg(doc, customer_object)   
+                cus_dev = Rsg(doc, customer_object)   
             tdo = ToDo(doc)
             analysis = doc.get('Calibration').get('Analysis')
             ana = Analysis(doc, init_dict=analysis)
@@ -97,15 +97,15 @@ def main():
                 d = {"AverageIndex": average_index}            
                 
                 ## e_vis fit
-                params = customer_device.get_e_vis_fit_params(np.delete(p_cal, reject_index), np.delete(err, reject_index)*100)
+                params = cus_dev.get_e_vis_fit_params(np.delete(p_cal, reject_index), np.delete(err, reject_index)*100)
                 
                 plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
                 for i, v in enumerate(x):
                     plt.text(v, y[i], i, rotation=45.)
-                plt.semilogx(p_cal, customer_device.e_vis_model(p_cal, *params)/100, '-', label="model")
+                plt.semilogx(p_cal, cus_dev.e_vis_model(p_cal, *params)/100, '-', label="model")
  
  
-                e_vis_cal =  customer_device.e_vis_model(100., *params)/100.
+                e_vis_cal =  cus_dev.e_vis_model(100., *params)/100.
                 plt.axhline(y=e_vis_cal,label="e_vis = {}".format(round(e_vis_cal, 5)))
 
                 plt.legend()
@@ -131,7 +131,10 @@ def main():
                 skip = ana.ask_for_skip()
                 d = {"SkipIndex":skip}
                
-                sigma_null, sigma_slope, sigma_std = customer_device.sigma_null(p_cal= np.delete(p_cal, skip), cal_unit=unit, p_ind=np.delete(p_ind_corr, skip), ind_unit=unit)
+                sigma_null, sigma_slope, sigma_std = cus_dev.sigma_null(p_cal= np.delete(p_cal, skip),
+                                                                                cal_unit=unit,
+                                                                                p_ind=np.delete(p_ind_corr, skip),
+                                                                                ind_unit=unit)
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
                 d["SigmaStd"] = sigma_std
@@ -143,15 +146,19 @@ def main():
                 d["OffsetUnit"] = rd_unit
 
             res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
-             
+
             if "Uncertainty" in customer_object:
-                u_dev = customer_device.get_total_uncert(meas_vec=p_ind_corr, meas_unit="Pa", return_unit="Pa", res=ana, skip_source="standard")
+                u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
+                                                         meas_unit="Pa",
+                                                         return_unit="Pa",
+                                                         res=ana,
+                                                         skip_source="standard")
+                
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
-                customer_device.offset_uncert(ana, use_idx = ana.flatten(average_index))
-                customer_device.repeat_uncert(ana)
-                customer_device.device_uncert(ana) 
-
+                cus_dev.repeat_uncert(ana)
+                cus_dev.device_uncert(ana) 
+            
             ## the uncertainty of the standard is 
             # already calculated at analysis step            
             ana.total_uncert() 
