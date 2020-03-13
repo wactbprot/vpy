@@ -145,9 +145,13 @@ def main():
                 d["OffsetStd"] = np.nanstd(rd)
                 d["OffsetUnit"] = rd_unit
 
-            res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
+            ## write d to res without `plain=True`
+            ## in order to keep githash info
+           
+            res.store_dict(quant='AuxValues', d=d, dest=None)
 
             if "Uncertainty" in customer_object:
+                print("lll")
                 u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
                                                          meas_unit="Pa",
                                                          return_unit="Pa",
@@ -156,6 +160,7 @@ def main():
                 
                 ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
             else:
+                cus_dev.offset_uncert(ana, use_idx = ana.flatten(average_index))
                 cus_dev.repeat_uncert(ana)
                 cus_dev.device_uncert(ana) 
             

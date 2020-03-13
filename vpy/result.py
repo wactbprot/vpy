@@ -3,6 +3,7 @@ import time
 import subprocess
 import copy
 import numpy as np
+import sys
 from .analysis import Analysis
 from .todo import ToDo
 from .values import Values, Date
@@ -65,7 +66,6 @@ class Result(Analysis):
     #    }
 
     def __init__(self, doc, result_type="expansion", skip=False):
-
         
         init_dict = {"Skip":skip,
                     "Date": [{
@@ -228,14 +228,18 @@ class Result(Analysis):
                 unit = "\\pascal"
             entr = {}
             for r in uncert_contribs:
+                value = None
                 if r is not "Unit":
+                   
                     if range_str:
                         if r in range_str:
                             value =  val_fmt_str.format(uncert_contribs[r])
+                        
                     else:
                         value =  val_fmt_str.format(uncert_contribs[r])
-
-                    entr[r] = "\\SI{"+value+"}{"+unit+"}"
+                        
+                    if value:
+                        entr[r] = "\\SI{"+value+"}{"+unit+"}"
 
             sec["OffsetUncertContrib"] = entr
 
@@ -435,7 +439,6 @@ class Result(Analysis):
 
     def get_reduced_range_str(self, ana, av_idx):
         range_dict = ana.pick_dict("Range", "ind")
-        
         if range_dict is not None:
             range_str = range_dict.get("Value")
             return [range_str[v[0]] for v in av_idx]

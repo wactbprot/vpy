@@ -70,6 +70,9 @@ class Cdg(Device):
         return ([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf])
 
     def get_e_vis_fit_params(self, p, e):
+        out = np.isnan(e)
+        p = p[np.logical_not(out)]
+        e = e[np.logical_not(out)]
         params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=1000)
         return params
 

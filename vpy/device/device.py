@@ -112,16 +112,15 @@ class Device(Document):
                 from_val, to_val = self.convert_range_to_meas_unit(meas_unit, range_unit, from_val, to_val)
                 range_index = self.get_match_index(meas_vec, from_val, to_val)
                 u[range_index] = float(u_val)
-                
+
                 u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
-                
+
                 uncert_arr.append( u )
                 self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
-                
+
                 if res is not None:
                     res.store("Uncertainty" , "{dev}_{u_type}".format(dev=self.name, u_type=u_type), u, return_unit, descr=u_descr)
 
-            
             uncert_total = self.Vals.square_array_sum(uncert_arr)
             uncert_total = self.Vals.replace_zero_by_nan(uncert_total)
 
@@ -183,12 +182,12 @@ class Device(Document):
            pressure = pressure_value * self.max_p/self.max_voltage
         else:
             pressure = pressure_value *  self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
-        
+
         return pressure
-    
+
     def range_trans(self, ana):
         """Traverses Range to analysis section.
-        
+
         :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
@@ -205,18 +204,26 @@ class Device(Document):
         """
 
         range_str = Range(ana.org).get_str("offset")
-               
         ind = ana.pick("Pressure", "ind_corr", self.unit)
         offset = ana.pick("Pressure", "offset", self.unit)
 
-        u = np.full(len(ind), np.nan)
+        ## make elements not in use_idx nan:
+        o = np.where([i not in use_idx for i in range(0,len(ind))])[0]
+        for i in o:
+            ind[i] = np.nan 
+            offset[i] = np.nan 
+
+        u = np.full(len(ind), np.nan) 
         uncert_contrib = {"Unit":self.unit}
-        
+
         if range_str is not None:
             range_unique = np.unique(range_str)
             for r in range_unique:
                 i_r = np.where(range_str == r)
-                if np.shape(i_r)[1] > 0:
+                ## sometimes all offset[i_r] are nan
+                all_nan = np.all(np.isnan(offset[i_r]))
+                if np.shape(i_r)[1] > 0 and not all_nan:
+
                     m = np.nanmean(np.abs(np.diff(offset[i_r])))
                     u[i_r] = m/ind[i_r]
                     uncert_contrib[r] = m
@@ -224,19 +231,17 @@ class Device(Document):
             if len(offset) < 2:
                 u = np.full(len(offset), 1.0e-5)
             else:
-                if use_idx:
-                    m = np.nanmean(np.abs(np.diff(np.take(offset, use_idx))))
-                else:
-                    m = np.nanmean(np.abs(np.diff(offset)))
+                m = np.nanmean(np.abs(np.diff(offset)))
+
                 uncert_contrib["all"] = m
                 u = m/ind
 
 
-        ana.store_dict(quant=None, d={'OffsetUncertContrib':uncert_contrib}, dest='AuxValues')
+        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):
-        
+
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         # *) bis 14.8.19
         #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
@@ -250,7 +255,7 @@ class Device(Document):
             msg = "No Producer in Device"
             self.log.warn(msg)
             sys.exit(msg)
-        
+
         if standard == "missing":
             msg = "No Standard in ToDo"
             self.log.warn(msg)
@@ -261,7 +266,7 @@ class Device(Document):
                 u = np.full(len(p_list), 2.9e-5)
             else:
                 u = np.full(len(p_list), 1.0e-4)
-         
+
         else: #MKS und andere
             u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
@@ -271,8 +276,8 @@ class Device(Document):
     def device_uncert(self, ana):
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-        
+
         u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
-       
+
         ana.store("Uncertainty", "device", u, "1")
-            
+
