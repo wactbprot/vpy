@@ -10,7 +10,10 @@ class Uncert:
         pass
     
     def total(self, ana):
-        
+        #not used anymore
+        #instead: total_uncert()
+        print("jjjjjjjjjjjjjjjjjjjj")
+                
         p_cal = ana.pick("Pressure", "cal", "Pa")
         p_ind = ana.pick("Pressure", "ind_corr", "Pa")
 

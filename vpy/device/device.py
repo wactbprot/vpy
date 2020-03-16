@@ -62,7 +62,7 @@ class Device(Document):
         else:
             return True ## all in case type_list is None
 
-    def get_total_uncert(self, meas_vec, meas_unit, return_unit, res=None, skip_source=None, skip_type=None, take_type_list=None):
+    def get_total_uncert(self, meas_vec, meas_unit, return_unit, res=None, skip_source=None, skip_type=None, take_type_list=None, prefix=True):
         """ Collects all Uncertainty contrib. for the given
         measurant (m). Calculates the quadratic sum and returns
         a np.array of the length as of m. Contributions with a certain source 
@@ -118,8 +118,13 @@ class Device(Document):
                 uncert_arr.append( u )
                 self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
 
+                if prefix:
+                    type_name="{dev}_{u_type}".format(dev=self.name, u_type=u_type)
+                else:
+                    type_name="{u_type}".format(u_type=u_type)
+
                 if res is not None:
-                    res.store("Uncertainty" , "{dev}_{u_type}".format(dev=self.name, u_type=u_type), u, return_unit, descr=u_descr)
+                    res.store("Uncertainty", type_name, u, return_unit, descr=u_descr)
 
             uncert_total = self.Vals.square_array_sum(uncert_arr)
             uncert_total = self.Vals.replace_zero_by_nan(uncert_total)
@@ -276,8 +281,13 @@ class Device(Document):
     def device_uncert(self, ana):
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
 
-        u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+        if digit_uncert is not None:
+            p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+        else:
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
 
         ana.store("Uncertainty", "device", u, "1")
 

@@ -90,7 +90,8 @@ def main():
                 conv = res.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
 
                 p_tdo = conv * p_tdo
-                p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
+                #assuming pascals, temperature correction only if more than 1 decade below 100 Pa
+                p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5] 
 
                 if len(p_tdo_evis) > 1:
                     e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis()
@@ -102,14 +103,24 @@ def main():
                 ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
                 res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
 
-                se2_uncert.u_PTB_rel(ana)
-                se2_uncert.make_offset_stability(ana)
+
+            if "Uncertainty" in customer_object:
+                print("lll")
+                u_dev = customer_device.get_total_uncert(meas_vec=p_ind_corr,
+                                                         meas_unit="Pa",
+                                                         return_unit="Pa",
+                                                         res=ana,
+                                                         skip_source="standard",
+                                                         prefix=False)                
+
+            se2_uncert.u_PTB_rel(ana)
+            se2_uncert.make_offset_stability(ana)
+        
+            customer_device.repeat_uncert(ana)
+            customer_device.device_uncert(ana)
             
-                customer_device.repeat_uncert(ana) 
-                customer_device.device_uncert(ana) 
-                
-                ana.total_uncert() 
-                u = ana.pick("Uncertainty", "total_rel", "1")            
+            ana.total_uncert() 
+            u = ana.pick("Uncertainty", "total_rel", "1")            
             print(customer_device.doc)
             print("ffffffffffffffffffffffffffffff")
             print(tdo.type)
