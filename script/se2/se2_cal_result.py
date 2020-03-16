@@ -98,7 +98,8 @@ def main():
                     d["Evis"] = e_vis
                     d["CFvis"] = cf_vis
                     d["Uvis"] = u_vis
-                    d["VisUnit"] =vis_unit
+                    d["VisUnit"] = vis_unit
+                    print(d)
 
                 ana.store_dict(quant="AuxValues", d=d, dest=None, plain=True)
                 res.store_dict(quant="AuxValues", d=d, dest=None, plain=True)

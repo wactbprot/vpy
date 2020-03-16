@@ -150,7 +150,8 @@ class Result(Analysis):
         conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
 
         p_tdo = conv * p_tdo
-        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
+        #temperature correction only if more than 1 decade below 100 Pa
+        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]         
 
         if len(p_tdo_evis) > 1:
             sec["TemperatureCorrection"] = "yes"
@@ -201,14 +202,14 @@ class Result(Analysis):
         u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
         cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
 
-        if e_vis and u_vis:
+        if e_vis is not None and u_vis is not None:
             sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
-            sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
+            sec["UncertEvis"] = self.Val.round_to_sig_dig(u_vis, 2)
             
         
         if cf_vis and u_vis:
             sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
-            sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
+            sec["UncertCFvis"] = self.Val.round_to_sig_dig(u_vis, 2)
         
         return sec
     
