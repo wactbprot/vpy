@@ -42,7 +42,7 @@ def main():
             pn_doc2 = io.get_pn_by_date(std="se2", date=date, cert="0118")
 
             disp = Display(doc)
-            #disp.SE2_CDG_error_plot().show()
+            disp.SE2_CDG_error_plot().show()
             disp.SE2_CDG_offset_abs().show()
             disp.SE2_CDG_offset_rel().show()
             disp.SE2_CDG_error_reject().show()

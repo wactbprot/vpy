@@ -27,7 +27,7 @@ class Analysis(Document):
                         }
         if git_hash:
             init_dict['AuxValues']['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
-        
+
         if analysis_type:
             init_dict['AnalysisType'] = analysis_type
             self.analysis_type = analysis_type

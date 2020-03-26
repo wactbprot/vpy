@@ -479,7 +479,7 @@ class Cal(Se3):
             p_corr = res.pick("Pressure","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit=self.unit)
             e      = res.pick("Error","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
             e_off  = res.pick("Error","{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
-            u_corr = GNDevice.get_total_uncert(p_corr, self.unit, self.unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ])
+            u_corr = GNDevice.get_total_uncert(p_corr, self.unit, self.unit, take_type_list=["u2", "u3", "u4", "u5", "u6" ])
             
             ## only use p if u exist
             np.put(p_corr, np.where(np.isnan(u_corr)), np.nan)

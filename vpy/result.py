@@ -3,6 +3,7 @@ import time
 import subprocess
 import copy
 import numpy as np
+import sys
 from .analysis import Analysis
 from .todo import ToDo
 from .values import Values, Date
@@ -65,7 +66,6 @@ class Result(Analysis):
     #    }
 
     def __init__(self, doc, result_type="expansion", skip=False):
-
         
         init_dict = {"Skip":skip,
                     "Date": [{
@@ -150,7 +150,8 @@ class Result(Analysis):
         conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
 
         p_tdo = conv * p_tdo
-        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 95]
+        #temperature correction only if more than 1 decade below 100 Pa
+        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]         
 
         if len(p_tdo_evis) > 1:
             sec["TemperatureCorrection"] = "yes"
@@ -201,29 +202,45 @@ class Result(Analysis):
         u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
         cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
 
-        if e_vis and u_vis:
+        if e_vis is not None and u_vis is not None:
             sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
-            sec["UncertEvis"] = self.Val.round_to_uncertainty(e_vis*u_vis, u_vis, 2)
+            sec["UncertEvis"] = self.Val.round_to_sig_dig(u_vis, 2)
             
         
         if cf_vis and u_vis:
             sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
-            sec["UncertCFvis"] = self.Val.round_to_uncertainty(cf_vis*u_vis, u_vis, 2)
+            sec["UncertCFvis"] = self.Val.round_to_sig_dig(u_vis, 2)
         
         return sec
     
     def gen_uncert_offset_entry(self, ana, sec):
-        uncert_contribs = ana.doc.get("AuxValues", {}).get("OffsetUncertContrib")
+
+        val_fmt_str = "{:.1E}"
+        ana_aux_values = ana.doc.get("AuxValues", {})
+        res_aux_values = self.doc.get("AuxValues", {})
+        av_idx = res_aux_values.get("AverageIndex")
+        uncert_contribs = ana_aux_values.get("OffsetUncertContrib")
+        range_str = self.get_reduced_range_str(ana, av_idx)
+        
         if uncert_contribs and "Unit" in uncert_contribs:
             if uncert_contribs["Unit"] is not "Pa":
                 sys.exit("Expect Pa as offset uncert contrib unit")
             else:
                 unit = "\\pascal"
             entr = {}
-            for cont in uncert_contribs:
-                if cont is not "Unit":
-                    value =  "{:.1E}".format(uncert_contribs[cont])
-                    entr[cont] = "\\SI{"+value+"}{"+unit+"}"
+            for r in uncert_contribs:
+                value = None
+                if r is not "Unit":
+                   
+                    if range_str:
+                        if r in range_str:
+                            value =  val_fmt_str.format(uncert_contribs[r])
+                        
+                    else:
+                        value =  val_fmt_str.format(uncert_contribs[r])
+                        
+                    if value:
+                        entr[r] = "\\SI{"+value+"}{"+unit+"}"
 
             sec["OffsetUncertContrib"] = entr
 
@@ -423,7 +440,6 @@ class Result(Analysis):
 
     def get_reduced_range_str(self, ana, av_idx):
         range_dict = ana.pick_dict("Range", "ind")
-        
         if range_dict is not None:
             range_str = range_dict.get("Value")
             return [range_str[v[0]] for v in av_idx]
