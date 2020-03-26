@@ -39,7 +39,7 @@ class ToDo(Document):
                 # delete pressure
                 doc.pop('Temperature', None)
 
-        self.max_dev = 0.05    # before 2019-08-19 max_dev = 0.1
+        self.max_dev = 0.01    # before 2019-08-19 max_dev = 0.1
 
     def get_standard(self):
         return self.doc.get("Standard")
@@ -79,6 +79,7 @@ class ToDo(Document):
 
         target = self.Pres.get_value("target", unit)
         r = []
+        print(target)
         for i in range(0, len(target)):
             rr = []
             for j in range(0, len(cal)):

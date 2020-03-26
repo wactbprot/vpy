@@ -562,7 +562,7 @@ class Analysis(Document):
     def reduce_by_average_index(self,  value, average_index):
         """Calculates the mean value for each target pressure.
         """
-        return np.asarray([np.mean(np.take(value, i)) for i in average_index])
+        return np.asarray([np.nanmean(np.take(value, i)) for i in average_index])
     
     def total_uncert(self):
         
