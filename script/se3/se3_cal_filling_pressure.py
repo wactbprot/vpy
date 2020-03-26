@@ -119,7 +119,7 @@ def main(cal):
         ## skip low and high filling pressures
         u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=80, max_p=133322.0)
 
-        #res = gen_result_dict(target_fill, u_rel, target_unit, force="f_l")
+        #res = gen_result_dict(target_fill, u_rel, target_unit, force="f_s")
         res = gen_result_dict(target_fill, u_rel, target_unit)
         print(json.dumps(res))
 

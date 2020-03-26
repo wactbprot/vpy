@@ -26,7 +26,9 @@ class Cdg(Device):
         "1000Torr": 133322.0,
         "01mbar": 10.0,
         "1mbar": 100.0,
-        "10mbar": 1000.0, 
+        "1.1mbar": 110.0,
+        "10mbar": 1000.0,
+        "11mbar": 1100.0, 
         "100mbar": 10000.0,
         "1000mbar": 100000.0
     }
@@ -123,7 +125,7 @@ class Cdg(Device):
                     self.min_p = float(use_from) * conv
 
                         
-                if not self.max_p:
+                if not "max_p" in dir(self):
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)
                     sys.exit(msg)
