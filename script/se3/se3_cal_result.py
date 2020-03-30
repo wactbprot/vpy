@@ -151,7 +151,6 @@ def main():
             res.store_dict(quant='AuxValues', d=d, dest=None)
 
             if "Uncertainty" in customer_object:
-                print("lll")
                 u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
                                                          meas_unit="Pa",
                                                          return_unit="Pa",

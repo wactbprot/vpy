@@ -391,9 +391,8 @@ class Result(Analysis):
         ind_dict = ana.pick_dict("Pressure", "ind_corr")
         ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=unit)
         ind = np.array(ind_dict.get("Value"), dtype=np.float)  * ind_conv 
-        print(ind)
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
-        print(ind)
+        
         return ind
 
     def get_reduced_pressure_cal(self, ana, av_idx, unit):

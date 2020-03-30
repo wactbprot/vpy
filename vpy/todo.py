@@ -79,7 +79,7 @@ class ToDo(Document):
 
         target = self.Pres.get_value("target", unit)
         r = []
-        print(target)
+
         for i in range(0, len(target)):
             rr = []
             for j in range(0, len(cal)):

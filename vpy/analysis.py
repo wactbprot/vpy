@@ -345,9 +345,7 @@ class Analysis(Document):
             print("New list is: " + str(reject))
 
         self.log.debug("average index before manual remove:{}".format(average_index))
-        print(average_index)
         average_index = [[j for j in i if not j in reject] for i in average_index]
-        print(average_index)
         self.log.debug("average index after manual remove:{}".format(average_index))
 
         return average_index, reject

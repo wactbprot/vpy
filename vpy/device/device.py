@@ -237,11 +237,13 @@ class Device(Document):
                 u = np.full(len(offset), 1.0e-5)
             else:
                 m = np.nanmean(np.abs(np.diff(offset)))
+                if m == 0.0:
+                    ## Abschätzung 0.1% vom kleinsten p_ind
+                    m = np.nanmin(ind)*1e-3
 
                 uncert_contrib["all"] = m
                 u = m/ind
-
-
+               
         ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u, "1")
 
