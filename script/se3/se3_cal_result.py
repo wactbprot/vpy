@@ -151,17 +151,17 @@ def main():
             res.store_dict(quant='AuxValues', d=d, dest=None)
 
             if "Uncertainty" in customer_object:
+                ## e.g. for digitalisation uncert.
                 u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
-                                                         meas_unit="Pa",
-                                                         return_unit="Pa",
-                                                         res=ana,
-                                                         skip_source="standard")
-                
-                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
-            else:
-                cus_dev.offset_uncert(ana, use_idx = ana.flatten(average_index))
-                cus_dev.repeat_uncert(ana)
-                cus_dev.device_uncert(ana) 
+                                                 meas_unit="Pa",
+                                                 return_unit="Pa",
+                                                 res=ana,
+                                                 skip_source="standard",
+                                                 prefix=False)
+            
+            cus_dev.offset_uncert(ana, use_idx = ana.flatten(average_index))
+            cus_dev.repeat_uncert(ana)
+            cus_dev.device_uncert(ana) 
             
             ## the uncertainty of the standard is 
             # already calculated at analysis step            

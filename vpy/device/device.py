@@ -63,15 +63,22 @@ class Device(Document):
             return True ## all in case type_list is None
 
     def get_total_uncert(self, meas_vec, meas_unit, return_unit, res=None, skip_source=None, skip_type=None, take_type_list=None, prefix=True):
-        """ Collects all Uncertainty contrib. for the given
-        measurant (m). Calculates the quadratic sum and returns
-        a np.array of the length as of m. Contributions with a certain source 
+        """Collects all Uncertainty contrib. for the given measurant
+        (m). Calculates the quadratic sum and returns a np.array of
+        the length as of m. Contributions with a certain source
         (e.g. standard) or a certain type (e.g. B) can be skipped.
 
+        For digitalisation uncertainties an `Indication` key may be
+        provided.  
+        
         .. note::
 
-            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer statistisch unabhängiger Messwerte aus einer Messwiederholung.
-            * Typ-B: Ermittlung ohne statistische Methoden, beispielsweise durch Entnahme der Werte aus einem Kalibrierschein...
+            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer
+             statistisch unabhängiger Messwerte aus einer
+            Messwiederholung.  
+            * Typ-B: Ermittlung ohne statistische
+            Methoden, beispielsweise durch Entnahme der Werte aus
+            einem Kalibrierschein...
 
         .. todo::
                 rewrite expression branch
@@ -87,6 +94,7 @@ class Device(Document):
 
         :returns: quadratic sum of uncertainties
         :rtype: np.array
+
         """
         
         uncert_arr = []
@@ -101,7 +109,10 @@ class Device(Document):
                     continue
 
                 u = np.full(np.shape(meas_vec)[0], np.nan)
-                u_val = u_i.get('Value', np.nan)
+
+                u_val = u_i.get('Value')
+                digit = u_i.get('Indication')
+
                 range_unit = u_i.get('RangeUnit')
                 from_val = u_i.get('From')
                 to_val = u_i.get('To')
@@ -111,10 +122,16 @@ class Device(Document):
 
                 from_val, to_val = self.convert_range_to_meas_unit(meas_unit, range_unit, from_val, to_val)
                 range_index = self.get_match_index(meas_vec, from_val, to_val)
-                u[range_index] = float(u_val)
 
-                u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
-
+                if u_val is not None:
+                    u[range_index] = float(u_val)
+                    u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
+                    
+                if digit is not None:
+                    exp = np.floor(np.log10(np.abs(meas_vec[range_index])))
+                    u[range_index] = [digit * 0.29 * 10**e for e in exp]
+                    u, return_unit = self.convert_to_return_unit( u, meas_unit, meas_vec, meas_unit, return_unit)
+                    
                 uncert_arr.append( u )
                 self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
 
@@ -148,6 +165,7 @@ class Device(Document):
                 return n
         else:
             return a
+        
     def convert_range_to_meas_unit(self, meas_unit, range_unit, from_val, to_val):
         if from_val and to_val and meas_unit and range_unit:
             range_conv = self.Const.get_conv(from_unit=range_unit, to_unit=meas_unit)

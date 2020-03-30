@@ -573,7 +573,6 @@ class Analysis(Document):
 
         
         u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
-        
         self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
         self.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , self.pressure_unit)
 
