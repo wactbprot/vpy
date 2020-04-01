@@ -111,7 +111,7 @@ class Device(Document):
                 u = np.full(np.shape(meas_vec)[0], np.nan)
 
                 u_val = u_i.get('Value')
-                digit = u_i.get('Indication')
+                digit = u_i.get('Resolution')
 
                 range_unit = u_i.get('RangeUnit')
                 from_val = u_i.get('From')
@@ -131,7 +131,7 @@ class Device(Document):
                     exp = np.floor(np.log10(np.abs(meas_vec[range_index])))
                     u[range_index] = [digit * 0.29 * 10**e for e in exp]
                     u, return_unit = self.convert_to_return_unit( u, meas_unit, meas_vec, meas_unit, return_unit)
-                    
+
                 uncert_arr.append( u )
                 self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
 

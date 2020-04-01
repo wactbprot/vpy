@@ -329,7 +329,7 @@ class Result(Analysis):
     def make_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
-        ind_str = self.Val.round_to_uncertainty_array(ind, u_total*ind, 2, scientific=True)
+        ind_str = self.Val.round_to_uncertainty_array(ind, u_total*ind, 1, scientific=True)
 
         return ind_str
 
@@ -388,6 +388,7 @@ class Result(Analysis):
     def get_reduced_pressure_ind(self, ana, av_idx, unit):
         ind_dict = ana.pick_dict("Pressure", "ind_corr")
         ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=unit)
+
         ind = np.array(ind_dict.get("Value"), dtype=np.float)  * ind_conv 
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
         
