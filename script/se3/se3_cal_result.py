@@ -52,8 +52,17 @@ def main():
             if customer_object.get("Class") == "RSG":
                 cus_dev = Rsg(doc, customer_object)   
             tdo = ToDo(doc)
+            
             analysis = doc.get('Calibration').get('Analysis')
+            ## keep standard uncertainty and clean the rest
+
+            u_std = Values(analysis.get("Values").get("Uncertainty")).get_value("standard", "1")
+            del analysis['Values']['Uncertainty']
+
             ana = Analysis(doc, init_dict=analysis)
+            ## keep uncert of standard only
+            ana.store("Uncertainty", "standard", u_std, "1")
+            
             
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type, skip=skip)

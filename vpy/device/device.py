@@ -63,12 +63,13 @@ class Device(Document):
             return True ## all in case type_list is None
 
     def get_total_uncert(self, meas_vec, meas_unit, return_unit, res=None, skip_source=None, skip_type=None, take_type_list=None, prefix=True):
-        """Collects all Uncertainty contrib. for the given measurant
-        (m). Calculates the quadratic sum and returns a np.array of
-        the length as of m. Contributions with a certain source
-        (e.g. standard) or a certain type (e.g. B) can be skipped.
+        """Collects all Uncertainty contrib. for the given measurement vector
+        `meas_vec`. Calculates the quadratic sum and returns a
+        `np.array` of the length as of `meas_vec`. Contributions with
+        a certain source (e.g. standard) or a certain type (e.g. B)
+        can be skipped.
 
-        For digitalisation uncertainties an `Indication` key may be
+        For digitalisation uncertainties an `Resolution` key may be
         provided.  
         
         .. note::
@@ -80,13 +81,11 @@ class Device(Document):
             Methoden, beispielsweise durch Entnahme der Werte aus
             einem Kalibrierschein...
 
-        .. todo::
-                rewrite expression branch
-
-        :param meas_vec: array containing values of the measurand the uncertainties are related to 
+        :param meas_vec: array containing values of the measurment 
+                         vector the uncertainties are related to 
         :type meas_vec: np.array
 
-        :param  meas_unit: unit of the  measurand
+        :param  meas_unit: unit of meas_vec  
         :type  meas_unit: str
 
         :param return_unit: unit of the return values
@@ -100,11 +99,14 @@ class Device(Document):
         uncert_arr = []
         if "uncert_dict" in self.__dict__:
             u_dict = self.uncert_dict
+            
             for u_i in u_dict:
                 if self.check_source_skip(u_i, skip_source):
                     continue
+
                 if self.check_type_skip(u_i, skip_type):
                     continue
+
                 if not self.check_take_list(u_i, take_type_list):
                     continue
 
@@ -209,7 +211,7 @@ class Device(Document):
         return pressure
 
     def range_trans(self, ana):
-        """Traverses Range to analysis section.
+        """Traverses range vector to the analysis section.
 
         :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
