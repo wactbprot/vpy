@@ -48,7 +48,7 @@ class Result(Analysis):
         "K": "\\kelvin",
         "C":"\\degreeCelsius",
         "DCR":"\\per\\second",
-        "non":""
+        "none":""
         }
 
     def __init__(self, doc, result_type="expansion", skip=False):
@@ -193,6 +193,7 @@ class Result(Analysis):
             return x
        
     def gen_cdg_entry(self, ana, sec):
+
         e_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Evis"))
         u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
         cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
@@ -329,7 +330,7 @@ class Result(Analysis):
     def make_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
-        ind_str = self.Val.round_to_uncertainty_array(ind, u_total*ind, 1, scientific=True)
+        ind_str = self.Val.round_to_uncertainty_array(ind, u_total*ind, 2, scientific=True)
 
         return ind_str
 

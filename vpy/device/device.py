@@ -220,9 +220,23 @@ class Device(Document):
         if range_str is not None:
             ana.store('Range', 'ind', range_str, '1')
 
+    def ask_for_offset_uncert(self, offset, unit, range_str="all"):
+        """ Asks for u(offset).  
+        """
+        print("\n\n\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n")
+        print(offset)
+    
+        u =  float(input("\n\nType in offset uncertainty in {}: ".format(unit)))
+        d =  input("\n\nType in the distribution of the given uncerainty: r[ect] or n[ormal]: ")
+
+        if d.startswith("n"):
+            return u
+        if d.startswith("r"):
+            return u*0.29
+                   
     def offset_uncert(self, ana, use_idx = None):
         """
-        The offset uncertainty is calculated by means of `np.diff()`.
+        The offset uncertainty is calculated by means of `np.diff(offset)`.
         Drift influences are avoided.
         """
 
@@ -231,13 +245,13 @@ class Device(Document):
         offset = ana.pick("Pressure", "offset", self.unit)
 
         ## make elements not in use_idx nan:
-        o = np.where([i not in use_idx for i in range(0,len(ind))])[0]
+        o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
         for i in o:
             ind[i] = np.nan 
             offset[i] = np.nan 
 
         u = np.full(len(ind), np.nan) 
-        uncert_contrib = {"Unit":self.unit}
+        uncert_contrib = {"Unit": self.unit}
 
         if range_str is not None:
             range_unique = np.unique(range_str)
@@ -246,18 +260,20 @@ class Device(Document):
                 ## sometimes all offset[i_r] are nan
                 all_nan = np.all(np.isnan(offset[i_r]))
                 if np.shape(i_r)[1] > 0 and not all_nan:
-
                     m = np.nanmean(np.abs(np.diff(offset[i_r])))
-                    u[i_r] = m/ind[i_r]
+                    if m == 0.0:
+                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
+                    
                     uncert_contrib[r] = m
+                    u[i_r] = m/ind[i_r]
         else:
             if len(offset) < 2:
-                u = np.full(len(offset), 1.0e-5)
+                m = self.ask_for_offset_uncert(offset, self.unit)
             else:
                 m = np.nanmean(np.abs(np.diff(offset)))
                 if m == 0.0:
                     ## Abschätzung 0.1% vom kleinsten p_ind
-                    m = np.nanmin(ind)*1e-3
+                    m = self.ask_for_offset_uncert(offset, self.unit)
 
                 uncert_contrib["all"] = m
                 u = m/ind
