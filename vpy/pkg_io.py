@@ -16,30 +16,33 @@ class Io(object):
         """
 
         self.config = {
-                        "plot": {"path": "temppath", "make": True},
-                        "db": {
-                            "url": db_url ,
-                            "name": db_name
-                        },
-                        "standards": {
-                            "se3": {
-                                "all_doc_view": "se3_req/doc",
-                                "state_doc_view": "se3_req/state",
-                                "hist_data": "se3_req/group_normal_hist",
-                                "device_info": "se3_req/group_normal_info"
-                            },
-                            "se2": {
-                                "all_doc_view": "se2_req/doc",
-                                "pn_view": "se2_req/pn_by_date"
-                            },
-                             "frs5": {
-                               "all_doc_view": "frs5_req/doc"
-                            },
-                            "dkm_ppc4":{
-                              "all_doc_view": "dkm_ppc4_req/doc"
-                            }
-                        }
-                    }
+            "plot": {"path": "temppath", "make": True},
+            "db": {
+                "url": db_url ,
+                "name": db_name
+            },
+            "standards": {
+                "se3": {
+                    "all_doc_view": "se3_req/doc",
+                    "state_doc_view": "se3_req/state",
+                    "hist_data": "se3_req/group_normal_hist",
+                    "device_info": "se3_req/group_normal_info"
+                },
+                "se2": {
+                    "all_doc_view": "se2_req/doc",
+                    "pn_view": "se2_req/pn_by_date"
+                },
+                "frs5": {
+                    "all_doc_view": "frs5_req/doc"
+                },
+                "dkm_ppc4":{
+                    "all_doc_view": "dkm_ppc4_req/doc"
+                }                        
+            },
+        "all":{
+            "log_data_view":"log_data/name-date"
+        }    
+        }
         self.make_plot =  self.config["plot"]["make"]
 
     def eval_args(self):
@@ -345,7 +348,36 @@ class Io(object):
 
 
         return dat
-    
+
+    def get_log_data(self, task_name, date_from, date_to):
+        """Gets and returns an array containing the log data 
+        produced by a certain task.
+
+        :param task_name: name of the task
+        :type task_name: str
+        
+        :param date_from: start date in the form 2020-04-22_14-44
+        :type date_from: str
+        
+        :param date_to: end date in the form 2020-04-22_14-45
+        :type date_to: str
+        
+        :returns: document
+        :rtype: dict
+        """
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        dat = []
+
+        start_key = "{}~{}".format(task_name, date_from)
+        end_key = "{}~{}".format(task_name, date_to)
+
+        view = self.config['all']['log_data_view']
+        for item in db.view(view, startkey=start_key, endkey=end_key):
+            dat.append(item.value)
+
+        return dat
+
     def get_device_info(self, std):
         """Gets and returns an array containing info data.
 
