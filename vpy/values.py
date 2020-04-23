@@ -72,6 +72,11 @@ class Values(Document):
             }
         return to_target_unit[b]
 
+    def rect_to_norm(self, a):
+        """Converts rectangular distrib.
+        to normal distrib."""
+        return a*0.29
+    
     def cnt_nan(self, d):
         return np.count_nonzero(~np.isnan(d))
 

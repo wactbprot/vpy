@@ -63,23 +63,29 @@ class Device(Document):
             return True ## all in case type_list is None
 
     def get_total_uncert(self, meas_vec, meas_unit, return_unit, res=None, skip_source=None, skip_type=None, take_type_list=None, prefix=True):
-        """ Collects all Uncertainty contrib. for the given
-        measurant (m). Calculates the quadratic sum and returns
-        a np.array of the length as of m. Contributions with a certain source 
-        (e.g. standard) or a certain type (e.g. B) can be skipped.
+        """Collects all Uncertainty contrib. for the given measurement vector
+        `meas_vec`. Calculates the quadratic sum and returns a
+        `np.array` of the length as of `meas_vec`. Contributions with
+        a certain source (e.g. standard) or a certain type (e.g. B)
+        can be skipped.
 
+        For digitalisation uncertainties an `Resolution` key may be
+        provided.  
+        
         .. note::
 
-            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer statistisch unabhängiger Messwerte aus einer Messwiederholung.
-            * Typ-B: Ermittlung ohne statistische Methoden, beispielsweise durch Entnahme der Werte aus einem Kalibrierschein...
+            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer
+             statistisch unabhängiger Messwerte aus einer
+            Messwiederholung.  
+            * Typ-B: Ermittlung ohne statistische
+            Methoden, beispielsweise durch Entnahme der Werte aus
+            einem Kalibrierschein...
 
-        .. todo::
-                rewrite expression branch
-
-        :param meas_vec: array containing values of the measurand the uncertainties are related to 
+        :param meas_vec: array containing values of the measurment 
+                         vector the uncertainties are related to 
         :type meas_vec: np.array
 
-        :param  meas_unit: unit of the  measurand
+        :param  meas_unit: unit of meas_vec  
         :type  meas_unit: str
 
         :param return_unit: unit of the return values
@@ -87,21 +93,28 @@ class Device(Document):
 
         :returns: quadratic sum of uncertainties
         :rtype: np.array
+
         """
         
         uncert_arr = []
         if "uncert_dict" in self.__dict__:
             u_dict = self.uncert_dict
+            
             for u_i in u_dict:
                 if self.check_source_skip(u_i, skip_source):
                     continue
+
                 if self.check_type_skip(u_i, skip_type):
                     continue
+
                 if not self.check_take_list(u_i, take_type_list):
                     continue
 
                 u = np.full(np.shape(meas_vec)[0], np.nan)
-                u_val = u_i.get('Value', np.nan)
+
+                u_val = u_i.get('Value')
+                digit = u_i.get('Resolution')
+
                 range_unit = u_i.get('RangeUnit')
                 from_val = u_i.get('From')
                 to_val = u_i.get('To')
@@ -111,9 +124,15 @@ class Device(Document):
 
                 from_val, to_val = self.convert_range_to_meas_unit(meas_unit, range_unit, from_val, to_val)
                 range_index = self.get_match_index(meas_vec, from_val, to_val)
-                u[range_index] = float(u_val)
 
-                u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
+                if u_val is not None:
+                    u[range_index] = float(u_val)
+                    u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
+                    
+                if digit is not None:
+                    exp = np.floor(np.log10(np.abs(meas_vec[range_index])))
+                    u[range_index] = [digit * 0.29 * 10**e for e in exp]
+                    u, return_unit = self.convert_to_return_unit( u, meas_unit, meas_vec, meas_unit, return_unit)
 
                 uncert_arr.append( u )
                 self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
@@ -148,6 +167,7 @@ class Device(Document):
                 return n
         else:
             return a
+        
     def convert_range_to_meas_unit(self, meas_unit, range_unit, from_val, to_val):
         if from_val and to_val and meas_unit and range_unit:
             range_conv = self.Const.get_conv(from_unit=range_unit, to_unit=meas_unit)
@@ -191,7 +211,7 @@ class Device(Document):
         return pressure
 
     def range_trans(self, ana):
-        """Traverses Range to analysis section.
+        """Traverses range vector to the analysis section.
 
         :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -202,9 +222,23 @@ class Device(Document):
         if range_str is not None:
             ana.store('Range', 'ind', range_str, '1')
 
+    def ask_for_offset_uncert(self, offset, unit, range_str="all"):
+        """ Asks for u(offset).  
+        """
+        print("\n\n\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n")
+        print(offset)
+    
+        u =  float(input("\n\nType in offset uncertainty in {}: ".format(unit)))
+        d =  input("\n\nType in the distribution of the given uncerainty: r[ect] or n[ormal]: ")
+
+        if d.startswith("n"):
+            return u
+        if d.startswith("r"):
+            return u*0.29
+                   
     def offset_uncert(self, ana, use_idx = None):
         """
-        The offset uncertainty is calculated by means of `np.diff()`.
+        The offset uncertainty is calculated by means of `np.diff(offset)`.
         Drift influences are avoided.
         """
 
@@ -213,13 +247,13 @@ class Device(Document):
         offset = ana.pick("Pressure", "offset", self.unit)
 
         ## make elements not in use_idx nan:
-        o = np.where([i not in use_idx for i in range(0,len(ind))])[0]
+        o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
         for i in o:
             ind[i] = np.nan 
             offset[i] = np.nan 
 
         u = np.full(len(ind), np.nan) 
-        uncert_contrib = {"Unit":self.unit}
+        uncert_contrib = {"Unit": self.unit}
 
         if range_str is not None:
             range_unique = np.unique(range_str)
@@ -228,20 +262,24 @@ class Device(Document):
                 ## sometimes all offset[i_r] are nan
                 all_nan = np.all(np.isnan(offset[i_r]))
                 if np.shape(i_r)[1] > 0 and not all_nan:
-
                     m = np.nanmean(np.abs(np.diff(offset[i_r])))
-                    u[i_r] = m/ind[i_r]
+                    if m == 0.0:
+                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
+                    
                     uncert_contrib[r] = m
+                    u[i_r] = m/ind[i_r]
         else:
             if len(offset) < 2:
-                u = np.full(len(offset), 1.0e-5)
+                m = self.ask_for_offset_uncert(offset, self.unit)
             else:
                 m = np.nanmean(np.abs(np.diff(offset)))
+                if m == 0.0:
+                    ## Abschätzung 0.1% vom kleinsten p_ind
+                    m = self.ask_for_offset_uncert(offset, self.unit)
 
                 uncert_contrib["all"] = m
                 u = m/ind
-
-
+               
         ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u, "1")
 
@@ -281,13 +319,24 @@ class Device(Document):
     def device_uncert(self, ana):
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
 
+        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
         if digit_uncert is not None:
             p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
             u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
         else:
             u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+
+        add_uncert = ana.pick_dict("Uncertainty", "add")
+        if add_uncert is not None:
+            add_unit = add_uncert.get("Unit") 
+            if add_unit == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                add_uncert = ana.pick("Uncertainty", "add", "Pa")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
+            if add_unit == "1":
+                add_uncert = ana.pick("Uncertainty", "add", "1")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
 
         ana.store("Uncertainty", "device", u, "1")
 

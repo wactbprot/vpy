@@ -52,14 +52,24 @@ def main():
             if customer_object.get("Class") == "RSG":
                 cus_dev = Rsg(doc, customer_object)   
             tdo = ToDo(doc)
+            
             analysis = doc.get('Calibration').get('Analysis')
+            ## keep standard uncertainty and clean the rest
+
+            u_std = Values(analysis.get("Values").get("Uncertainty")).get_value("standard", "1")
+            del analysis['Values']['Uncertainty']
+
             ana = Analysis(doc, init_dict=analysis)
+            ## keep uncert of standard only
+            ana.store("Uncertainty", "standard", u_std, "1")
+            
             
             result_type = analysis.get("AnalysisType", "default")
             res = Result(doc, result_type=result_type, skip=skip)
             
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
+            p_ind = ana.pick('Pressure', 'ind', unit)
             err = p_ind_corr/p_cal - 1  
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
@@ -150,19 +160,19 @@ def main():
            
             res.store_dict(quant='AuxValues', d=d, dest=None)
 
+            ## default uncert. contrib.
+            cus_dev.offset_uncert(ana, use_idx = ana.flatten(average_index))
+            cus_dev.repeat_uncert(ana)
+            cus_dev.device_uncert(ana) 
             if "Uncertainty" in customer_object:
-                print("lll")
+                ## e.g. for digitalisation uncert.
                 u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
-                                                         meas_unit="Pa",
-                                                         return_unit="Pa",
-                                                         res=ana,
-                                                         skip_source="standard")
-                
-                ana.store("Uncertainty", "device", u_dev/p_ind_corr, "1") 
-            else:
-                cus_dev.offset_uncert(ana, use_idx = ana.flatten(average_index))
-                cus_dev.repeat_uncert(ana)
-                cus_dev.device_uncert(ana) 
+                                                 meas_unit="Pa",
+                                                 return_unit="Pa",
+                                                 res=ana,
+                                                 skip_source="standard",
+                                                 prefix=False)
+            
             
             ## the uncertainty of the standard is 
             # already calculated at analysis step            
@@ -174,12 +184,13 @@ def main():
 
             if tdo.type == "error":
                 # start build cert table
-                p_ind, err, u =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
+                p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
             
                 plt.subplot(111)
                 plt.xscale('symlog', linthreshx=1e-12)
-                plt.errorbar(p_ind, err,   yerr=u,  marker='8', linestyle=":", markersize=10, label="certificate")
-
+                
+                plt.errorbar(p_ind_mv, err_mv,   yerr=u_mv,  marker='8', linestyle=":", markersize=10, label="certificate")
+                plt.plot(x, y, marker='o', linestyle="None", markersize=10, label="measurement")
                 plt.legend()
                 plt.title('Calib. of {}@SE3'.format(customer_object.get('Name')))
                 plt.ylabel('$e$')

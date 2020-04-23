@@ -345,9 +345,7 @@ class Analysis(Document):
             print("New list is: " + str(reject))
 
         self.log.debug("average index before manual remove:{}".format(average_index))
-        print(average_index)
         average_index = [[j for j in i if not j in reject] for i in average_index]
-        print(average_index)
         self.log.debug("average index after manual remove:{}".format(average_index))
 
         return average_index, reject
@@ -562,7 +560,7 @@ class Analysis(Document):
     def reduce_by_average_index(self,  value, average_index):
         """Calculates the mean value for each target pressure.
         """
-        return np.asarray([np.mean(np.take(value, i)) for i in average_index])
+        return np.asarray([np.nanmean(np.take(value, i)) for i in average_index])
     
     def total_uncert(self):
         
@@ -575,7 +573,6 @@ class Analysis(Document):
 
         
         u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
-        
         self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
         self.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , self.pressure_unit)
 

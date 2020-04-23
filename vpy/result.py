@@ -42,28 +42,14 @@ class Result(Analysis):
         "Pa":"\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
         }
     unit_trans = {
-        "mbar": "\\mbar",
-        "Pa": "\\Pa"
+        "mbar": "\\millibar",
+        "Pa": "\\pascal",
+        "1/Pa": "\\per\\pascal",
+        "K": "\\kelvin",
+        "C":"\\degreeCelsius",
+        "DCR":"\\per\\second",
+        "none":""
         }
-
-    ## wrong position for that kind of info
-    ## 
-    #gas = {
-    #    "de": {
-    #        "He": "Helium",
-    #        "Ar": "Argon",
-    #        "H2": "Wasserstoff",
-    #        "N2": "Stickstoff",
-    #        "Ne": "Neon"
-    #        },
-    #    "en": {
-    #        "He": "helium",
-    #        "Ar": "argon",
-    #        "H2": "hydrogen",
-    #        "N2": "nitrogen",
-    #        "Ne": "neon"
-    #        }
-    #    }
 
     def __init__(self, doc, result_type="expansion", skip=False):
         
@@ -92,6 +78,12 @@ class Result(Analysis):
     ##
     ## --> shipped function to values.py
 
+    def to_si_expr(self, v, unit):
+        return "\\SI{"+ v + "}{" + self.unit_trans[unit] + "}"
+
+    def to_si_pm_expr(self, v, u, unit):
+        return self.to_si_expr("" + v + "+-" + u, unit)
+
     def make_calibration_data_section(self, ana):
         """The Calibration data section should contain data valid
         for the entire calibration run.
@@ -105,10 +97,11 @@ class Result(Analysis):
         t = ana.pick("Temperature", "gas", unit)
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
-
-        sec["GasTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
-        sec["GasTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 2)    
-        sec["GasTemperatureUnit"] = unit
+        
+        v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
+        u = self.Val.round_to_sig_dig(t_unc, 2)
+        
+        sec["GasTemperature"] = self.to_si_pm_expr(v, u, unit)
 
         return sec        
 
@@ -118,34 +111,38 @@ class Result(Analysis):
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
 
-        sec["GasTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
-        sec["GasTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 2)    
-        sec["GasTemperatureUnit"] = unit
+        v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
+        u = self.Val.round_to_sig_dig(t_unc, 2)
         
+        sec["GasTemperature"] = self.to_si_pm_expr(v, u, unit)
+
         return sec
     
     def gen_temperature_room_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "room", unit)
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
-        sec["RoomTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
-        sec["RoomTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 1)
-        sec["RoomTemperatureUnit"] = unit
-
+        
+        v = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
+        u = self.Val.round_to_sig_dig(t_unc, 1)
+        
+        sec["RoomTemperature"] = self.to_si_pm_expr(v, u, unit)
+        
         return sec
     
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
         t_mean = np.mean(t) - 4. + 273.15
         t_unc = 0.5
-        sec["EstimatedTemperature"] = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
-        sec["EstimatedTemperatureUncertainty"] = self.Val.round_to_sig_dig(t_unc, 1)
-        sec["EstimatedTemperatureUnit"] = unit
 
+        v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
+        u = self.Val.round_to_sig_dig(t_unc, 2)
+        
+        sec["EstimatedTemperature"] = self.to_si_pm_expr(v, u, unit)
+        
         return sec
 
     def gen_temperature_correction(self, ana, sec):
-
         p_tdo, p_tdo_unit = self.ToDo.Pres.get_value_and_unit("target")
         conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
 
@@ -170,25 +167,24 @@ class Result(Analysis):
 
         p_min, p_max, todo_unit = self.ToDo.get_min_max_pressure()
         conv = float(self.Const.get_conv(from_unit=todo_unit, to_unit=unit))
-        sec["PressureRangeBegin"] = "{:.1e}".format(p_min*conv)
-        sec["PressureRangeEnd"] = "{:.1e}".format(p_max*conv)
-        sec["PressureRangeUnit"] = self.unit_trans[unit]
-        
+        sec["PressureRangeBegin"] = self.to_si_expr("{:.1e}".format(p_min*conv), unit)
+        sec["PressureRangeEnd"] = self.to_si_expr("{:.1e}".format(p_max*conv), unit)
+               
         return sec
 
     def gen_min_max_entry_direct_se2(self, ana, sec, unit="Pa"):
 
         ex = ana.org["Calibration"]["Measurement"]["Values"]["Expansion"]["Value"]
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
-        p_cal = ana.pick("Pressure", "cal", "Pa")
+        p_cal = ana.pick("Pressure", "cal", unit)
 
         p_cal = [p_cal[i] for i in av_idx if ex[i]=="direkt"]
 
         if len(p_cal)>0:
-            sec["PressureRangeDirectBegin"] = "{:.1e}".format(min(p_cal))
-            sec["PressureRangeDirectEnd"] = "{:.1e}".format(max(p_cal))
+            sec["PressureRangeDirectBegin"] =  self.to_si_expr("{:.1e}".format(min(p_cal)), unit)
+            sec["PressureRangeDirectEnd"] =  self.to_si_expr("{:.1e}".format(max(p_cal)), unit)
         
-        return sec        
+        return sec
 
     def extr_val(self, x):
         if type(x) is list:
@@ -196,24 +192,24 @@ class Result(Analysis):
         else:
             return x
        
-    
     def gen_cdg_entry(self, ana, sec):
+
         e_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Evis"))
         u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
         cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
 
         if e_vis is not None and u_vis is not None:
-            sec["Evis"] = self.Val.round_to_uncertainty(e_vis, u_vis, 2)
-            sec["UncertEvis"] = self.Val.round_to_sig_dig(u_vis, 2)
+            sec["Evis"] = self.to_si_expr(self.Val.round_to_uncertainty(e_vis, u_vis, 2), "none")
+            sec["UncertEvis"] = self.to_si_expr(self.Val.round_to_sig_dig(u_vis, 2), "none")
             
         
         if cf_vis and u_vis:
-            sec["CFvis"] = self.Val.round_to_uncertainty(cf_vis, u_vis, 2)
-            sec["UncertCFvis"] = self.Val.round_to_sig_dig(u_vis, 2)
+            sec["CFvis"] = self.to_si_expr(self.Val.round_to_uncertainty(cf_vis, u_vis, 2), "none")
+            sec["UncertCFvis"] = self.to_si_expr(self.Val.round_to_sig_dig(u_vis, 2), "none")
         
         return sec
     
-    def gen_uncert_offset_entry(self, ana, sec):
+    def gen_uncert_offset_entry(self, ana, sec, unit="Pa"):
 
         val_fmt_str = "{:.1E}"
         ana_aux_values = ana.doc.get("AuxValues", {})
@@ -223,24 +219,20 @@ class Result(Analysis):
         range_str = self.get_reduced_range_str(ana, av_idx)
         
         if uncert_contribs and "Unit" in uncert_contribs:
-            if uncert_contribs["Unit"] is not "Pa":
-                sys.exit("Expect Pa as offset uncert contrib unit")
-            else:
-                unit = "\\pascal"
+            if uncert_contribs["Unit"] is not unit:
+                sys.exit("Unexpected as offset unit")
             entr = {}
             for r in uncert_contribs:
                 value = None
                 if r is not "Unit":
-                   
                     if range_str:
                         if r in range_str:
                             value =  val_fmt_str.format(uncert_contribs[r])
-                        
                     else:
                         value =  val_fmt_str.format(uncert_contribs[r])
                         
                     if value:
-                        entr[r] = "\\SI{"+value+"}{"+unit+"}"
+                        entr[r] = self.to_si_expr(value, unit)
 
             sec["OffsetUncertContrib"] = entr
 
@@ -258,12 +250,19 @@ class Result(Analysis):
         sigma_std = self.doc.get("AuxValues", {}).get("SigmaStd")
         
         if sigma_null and sigma_slope and sigma_std:
-            sec["SigmaNull"] = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
-            sec["SigmaCorrSlope"] = self.Val.round_to_uncertainty(sigma_slope[0], 2e-3, 2)
-            sec["SigmaStd"] = self.Val.round_to_uncertainty(sigma_std[0], 2e-3, 2)
-            sec["OffsetMean"] = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
-            sec["OffsetStd"] = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
-            sec["OffsetUnit"] = self.doc.get("AuxValues", {}).get("OffsetUnit")
+            v = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
+            sec["SigmaNull"] = self.to_si_expr(v, "none")
+
+            v = self.Val.round_to_uncertainty(sigma_slope[0], 2e-3, 2)
+            u = self.Val.round_to_uncertainty(sigma_std[0], 2e-3, 2)
+            sec["SigmaCorrSlope"] =self.to_si_pm_expr(v, u, "1/Pa") 
+        
+
+            v_mean = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
+            sec["OffsetMean"] = self.to_si_expr(v_mean, "DCR")
+
+            v_sd = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
+            sec["OffsetStd"] = self.to_si_expr(v_sd, "DCR")
        
         return sec
 
@@ -390,6 +389,7 @@ class Result(Analysis):
     def get_reduced_pressure_ind(self, ana, av_idx, unit):
         ind_dict = ana.pick_dict("Pressure", "ind_corr")
         ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=unit)
+
         ind = np.array(ind_dict.get("Value"), dtype=np.float)  * ind_conv 
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
         
