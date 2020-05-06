@@ -73,7 +73,7 @@ def main():
             gas = cal.Aux.get_gas()
 
             devs = (
-                "100T_1", "100T_2", "100T_3",
+                #"100T_1", "100T_2", "100T_3",
                 "500T_1",
                 "1000T_1", "1000T_2", "1000T_3",
                 )
@@ -82,12 +82,15 @@ def main():
             for dev in devs:            
                 p_offset = cal.Pres.get_value( '{}-offset'.format(dev), cal.unit)    
                 p_ind = cal.Pres.get_value('{}-ind'.format(dev), cal.unit)
-            
+                e = p_ind/p_cal-1
+                print(dev)
+                print(p_cal)
+                print(e)
                 res.store("Pressure", '{}-offset'.format(dev), p_offset, cal.unit)
                 res.store("Pressure",'{}-ind'.format(dev), p_ind, cal.unit)
                 res.store("Pressure",'{}-ind_corr'.format(dev), p_ind - p_offset, cal.unit)
                 
-                res.store('Error', '{}-ind'.format(dev), p_ind/p_cal-1, '1')
+                res.store('Error', '{}-ind'.format(dev), e, '1')
 
             io.save_doc(res.build_doc())
 
