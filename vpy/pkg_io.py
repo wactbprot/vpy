@@ -37,7 +37,7 @@ class Io(object):
                 },
                 "dkm_ppc4":{
                     "all_doc_view": "dkm_ppc4_req/doc"
-                }                        
+                }
             },
         "all":{
             "log_data_view":"log_data/name-date"

@@ -442,6 +442,7 @@ class Result(Analysis):
         range_dict = ana.pick_dict("Range", "ind")
         if range_dict is not None:
             range_str = range_dict.get("Value")
+
             return [range_str[v[0]] for v in av_idx]
         else:
             return None

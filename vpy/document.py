@@ -242,15 +242,14 @@ class Document(object):
         :returns: ret
         :rtype: np: array of type np.float
         """
-
-        if isinstance(value, str):
-            ret = np.asarray([value]).astype(np.float)
+	if isinstance(value, str):
+            ret = np.asarray([value], dtype=np.float)
         if isinstance(value, list):
-            ret = np.asarray(value).astype(np.float)
+            ret = np.asarray(value, dtype=np.float)
         if isinstance(value, float):
-            ret = np.array([value]).astype(np.float)
+            ret = np.array([value], dtype=np.float)
         if isinstance(value, int):
-            ret = np.array([value]).astype(np.float)
+            ret = np.array([value], dtype=np.float)
     
         return ret
 
