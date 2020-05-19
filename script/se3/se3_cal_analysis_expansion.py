@@ -45,7 +45,7 @@ def main():
 
     cmc = False
     
-    if not fail and len(ids) >0:
+    if not fail and len(ids) > 0:
         base_doc = io.get_base_doc("se3")
         for id in ids:
             id = id.replace("\"", "")
@@ -115,9 +115,10 @@ def main():
             temperature_dict = res.pick_dict('Temperature', 'after')
             offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-            
-            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
-            ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
+            range_dict = cal.Range.get_dict('Type', 'ind' )
+
+            offset = CustomerDevice.pressure(offset_dict, temperature_dict, range_dict=range_dict, unit = cal.unit, gas=gas)
+            ind = CustomerDevice.pressure(ind_dict, temperature_dict, range_dict=range_dict, unit = cal.unit, gas=gas)
             
             res.store("Pressure", "offset", offset, cal.unit)
             res.store("Pressure", "ind", ind, cal.unit)

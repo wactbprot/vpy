@@ -63,6 +63,11 @@ class Cdg(Device):
         "X0.1":"offset_x0.1",
         "X0.01":"offset_x0.01",
     }
+    range_mult = {
+        "X1":1.,
+        "X0.1":0.1,
+        "X0.01":0.01,
+    }
     
     range_extend = 0.005 # relativ
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
@@ -173,7 +178,7 @@ class Cdg(Device):
             self.log.error(msg)
             sys.exit(msg)
 
-    def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
+    def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= 'Pa', gas= "N2"):
         """Converts the measured pressure in self.unit. If the unit is V
         this conversions are implemented: 
         
@@ -182,13 +187,18 @@ class Cdg(Device):
         """
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
-  
+        
         if pressure_unit == "V":
             if self.conversion_type == "factor":
-                return pressure_value * self.max_p/self.max_voltage
+                if range_dict:
+                    range_mult = np.array([self.range_mult.get(x) for x in range_dict.get('Value') ]) 
+                    p = pressure_value * self.max_p/self.max_voltage * range_mult
+                else:
+                    p = pressure_value * self.max_p/self.max_voltage
+                
+                return p
 
             if self.conversion_type == "cmr":
-
                 return (pressure_value +self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
                 
             msg = "conversion type not implemented"

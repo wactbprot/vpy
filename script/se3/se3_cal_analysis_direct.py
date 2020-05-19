@@ -76,8 +76,10 @@ def main():
             gas = cal.Aux.get_gas()
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
             offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
-            ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit=unit, gas=gas)
-            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit=unit, gas=gas)
+            range_dict = cal.Range.get_dict('Type', 'ind' )
+            
+            ind = CustomerDevice.pressure(ind_dict, temperature_dict, range_dict=range_dict, unit=unit, gas=gas)
+            offset = CustomerDevice.pressure(offset_dict, temperature_dict, range_dict=range_dict, unit=unit, gas=gas)
             
             res.store("Pressure", "ind", ind, unit)
             res.store("Pressure", "offset", offset, unit)
