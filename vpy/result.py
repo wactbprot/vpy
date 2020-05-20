@@ -72,26 +72,11 @@ class Result(Analysis):
        
         super().__init__(doc, init_dict)
 
-    ## (vpy) bock04@i75464:~/vpy$ grep -r gatherby .
-    ##     ./vpy/result.py:    def gatherby_idx(self, l, compare_function):
-    ##     ./jupyter_utils.py:def gatherby_idx(l, compare_function):
-    ##
-    ## --> shipped function to values.py
-
     def to_si_expr(self, v, unit):
         return "\\SI{"+ v + "}{" + self.unit_trans[unit] + "}"
 
     def to_si_pm_expr(self, v, u, unit):
         return self.to_si_expr("" + v + "+-" + u, unit)
-
-    def make_calibration_data_section(self, ana):
-        """The Calibration data section should contain data valid
-        for the entire calibration run.
-
-        The former p_min, p_max values generated here belong to the
-        measurement (expanstion, direct measurement).
-        """
-        pass
 
     def gen_temperature_gas_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "gas", unit)
@@ -142,21 +127,6 @@ class Result(Analysis):
         
         return sec
 
-    def gen_temperature_correction(self, ana, sec):
-        p_tdo, p_tdo_unit = self.ToDo.Pres.get_value_and_unit("target")
-        conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
-
-        p_tdo = conv * p_tdo
-        #temperature correction only if more than 1 decade below 100 Pa
-        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]         
-
-        if len(p_tdo_evis) > 1:
-            sec["TemperatureCorrection"] = "yes"
-        else:
-            sec["TemperatureCorrection"] ="no"
-
-        return sec
-
     def gen_meas_date_entry(self, ana, sec):
 
         sec["MeasurementDate"] = self.Date.first_measurement()
@@ -184,6 +154,27 @@ class Result(Analysis):
             sec["PressureRangeDirectBegin"] =  self.to_si_expr("{:.1e}".format(min(p_cal)), unit)
             sec["PressureRangeDirectEnd"] =  self.to_si_expr("{:.1e}".format(max(p_cal)), unit)
         
+        return sec
+
+
+    def gen_temperature_correction(self, ana, sec):
+        """ Sets the TemperatureCorrection flag to yes if
+        * there is more than 1 point in the decade below 100 Pa and
+        * `TemperatureHead` is not `None`
+        """
+        p_tdo, p_tdo_unit = self.ToDo.Pres.get_value_and_unit("target")
+        conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
+
+        p_tdo = conv * p_tdo
+        #temperature correction only if more than 1 decade below 100 Pa
+        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]
+        
+        temperature_head = self.doc.get("AuxValues", {}).get("TemperatureHead")
+        if temperature_head and len(p_tdo_evis) > 1:
+            sec["TemperatureCorrection"] = "yes"
+        else:
+            sec["TemperatureCorrection"] = "no"
+
         return sec
 
     def extr_val(self, x):
@@ -448,8 +439,9 @@ class Result(Analysis):
             return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
-        
-        av_idx = self.doc["AuxValues"]["AverageIndex"]
+
+        doc_aux_values = self.doc.get("AuxValues", {}) 
+        av_idx = doc_aux_values.get("AverageIndex")   
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)

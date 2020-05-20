@@ -33,7 +33,7 @@ class ToDo(Document):
                 # delete pressure
                 doc.pop('Pressure', None)
 
-            if 'Temperature' in doc:
+            if 'Temperature' in doc['Values']:
                 self.Temp = Temperature(doc["Values"])
                 self.temperature_unit = self.Temp.get_dict('Type', 'target').get('Unit')
                 # delete pressure

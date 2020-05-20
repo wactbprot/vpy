@@ -56,13 +56,13 @@ def main():
                 customer_device = doc['Calibration']['CustomerObject']
                 dev_class = customer_device.get('Class', "generic")
                 if dev_class == 'SRG':
-                    CustomerDevice = Srg(doc, customer_device)
+                   cus_dev = Srg(doc, customer_device)
                 if dev_class == 'CDG':
-                    CustomerDevice = Cdg(doc, customer_device)
+                   cus_dev = Cdg(doc, customer_device)
                 if dev_class == 'RSG':
-                    CustomerDevice = Rsg(doc, {})
+                   cus_dev = Rsg(doc, {})
             
-            CustomerDevice.range_trans(res)
+            cus_dev.range_trans(res)
             cal.temperature_comp(res)
             cal.temperature_gas_direct(res)
             cal.pressure_gn_corr(res)
@@ -78,8 +78,8 @@ def main():
             offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
             range_dict = cal.Range.get_dict('Type', 'ind' )
             
-            ind = CustomerDevice.pressure(ind_dict, temperature_dict, range_dict=range_dict, unit=unit, gas=gas)
-            offset = CustomerDevice.pressure(offset_dict, temperature_dict, range_dict=range_dict, unit=unit, gas=gas)
+            ind = cus_dev.pressure(ind_dict, temperature_dict, range_dict=range_dict, unit=unit, gas=gas)
+            offset = cus_dev.pressure(offset_dict, temperature_dict, range_dict=range_dict, unit=unit, gas=gas)
             
             res.store("Pressure", "ind", ind, unit)
             res.store("Pressure", "offset", offset, unit)

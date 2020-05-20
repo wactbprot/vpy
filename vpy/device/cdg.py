@@ -72,6 +72,9 @@ class Cdg(Device):
     range_extend = 0.005 # relativ
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
 
+    def e_vis_limit(self):
+        return 100.0, self.unit
+    
     def e_vis_model(self, p, a, b, c, d):
         return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
     
@@ -178,6 +181,41 @@ class Cdg(Device):
             self.log.error(msg)
             sys.exit(msg)
 
+
+    def temperature_correction(self, x_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, x_vis, x_vis_unit):
+        p_vis_lim , p_vis_lim_unit = self.e_vis_limit()
+
+        x = np.array(x_dict.get("Value"))
+        t_gas = np.array(t_gas_dict.get("Value"))
+        t_head = np.array(t_head_dict.get("Value"))
+        t_norm = np.array(t_norm_dict.get("Value"))
+        p_cal = np.array(p_cal_dict.get("Value"))
+        
+        if p_cal_dict.get("Unit") == p_vis_lim_unit:
+            idx = np.where(p_cal < p_vis_lim)
+        else:
+            sys.exit("wrong p units")
+            
+        if np.shape(idx)[1] == 0:
+                return x_val
+            
+        x = np.array(x_dict.get("Value"))
+        t_gas = np.array(t_gas_dict.get("Value"))
+        t_head = np.array(t_head_dict.get("Value"))
+        t_head = np.array(t_norm_dict.get("Value"))
+        
+        if x_dict.get("Unit") ==  x_vis_unit:
+            a = x_vis + (x - x_vis)
+        else:
+            sys.exit("wrong x units")
+            
+        if t_gas_dict.get("Unit") ==  t_norm_dict.get("Unit") and  t_gas_dict.get("Unit") ==  t_head_dict.get("Unit"):
+            b = np.sqrt(t_head/t_norm)/np.sqrt(t_head/t_gas)
+        else:
+            sys.exit("wrong t units")
+
+        return a * b
+    
     def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= 'Pa', gas= "N2"):
         """Converts the measured pressure in self.unit. If the unit is V
         this conversions are implemented: 
