@@ -126,7 +126,7 @@ def main():
                     plt.legend()
                     plt.grid()
                     plt.show()
-
+                   
                     t_head = temperature_head + res.Const.get_conv(from_unit=head_unit, to_unit="K")
                     t_head_dict = {"Value":t_head, "Unit":"K"}
 
@@ -135,7 +135,6 @@ def main():
                     t_norm_dict = {"Value":t_target, "Unit":"K"}
                     
                     t_gas_dict = ana.pick_dict("Temperature", "after")
-
                     e_dict = ana.pick_dict("Error", "ind")
                    
                     e_vis, cf_vis, u_vis, vis_unit = ana.ask_for_evis(e_vis_cal)
@@ -143,15 +142,16 @@ def main():
                     d["CFvis"] = cf_vis
                     d["Uvis"] = u_vis
                     d["VisUnit"] = vis_unit
-                    d["TemperatureHead"] = t_head  
+                    ## float() avoids that the value becomes an array
+                    d["TemperatureHead"] = float(t_head[0])
                     d["TemperatureHeadUnit"] = "K"
-                    d["TemperatureNorm"] = t_target
+                    d["TemperatureNorm"] = float(t_target[0])
                     d["TemperatureNormUnit"] = "K"
                     
                     err_norm = cus_dev.temperature_correction(e_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, e_vis, vis_unit)
                     ana.store("Error", "ind_temperature_corr",  err_norm, e_dict.get("Unit"))
-                    plt.plot(p_cal, err_norm - err, marker='o', linestyle="None", markersize=10, label="$e_{corr} - e$")               
                     
+                    plt.plot(p_cal, err_norm - err, marker='o', linestyle="None", markersize=10, label="$e_{corr} - e$")
                     plt.legend()
                     plt.grid()
                     plt.show()
@@ -176,7 +176,7 @@ def main():
                 d["SigmaNull"]  = sigma_null
                 d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
                 d["SigmaStd"] = sigma_std
-
+ 
                 aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
                 rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
                 d["OffsetMean"] = np.nanmean(rd)
@@ -187,7 +187,7 @@ def main():
             ## in order to keep githash info
            
             res.store_dict(quant='AuxValues', d=d, dest=None)
-
+            
             ## default uncert. contrib.
             cus_dev.offset_uncert(ana, use_idx = ana.flatten(average_index))
             cus_dev.repeat_uncert(ana)

@@ -200,9 +200,11 @@ class Cdg(Device):
                 return x_val
             
         x = np.array(x_dict.get("Value"))
+        x_vis = np.array(x_vis)
+        
         t_gas = np.array(t_gas_dict.get("Value"))
         t_head = np.array(t_head_dict.get("Value"))
-        t_head = np.array(t_norm_dict.get("Value"))
+        t_norm = np.array(t_norm_dict.get("Value"))
         
         if x_dict.get("Unit") ==  x_vis_unit:
             a = x_vis + (x - x_vis)
@@ -210,7 +212,7 @@ class Cdg(Device):
             sys.exit("wrong x units")
             
         if t_gas_dict.get("Unit") ==  t_norm_dict.get("Unit") and  t_gas_dict.get("Unit") ==  t_head_dict.get("Unit"):
-            b = np.sqrt(t_head/t_norm)/np.sqrt(t_head/t_gas)
+            b = (np.sqrt(t_head/t_norm) - 1)/(np.sqrt(t_head/t_gas) - 1)
         else:
             sys.exit("wrong t units")
 

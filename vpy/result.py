@@ -114,6 +114,26 @@ class Result(Analysis):
         sec["RoomTemperature"] = self.to_si_pm_expr(v, u, unit)
         
         return sec
+
+    def gen_temperature_head_entry(self, ana, sec, unit="K", k=2):
+        t = self.doc.get("AuxValues", {}).get("TemperatureHead")
+        unit = self.doc.get("AuxValues", {}).get("TemperatureHeadUnit")
+        t_unc = 0.5
+        v = self.Val.round_to_uncertainty(t, t_unc, 1)
+        u = self.Val.round_to_sig_dig(t_unc, 1)
+        sec["HeadTemperature"] = self.to_si_pm_expr(v, u, unit)
+        
+        return sec
+
+    def gen_temperature_norm_entry(self, ana, sec, unit="K", k=2):
+        t = self.doc.get("AuxValues", {}).get("TemperatureNorm")
+        unit = self.doc.get("AuxValues", {}).get("TemperatureNormUnit")
+        t_unc = 0.5
+        v = self.Val.round_to_uncertainty(t, t_unc, 1)
+        u = self.Val.round_to_sig_dig(t_unc, 1)
+        sec["NormTemperature"] = self.to_si_pm_expr(v, u, unit)
+        
+        return sec
     
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
@@ -266,6 +286,8 @@ class Result(Analysis):
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)
+            sec = self.gen_temperature_head_entry(ana, sec)
+            sec = self.gen_temperature_norm_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
@@ -413,13 +435,18 @@ class Result(Analysis):
         return u_dev
 
     def get_reduced_error(self, ana, av_idx, unit):
-        error = ana.pick("Error", "ind", unit)
+        error = ana.pick("Error", "ind_temperature_corr", unit)
+        if error is None:
+            error = ana.pick("Error", "ind", unit)
         error = ana.reduce_by_average_index(value=error, average_index=av_idx)
         
         return error
 
     def get_reduced_cf(self, ana, av_idx, unit):
-        error = ana.pick("Error", "ind", unit)
+        error = ana.pick("Error", "ind_temperature_corr", unit)
+        if error is None:
+            error = ana.pick("Error", "ind", unit)
+
         if unit == "%":
             cf = 1.0/(error/100.0 +1.0)
         if unit == "1":
