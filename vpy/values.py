@@ -219,7 +219,7 @@ class Values(Document):
         """ Calculates  a w weighted array mean following 
         Cox, Metrologia, 2002, 39, 591,  equation (1)
         """
-        return np.nansum(np.array(x)/np.power(np.array(w), 2), axis=0)/np.nansum(np.power(np.array(w), -2), axis=0)
+        return np.nansum(np.array(x)/np.power(np.array(w), 2), axis=0)/np.nansum(1/np.power(np.array(w), 2), axis=0)
 
     def lin_reg(self, x, y):
         """ Follows:

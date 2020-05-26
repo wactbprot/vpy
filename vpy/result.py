@@ -119,19 +119,19 @@ class Result(Analysis):
         t = self.doc.get("AuxValues", {}).get("TemperatureHead")
         unit = self.doc.get("AuxValues", {}).get("TemperatureHeadUnit")
         t_unc = 0.5
-        v = self.Val.round_to_uncertainty(t, t_unc, 1)
-        u = self.Val.round_to_sig_dig(t_unc, 1)
-        sec["HeadTemperature"] = self.to_si_pm_expr(v, u, unit)
+        v = self.Val.round_to_uncertainty(t, t_unc, 2)
+        u = self.Val.round_to_sig_dig(t_unc, 2)
+        sec["HeadTemperature"] = self.to_si_expr(v, unit)
         
         return sec
 
     def gen_temperature_norm_entry(self, ana, sec, unit="K", k=2):
         t = self.doc.get("AuxValues", {}).get("TemperatureNorm")
         unit = self.doc.get("AuxValues", {}).get("TemperatureNormUnit")
-        t_unc = 0.5
-        v = self.Val.round_to_uncertainty(t, t_unc, 1)
-        u = self.Val.round_to_sig_dig(t_unc, 1)
-        sec["NormTemperature"] = self.to_si_pm_expr(v, u, unit)
+        t_unc = 0.1
+        v = self.Val.round_to_uncertainty(t, t_unc, 2)
+        u = self.Val.round_to_sig_dig(t_unc, 2)
+        sec["NormTemperature"] = self.to_si_expr(v, unit)
         
         return sec
     

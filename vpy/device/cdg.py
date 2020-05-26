@@ -183,40 +183,38 @@ class Cdg(Device):
 
 
     def temperature_correction(self, x_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, x_vis, x_vis_unit):
-        p_vis_lim , p_vis_lim_unit = self.e_vis_limit()
+        
+        if x_dict.get("Unit") !=  x_vis_unit:
+            sys.exit("wrong x units")
 
+        if t_gas_dict.get("Unit") !=  t_norm_dict.get("Unit") or t_gas_dict.get("Unit") !=  t_head_dict.get("Unit"):
+            sys.exit("wrong t units")
+
+        p_vis_lim , p_vis_lim_unit = self.e_vis_limit()
+        if p_cal_dict.get("Unit") != p_vis_lim_unit:
+            sys.exit("wrong p units")
+            
         x = np.array(x_dict.get("Value"))
+        x_vis = np.array(x_vis)
         t_gas = np.array(t_gas_dict.get("Value"))
         t_head = np.array(t_head_dict.get("Value"))
         t_norm = np.array(t_norm_dict.get("Value"))
         p_cal = np.array(p_cal_dict.get("Value"))
-        
-        if p_cal_dict.get("Unit") == p_vis_lim_unit:
-            idx = np.where(p_cal < p_vis_lim)
-        else:
-            sys.exit("wrong p units")
-            
-        if np.shape(idx)[1] == 0:
-                return x_val
-            
-        x = np.array(x_dict.get("Value"))
-        x_vis = np.array(x_vis)
-        
-        t_gas = np.array(t_gas_dict.get("Value"))
-        t_head = np.array(t_head_dict.get("Value"))
-        t_norm = np.array(t_norm_dict.get("Value"))
-        
-        if x_dict.get("Unit") ==  x_vis_unit:
-            a = x_vis + (x - x_vis)
-        else:
-            sys.exit("wrong x units")
-            
-        if t_gas_dict.get("Unit") ==  t_norm_dict.get("Unit") and  t_gas_dict.get("Unit") ==  t_head_dict.get("Unit"):
-            b = (np.sqrt(t_head/t_norm) - 1)/(np.sqrt(t_head/t_gas) - 1)
-        else:
-            sys.exit("wrong t units")
 
-        return a * b
+        ec = np.full(len(x), np.nan)
+        
+        idx = np.where(p_cal < p_vis_lim)
+        odx = np.where(p_cal > p_vis_lim)
+        
+        if np.shape(idx)[1] == 0:
+            return x
+        else:
+            ec[idx] = x_vis + (np.take(x, idx) - x_vis) * (np.sqrt(t_head/t_norm) - 1)/(np.sqrt(t_head/np.take(t_gas, idx)) - 1)
+
+        if np.shape(odx)[1] != 0:
+            ec[odx] = np.take(x, odx) 
+
+        return  ec
     
     def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= 'Pa', gas= "N2"):
         """Converts the measured pressure in self.unit. If the unit is V
