@@ -153,6 +153,11 @@ class Device(Document):
             sys.exit("No uncertainty dict available")
 
     def get_match_index(self, meas_vec, from_val, to_val):
+        if type(from_val) == np.ndarray:
+            from_val = from_val[0]
+        if type(to_val) == np.ndarray:
+            to_val = to_val[0]
+            
         N = np.shape(meas_vec)[0]
         n = np.full(N, False)
         a = np.full(N, True)
@@ -160,7 +165,7 @@ class Device(Document):
         if self.Vals.cnt_nan(meas_vec) == 0: ## todo rrename cnt_nan to cnt_not_nan
             return n
         if from_val and to_val:
-            i = ((meas_vec > from_val) & (meas_vec < to_val))
+            i = [ x > from_val and x < to_val for x in  meas_vec]
             if len(i) > 0:
                 return i
             else:

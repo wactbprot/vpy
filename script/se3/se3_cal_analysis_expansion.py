@@ -9,6 +9,7 @@ import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
+from vpy.todo import ToDo
 from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
@@ -43,7 +44,7 @@ def main():
     else:
         auxval = False
 
-    cmc = False
+    cmc = True
     
     if not fail and len(ids) > 0:
         base_doc = io.get_base_doc("se3")
@@ -58,15 +59,15 @@ def main():
                 cal = Cal(doc)
                 meas_date = cal.Date.first_measurement()
                 state_doc = io.get_state_doc("se3", date=meas_date) 
-                res = Analysis(doc, analysis_type="expansion")
-                cal.insert_state_results(res, state_doc)
+                ana = Analysis(doc, analysis_type="expansion")
+                cal.insert_state_results(ana, state_doc)
             else: ## keep AuxValues from Calibration.Analysis.AuxValues
                 auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
-                res = Analysis(doc, insert_dict={'AuxValues': auxvalues}, analysis_type="expansion")
+                ana = Analysis(doc, insert_dict={'AuxValues': auxvalues}, analysis_type="expansion")
                 cal = Cal(doc)
             
-            if 'CustomerObject' in doc['Calibration']:
-                customer_device = doc['Calibration']['CustomerObject']
+            if 'CustomerObject' in doc.get('Calibration'):
+                customer_device = doc.get('Calibration').get('CustomerObject')
                 dev_class = customer_device.get('Class', "generic")
                 if dev_class == 'SRG':
                    cus_dev = Srg(doc, customer_device)
@@ -74,45 +75,48 @@ def main():
                    cus_dev = Cdg(doc, customer_device)
                 if dev_class == 'RSG':
                    cus_dev = Rsg(doc, {})
-            #cal.pressure_fill(res)
-            cal.pressure_gn_corr(res)
-            cal.pressure_gn_mean(res)
-            cal.deviation_target_fill(res)
-            cal.temperature_before(res)
-            cal.temperature_after(res)
-            cal.temperature_room(res)
-            cal.temperature_gas_expansion(res)
-            cal.real_gas_correction(res)
-            cal.volume_add(res)
-            cal.volume_start(res)
-            cal.expansion(res)
-            cal.pressure_rise(res)
-            cal.correction_delta_height(res)
-            cal.pressure_cal(res)
-            cal.error_pressure_rise(res)
-            cal.deviation_target_cal(res)
+
+            uncert = Uncert(doc)
+            tdo = ToDo(doc)
+             
+            cal.pressure_gn_corr(ana)
+            cal.pressure_gn_mean(ana)
+            cal.deviation_target_fill(ana)
+            cal.temperature_before(ana)
+            cal.temperature_after(ana)
+            cal.temperature_room(ana)
+            cal.temperature_gas_expansion(ana)
+            cal.real_gas_correction(ana)
+            cal.volume_add(ana)
+            cal.volume_start(ana)
+            cal.expansion(ana)
+            cal.pressure_rise(ana)
+            cal.correction_delta_height(ana)
+            cal.pressure_cal(ana)
+            cal.error_pressure_rise(ana)
+            cal.deviation_target_cal(ana)
             
             ## uncert. calculation
-            uncert = Uncert(doc)
+            
             if cmc:
                 # bis update CMC Einträge --> vorh. CMC Einträge  
                 # cal uncertainty of standard
+                uncert.cmc(ana)
+            else:            
                 uncert.define_model()
-                uncert.gen_val_dict(res)
-                uncert.gen_val_array(res)
-                uncert.volume_start(res)
-                uncert.volume_5(res)
-                uncert.pressure_fill(res)
-                uncert.temperature_after(res)
-                uncert.temperature_before(res)
-                uncert.expansion(res)
-                uncert.total(res)
-            else:
-                uncert.cmc(res)    
+                uncert.gen_val_dict(ana)
+                uncert.gen_val_array(ana)
+                uncert.volume_start(ana)
+                uncert.volume_5(ana)
+                uncert.pressure_fill(ana)
+                uncert.temperature_after(ana)
+                uncert.temperature_before(ana)
+                uncert.expansion(ana)
+                uncert.total(ana)
 
             ## calculate customer indication
             gas = cal.Aux.get_gas()
-            temperature_dict = res.pick_dict('Temperature', 'after')
+            temperature_dict = ana.pick_dict('Temperature', 'after')
             offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
             range_dict = cal.Range.get_dict('Type', 'ind' )
@@ -120,22 +124,23 @@ def main():
             offset = cus_dev.pressure(offset_dict, temperature_dict, range_dict=range_dict, unit = cal.unit, gas=gas)
             ind = cus_dev.pressure(ind_dict, temperature_dict, range_dict=range_dict, unit = cal.unit, gas=gas)
             
-            res.store("Pressure", "offset", offset, cal.unit)
-            res.store("Pressure", "ind", ind, cal.unit)
-            res.store("Pressure", "ind_corr", ind - offset, cal.unit)
+            ana.store("Pressure", "offset", offset, cal.unit)
+            ana.store("Pressure", "ind", ind, cal.unit)
+            ana.store("Pressure", "ind_corr", ind - offset, cal.unit)
             
-            # error for rating procedures
-            ind = res.pick("Pressure", "ind_corr", cal.unit)
-            cal = res.pick("Pressure", "cal" , cal.unit)        
-            res.store('Error', 'ind', ind/cal-1, '1')
-            
-            cus_dev.range_trans(res)
-            
-            io.save_doc(res.build_doc())
-           
+            ind = ana.pick("Pressure", "ind_corr", cal.unit)
+            cal = ana.pick("Pressure", "cal" , cal.unit)        
+
+            if tdo.type == "error":
+                ana.store('Error', 'ind', ind/cal-1, '1')
+                cus_dev.range_trans(ana)
+                
+            if tdo.type == "sigma":
+                ana.store('Sigma', 'eff', ind/cal, '1')
+
+            io.save_doc(ana.build_doc())           
     else:
         ret = {"error": "no --ids found"}
-        # print writes back to relay server by writing to std.out
     
     print(json.dumps(ret))
 if __name__ == "__main__":

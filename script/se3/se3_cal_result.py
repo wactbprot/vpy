@@ -71,19 +71,20 @@ def main():
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
             p_ind = ana.pick('Pressure', 'ind', unit)
-            err = ana.pick("Error", "ind", "1") 
+
             conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
             average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
             # plot to rm outliers and check
             if tdo.type == "error":
+                err = ana.pick("Error", "ind", "1") 
                 x = p_ind_corr
-                y = p_ind_corr/p_cal-1
+                y = err
 
             if tdo.type == "sigma":
+                sigma = ana.pick("Sigma", "eff", "1") 
                 x = p_ind_corr
-                y = p_ind_corr/p_cal
-
+                y = sigma
             
             if result_type == "direct" and tdo.type == "error":
                 plt.xscale('symlog', linthreshx=1e-12)

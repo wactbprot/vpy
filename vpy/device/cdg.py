@@ -73,19 +73,19 @@ class Cdg(Device):
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
 
     def e_vis_limit(self):
-        return 100.0, self.unit
+        return 100.0, "Pa"
     
-    def e_vis_model(self, p, a, b, c, d):
-        return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
+    def e_vis_model(self, p, a, b, c, d, e):
+        return d + e / (a * p**2 + b * p + c * np.sqrt(p) + 1)
     
     def e_vis_bounds(self):
-        return ([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf])
+        return ([0, 0, 0, -np.inf, 0], [np.inf, np.inf, np.inf, np.inf, np.inf])
 
     def get_e_vis_fit_params(self, p, e):
         out = np.isnan(e)
         p = p[np.logical_not(out)]
         e = e[np.logical_not(out)]
-        params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=1000)
+        params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=10000)
         return params
 
     def __init__(self, doc, dev):
