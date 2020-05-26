@@ -252,10 +252,11 @@ class Device(Document):
         offset = ana.pick("Pressure", "offset", self.unit)
 
         ## make elements not in use_idx nan:
-        o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
-        for i in o:
-            ind[i] = np.nan 
-            offset[i] = np.nan 
+        if  use_idx is not None:
+            o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
+            for i in o:
+                ind[i] = np.nan 
+                offset[i] = np.nan 
 
         u = np.full(len(ind), np.nan) 
         uncert_contrib = {"Unit": self.unit}

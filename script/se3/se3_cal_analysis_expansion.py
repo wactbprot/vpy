@@ -132,7 +132,6 @@ def main():
             cal = ana.pick("Pressure", "cal" , cal.unit)        
 
             if tdo.type == "error":
-                print(ind/cal-1)
                 ana.store('Error', 'ind', ind/cal-1, '1')
                 cus_dev.range_trans(ana)
                 
