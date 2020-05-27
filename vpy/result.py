@@ -226,8 +226,7 @@ class Result(Analysis):
 
         val_fmt_str = "{:.1E}"
         ana_aux_values = ana.doc.get("AuxValues", {})
-        res_aux_values = self.doc.get("AuxValues", {})
-        av_idx = res_aux_values.get("AverageIndex")
+        av_idx = ana_aux_values.get("AverageIndex")
         uncert_contribs = ana_aux_values.get("OffsetUncertContrib")
         range_str = self.get_reduced_range_str(ana, av_idx)
         
@@ -469,8 +468,9 @@ class Result(Analysis):
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
 
-        doc_aux_values = self.doc.get("AuxValues", {}) 
-        av_idx = doc_aux_values.get("AverageIndex")   
+        doc_aux_values = ana.doc.get("AuxValues", {}) 
+        av_idx = doc_aux_values.get("AverageIndex")
+        print(av_idx)
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
