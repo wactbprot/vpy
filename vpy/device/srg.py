@@ -9,7 +9,7 @@ class Srg(Device):
     """
     unit = "Pa"
     sigma_min_pressure = 0.1
-    sigma_max_pressure = 1
+    sigma_max_pressure = 1.33322
     
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
