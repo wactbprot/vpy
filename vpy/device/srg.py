@@ -131,3 +131,7 @@ class Srg(Device):
        
        
         return b, m, u
+
+     def offset_uncert(self, ana):
+         
+         

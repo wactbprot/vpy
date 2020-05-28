@@ -81,18 +81,17 @@ def main():
             p_cal = np.take(p_cal, flat_average_index)
             p_ind = np.take(p_ind_corr, flat_average_index)
             sigma = np.take(sigma, flat_average_index)
-                
-            sigma_null, sigma_slope, sigma_std = cus_dev.sigma_null(p_cal=p_cal,
-                                                                        cal_unit=unit,
-                                                                        p_ind=p_ind,
-                                                                        ind_unit=unit)
 
-            aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
-            rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
-            d["SkipIndex"] = skip
+            ## cal. sigma
+            sigma_null, sigma_slope, sigma_std = cus_dev.sigma_null(p_cal, unit, p_ind, unit)
             d["SigmaNull"] = sigma_null
             d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
             d["SigmaStd"] = sigma_std
+            ana.store_dict(quant='AuxValues', d=d, dest=None)
+
+            ## cal. offset and offset scatter
+            aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
+            rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
             d["OffsetMean"] = np.nanmean(rd)
             d["OffsetStd"] = np.nanstd(rd)
             d["OffsetUnit"] = rd_unit

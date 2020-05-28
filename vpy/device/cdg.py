@@ -106,7 +106,6 @@ class Cdg(Device):
                 conversion_type =  dev_setup.get('ConversionType')
                 
                 if type_head:
-                    self.type_head = type_head
                     self.producer = "missing"
                     if "mks" in dev_device["Producer"].lower():
                         self.producer = "mks"
@@ -496,6 +495,31 @@ class Cdg(Device):
 
         ana.store("Uncertainty", "repeat", u, "1")
 
+    def device_uncert(self, ana):
+        offset_uncert = ana.pick("Uncertainty", "offset", "1")
+        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+
+        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
+        if digit_uncert is not None:
+            p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+        else:
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+
+        add_uncert = ana.pick_dict("Uncertainty", "add")
+        if add_uncert is not None:
+            add_unit = add_uncert.get("Unit") 
+            if add_unit == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                add_uncert = ana.pick("Uncertainty", "add", "Pa")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
+            if add_unit == "1":
+                add_uncert = ana.pick("Uncertainty", "add", "1")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
+
+        ana.store("Uncertainty", "device", u, "1")
+
+        
 class InfCdg(Cdg):
     """Inficon CDGs are usable two decades only
     """
