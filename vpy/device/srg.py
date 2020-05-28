@@ -14,7 +14,7 @@ class Srg(Device):
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
-        return self.doc['Name']
+        return self.doc.get("Name")
 
     def dcr_conversion(self, unit="Pa", gas="N2"):
         """

@@ -67,12 +67,20 @@ def main():
             sigma = ana.pick("Sigma", "eff", "1") 
             if sigma is None:
                 sigma = p_ind_corr/p_cal
-                    
-            display.check_p_sigma(p_ind_corr, sigma)
-            skip = ana.ask_for_skip()
+                ana.store("Sigma", "eff", sigma, "1")
 
-            p_cal = np.delete(p_cal, skip)
-            p_ind = np.delete(p_ind_corr, skip)
+            display.check_p_sigma(p_ind_corr, sigma)
+
+
+            average_index, reject_index  = ana.ask_for_reject(average_index=average_index)
+            flat_average_index = ana.flatten(average_index)            
+            d["AverageIndex"] = average_index
+            d["AverageIndexFlat"] = flat_average_index
+            ana.store_dict(quant='AuxValues', d=d, dest=None)
+
+            p_cal = np.take(p_cal, flat_average_index)
+            p_ind = np.take(p_ind_corr, flat_average_index)
+            sigma = np.take(sigma, flat_average_index)
                 
             sigma_null, sigma_slope, sigma_std = cus_dev.sigma_null(p_cal=p_cal,
                                                                         cal_unit=unit,

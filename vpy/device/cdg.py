@@ -3,7 +3,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from ..device.device import Device
-from ..values import Values
+from ..values import Values, Range
 
 
 class Cdg(Device):
@@ -90,14 +90,12 @@ class Cdg(Device):
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
-        self.doc = dev
-        self.val = Values({})
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
         
         if dev:
-            self.name = dev.get('Name')
+            self.doc = dev
             dev_setup = dev.get('Setup')
             dev_device = dev.get('Device')
             if dev_setup:
@@ -108,7 +106,10 @@ class Cdg(Device):
                 conversion_type =  dev_setup.get('ConversionType')
                 
                 if type_head:
+                    self.type_head = type_head
+                    self.producer = "missing"
                     if "mks" in dev_device["Producer"].lower():
+                        self.producer = "mks"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -117,6 +118,7 @@ class Cdg(Device):
                                 self.conversion_type = "factor"
 
                     if "inficon" in dev_device["Producer"].lower():
+                        self.producer = "inficon"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -125,6 +127,7 @@ class Cdg(Device):
                                 self.conversion_type = "factor"
 
                     if "leybold" in dev_device["Producer"].lower():
+                        self.producer = "leybold"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -133,6 +136,7 @@ class Cdg(Device):
                                 self.conversion_type = "factor"
 
                     if "pfeiffer" in dev_device["Producer"].lower():
+                        self.producer = "pfeiffer"
                         if type_head in self.type_head_cmr:
                             self.max_p = self.type_head_cmr.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -310,7 +314,7 @@ class Cdg(Device):
         e = error
 
         ## mean of mult meas. points
-        idx = self.val.gatherby_idx(p, self.val.diff_less(0.2))
+        idx = self.Vals.gatherby_idx(p, self.Vals.diff_less(0.2))
         p = [np.mean(p[i]) for i in idx]
         e = [np.mean(e[i]) for i in idx]
         
@@ -414,7 +418,83 @@ class Cdg(Device):
         end_array = np.array([x_max])
         
         return np.concatenate((start_array, med_array, end_array )) 
+    
+    
+    def offset_uncert(self, ana, use_idx = None):
+        """
+        The offset uncertainty is calculated by means of `np.diff(offset)`.
+        Drift influences are avoided.
+        """
 
+        range_str = Range(ana.org).get_str("offset")
+        ind = ana.pick("Pressure", "ind_corr", self.unit)
+        offset = ana.pick("Pressure", "offset", self.unit)
+
+        ## make elements not in use_idx nan:
+        if  use_idx is not None:
+            o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
+            for i in o:
+                ind[i] = np.nan 
+                offset[i] = np.nan 
+
+        u = np.full(len(ind), np.nan) 
+        uncert_contrib = {"Unit": self.unit}
+
+        if range_str is not None:
+            range_unique = np.unique(range_str)
+            for r in range_unique:
+                i_r = np.where(range_str == r)
+                ## sometimes all offset[i_r] are nan
+                all_nan = np.all(np.isnan(offset[i_r]))
+                if np.shape(i_r)[1] > 0 and not all_nan:
+                    m = np.nanmean(np.abs(np.diff(offset[i_r])))
+                    if m == 0.0:
+                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
+                    
+                    uncert_contrib[r] = m
+                    u[i_r] = m/ind[i_r]
+        else:
+            if len(offset) < 2:
+                m = self.ask_for_offset_uncert(offset, self.unit)
+            else:
+                m = np.nanmean(np.abs(np.diff(offset)))
+                if m == 0.0:
+                    ## Abschätzung 0.1% vom kleinsten p_ind
+                    m = self.ask_for_offset_uncert(offset, self.unit)
+
+                uncert_contrib["all"] = m
+                u = m/ind
+               
+        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
+        ana.store("Uncertainty", "offset", u, "1")
+
+    def repeat_uncert(self, ana):
+
+        p_list = ana.pick("Pressure", "ind_corr", "Pa")
+        # *) bis 14.8.19
+        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
+        #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
+        if self.producer == "missing":
+            msg = "No Producer in Device"
+            self.log.warn(msg)
+            sys.exit(msg)
+
+        if self.ToDo.get_standard() == "missing":
+            msg = "No Standard in ToDo"
+            self.log.warn(msg)
+            sys.exit(msg)
+
+        if self.producer == "inficon" and self.ToDo.get_standard() == "FRS5":
+            if self.type_head == "10Torr" or self.type_head == "100Torr":
+                u = np.full(len(p_list), 2.9e-5)
+            else:
+                u = np.full(len(p_list), 1.0e-4)
+
+        else: #MKS und andere
+            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
+                                            [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
+
+        ana.store("Uncertainty", "repeat", u, "1")
 
 class InfCdg(Cdg):
     """Inficon CDGs are usable two decades only

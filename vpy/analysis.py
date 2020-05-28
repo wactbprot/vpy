@@ -368,18 +368,6 @@ class Analysis(Document):
             print("New list is: " + str(reject_offset))
 
         return reject_offset        
-
-    def ask_for_skip(self):
-        """ Asks for points to skip. Returns the index array. 
-        """
-        skip = []
-        while True:
-            r = input("Skip datapoint number: ")
-            if r == "":
-                break
-            skip.append(int(r))
-
-        return skip
     
     def ask_for_head_temperature(self, temperature_head=None):
         """ Asks for the temperature of the Head in C
