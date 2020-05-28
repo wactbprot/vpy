@@ -10,15 +10,15 @@ import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.result import Result
-from vpy.todo import ToDo
+
 from vpy.values import Values
 from vpy.analysis import Analysis
 from vpy.constants import Constants 
-from vpy.device.srg import Srg
-from vpy.device.cdg import Cdg
-from vpy.device.rsg import Rsg
+
 from vpy.display.se3 import SE3 as Display
-import matplotlib.pyplot as plt
+
+
+from vpy.helper import init_customer_device, result_analysis_init
 
 def main():
     io = Io()
@@ -54,8 +54,7 @@ def main():
             res = Result(doc, result_type=ana.analysis_type, skip=skip)
             if res.ToDo.type != "sigma":
                 sys.exit("wrong script")
-                
-            p_cal_dict = ana.pick_dict('Pressure', 'cal')
+
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
 
@@ -69,9 +68,7 @@ def main():
                 sigma = p_ind_corr/p_cal
                 ana.store("Sigma", "eff", sigma, "1")
 
-            display.check_p_sigma(p_ind_corr, sigma)
-
-
+            display.check_sigma(ana)
             average_index, reject_index  = ana.ask_for_reject(average_index=average_index)
             flat_average_index = ana.flatten(average_index)            
             d["AverageIndex"] = average_index
@@ -81,62 +78,47 @@ def main():
             p_cal = np.take(p_cal, flat_average_index)
             p_ind = np.take(p_ind_corr, flat_average_index)
             sigma = np.take(sigma, flat_average_index)
-
+            
+            ## store reduced quant. for plot
+            ana.store("Pressure", "red_ind_corr", p_ind, unit, dest="AuxValues")
+            ana.store("Pressure", "red_cal", p_cal, unit, dest="AuxValues")
+            ana.store("Sigma", "red_eff", sigma, "1", dest="AuxValues")
+            print(ana.pick("Sigma", "red_eff", "1", dest="AuxValues"))
             ## cal. sigma
             sigma_null, sigma_slope, sigma_std = cus_dev.sigma_null(p_cal, unit, p_ind, unit)
-            d["SigmaNull"] = sigma_null
-            d["SigmaCorrSlope"] = np.abs(sigma_slope/sigma_null)
-            d["SigmaStd"] = sigma_std
+            d["SigmaNull"] = float(sigma_null)
+            d["SigmaSlope"] = float(sigma_slope)
+            d["SigmaCorrSlope"] = float(np.abs(sigma_slope/sigma_null))
+            d["SigmaStd"] = float(sigma_std)
             ana.store_dict(quant='AuxValues', d=d, dest=None)
 
             ## cal. offset and offset scatter
             aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
             rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
-            d["OffsetMean"] = np.nanmean(rd)
-            d["OffsetStd"] = np.nanstd(rd)
+            d["OffsetMean"] = float(np.nanmean(rd))
+            d["OffsetStd"] = float(np.nanstd(rd))
             d["OffsetUnit"] = rd_unit
             res.store_dict(quant='AuxValues', d=d, dest=None)
-                
-            ## offset contrib
-            cus_dev.offset_uncert(ana)
-                            
-            ## default uncert. contrib.  repeat
-            cus_dev.repeat_uncert(ana)
-            
-            ## default uncert. contrib.  device
+
+            ## uncert contribs.
+            cus_dev.uncert_sigma_eff(ana)
+            cus_dev.uncert_ind(ana)
+            cus_dev.uncert_temperature(ana)
+            cus_dev.uncert_offset(ana)
+            cus_dev.uncert_repeat(ana)
             cus_dev.device_uncert(ana) 
-            if "Uncertainty" in customer_object:
-                ## e.g. for digitalisation uncert.
-                u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
-                                                 meas_unit="Pa",
-                                                 return_unit="Pa",
-                                                 res=ana,
-                                                 skip_source="standard",
-                                                prefix=False)
             
             ## the uncertainty of the standard is 
             # already calculated at analysis step            
-            ana.total_uncert() 
-            
-            ## store red version for plot
-            u_rep = ana.pick("Uncertainty", "repeat", "1")
-            u_off = ana.pick("Uncertainty", "offset", "1")
-            u_tot = ana.pick("Uncertainty", "total_rel", "1")
-            u_dev = ana.pick("Uncertainty", "device", "1")
-            u_std = ana.pick("Uncertainty", "standard", "1")
-            ana.store("Uncertainty", "red_u_rep", np.take(u_rep, flat_average_index), "1", dest="AuxValues")
-            ana.store("Uncertainty", "red_u_std", np.take(u_std, flat_average_index), "1", dest="AuxValues")
-            ana.store("Uncertainty", "red_u_dev", np.take(u_dev, flat_average_index), "1", dest="AuxValues")
-            ana.store("Uncertainty", "red_u_tot", np.take(u_tot, flat_average_index), "1", dest="AuxValues")
-            ana.store("Uncertainty", "red_u_off", np.take(u_off, flat_average_index), "1", dest="AuxValues")
+            ana.total_uncert()
 
-            display.plot_uncert(ana)
-            
+            u_tot = ana.pick("Uncertainty", "total_rel", "1")
+            ana.store("Uncertainty", "red_u_tot", np.take(u_tot, flat_average_index), "1", dest="AuxValues")
+
             # start making data sections
             res.make_measurement_data_section(ana, result_type=ana.analysis_type)
-
-            display.check_p_sigma(p_ind_corr, sigma, show=False)
-            display.check_p_sigma(p_ind_corr, sigma_slope * p_cal + sigma_null, label="fit")
+            
+            display.plot_sigma(ana)
                     
             doc = ana.build_doc("Analysis", doc)
             doc = res.build_doc("Result", doc)

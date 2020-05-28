@@ -258,22 +258,21 @@ class Result(Analysis):
         """
         
         sigma_null = self.doc.get("AuxValues", {}).get("SigmaNull")
-        sigma_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
+        sigma_corr_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
         sigma_std = self.doc.get("AuxValues", {}).get("SigmaStd")
         
-        if sigma_null and sigma_slope and sigma_std:
-            v = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
+        if sigma_null and sigma_corr_slope and sigma_std:
+            v = self.Val.round_to_uncertainty(sigma_null, 2e-3, 2)
             sec["SigmaNull"] = self.to_si_expr(v, "none")
 
-            v = self.Val.round_to_uncertainty(sigma_slope[0], 2e-3, 2)
-            u = self.Val.round_to_uncertainty(sigma_std[0], 2e-3, 2)
+            v = self.Val.round_to_uncertainty(sigma_corr_slope, 2e-3, 2)
+            u = self.Val.round_to_uncertainty(sigma_std, 2e-3, 2)
             sec["SigmaCorrSlope"] =self.to_si_pm_expr(v, u, "1/Pa") 
         
-
-            v_mean = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
+            v_mean = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean"))
             sec["OffsetMean"] = self.to_si_expr(v_mean, "DCR")
 
-            v_sd = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
+            v_sd = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd"))
             sec["OffsetStd"] = self.to_si_expr(v_sd, "DCR")
        
         return sec

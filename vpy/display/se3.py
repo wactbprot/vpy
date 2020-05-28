@@ -47,15 +47,24 @@ class SE3(Display):
 
     def get_e_vis_model(self, ana):
         return ana.doc.get("AuxValues").get("EvisModel")
-    
+
+    def get_sigma_slope(self, ana):
+        return ana.doc.get("AuxValues").get("SigmaSlope")
+
+    def get_sigma_null(self, ana):
+        return ana.doc.get("AuxValues").get("SigmaNull")
+
     def get_p_cal(self, ana):
         return ana.pick("Pressure", "cal", self.p_unit)
 
     def get_err(self, ana):
         return ana.pick("Error", "ind", self.e_unit) 
 
-    def get_sigma(self, ana, red=False):
+    def get_sigma(self, ana):
         return ana.pick("Sigma", "eff", self.s_unit) 
+
+    def get_red_sigma(self, ana):
+        return ana.pick("Sigma", "red_eff", "1", dest="AuxValues")
 
     def get_red_p_cal(self, ana):
         return ana.pick("Pressure", "red_cal", self.p_unit, dest="AuxValues")
@@ -68,9 +77,6 @@ class SE3(Display):
 
     def get_err_model(self, ana):
         return ana.pick("Error", "model", self.e_unit, dest="AuxValues") 
-
-    def get_red_sigma(self, ana, red=False):
-        return ana.pick("Sigma", "eff", self.s_unit) 
 
     def tlg(self):
         self.plt.title(self.main_title)
@@ -203,3 +209,23 @@ class SE3(Display):
         self.plt.errorbar(x, y, yerr=u, label="certificate")
         if show:
             self.show()
+
+    def check_sigma(self, ana, show=True):
+        self.plt.cla()
+        x = self.get_p_cal(ana)
+        y = self.get_sigma(ana)
+        self.add_point_no(x, y)
+        self.plot(x, y, show=show, label="measurement")
+
+    def plot_sigma(self, ana):
+        self.plt.cla()
+        self.check_sigma(ana, show=False)
+        x = self.get_red_p_cal(ana)
+        y = self.get_red_sigma(ana)
+        self.plot(x, y, show=False, label="red. measurement")
+        m = self.get_sigma_slope(ana)
+        c = self.get_sigma_null(ana)
+        y = m*x+c
+        u = self.get_red_u_tot(ana)
+        self.plt.errorbar(x, y, yerr=u, label="$m p_{cal} + \sigma_{eff}$ with u(k=1)")
+        self.show()
