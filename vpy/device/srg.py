@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from .device import Device
 
@@ -7,6 +8,9 @@ class Srg(Device):
     uncertainty of the corrected slope.
     """
     unit = "Pa"
+    sigma_min_pressure = 0.1
+    sigma_max_pressure = 1
+    
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 
@@ -15,6 +19,15 @@ class Srg(Device):
 
     def get_name(self):
         return self.doc.get("Name")
+    
+    def make_sigma_index(self, p_cal, unit):
+        if unit != self.unit:
+            sys.exit("implement me!")
+        N = len(p_cal)
+        min_p = self.sigma_min_pressure
+        max_p = self.sigma_max_pressure
+
+        return [[i] for i in range(N) if p_cal[i] > min_p and p_cal[i] < max_p]
 
     def dcr_conversion(self, unit="Pa", gas="N2"):
         """

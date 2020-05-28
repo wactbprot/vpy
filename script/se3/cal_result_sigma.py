@@ -58,9 +58,6 @@ def main():
             p_cal = ana.pick('Pressure', 'cal', unit)
             p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
 
-            conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
-            average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
-
             ## will be filled up with aux values:
             d = {} 
             sigma = ana.pick("Sigma", "eff", "1") 
@@ -69,7 +66,8 @@ def main():
                 ana.store("Sigma", "eff", sigma, "1")
 
             display.check_sigma(ana)
-            average_index, reject_index  = ana.ask_for_reject(average_index=average_index)
+            all_index = cus_dev.make_sigma_index(p_cal, unit)
+            average_index, reject_index  = ana.ask_for_reject(average_index=all_index)
             flat_average_index = ana.flatten(average_index)            
             d["AverageIndex"] = average_index
             d["AverageIndexFlat"] = flat_average_index
