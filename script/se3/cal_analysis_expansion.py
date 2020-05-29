@@ -2,8 +2,7 @@
 python script/se3/se3_cal_analysis_expansion.py --ids 'cal-2019-se3-kk-75002_0001'  # -a #--> new aux values
 """
 import sys
-import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 
 import json
 import numpy as np

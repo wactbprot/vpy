@@ -2,22 +2,14 @@
 python script/se3/cal_result_error.py --ids 'cal-2018-se3-kk-75050_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
-import os
 sys.path.append(".")
-
-import copy
 import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.result import Result
-#from vpy.todo import ToDo
-
-
-#from vpy.constants import Constants 
 from vpy.display.se3 import SE3 as Display
 
 from vpy.helper import init_customer_device, result_analysis_init
-import matplotlib.pyplot as plt
 
 def main():
     io = Io()
