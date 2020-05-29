@@ -10,17 +10,22 @@ class Srg(Device):
     unit = "Pa"
     sigma_min_pressure = 0.1
     sigma_max_pressure = 1.33322
+    total_relative_uncertainty_k2 = 2.6e-3 ## workaround
     
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 
-        self.total_relative_uncertainty_k2 = 2.6e-3
+        
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
         return self.doc.get("Name")
     
     def make_sigma_index(self, p_cal, unit):
+        """Replaces the `ToDo.make_average_index()`
+        since all pressures in the range `p_cal[i] > min_p and p_cal[i] < max_p`
+        should be used to calculate the `sigma`.
+        """
         if unit != self.unit:
             sys.exit("implement me!")
         N = len(p_cal)
@@ -123,26 +128,20 @@ class Srg(Device):
         0.00011476238813591167
         -2.17870974810604e-05
         -2.1787097481060404e-05        
-
         """
-        if cal_unit == ind_unit:
-            x = p_cal
-            y = p_ind/p_cal
-        else:
-            self.log.error("units don't match!")
-            return None, None, None
-        if not len(x) == len(y):
-            self.log.error("length don't match!")
-            return None, None, None
         
+        conv = self.Const.get_conv(from_unit=ind_unit, to_unit=cal_unit)
+        p_ind = p_ind * conv
+        x = p_cal
+        y = p_ind/p_cal
+                
         m, b, var_m, var_b = self.Vals.lin_reg(x, y)
 
         sens_b = (m / b**2)
         sens_m = (1.0 / b)
        
         u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty_k2/2.0 * m/b)**2)**0.5
-       
-       
+              
         return b, m, u
 
     def uncert_sigma_eff(self, ana):

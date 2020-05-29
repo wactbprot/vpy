@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+import re
 import json
 import couchdb
 import tempfile
@@ -87,7 +88,7 @@ class Io(object):
         # -u update
         parser.add_argument('-u', action='store_true',
                             help='update calibration doc with standard-, constants-, etc- documents', default=False)
-        # -u update
+        # -a new AuxValues 
         parser.add_argument('-a', action='store_true',
                             help='keep Analysis AuxValues section', default=False)
         
@@ -103,36 +104,33 @@ class Io(object):
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
             
-
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
-            
 
-    def save_plot(self, plot):
-        """The plan is:
-            * save the plot in a temporary file
-            * upload to a database document with a id based on param --id (cal-2018-... replaced by plt-2018-...)
+    
+    def parse_update_arg(self):
+        return '-u' in self.args
 
-        .. todo::
-            There seems to be no api to access ``plot.title`` in
-            order to have a nice name for the plot. Solutions:
 
-            * add a ``timestamp``
-            * add a function name
-            * both
-            * name as param of ``save_plot``
+    def parse_auxval_arg(self):
+        return '-a' in self.args
 
-        :param plot: matplotlib plot
-        :type plot: class
+    def parse_ids_arg(self):
+        """Splits the ids arg at `[@;,:]`.
         """
+        if '--ids' in self.args:
+            idx_ids = self.args.index('--ids') + 1 
+            ids = re.split("[@;,:]", self.args[idx_ids])
+            if len(ids) == 0:
+                sys.exit("no ids")
+            else:
+                return ids
+                
+    def parse_skip_arg(self):
+        """Skip means: don't use the result for the certificate.
+        """
+        return '--skip' in self.args:
 
-        if "savefig" in dir(plot):
-            f = tempfile.NamedTemporaryFile()
-            f.name = f.name+".pdf"
-            plot.savefig(f.name)
-            
-        else:
-            pass
     def read_json(self, fname):
         with open(fname) as json_doc_file:
             doc = json.load(json_doc_file)
