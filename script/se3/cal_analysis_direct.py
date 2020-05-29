@@ -13,6 +13,7 @@ from vpy.standard.se3.cal import Cal
 
 from vpy.standard.se3.std import Se3
 from vpy.standard.se3.uncert import Uncert
+from vpy.helper import init_customer_device
 
 def main():
     io = Io()
@@ -29,8 +30,9 @@ def main():
         doc = io.get_doc_db(id)
         if update:
             doc = io.update_cal_doc(doc, base_doc)
-            cal = Cal(doc)
-            ana = Analysis(doc, analysis_type="direct")
+
+        cal = Cal(doc)
+        ana = Analysis(doc, analysis_type="direct")
 
         cus_dev = init_customer_device(doc)
     

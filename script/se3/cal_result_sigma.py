@@ -21,13 +21,12 @@ from vpy.helper import init_customer_device, result_analysis_init
 def main():
     io = Io()
     io.eval_args()
-    args = sys.argv
     ret = {'ok':True}
 
     cmc = False
 
-    ids = io.parse_ids_arg(args)
-    skip = io.parse_skip_arg(args)
+    ids = io.parse_ids_arg()
+    skip = io.parse_skip_arg()
         
     for id in ids:
         doc = io.get_doc_db(id)
@@ -40,7 +39,7 @@ def main():
         
         res = Result(doc, result_type=ana.analysis_type, skip=skip)
         if res.ToDo.type != "sigma":
-        sys.exit("wrong script")
+            sys.exit("wrong script")
         
         p_cal = ana.pick('Pressure', 'cal', ana.pressure_unit)
         p_ind_corr = ana.pick('Pressure', 'ind_corr', ana.pressure_unit)

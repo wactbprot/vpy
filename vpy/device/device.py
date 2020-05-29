@@ -2,7 +2,7 @@ import sys
 import numpy as np
 from ..document import Document
 from ..constants import Constants
-from ..values import Values, Pressure, AuxValues
+from ..values import Values, Pressure, AuxValues, Range
 from ..todo import ToDo
 
 class Device(Document):

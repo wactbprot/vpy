@@ -109,18 +109,20 @@ class Io(object):
 
     
     def parse_update_arg(self):
+        """Update the calibration document."""
         return '-u' in self.args
 
 
     def parse_auxval_arg(self):
+        """Update the AuxValues (taken from the state document) 
+        in the calibration document."""
         return '-a' in self.args
 
     def parse_ids_arg(self):
         """Splits the ids arg at `[@;,:]`.
         """
-        if '--ids' in self.args:
-            idx_ids = self.args.index('--ids') + 1 
-            ids = re.split("[@;,:]", self.args[idx_ids])
+        if self.args.ids:
+            ids = re.split("[@;,:]",self.args.ids[0])
             if len(ids) == 0:
                 sys.exit("no ids")
             else:
@@ -129,7 +131,7 @@ class Io(object):
     def parse_skip_arg(self):
         """Skip means: don't use the result for the certificate.
         """
-        return '--skip' in self.args:
+        return '--skip' in self.args
 
     def read_json(self, fname):
         with open(fname) as json_doc_file:

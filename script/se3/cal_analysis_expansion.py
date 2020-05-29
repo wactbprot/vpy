@@ -11,12 +11,8 @@ from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.todo import ToDo
 from vpy.standard.se3.cal import Cal
-
 from vpy.standard.se3.std import Se3
 from vpy.standard.se3.uncert import Uncert
-from vpy.device.cdg import InfCdg, Cdg
-from vpy.device.srg import Srg
-from vpy.device.rsg import Rsg
 from vpy.helper import init_customer_device
 
 
@@ -34,12 +30,12 @@ def main():
     for id in ids:
         id = id.replace("\"", "") 
         doc = io.get_doc_db(id)
+        cal = Cal(doc)
         
         if update:
             doc = io.update_cal_doc(doc, base_doc)
             
         if auxval: ## get new the AuxValues from related (meas_date) state measurement 
-            cal = Cal(doc)
             meas_date = cal.Date.first_measurement()
             state_doc = io.get_state_doc("se3", date=meas_date) 
             ana = Analysis(doc, analysis_type="expansion")
@@ -48,7 +44,6 @@ def main():
         else: ## keep AuxValues from Calibration.Analysis.AuxValues
             auxvalues = doc.get('Calibration').get('Analysis', {}).get('AuxValues', {})
             ana = Analysis(doc, insert_dict={'AuxValues': auxvalues}, analysis_type="expansion")
-            cal = Cal(doc)
 
         cus_dev = init_customer_device(doc)
 
@@ -72,8 +67,7 @@ def main():
         cal.error_pressure_rise(ana)
         cal.deviation_target_cal(ana)
         
-        ## uncert. calculation
-        
+        ## uncert. calculation        
         if cmc:
             # bis update CMC Einträge --> vorh. CMC Einträge  
             # cal uncertainty of standard

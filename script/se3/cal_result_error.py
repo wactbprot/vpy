@@ -22,16 +22,13 @@ import matplotlib.pyplot as plt
 def main():
     io = Io()
     io.eval_args()
-    args = sys.argv
-    fail = False
     ret = {'ok':True}
-    unit = 'Pa'
+
     cmc = False
 
-    ids = io.parse_ids_arg(args)
-    skip = io.parse_skip_arg(args)
+    ids = io.parse_ids_arg()
+    skip = io.parse_skip_arg()
         
-
     for id in ids:
         doc = io.get_doc_db(id)
         display = Display(doc)
@@ -46,9 +43,9 @@ def main():
         if res.ToDo.type != "error":
             sys.exit("wrong script")
                 
-        p_cal = ana.pick('Pressure', 'cal', unit)
-        p_ind_corr = ana.pick('Pressure', 'ind_corr', unit)
-        conv = res.Const.get_conv(from_unit=unit, to_unit=res.ToDo.pressure_unit)
+        p_cal = ana.pick('Pressure', 'cal', ana.pressure_unit)
+        p_ind_corr = ana.pick('Pressure', 'ind_corr', ana.pressure_unit)
+        conv = res.Const.get_conv(from_unit=ana.pressure_unit, to_unit=res.ToDo.pressure_unit)
         average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
         ## will be filled up with aux values:
@@ -70,8 +67,8 @@ def main():
         err = np.take(err, flat_average_index)
         
         ## store reduced quant. for plot
-        ana.store("Pressure", "red_ind_corr", p_ind_corr, unit, dest="AuxValues")
-        ana.store("Pressure", "red_cal", p_cal, unit, dest="AuxValues")
+        ana.store("Pressure", "red_ind_corr", p_ind_corr, ana.pressure_unit, dest="AuxValues")
+        ana.store("Pressure", "red_cal", p_cal, ana.pressure_unit, dest="AuxValues")
         ana.store("Error", "red_ind", err, "1", dest="AuxValues")
         
         # get from customer object
@@ -134,8 +131,8 @@ def main():
         if "uncert_dict" in dir(cus_dev):
             ## e.g. for digitalisation uncert.
             u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
-                                             meas_unit="Pa",
-                                             return_unit="Pa",
+                                             meas_unit=ana.pressure_unit,
+                                             return_unit=ana.pressure_unit,
                                              res=ana,
                                              skip_source="standard",
                                              prefix=False)
@@ -163,8 +160,8 @@ def main():
         res.make_measurement_data_section(ana, result_type=ana.analysis_type)
         
         # start build cert table
-        p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=unit, error_unit='1')
-        ana.store("Pressure", "ind_mean", p_ind_mv, unit , dest="AuxValues")
+        p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
+        ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")
         ana.store("Uncertainty", "total_mean", u_mv, "1", dest="AuxValues")
         
