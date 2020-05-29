@@ -9,7 +9,6 @@ import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
-from vpy.todo import ToDo
 from vpy.standard.se3.cal import Cal
 from vpy.standard.se3.std import Se3
 from vpy.standard.se3.uncert import Uncert
@@ -19,7 +18,6 @@ from vpy.helper import init_customer_device
 def main():
     io = Io()
     io.eval_args()
-    
     ret = {'ok':True}
 
     ids = io.parse_ids_arg()
@@ -48,7 +46,6 @@ def main():
         cus_dev = init_customer_device(doc)
 
         uncert = Uncert(doc)
-        tdo = ToDo(doc)
         
         cal.pressure_gn_corr(ana)
         cal.pressure_gn_mean(ana)
@@ -98,15 +95,15 @@ def main():
         ana.store("Pressure", "ind", ind, cal.unit)
         ana.store("Pressure", "ind_corr", ind - offset, cal.unit)
         
-        ind = ana.pick("Pressure", "ind_corr", cal.unit)
-        cal = ana.pick("Pressure", "cal" , cal.unit)        
+        p_ind = ana.pick("Pressure", "ind_corr", cal.unit)
+        p_cal = ana.pick("Pressure", "cal" , cal.unit)        
         
-        if tdo.type == "error":
-            ana.store('Error', 'ind', ind/cal-1, '1')
+        if cal.ToDo.type == "error":
+            ana.store('Error', 'ind', p_ind/p_cal-1, '1')
             cus_dev.range_trans(ana)
                 
-        if tdo.type == "sigma":
-            ana.store('Sigma', 'eff', ind/cal, '1')
+        if cal.ToDo.type == "sigma":
+            ana.store('Sigma', 'eff', p_ind/p_cal, '1')
 
         io.save_doc(ana.build_doc())           
  

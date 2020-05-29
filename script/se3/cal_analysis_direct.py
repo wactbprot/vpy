@@ -10,7 +10,6 @@ import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.se3.cal import Cal
-
 from vpy.standard.se3.std import Se3
 from vpy.standard.se3.uncert import Uncert
 from vpy.helper import init_customer_device
@@ -22,7 +21,6 @@ def main():
 
     ids = io.parse_ids_arg()
     update = io.parse_update_arg()
-    auxval = io.parse_auxval_arg()    
     cmc = False
 
     base_doc = io.get_base_doc("se3")
@@ -62,10 +60,10 @@ def main():
         
         ## uncert. calculation
         uncert = Uncert(doc)
+        
         ## we have cmc entries for the FRS
         ## so we can use the GN uncertainty
         u = uncert.contrib_pressure_fill(p_cal, cal.unit)
-        
         ana.store("Uncertainty", "standard", u/p_cal, "1")
 
         io.save_doc(ana.build_doc())
