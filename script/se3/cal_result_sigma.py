@@ -18,11 +18,8 @@ def main():
     ret = {'ok':True}
 
     cmc = False
-
-    ids = io.parse_ids_arg()
-    skip = io.parse_skip_arg()
         
-    for id in ids:
+    for id in io.ids:
         doc = io.get_doc_db(id)
         display = Display(doc)
         
@@ -31,7 +28,7 @@ def main():
         
         ## generate result instance with analysis res type
         
-        res = Result(doc, result_type=ana.analysis_type, skip=skip)
+        res = Result(doc, result_type=ana.analysis_type, skip=io.skip)
         if res.ToDo.type != "sigma":
             sys.exit("wrong script")
         

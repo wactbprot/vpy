@@ -16,12 +16,8 @@ def main():
     io.eval_args()
     ret = {'ok':True}
 
-    cmc = False
-
-    ids = io.parse_ids_arg()
-    skip = io.parse_skip_arg()
-        
-    for id in ids:
+    cmc = False        
+    for id in io.ids:
         doc = io.get_doc_db(id)
         display = Display(doc)
 
@@ -30,21 +26,21 @@ def main():
             
         ## generate result instance with analysis res type
         ## set skip flag to ignore result for cert
-        res = Result(doc, result_type=ana.analysis_type, skip=skip)
+        res = Result(doc, result_type=ana.analysis_type, skip=io.skip)
 
         if res.ToDo.type != "error":
             sys.exit("wrong script")
                 
         p_cal = ana.pick('Pressure', 'cal', ana.pressure_unit)
         p_ind_corr = ana.pick('Pressure', 'ind_corr', ana.pressure_unit)
+        err = ana.pick("Error", "ind", "1")
+        
         conv = res.Const.get_conv(from_unit=ana.pressure_unit, to_unit=res.ToDo.pressure_unit)
         average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
 
         ## will be filled up with aux values:
-        d = {} 
-        
-        err = ana.pick("Error", "ind", "1") 
-        
+        d = {}   
+       
         display.check_outlier_err(ana)
         average_index, reject_index  = ana.ask_for_reject(average_index=average_index)
         flat_average_index = ana.flatten(average_index)

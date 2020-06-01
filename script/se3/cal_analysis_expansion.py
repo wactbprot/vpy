@@ -19,20 +19,17 @@ def main():
     io.eval_args()
     ret = {'ok':True}
 
-    ids = io.parse_ids_arg()
-    update = io.parse_update_arg()
-    auxval = io.parse_auxval_arg()
     cmc = True
     base_doc = io.get_base_doc("se3")
-    for id in ids:
+    for id in io.ids:
         id = id.replace("\"", "") 
         doc = io.get_doc_db(id)
         cal = Cal(doc)
         
-        if update:
+        if io.update:
             doc = io.update_cal_doc(doc, base_doc)
             
-        if auxval: ## get new the AuxValues from related (meas_date) state measurement 
+        if io.auxval: ## get new the AuxValues from related (meas_date) state measurement 
             meas_date = cal.Date.first_measurement()
             state_doc = io.get_state_doc("se3", date=meas_date) 
             ana = Analysis(doc, analysis_type="expansion")

@@ -92,10 +92,9 @@ class Io(object):
         parser.add_argument('-a', action='store_true',
                             help='keep Analysis AuxValues section', default=False)
         
-
         self.args = parser.parse_args()
 
-        # save doc
+        ## make args a bit more friendly
         if self.args.s:
             self.save = True
         else:
@@ -107,31 +106,29 @@ class Io(object):
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
 
-    
-    def parse_update_arg(self):
-        """Update the calibration document."""
-        return '-u' in self.args
+        if self.args.u:
+            self.update = True
+        else:
+            self.update = False
 
+        if self.args.a:
+            self.auxval = True
+        else:
+            self.auxval = False
 
-    def parse_auxval_arg(self):
-        """Update the AuxValues (taken from the state document) 
-        in the calibration document."""
-        return '-a' in self.args
-
-    def parse_ids_arg(self):
-        """Splits the ids arg at `[@;,:]`.
-        """
         if self.args.ids:
             ids = re.split("[@;,:]",self.args.ids[0])
             if len(ids) == 0:
                 sys.exit("no ids")
             else:
-                return ids
-                
-    def parse_skip_arg(self):
-        """Skip means: don't use the result for the certificate.
-        """
-        return '--skip' in self.args
+                self.ids = ids
+            
+        if self.args.skip:
+            self.skip = True
+        else:
+            self.skip = False
+
+        
 
     def read_json(self, fname):
         with open(fname) as json_doc_file:

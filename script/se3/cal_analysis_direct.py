@@ -18,14 +18,12 @@ def main():
     io.eval_args()
     ret = {'ok':True}
 
-    ids = io.parse_ids_arg()
-    update = io.parse_update_arg()
     cmc = False
 
     base_doc = io.get_base_doc("se3")
-    for id in ids:
+    for id in io.ids:
         doc = io.get_doc_db(id)
-        if update:
+        if io.update:
             doc = io.update_cal_doc(doc, base_doc)
 
         cal = Cal(doc)
