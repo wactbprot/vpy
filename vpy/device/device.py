@@ -76,10 +76,10 @@ class Device(Document):
         
         .. note::
 
-            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer
-             statistisch unabhängiger Messwerte aus einer
+            Typ-A: Ermittlung aus der statistischen Analyse mehrerer
+            statistisch unabhängiger Messwerte aus einer
             Messwiederholung.  
-            * Typ-B: Ermittlung ohne statistische
+            Typ-B: Ermittlung ohne statistische
             Methoden, beispielsweise durch Entnahme der Werte aus
             einem Kalibrierschein...
 
