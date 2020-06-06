@@ -1,4 +1,4 @@
 theme: jekyll-theme-minimal
-logo: [./vpy.png]
-title: cmp
+logo: ./vpy.png
+title: vpy
 description: Classes and methods for vaclab measurement analysis.
