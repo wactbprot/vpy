@@ -242,7 +242,7 @@ class Document(object):
         :returns: ret
         :rtype: np: array of type np.float
         """
-	if isinstance(value, str):
+        if isinstance(value, str):
             ret = np.asarray([value], dtype=np.float)
         if isinstance(value, list):
             ret = np.asarray(value, dtype=np.float)
