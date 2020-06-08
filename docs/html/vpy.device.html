@@ -1,0 +1,723 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>vpy.device package &#8212; vpy 0.19.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vpy.display package" href="vpy.display.html" />
+    <link rel="prev" title="vpy package" href="vpy.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.display.html" title="vpy.display package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vpy.html" title="vpy package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" accesskey="U">vpy package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-vpy.device">
+<span id="vpy-device-package"></span><h1>vpy.device package<a class="headerlink" href="#module-vpy.device" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vpy.device.cdg">
+<span id="vpy-device-cdg-module"></span><h2>vpy.device.cdg module<a class="headerlink" href="#module-vpy.device.cdg" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.cdg.Cdg">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.cdg.</code><code class="sig-name descname">Cdg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.cal_interpol">
+<code class="sig-name descname">cal_interpol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pressure</span></em>, <em class="sig-param"><span class="n">error</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.cal_interpol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a interpolation vector for the relative
+error of indication.</p>
+<dl class="simple">
+<dt>This is done as follows:</dt><dd><p># conv_smooth ( –&gt; no longer!, absorbs e-characteristics!) replaced by:
+# mean of mult meas. points
+# extrapolate values to the borders
+# get_default_values
+# gen. interp. functions
+# interpolate default values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.cmr_base_factor">
+<code class="sig-name descname">cmr_base_factor</code><em class="property"> = {'1.1mbar': 100.0, '1000mbar': 100000.0, '100mbar': 10000.0, '10mbar': 1000.0, '1100mbar': 100000.0, '110mbar': 10000.0, '11mbar': 1000.0, '1mbar': 100.0}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.cmr_base_factor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.cmr_factor">
+<code class="sig-name descname">cmr_factor</code><em class="property"> = 0.125</em><a class="headerlink" href="#vpy.device.cdg.Cdg.cmr_factor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.cmr_offset">
+<code class="sig-name descname">cmr_offset</code><em class="property"> = -1.0</em><a class="headerlink" href="#vpy.device.cdg.Cdg.cmr_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.conv_smooth">
+<code class="sig-name descname">conv_smooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.conv_smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates smooth data by a convolution.
+Bondaries (left and right) are calculated 
+from mean values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.device_uncert">
+<code class="sig-name descname">device_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.device_uncert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.e_vis_bounds">
+<code class="sig-name descname">e_vis_bounds</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.e_vis_bounds" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.e_vis_limit">
+<code class="sig-name descname">e_vis_limit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.e_vis_limit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.e_vis_model">
+<code class="sig-name descname">e_vis_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">b</span></em>, <em class="sig-param"><span class="n">c</span></em>, <em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.e_vis_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.error">
+<code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_cal</span></em>, <em class="sig-param"><span class="n">p_ind</span></em>, <em class="sig-param"><span class="n">p_unit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.fill_to_dev_borders">
+<code class="sig-name descname">fill_to_dev_borders</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.fill_to_dev_borders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the first/last value in the array of e and u
+as an extrapolation to the devive borders. Reduce the start/end
+value of p by <cite>self.range_extend</cite> to overcome possible intervall issues.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.get_default_values">
+<code class="sig-name descname">get_default_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_min</span></em>, <em class="sig-param"><span class="n">x_max</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.get_default_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.get_dmin_idx">
+<code class="sig-name descname">get_dmin_idx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">d</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.get_dmin_idx" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.get_e_vis_fit_params">
+<code class="sig-name descname">get_e_vis_fit_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">e</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.get_e_vis_fit_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.get_error_interpol">
+<code class="sig-name descname">get_error_interpol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_interpol</span></em>, <em class="sig-param"><span class="n">unit_interpol</span></em>, <em class="sig-param"><span class="n">p_target</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unit_target</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.get_error_interpol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the interpolation error at the points where:</p>
+<p>(p_target &gt; self.interpol_min) &amp; (p_target &lt; self.interpol_max)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.interp_function">
+<code class="sig-name descname">interp_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.interp_function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.interpol_pressure_points">
+<code class="sig-name descname">interpol_pressure_points</code><em class="property"> = array([1.00000000e-03, 1.25892541e-03, 1.58489319e-03, 1.99526231e-03,        2.51188643e-03, 3.16227766e-03, 3.98107171e-03, 5.01187234e-03,        6.30957344e-03, 7.94328235e-03, 1.00000000e-02, 1.25892541e-02,        1.58489319e-02, 1.99526231e-02, 2.51188643e-02, 3.16227766e-02,        3.98107171e-02, 5.01187234e-02, 6.30957344e-02, 7.94328235e-02,        1.00000000e-01, 1.25892541e-01, 1.58489319e-01, 1.99526231e-01,        2.51188643e-01, 3.16227766e-01, 3.98107171e-01, 5.01187234e-01,        6.30957344e-01, 7.94328235e-01, 1.00000000e+00, 1.25892541e+00,        1.58489319e+00, 1.99526231e+00, 2.51188643e+00, 3.16227766e+00,        3.98107171e+00, 5.01187234e+00, 6.30957344e+00, 7.94328235e+00,        1.00000000e+01, 1.25892541e+01, 1.58489319e+01, 1.99526231e+01,        2.51188643e+01, 3.16227766e+01, 3.98107171e+01, 5.01187234e+01,        6.30957344e+01, 7.94328235e+01, 1.00000000e+02, 1.25892541e+02,        1.58489319e+02, 1.99526231e+02, 2.51188643e+02, 3.16227766e+02,        3.98107171e+02, 5.01187234e+02, 6.30957344e+02, 7.94328235e+02,        1.00000000e+03, 1.25892541e+03, 1.58489319e+03, 1.99526231e+03,        2.51188643e+03, 3.16227766e+03, 3.98107171e+03, 5.01187234e+03,        6.30957344e+03, 7.94328235e+03, 1.00000000e+04, 1.25892541e+04,        1.58489319e+04, 1.99526231e+04, 2.51188643e+04, 3.16227766e+04,        3.98107171e+04, 5.01187234e+04, 6.30957344e+04, 7.94328235e+04,        1.00000000e+05])</em><a class="headerlink" href="#vpy.device.cdg.Cdg.interpol_pressure_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.max_voltage">
+<code class="sig-name descname">max_voltage</code><em class="property"> = 10.0</em><a class="headerlink" href="#vpy.device.cdg.Cdg.max_voltage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.offset_uncert">
+<code class="sig-name descname">offset_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">use_idx</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.offset_uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>The offset uncertainty is calculated by means of <cite>np.diff(offset)</cite>.
+Drift influences are avoided.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.pressure">
+<code class="sig-name descname">pressure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pressure_dict</span></em>, <em class="sig-param"><span class="n">temperature_dict</span></em>, <em class="sig-param"><span class="n">range_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'Pa'</span></em>, <em class="sig-param"><span class="n">gas</span><span class="o">=</span><span class="default_value">'N2'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the measured pressure in self.unit. If the unit is V
+this conversions are implemented:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>factor … u * max_p / max_voltage</p></li>
+<li><p>cmr … (u + cmr_offset) * cmr_factor * cmr_base_factor[type_head]</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.range_extend">
+<code class="sig-name descname">range_extend</code><em class="property"> = 0.005</em><a class="headerlink" href="#vpy.device.cdg.Cdg.range_extend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.range_mult">
+<code class="sig-name descname">range_mult</code><em class="property"> = {'X0.01': 0.01, 'X0.1': 0.1, 'X1': 1.0}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.range_mult" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.range_offset_trans">
+<code class="sig-name descname">range_offset_trans</code><em class="property"> = {'X0.01': 'offset_x0.01', 'X0.1': 'offset_x0.1', 'X1': 'offset_x1'}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.range_offset_trans" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.repeat_uncert">
+<code class="sig-name descname">repeat_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.repeat_uncert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.rm_nan">
+<code class="sig-name descname">rm_nan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">ldx</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.rm_nan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes data from the given list by:</p>
+<ul class="simple">
+<li><p>testing <code class="docutils literal notranslate"><span class="pre">np.isnan()</span></code></p></li>
+<li><p>or the given (logical) vector ldx</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.shape_pressure">
+<code class="sig-name descname">shape_pressure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.shape_pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shapes the pressures by means of 
+<code class="docutils literal notranslate"><span class="pre">self.min</span></code> and <code class="docutils literal notranslate"><span class="pre">self.max</span></code> in the 
+unit <code class="docutils literal notranslate"><span class="pre">self.unit</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p</strong> (<em>np.array</em>) – pressure in the unit self.unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg.Cdg.temperature_correction">
+<code class="sig-name descname">temperature_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_dict</span></em>, <em class="sig-param"><span class="n">p_cal_dict</span></em>, <em class="sig-param"><span class="n">t_gas_dict</span></em>, <em class="sig-param"><span class="n">t_head_dict</span></em>, <em class="sig-param"><span class="n">t_norm_dict</span></em>, <em class="sig-param"><span class="n">x_vis</span></em>, <em class="sig-param"><span class="n">x_vis_unit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.Cdg.temperature_correction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.type_head_cmr">
+<code class="sig-name descname">type_head_cmr</code><em class="property"> = {'1.1mbar': 110.0, '1000mbar': 100000.0, '100mbar': 10000.0, '10mbar': 1000.0, '1100mbar': 110000.0, '110mbar': 11000.0, '11mbar': 1100.0, '1mbar': 100.0}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.type_head_cmr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.type_head_factor">
+<code class="sig-name descname">type_head_factor</code><em class="property"> = {'0.001Torr': 0.133322, '0.01Torr': 1.33322, '0.1Torr': 13.3322, '001Torr': 1.33322, '01Torr': 13.3322, '01mbar': 10.0, '025Torr': 33.3305, '1.1mbar': 100.0, '1000Torr': 133322.0, '1000mbar': 100000.0, '100Torr': 13332.2, '100mbar': 10000.0, '10Torr': 1333.22, '10mbar': 1000.0, '1100mbar': 100000.0, '110mbar': 10000.0, '11mbar': 1000.0, '1Torr': 133.322, '1mbar': 100.0, '200Torr': 26664.4, '500Torr': 66661.0, '50Torr': 6666.1, '5Torr': 666.61}</em><a class="headerlink" href="#vpy.device.cdg.Cdg.type_head_factor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.unit">
+<code class="sig-name descname">unit</code><em class="property"> = 'Pa'</em><a class="headerlink" href="#vpy.device.cdg.Cdg.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.cdg.Cdg.usable_decades">
+<code class="sig-name descname">usable_decades</code><em class="property"> = 3</em><a class="headerlink" href="#vpy.device.cdg.Cdg.usable_decades" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="vpy.device.cdg.InfCdg">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.cdg.</code><code class="sig-name descname">InfCdg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg.InfCdg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.cdg.Cdg" title="vpy.device.cdg.Cdg"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.device.cdg.Cdg</span></code></a></p>
+<p>Inficon CDGs are usable two decades only</p>
+<dl class="py attribute">
+<dt id="vpy.device.cdg.InfCdg.usable_decades">
+<code class="sig-name descname">usable_decades</code><em class="property"> = 2</em><a class="headerlink" href="#vpy.device.cdg.InfCdg.usable_decades" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.cdg_test">
+<span id="vpy-device-cdg-test-module"></span><h2>vpy.device.cdg_test module<a class="headerlink" href="#module-vpy.device.cdg_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.cdg_test.TestCdg">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.cdg_test.</code><code class="sig-name descname">TestCdg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_error_1">
+<code class="sig-name descname">test_error_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_error_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>should cal error for 1Torr MKS CDG</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_fill_border">
+<code class="sig-name descname">test_fill_border</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_fill_border" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_instance_1">
+<code class="sig-name descname">test_instance_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_instance_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>should cal error</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_interpol_values">
+<code class="sig-name descname">test_interpol_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_interpol_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_nice_values">
+<code class="sig-name descname">test_nice_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_nice_values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_rm_nan_1">
+<code class="sig-name descname">test_rm_nan_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_rm_nan_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>a = [1,2,3,]
+np.shape(a) –&gt;       (3,)
+a = np.array([1,2,3,])
+np.shape(a) –&gt;       (3,)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_temp_correction_1">
+<code class="sig-name descname">test_temp_correction_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_temp_correction_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the temperature correction.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.cdg_test.TestCdg.test_voltage_conversion_1">
+<code class="sig-name descname">test_voltage_conversion_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.cdg_test.TestCdg.test_voltage_conversion_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test the voltage conversion with range.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.device">
+<span id="vpy-device-device-module"></span><h2>vpy.device.device module<a class="headerlink" href="#module-vpy.device.device" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.device.Device">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.device.</code><code class="sig-name descname">Device</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="vpy.html#vpy.document.Document" title="vpy.document.Document"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.document.Document</span></code></a></p>
+<p>Class should be complete with
+self.Const and self.Dev, nothing more</p>
+<dl class="py method">
+<dt id="vpy.device.device.Device.ask_for_offset_uncert">
+<code class="sig-name descname">ask_for_offset_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">offset</span></em>, <em class="sig-param"><span class="n">unit</span></em>, <em class="sig-param"><span class="n">range_str</span><span class="o">=</span><span class="default_value">'all'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.ask_for_offset_uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks for u(offset).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.check_skip">
+<code class="sig-name descname">check_skip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uncert_dict</span></em>, <em class="sig-param"><span class="n">prop</span></em>, <em class="sig-param"><span class="n">skip</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.check_skip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.check_source_skip">
+<code class="sig-name descname">check_source_skip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uncert_dict</span></em>, <em class="sig-param"><span class="n">skip</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.check_source_skip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.check_take_list">
+<code class="sig-name descname">check_take_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uncert_dict</span></em>, <em class="sig-param"><span class="n">type_list</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.check_take_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.check_type_skip">
+<code class="sig-name descname">check_type_skip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">uncert_dict</span></em>, <em class="sig-param"><span class="n">skip</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.check_type_skip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.convert_range_to_meas_unit">
+<code class="sig-name descname">convert_range_to_meas_unit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">meas_unit</span></em>, <em class="sig-param"><span class="n">range_unit</span></em>, <em class="sig-param"><span class="n">from_val</span></em>, <em class="sig-param"><span class="n">to_val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.convert_range_to_meas_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.convert_to_return_unit">
+<code class="sig-name descname">convert_to_return_unit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u</span></em>, <em class="sig-param"><span class="n">u_unit</span></em>, <em class="sig-param"><span class="n">meas_vec</span></em>, <em class="sig-param"><span class="n">meas_unit</span></em>, <em class="sig-param"><span class="n">return_unit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.convert_to_return_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.get_match_index">
+<code class="sig-name descname">get_match_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">meas_vec</span></em>, <em class="sig-param"><span class="n">from_val</span></em>, <em class="sig-param"><span class="n">to_val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.get_match_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.get_total_uncert">
+<code class="sig-name descname">get_total_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">meas_vec</span></em>, <em class="sig-param"><span class="n">meas_unit</span></em>, <em class="sig-param"><span class="n">return_unit</span></em>, <em class="sig-param"><span class="n">res</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_type</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">take_type_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.get_total_uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collects all Uncertainty contrib. for the given measurement vector
+<cite>meas_vec</cite>. Calculates the quadratic sum and returns a
+<cite>np.array</cite> of the length as of <cite>meas_vec</cite>. Contributions with
+a certain source (e.g. standard) or a certain type (e.g. B)
+can be skipped.</p>
+<p>For digitalisation uncertainties an <cite>Resolution</cite> key may be
+provided.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Typ-A: Ermittlung aus der statistischen Analyse mehrerer
+statistisch unabhängiger Messwerte aus einer
+Messwiederholung.  
+Typ-B: Ermittlung ohne statistische
+Methoden, beispielsweise durch Entnahme der Werte aus
+einem Kalibrierschein…</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>meas_vec</strong> (<em>np.array</em>) – array containing values of the measurment 
+vector the uncertainties are related to</p></li>
+<li><p><strong>meas_unit</strong> (<em>str</em>) – unit of meas_vec</p></li>
+<li><p><strong>return_unit</strong> (<em>str</em>) – unit of the return values</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>quadratic sum of uncertainties</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.pressure">
+<code class="sig-name descname">pressure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pressure_dict</span></em>, <em class="sig-param"><span class="n">temperature_dict</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'Pa'</span></em>, <em class="sig-param"><span class="n">gas</span><span class="o">=</span><span class="default_value">'N2'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.pressure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.device.Device.range_trans">
+<code class="sig-name descname">range_trans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.device.Device.range_trans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Traverses range vector to the analysis section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.dmm">
+<span id="vpy-device-dmm-module"></span><h2>vpy.device.dmm module<a class="headerlink" href="#module-vpy.device.dmm" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.dmm.Dmm">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.dmm.</code><code class="sig-name descname">Dmm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.dmm.Dmm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.device.dmm.Dmm.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.dmm.Dmm.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.dmm.Dmm.uncert_temperature">
+<code class="sig-name descname">uncert_temperature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em>, <em class="sig-param"><span class="n">tunit</span></em>, <em class="sig-param"><span class="n">runit</span><span class="o">=</span><span class="default_value">'K'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.dmm.Dmm.uncert_temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates the uncertainty of the temperature measurement</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.qbs">
+<span id="vpy-device-qbs-module"></span><h2>vpy.device.qbs module<a class="headerlink" href="#module-vpy.device.qbs" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.qbs.Qbs">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.qbs.</code><code class="sig-name descname">Qbs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.qbs.Qbs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.device.qbs.Qbs.get_error_correction">
+<code class="sig-name descname">get_error_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">punit</span></em>, <em class="sig-param"><span class="n">runit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.qbs.Qbs.get_error_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error of indication by means of the expression stored</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>np.array</em>) – p pressure to calculate the error</p></li>
+<li><p><strong>punit</strong> (<em>str</em>) – punit pressure unit</p></li>
+<li><p><strong>runit</strong> (<em>str</em>) – runit unit of values returned</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.qbs.Qbs.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.qbs.Qbs.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.rsg">
+<span id="vpy-device-rsg-module"></span><h2>vpy.device.rsg module<a class="headerlink" href="#module-vpy.device.rsg" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.rsg.Rsg">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.rsg.</code><code class="sig-name descname">Rsg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.rsg.Rsg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.device.rsg.Rsg.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.rsg.Rsg.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.device.srg">
+<span id="vpy-device-srg-module"></span><h2>vpy.device.srg module<a class="headerlink" href="#module-vpy.device.srg" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.device.srg.Srg">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.device.srg.</code><code class="sig-name descname">Srg</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em>, <em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.device.device.Device" title="vpy.device.device.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.device.device.Device</span></code></a></p>
+<p>SRG
+The fix_total_relative_uncertainty is used for the calculation of the
+uncertainty of the corrected slope.</p>
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.dcr_conversion">
+<code class="sig-name descname">dcr_conversion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'Pa'</span></em>, <em class="sig-param"><span class="n">gas</span><span class="o">=</span><span class="default_value">'N2'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.dcr_conversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the conversion constant <span class="math notranslate nohighlight">\(K\)</span> between DCR and
+unit by means of</p>
+<p><span class="math notranslate nohighlight">\(K = \sqrt{ \frac{ 8 R T }{ \pi M}} \pi d \rho /20\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>unit</strong> (<em>str</em>) – unit unit</p></li>
+<li><p><strong>gas</strong> (<em>str</em>) – gas gas</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>conversion factor between DCR and unit</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.device_uncert">
+<code class="sig-name descname">device_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.device_uncert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.get_name">
+<code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.get_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.make_sigma_index">
+<code class="sig-name descname">make_sigma_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_cal</span></em>, <em class="sig-param"><span class="n">unit</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.make_sigma_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Replaces the <cite>ToDo.make_average_index()</cite>
+since all pressures in the range <cite>p_cal[i] &gt; min_p and p_cal[i] &lt; max_p</cite>
+should be used to calculate the <cite>sigma</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.pressure">
+<code class="sig-name descname">pressure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pressure_dict</span></em>, <em class="sig-param"><span class="n">temperature_dict</span></em>, <em class="sig-param"><span class="n">unit</span><span class="o">=</span><span class="default_value">'Pa'</span></em>, <em class="sig-param"><span class="n">gas</span><span class="o">=</span><span class="default_value">'N2'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.pressure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the presssure by means of dcr_conversion.
+Returns the pressure in the given unit.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.srg.Srg.sigma_max_pressure">
+<code class="sig-name descname">sigma_max_pressure</code><em class="property"> = 1.33322</em><a class="headerlink" href="#vpy.device.srg.Srg.sigma_max_pressure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.srg.Srg.sigma_min_pressure">
+<code class="sig-name descname">sigma_min_pressure</code><em class="property"> = 0.1</em><a class="headerlink" href="#vpy.device.srg.Srg.sigma_min_pressure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.sigma_null">
+<code class="sig-name descname">sigma_null</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_cal</span></em>, <em class="sig-param"><span class="n">cal_unit</span></em>, <em class="sig-param"><span class="n">p_ind</span></em>, <em class="sig-param"><span class="n">ind_unit</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.sigma_null" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://de.wikipedia.org/wiki/Lineare_Einfachregression">https://de.wikipedia.org/wiki/Lineare_Einfachregression</a>
+k = coverage factor
+x … p_cal
+y … sigma
+m … slope
+b … sigma_0
+var_m … var(m)
+var_b … var(b) 
+u … u(m/sigma_0)</p>
+<p>print(sens_m * var_m**0.5)
+print(sens_b * var_b**0.5)
+print(var_m**0.5)
+print(var_b**0.5)
+print((self.total_relative_uncertainty_k2/2.0 * m/b))
+print((self.total_relative_uncertainty_k2/2.0 * b * sens_b))</p>
+<p>python script/se3/se3_cal_result.py –ids ‘cal-2019-se3-kk-75138_0001’ –db ‘vl_db’ –srv ‘<a class="reference external" href="http://a73434.berlin.ptb.de:5984">http://a73434.berlin.ptb.de:5984</a>’
+0.0001747977356194887
+-1.954144020125424e-06
+0.0001720421398635844
+0.00011476238813591167
+-2.17870974810604e-05
+-2.1787097481060404e-05</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.temperature_correction">
+<code class="sig-name descname">temperature_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">temperature_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.temperature_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the temperature correction to the reference temperature</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.srg.Srg.total_relative_uncertainty_k2">
+<code class="sig-name descname">total_relative_uncertainty_k2</code><em class="property"> = 0.0026</em><a class="headerlink" href="#vpy.device.srg.Srg.total_relative_uncertainty_k2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.uncert_ind">
+<code class="sig-name descname">uncert_ind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.uncert_ind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.uncert_offset">
+<code class="sig-name descname">uncert_offset</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.uncert_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.uncert_repeat">
+<code class="sig-name descname">uncert_repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.uncert_repeat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.uncert_sigma_eff">
+<code class="sig-name descname">uncert_sigma_eff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.uncert_sigma_eff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uncertainty estimation based on
+<a class="reference external" href="http://intranet.ptb.de/fileadmin/dokumente/intranet/qualitaetsmanagement/Fachabteilungen/Abt7/FB75/7.5-AA-SE2_ausgabe5.pdf">http://intranet.ptb.de/fileadmin/dokumente/intranet/qualitaetsmanagement/Fachabteilungen/Abt7/FB75/7.5-AA-SE2_ausgabe5.pdf</a>
+Seite 33: ‘10.3 Messunsicherheitsbudget für SRG’</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.device.srg.Srg.uncert_temperature">
+<code class="sig-name descname">uncert_temperature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.device.srg.Srg.uncert_temperature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.device.srg.Srg.unit">
+<code class="sig-name descname">unit</code><em class="property"> = 'Pa'</em><a class="headerlink" href="#vpy.device.srg.Srg.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vpy.device package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vpy.device.cdg">vpy.device.cdg module</a></li>
+<li><a class="reference internal" href="#module-vpy.device.cdg_test">vpy.device.cdg_test module</a></li>
+<li><a class="reference internal" href="#module-vpy.device.device">vpy.device.device module</a></li>
+<li><a class="reference internal" href="#module-vpy.device.dmm">vpy.device.dmm module</a></li>
+<li><a class="reference internal" href="#module-vpy.device.qbs">vpy.device.qbs module</a></li>
+<li><a class="reference internal" href="#module-vpy.device.rsg">vpy.device.rsg module</a></li>
+<li><a class="reference internal" href="#module-vpy.device.srg">vpy.device.srg module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vpy.html"
+                        title="previous chapter">vpy package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vpy.display.html"
+                        title="next chapter">vpy.display package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vpy.device.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.display.html" title="vpy.display package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vpy.html" title="vpy package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" >vpy package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Bock.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

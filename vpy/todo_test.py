@@ -78,10 +78,27 @@ class TestToDo(unittest.TestCase):
         self.ToDo = ToDo(doc)
 
     def test_average_index_1(self):
+        """Should assign p, p +/-4% to target 
+        point p but not p+/-5%.
         """
-        """
-        pcal = np.array([0.01, 0.0109, 0.0099])
-        self.ToDo.make_average_index(pcal, "mbar")
-        self.assertEqual(len(self.ToDo.average_index), 16)
-        self.assertEqual(len(self.ToDo.average_index[0]), 3)
-        self.assertEqual(len(self.ToDo.average_index[1]), 0)
+       
+        p_target = self.ToDo.Pres.get_value("target", self.ToDo.pressure_unit)
+        N = len(p_target)
+        pcal = np.array([p_target[0], # 0.01
+                         p_target[0]*(1-0.04), # -4% 
+                         p_target[0]*(1+0.04), # +4% 
+                         p_target[0]*(1-0.05), # -5% 
+                         p_target[0]*(1+0.05), # +5%
+                         p_target[-1], # 10
+                         p_target[-1]*(1-0.04), # -4% 
+                         p_target[-1]*(1+0.04), # +4% 
+                         p_target[-1]*(1-0.05), # -5% 
+                         p_target[-1]*(1+0.05), # +5% 
+        ])
+
+        average_index = self.ToDo.make_average_index(pcal, "mbar")
+        
+        self.assertEqual(len(average_index), N)
+        self.assertEqual(len(average_index[0]), 3)
+        self.assertEqual(len(average_index[1]), 0)
+        self.assertEqual(len(average_index[-1]), 3)

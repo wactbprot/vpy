@@ -1,0 +1,594 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>vpy.standard.frs5 package &#8212; vpy 0.19.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vpy.standard.se2 package" href="vpy.standard.se2.html" />
+    <link rel="prev" title="vpy.standard.dkm_ppc4 package" href="vpy.standard.dkm_ppc4.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.se2.html" title="vpy.standard.se2 package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.dkm_ppc4.html" title="vpy.standard.dkm_ppc4 package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" >vpy package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="vpy.standard.html" accesskey="U">vpy.standard package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-vpy.standard.frs5">
+<span id="vpy-standard-frs5-package"></span><h1>vpy.standard.frs5 package<a class="headerlink" href="#module-vpy.standard.frs5" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vpy.standard.frs5.cal">
+<span id="vpy-standard-frs5-cal-module"></span><h2>vpy.standard.frs5.cal module<a class="headerlink" href="#module-vpy.standard.frs5.cal" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.frs5.cal.Cal">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.frs5.cal.</code><code class="sig-name descname">Cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.cal.Cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.frs5.std.Frs5" title="vpy.standard.frs5.std.Frs5"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.standard.frs5.std.Frs5</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.standard.frs5.cal.Cal.error">
+<code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.cal.Cal.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the error of indication from the calibration pressure and 
+the corrected indicated pressure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)
+pick_dict(quantity, type)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.cal.Cal.pressure_cal">
+<code class="sig-name descname">pressure_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.cal.Cal.pressure_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the FRS5 calibration pressure from
+lb indication. The equation is:</p>
+<div class="math notranslate nohighlight">
+\[p=\frac{r}{r_{cal}} m_{cal}\frac{g}{A_{eff}}\
+\frac{1}{corr_{rho}corr_{tem}} + p_{res}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[corr_{rho} = 1 - \frac{\rho_{gas}}{\rho_{piston}}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[corr_{tem} = 1 + \alpha \beta (\vartheta - 20)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.cal.Cal.pressure_res">
+<code class="sig-name descname">pressure_res</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.cal.Cal.pressure_res" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the residual Pressure from
+SRG-DCR values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.cal.Cal.temperature">
+<code class="sig-name descname">temperature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.cal.Cal.temperature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temperature of the balance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.frs5.std">
+<span id="vpy-standard-frs5-std-module"></span><h2>vpy.standard.frs5.std module<a class="headerlink" href="#module-vpy.standard.frs5.std" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.frs5.std.Frs5">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.frs5.std.</code><code class="sig-name descname">Frs5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.std.Frs5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="vpy.standard.html#vpy.standard.standard.Standard" title="vpy.standard.standard.Standard"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.standard.standard.Standard</span></code></a></p>
+<p>Calculation methods of large area piston gauge FRS5.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">p_frs</span></code>    … abs. pressure of the piston gauge [p]=Pa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">r</span></code>        … reading [r] = lb</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">u_b</span></code>      … standard uncertainty of the balance [u_b] = lb</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">u_sys</span></code>    … sys. uncertanty of the balance [u_sys]=lb</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">r_0</span></code>      … zero reading [r_0] = lb</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">A</span></code>        … effective area [A]= m^2</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_res</span></code>    … residual pressure [p.res]=Pa</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">m_cal</span></code>    … calibration mass piece [m.cal]=kg</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rho_gas</span></code>  … density gas</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rho_frs</span></code>  … density frs piston</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g</span></code>        … accelaration [g]=m/s^2</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">r_cal</span></code>    … indication at m_cal [r_cal]=g</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">r_cal_0</span></code>  …  indication at zero [r_cal_0]=g</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ab</span></code>       … temperatur coeff. [k]=1/K</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code>        … temperature of balance [t]=C</p></li>
+</ul>
+<p>model equation:</p>
+<div class="math notranslate nohighlight">
+\[p=\frac{r_{ind}-r_0+u_b+u_{sys}}{r_{cal}-r_{cal 0}}\
+ m_{cal}\frac{g}{A_{eff}}\frac{1}{corr_{rho}corr_{tem}}\]</div>
+<dl class="py method">
+<dt id="vpy.standard.frs5.std.Frs5.get_gas">
+<code class="sig-name descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.get_gas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the calibration gas stored in <em>AuxValues</em></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.frs5.std.Frs5.name">
+<code class="sig-name descname">name</code><em class="property"> = 'FRS5'</em><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.frs5.std.Frs5.unit">
+<code class="sig-name descname">unit</code><em class="property"> = 'Pa'</em><a class="headerlink" href="#vpy.standard.frs5.std.Frs5.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.frs5.uncert">
+<span id="vpy-standard-frs5-uncert-module"></span><h2>vpy.standard.frs5.uncert module<a class="headerlink" href="#module-vpy.standard.frs5.uncert" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.frs5.uncert.Uncert">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.frs5.uncert.</code><code class="sig-name descname">Uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.frs5.std.Frs5" title="vpy.standard.frs5.std.Frs5"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.standard.frs5.std.Frs5</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.define_model">
+<code class="sig-name descname">define_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.define_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines symbols and model for FRS5.
+The order of symbols must match the order in <code class="docutils literal notranslate"><span class="pre">gen_val_arr</span></code>:</p>
+<ol class="arabic simple">
+<li><p>A</p></li>
+<li><p>r</p></li>
+<li><p>r_zc</p></li>
+<li><p>r_zc0</p></li>
+<li><p>r_cal</p></li>
+<li><p>r_cal0</p></li>
+<li><p>ub</p></li>
+<li><p>usys</p></li>
+<li><p>p_res</p></li>
+<li><p>m_cal</p></li>
+<li><p>g</p></li>
+<li><p>T</p></li>
+<li><p>rho_frs</p></li>
+<li><p>rho_gas</p></li>
+<li><p>ab</p></li>
+</ol>
+<p>The equation is:</p>
+<div class="math notranslate nohighlight">
+\[p=\frac{r}{r_{cal}} m_{cal}\frac{g}{A_{eff}}\
+\frac{1}{corr_{rho}corr_{tem}} + p_{res}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[corr_{rho} = 1 - \frac{\rho_{gas}}{\rho_{piston}}\]</div>
+<p>and</p>
+<div class="math notranslate nohighlight">
+\[corr_{tem} = 1 + \alpha \beta (\vartheta - 20)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.gen_val_array">
+<code class="sig-name descname">gen_val_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.gen_val_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a array of values
+with the same order as define_models symbols order:</p>
+<ol class="arabic simple">
+<li><p>A</p></li>
+<li><p>r</p></li>
+<li><p>r_zc</p></li>
+<li><p>r_zc0</p></li>
+<li><p>r_cal</p></li>
+<li><p>r_cal0</p></li>
+<li><p>ub</p></li>
+<li><p>usys</p></li>
+<li><p>m_cal</p></li>
+<li><p>g</p></li>
+<li><p>rho_frs</p></li>
+<li><p>rho_gas</p></li>
+<li><p>ab</p></li>
+<li><p>T</p></li>
+<li><p>p_res</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.gen_val_dict">
+<code class="sig-name descname">gen_val_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.gen_val_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in a dict of values
+with the same order as in <code class="docutils literal notranslate"><span class="pre">define_models</span></code>. For the calculation
+of the gas density, the Frs reading is multiplyed by 10 which gives a
+suffucient approximation for the pressure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.total_standard">
+<code class="sig-name descname">total_standard</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em>, <em class="sig-param"><span class="n">no_type_a</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.total_standard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the total uncertainty.
+sympy derives the sensitivity coefficients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_A">
+<code class="sig-name descname">uncert_A</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_A" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of effective area</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_T">
+<code class="sig-name descname">uncert_T</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_T" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the temperature correction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_ab">
+<code class="sig-name descname">uncert_ab</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_ab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty temperature expansion coefficient</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_g">
+<code class="sig-name descname">uncert_g</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_g" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of m_cal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_m_cal">
+<code class="sig-name descname">uncert_m_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_m_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of m_cal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r">
+<code class="sig-name descname">uncert_r</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the r (reading)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_cal">
+<code class="sig-name descname">uncert_r_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of r_cal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_cal0">
+<code class="sig-name descname">uncert_r_cal0</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_cal0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of r_cal0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_zc">
+<code class="sig-name descname">uncert_r_zc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_zc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the r_zc
+(zero check between measurement points)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_r_zc0">
+<code class="sig-name descname">uncert_r_zc0</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_r_zc0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the r_zc0 (initial zero check)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_rho_frs">
+<code class="sig-name descname">uncert_rho_frs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_rho_frs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the buoyancy correction for the piston.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In order to avoid an uncertainty value of 0 the value 0
+for rho_gas (used during
+calculation) is replaced by the value at p, N2 and 27°C:</p>
+<p>(28.013e-3/(296.0+5.)/8.314*100./2.)</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_rho_gas">
+<code class="sig-name descname">uncert_rho_gas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_rho_gas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the buoyancy correction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.frs5.uncert.Uncert.uncert_ub">
+<code class="sig-name descname">uncert_ub</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.frs5.uncert.Uncert.uncert_ub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the uncertainty of the r (reading)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vpy.standard.frs5 package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.frs5.cal">vpy.standard.frs5.cal module</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.frs5.std">vpy.standard.frs5.std module</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.frs5.uncert">vpy.standard.frs5.uncert module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vpy.standard.dkm_ppc4.html"
+                        title="previous chapter">vpy.standard.dkm_ppc4 package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vpy.standard.se2.html"
+                        title="next chapter">vpy.standard.se2 package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vpy.standard.frs5.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.se2.html" title="vpy.standard.se2 package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.dkm_ppc4.html" title="vpy.standard.dkm_ppc4 package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" >vpy package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="vpy.standard.html" >vpy.standard package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Bock.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

@@ -10,7 +10,7 @@ class ToDo(Document):
     :param doc: doc ToDo to search and extract
     :type doc: dict
     """
-
+    max_dev = 0.05
     def __init__(self, doc):
 
         if 'Calibration' in doc:
@@ -22,33 +22,29 @@ class ToDo(Document):
         super().__init__(doc)
 
         if 'Type' in doc:
-            self.type = doc['Type']
+            self.type = doc.get('Type')
             if self.type == "srg_sigma":
                 self.type = "sigma"        
 
         if 'Values' in doc:
-            if 'Pressure' in doc['Values']:
-                self.Pres = Pressure(doc['Values'])
+            values = doc.get('Values')
+            if 'Pressure' in values:
+                self.Pres = Pressure(values)
                 self.pressure_unit = self.Pres.get_dict('Type', 'target').get('Unit')
                 # delete pressure
                 doc.pop('Pressure', None)
 
-            if 'Temperature' in doc:
-                self.Temp = Temperature(doc["Values"])
+            if 'Temperature' in values:
+                self.Temp = Temperature(values)
                 self.temperature_unit = self.Temp.get_dict('Type', 'target').get('Unit')
-                # delete pressure
+                # delete temperature
                 doc.pop('Temperature', None)
-
-        self.max_dev = 0.05    # before 2019-08-19 max_dev = 0.1
 
     def get_standard(self):
         return self.doc.get("Standard")
 
     def get_gas(self):
-        if 'Gas' in self.doc:
-            return self.doc['Gas']
-        else:
-            return None
+        return self.doc.get('Gas')
 
     def get_min_max_pressure(self):
         if "Pres" in dir(self):

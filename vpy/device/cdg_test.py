@@ -9,8 +9,9 @@ class TestCdg(unittest.TestCase):
 
     def setUp(self):
         self.cob = {"CalibrationObject": {
-                    "Name": "test-CDG",
-                      "Setup": {}
+                      "Name": "test-CDG",
+                      "Setup": {},
+                      "Device":{}
                     }
         }
         self.p_cal = np.array([0.01, 0.1, 1, 10, 100, 1000, 1e4, 1e5]).astype(np.float) #Pa
@@ -21,16 +22,18 @@ class TestCdg(unittest.TestCase):
         """
 
         cob = copy.deepcopy(self.cob)
-        cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'        
+        cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'
+        cob['CalibrationObject']['Device']['Producer'] = 'MKS Inc.'
         cdg = Cdg({}, cob)
         self.assertEqual(cdg.unit, 'Pa')
-        self.assertAlmostEqual(cdg.min_p, 0.13332)
+        self.assertAlmostEqual(cdg.min_p, 0.133322)
 
     def test_error_1(self):
-        """should cal error for 1Torr CDG
+        """should cal error for 1Torr MKS CDG
         """
         cob = copy.deepcopy(self.cob)
         cob['CalibrationObject']['Setup']['TypeHead'] = '1Torr'
+        cob['CalibrationObject']['Device']['Producer'] = 'MKS Inc.'
         cdg = Cdg({}, cob)
 
         p_cal = cdg.shape_pressure(self.p_cal)
@@ -66,17 +69,14 @@ class TestCdg(unittest.TestCase):
                         9,9,9, 
                         np.nan ])
         e = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
-        u = np.array([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 ])
         p = cdg.shape_pressure(p)
 
         p, l = cdg.rm_nan(p)
         e, _ = cdg.rm_nan(e, l)
-        u, _ = cdg.rm_nan(u, l)
 
-        i_p, i_e, i_u = cdg.cal_interpol(p, e, u)
+        i_p, i_e = cdg.cal_interpol(p, e)
        
         self.assertAlmostEqual(i_e[0] , 1)
-        self.assertAlmostEqual(i_u[0] , 1)
         
     def test_rm_nan_1(self):
         """
@@ -99,13 +99,71 @@ class TestCdg(unittest.TestCase):
         cdg = Cdg({}, cob)
         p = np.array([90, 200, 300, 500, 900, 1000, 1290])
         e = np.array([ 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3 ])
-        u = np.array([ 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3, 1e-3 ])
 
-        pe, ee, ue = cdg.fill_to_dev_borders(p, e, u)
+        pe, ee = cdg.fill_to_dev_borders(p, e)
 
         self.assertEqual(pe[0], cdg.min_p*(1 - cdg.range_extend))
         self.assertEqual(pe[-1], cdg.max_p*(1 + cdg.range_extend))
         self.assertEqual(len(pe), len(p) + 2)
         self.assertEqual(len(ee), len(p) + 2)
-        self.assertEqual(len(ue), len(p) + 2)
+
         
+    def test_voltage_conversion_1(self):
+        """Test the voltage conversion with range."""
+        cob = copy.deepcopy(self.cob)
+        cob['CalibrationObject']['Setup']['TypeHead'] = '10Torr'
+        cob['CalibrationObject']['Device']['Producer'] = 'MKS Inc.'
+        cdg = Cdg({}, cob)
+        p_ind = np.array([1.,10.,
+                          1.,10.,
+                          1.,10.]) # V
+        ind_range =  np.array(["X0.01","X0.01",
+                               "X0.1" ,"X0.1",
+                               "X1"   ,"X1"]) 
+        p = cdg.pressure({"Value":p_ind, "Unit":"V"}, {}, {"Value":ind_range}, unit="Pa")
+        
+        self.assertEqual(p[5], 1333.22) # 10V in X1
+        self.assertEqual(p[4], 133.322) # 1V in X1
+        self.assertEqual(p[3], 133.322) # 10V in X0.1
+        self.assertEqual(p[2], 13.3322) # 1V in X0.1
+        self.assertEqual(p[1], 13.3322) # 10V in X0.01
+        self.assertEqual(p[0], 1.33322) # 1V in X0.01
+
+    def test_temp_correction_1(self):
+        """Test the temperature correction."""
+        cob = copy.deepcopy(self.cob)
+        cdg = Cdg({}, cob)
+
+        e = 0.01
+        e_vis = 0.001
+        e_vis_unit = "1"
+        p_cal = 10.
+        t_head =  45 + 273.15
+        t_gas = 23 + 273.15
+        t_norm = 20 + 273.15
+
+        e_dict = {"Value":np.array([e]), "Unit":"1"}
+        p_cal_dict = {"Value":np.array([p_cal]), "Unit":"Pa"}
+        t_head_dict = {"Value":np.array([t_head]), "Unit":"K"}
+        t_gas_dict = {"Value":np.array([t_gas]), "Unit":"K"}
+        t_norm_dict = {"Value":np.array([t_norm]), "Unit":"K"}
+
+
+        e_0 = e_vis + (e - e_vis)*((t_head/t_norm)**0.5 -1)/((t_head/t_gas)**0.5 -1)
+
+        e_1 = cdg.temperature_correction(e_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, e_vis, e_vis_unit)[0]
+        self.assertAlmostEqual(e_0, e_1)
+        
+        p_cal_dict = {"Value":np.array([200]), "Unit":"Pa"}
+        e_2 = cdg.temperature_correction(e_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, e_vis, e_vis_unit)[0]
+        self.assertAlmostEqual(e_2, e)
+
+        
+        e_dict = {"Value":np.array([e, e, e]), "Unit":"1"}
+        p_cal_dict = {"Value":np.array([10, 200, 10]), "Unit":"Pa"}
+        t_gas_dict = {"Value":np.array([t_gas, t_gas, t_gas]), "Unit":"K"}
+
+        e_3 = cdg.temperature_correction(e_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, e_vis, e_vis_unit)
+        self.assertAlmostEqual(e_3[0], e_0)
+        self.assertAlmostEqual(e_3[1], e)
+        self.assertAlmostEqual(e_3[2], e_0)

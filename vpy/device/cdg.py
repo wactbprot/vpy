@@ -3,7 +3,7 @@ import numpy as np
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from ..device.device import Device
-from ..values import Values
+from ..values import Values, Range
 
 
 class Cdg(Device):
@@ -63,33 +63,39 @@ class Cdg(Device):
         "X0.1":"offset_x0.1",
         "X0.01":"offset_x0.01",
     }
+    range_mult = {
+        "X1":1.,
+        "X0.1":0.1,
+        "X0.01":0.01,
+    }
     
     range_extend = 0.005 # relativ
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
 
-    def e_vis_model(self, p, a, b, c, d):
-        return d + 3.5 / (a * p**2 + b * p + c * np.sqrt(p) + 1)
+    def e_vis_limit(self):
+        return 100.0, "Pa"
+    
+    def e_vis_model(self, p, a, b, c, d, e):
+        return d + e / (a * p**2 + b * p + c * np.sqrt(p) + 1)
     
     def e_vis_bounds(self):
-        return ([0, 0, 0, -np.inf], [np.inf, np.inf, np.inf, np.inf])
+        return ([0, 0, 0, -np.inf, 0], [np.inf, np.inf, np.inf, np.inf, np.inf])
 
     def get_e_vis_fit_params(self, p, e):
         out = np.isnan(e)
         p = p[np.logical_not(out)]
         e = e[np.logical_not(out)]
-        params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=1000)
+        params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=10000)
         return params
 
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
-        self.doc = dev
-        self.val = Values({})
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
         
         if dev:
-            self.name = dev.get('Name')
+            self.doc = dev
             dev_setup = dev.get('Setup')
             dev_device = dev.get('Device')
             if dev_setup:
@@ -100,7 +106,9 @@ class Cdg(Device):
                 conversion_type =  dev_setup.get('ConversionType')
                 
                 if type_head:
+                    self.producer = "missing"
                     if "mks" in dev_device["Producer"].lower():
+                        self.producer = "mks"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -109,6 +117,7 @@ class Cdg(Device):
                                 self.conversion_type = "factor"
 
                     if "inficon" in dev_device["Producer"].lower():
+                        self.producer = "inficon"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -117,6 +126,7 @@ class Cdg(Device):
                                 self.conversion_type = "factor"
 
                     if "leybold" in dev_device["Producer"].lower():
+                        self.producer = "leybold"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -125,6 +135,7 @@ class Cdg(Device):
                                 self.conversion_type = "factor"
 
                     if "pfeiffer" in dev_device["Producer"].lower():
+                        self.producer = "pfeiffer"
                         if type_head in self.type_head_cmr:
                             self.max_p = self.type_head_cmr.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -173,7 +184,42 @@ class Cdg(Device):
             self.log.error(msg)
             sys.exit(msg)
 
-    def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
+
+    def temperature_correction(self, x_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, x_vis, x_vis_unit):
+        
+        if x_dict.get("Unit") !=  x_vis_unit:
+            sys.exit("wrong x units")
+
+        if t_gas_dict.get("Unit") !=  t_norm_dict.get("Unit") or t_gas_dict.get("Unit") !=  t_head_dict.get("Unit"):
+            sys.exit("wrong t units")
+
+        p_vis_lim , p_vis_lim_unit = self.e_vis_limit()
+        if p_cal_dict.get("Unit") != p_vis_lim_unit:
+            sys.exit("wrong p units")
+            
+        x = np.array(x_dict.get("Value"))
+        x_vis = np.array(x_vis)
+        t_gas = np.array(t_gas_dict.get("Value"))
+        t_head = np.array(t_head_dict.get("Value"))
+        t_norm = np.array(t_norm_dict.get("Value"))
+        p_cal = np.array(p_cal_dict.get("Value"))
+
+        ec = np.full(len(x), np.nan)
+        
+        idx = np.where(p_cal < p_vis_lim)
+        odx = np.where(p_cal > p_vis_lim)
+        
+        if np.shape(idx)[1] == 0:
+            return x
+        else:
+            ec[idx] = x_vis + (np.take(x, idx) - x_vis) * (np.sqrt(t_head/t_norm) - 1)/(np.sqrt(t_head/np.take(t_gas, idx)) - 1)
+
+        if np.shape(odx)[1] != 0:
+            ec[odx] = np.take(x, odx) 
+
+        return  ec
+    
+    def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= 'Pa', gas= "N2"):
         """Converts the measured pressure in self.unit. If the unit is V
         this conversions are implemented: 
         
@@ -182,13 +228,18 @@ class Cdg(Device):
         """
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
-  
+        
         if pressure_unit == "V":
             if self.conversion_type == "factor":
-                return pressure_value * self.max_p/self.max_voltage
+                if range_dict:
+                    range_mult = np.array([self.range_mult.get(x) for x in range_dict.get('Value') ]) 
+                    p = pressure_value * self.max_p/self.max_voltage * range_mult
+                else:
+                    p = pressure_value * self.max_p/self.max_voltage
+                
+                return p
 
             if self.conversion_type == "cmr":
-
                 return (pressure_value +self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
                 
             msg = "conversion type not implemented"
@@ -262,7 +313,7 @@ class Cdg(Device):
         e = error
 
         ## mean of mult meas. points
-        idx = self.val.gatherby_idx(p, self.val.diff_less(0.2))
+        idx = self.Vals.gatherby_idx(p, self.Vals.diff_less(0.2))
         p = [np.mean(p[i]) for i in idx]
         e = [np.mean(e[i]) for i in idx]
         
@@ -366,8 +417,109 @@ class Cdg(Device):
         end_array = np.array([x_max])
         
         return np.concatenate((start_array, med_array, end_array )) 
+    
+    
+    def offset_uncert(self, ana, use_idx = None):
+        """
+        The offset uncertainty is calculated by means of `np.diff(offset)`.
+        Drift influences are avoided.
+        """
 
+        range_str = Range(ana.org).get_str("offset")
+        ind = ana.pick("Pressure", "ind_corr", self.unit)
+        offset = ana.pick("Pressure", "offset", self.unit)
 
+        ## make elements not in use_idx nan:
+        if  use_idx is not None:
+            o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
+            for i in o:
+                ind[i] = np.nan 
+                offset[i] = np.nan 
+
+        u = np.full(len(ind), np.nan) 
+        uncert_contrib = {"Unit": self.unit}
+
+        if range_str is not None:
+            range_unique = np.unique(range_str)
+            for r in range_unique:
+                i_r = np.where(range_str == r)
+                ## sometimes all offset[i_r] are nan
+                all_nan = np.all(np.isnan(offset[i_r]))
+                if np.shape(i_r)[1] > 0 and not all_nan:
+                    m = np.nanmean(np.abs(np.diff(offset[i_r])))
+                    if m == 0.0:
+                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
+                    
+                    uncert_contrib[r] = m
+                    u[i_r] = m/ind[i_r]
+        else:
+            if len(offset) < 2:
+                m = self.ask_for_offset_uncert(offset, self.unit)
+            else:
+                m = np.nanmean(np.abs(np.diff(offset)))
+                if m == 0.0:
+                    ## Abschätzung 0.1% vom kleinsten p_ind
+                    m = self.ask_for_offset_uncert(offset, self.unit)
+
+                uncert_contrib["all"] = m
+                u = m/ind
+               
+        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
+        ana.store("Uncertainty", "offset", u, "1")
+
+    def repeat_uncert(self, ana):
+
+        p_list = ana.pick("Pressure", "ind_corr", "Pa")
+        # *) bis 14.8.19
+        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
+        #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
+        if self.producer == "missing":
+            msg = "No Producer in Device"
+            self.log.warn(msg)
+            sys.exit(msg)
+
+        if self.ToDo.get_standard() == "missing":
+            msg = "No Standard in ToDo"
+            self.log.warn(msg)
+            sys.exit(msg)
+
+        if self.producer == "inficon" and self.ToDo.get_standard() == "FRS5":
+            if self.type_head == "10Torr" or self.type_head == "100Torr":
+                u = np.full(len(p_list), 2.9e-5)
+            else:
+                u = np.full(len(p_list), 1.0e-4)
+
+        else: #MKS und andere
+            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
+                                            [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
+
+        ana.store("Uncertainty", "repeat", u, "1")
+
+    def device_uncert(self, ana):
+        offset_uncert = ana.pick("Uncertainty", "offset", "1")
+        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+
+        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
+        if digit_uncert is not None:
+            p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+        else:
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+
+        add_uncert = ana.pick_dict("Uncertainty", "add")
+        if add_uncert is not None:
+            add_unit = add_uncert.get("Unit") 
+            if add_unit == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                add_uncert = ana.pick("Uncertainty", "add", "Pa")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
+            if add_unit == "1":
+                add_uncert = ana.pick("Uncertainty", "add", "1")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
+
+        ana.store("Uncertainty", "device", u, "1")
+
+        
 class InfCdg(Cdg):
     """Inficon CDGs are usable two decades only
     """

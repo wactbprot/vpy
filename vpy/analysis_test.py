@@ -12,7 +12,7 @@ class TestAnalysis(unittest.TestCase):
     def test_store_pick_1(self):
         """store int, pick array containing float
         """
-        self.Ana.store(quant="A", type="b", value=1, unit= "u", sd = 0.1, n = 10)
+        self.Ana.store(quant="A", val_type="b", value=1, unit= "u", sd = 0.1, n = 10)
         v = self.Ana.pick("A", "b", "u")
         self.assertEqual(v[0], 1.)
 
@@ -50,7 +50,7 @@ class TestAnalysis(unittest.TestCase):
     def test_store_pick_4(self):
         """store int, pick array containing float with stats
         """
-        self.Ana.store(quant="A", type="b", value=1, unit= "u", sd = 0.1, n = 10)
+        self.Ana.store(quant="A", val_type="b", value=1, unit= "u", sd = 0.1, n = 10)
         v, sd, n = self.Ana.pick("A", "b", "u", with_stats=True)
         self.assertEqual(v[0], 1.)
         self.assertEqual(sd[0], .1)

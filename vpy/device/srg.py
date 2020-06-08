@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 from .device import Device
 
@@ -7,14 +8,31 @@ class Srg(Device):
     uncertainty of the corrected slope.
     """
     unit = "Pa"
+    sigma_min_pressure = 0.1
+    sigma_max_pressure = 1.33322
+    total_relative_uncertainty_k2 = 2.6e-3 ## workaround
+    
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 
-        self.total_relative_uncertainty_k2 = 2.6e-3
+        
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
-        return self.doc['Name']
+        return self.doc.get("Name")
+    
+    def make_sigma_index(self, p_cal, unit):
+        """Replaces the `ToDo.make_average_index()`
+        since all pressures in the range `p_cal[i] > min_p and p_cal[i] < max_p`
+        should be used to calculate the `sigma`.
+        """
+        if unit != self.unit:
+            sys.exit("implement me!")
+        N = len(p_cal)
+        min_p = self.sigma_min_pressure
+        max_p = self.sigma_max_pressure
+
+        return [[i] for i in range(N) if p_cal[i] > min_p and p_cal[i] < max_p]
 
     def dcr_conversion(self, unit="Pa", gas="N2"):
         """
@@ -110,24 +128,72 @@ class Srg(Device):
         0.00011476238813591167
         -2.17870974810604e-05
         -2.1787097481060404e-05        
-
         """
-        if cal_unit == ind_unit:
-            x = p_cal
-            y = p_ind/p_cal
-        else:
-            self.log.error("units don't match!")
-            return None, None, None
-        if not len(x) == len(y):
-            self.log.error("length don't match!")
-            return None, None, None
         
+        conv = self.Const.get_conv(from_unit=ind_unit, to_unit=cal_unit)
+        p_ind = p_ind * conv
+        x = p_cal
+        y = p_ind/p_cal
+                
         m, b, var_m, var_b = self.Vals.lin_reg(x, y)
 
         sens_b = (m / b**2)
         sens_m = (1.0 / b)
        
         u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty_k2/2.0 * m/b)**2)**0.5
-       
-       
+              
         return b, m, u
+
+    def uncert_sigma_eff(self, ana):
+        """Uncertainty estimation based on
+         http://intranet.ptb.de/fileadmin/dokumente/intranet/qualitaetsmanagement/Fachabteilungen/Abt7/FB75/7.5-AA-SE2_ausgabe5.pdf
+         Seite 33: '10.3 Messunsicherheitsbudget für SRG'
+         """
+        sigma = ana.pick("Sigma", "eff", "1")
+        N = len(sigma)
+        u_rel = 4.0e-4
+    
+        ana.store("Uncertainty", "sigma_eff", np.full(N, u_rel), "1")
+        
+    def uncert_ind(self, ana):
+        sigma = ana.pick("Sigma", "eff", "1")
+        N = len(sigma)
+        u_rel = 1.0e-4
+        
+        ana.store("Uncertainty", "ind", np.full(N, u_rel), "1")
+        
+    def uncert_temperature(self, ana):
+        sigma = ana.pick("Sigma", "eff", "1")
+        N = len(sigma)
+        u_rel = 3.4e-4
+        
+        ana.store("Uncertainty", "temperature", np.full(N, u_rel), "1")
+        
+    def uncert_offset(self, ana):
+        sigma = ana.pick("Sigma", "eff", "1")
+        N = len(sigma)
+        u_rel = 5.1e-5
+    
+        ana.store("Uncertainty", "offset", np.full(N, u_rel), "1")
+
+    def uncert_repeat(self, ana):
+        sigma = ana.pick("Sigma", "eff", "1")
+        N = len(sigma)
+        u_rel = 6.0e-4
+        
+        ana.store("Uncertainty", "repeat", np.full(N, u_rel), "1")
+
+         
+    def device_uncert(self, ana):
+        u_1 = ana.pick("Uncertainty", "offset", "1")
+        u_2 = ana.pick("Uncertainty", "repeat", "1")
+        u_3 =  ana.pick("Uncertainty", "ind", "1")
+        u_4 =  ana.pick("Uncertainty", "temperature", "1")
+        u_5 =  ana.pick("Uncertainty", "sigma_eff", "1")
+
+        u = np.sqrt(np.power(u_1, 2) +
+                    np.power(u_2, 2) +
+                    np.power(u_3, 2) +
+                    np.power(u_4, 2) +
+                    np.power(u_5, 2))
+        ana.store("Uncertainty", "device", u, "1")

@@ -3,6 +3,7 @@ import numpy as np
 from ..document import Document
 from ..constants import Constants
 from ..values import Values, Pressure, AuxValues, Range
+from ..todo import ToDo
 
 class Device(Document):
     """ Class should be complete with
@@ -11,9 +12,10 @@ class Device(Document):
 
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
+        self.ToDo = ToDo(doc)
         self.Vals = Values({})
 
-        if "CalibrationObject" in dev:
+        if "CalibrationObject" in dev: 
             dev = dev.get('CalibrationObject')
 
         if "CustomerObject" in dev:
@@ -74,10 +76,10 @@ class Device(Document):
         
         .. note::
 
-            * Typ-A: Ermittlung aus der statistischen Analyse mehrerer
-             statistisch unabhängiger Messwerte aus einer
+            Typ-A: Ermittlung aus der statistischen Analyse mehrerer
+            statistisch unabhängiger Messwerte aus einer
             Messwiederholung.  
-            * Typ-B: Ermittlung ohne statistische
+            Typ-B: Ermittlung ohne statistische
             Methoden, beispielsweise durch Entnahme der Werte aus
             einem Kalibrierschein...
 
@@ -153,6 +155,11 @@ class Device(Document):
             sys.exit("No uncertainty dict available")
 
     def get_match_index(self, meas_vec, from_val, to_val):
+        if type(from_val) == np.ndarray:
+            from_val = from_val[0]
+        if type(to_val) == np.ndarray:
+            to_val = to_val[0]
+            
         N = np.shape(meas_vec)[0]
         n = np.full(N, False)
         a = np.full(N, True)
@@ -160,7 +167,7 @@ class Device(Document):
         if self.Vals.cnt_nan(meas_vec) == 0: ## todo rrename cnt_nan to cnt_not_nan
             return n
         if from_val and to_val:
-            i = ((meas_vec > from_val) & (meas_vec < to_val))
+            i = [ x > from_val and x < to_val for x in  meas_vec]
             if len(i) > 0:
                 return i
             else:
@@ -235,108 +242,5 @@ class Device(Document):
             return u
         if d.startswith("r"):
             return u*0.29
-                   
-    def offset_uncert(self, ana, use_idx = None):
-        """
-        The offset uncertainty is calculated by means of `np.diff(offset)`.
-        Drift influences are avoided.
-        """
 
-        range_str = Range(ana.org).get_str("offset")
-        ind = ana.pick("Pressure", "ind_corr", self.unit)
-        offset = ana.pick("Pressure", "offset", self.unit)
-
-        ## make elements not in use_idx nan:
-        o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
-        for i in o:
-            ind[i] = np.nan 
-            offset[i] = np.nan 
-
-        u = np.full(len(ind), np.nan) 
-        uncert_contrib = {"Unit": self.unit}
-
-        if range_str is not None:
-            range_unique = np.unique(range_str)
-            for r in range_unique:
-                i_r = np.where(range_str == r)
-                ## sometimes all offset[i_r] are nan
-                all_nan = np.all(np.isnan(offset[i_r]))
-                if np.shape(i_r)[1] > 0 and not all_nan:
-                    m = np.nanmean(np.abs(np.diff(offset[i_r])))
-                    if m == 0.0:
-                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
-                    
-                    uncert_contrib[r] = m
-                    u[i_r] = m/ind[i_r]
-        else:
-            if len(offset) < 2:
-                m = self.ask_for_offset_uncert(offset, self.unit)
-            else:
-                m = np.nanmean(np.abs(np.diff(offset)))
-                if m == 0.0:
-                    ## Abschätzung 0.1% vom kleinsten p_ind
-                    m = self.ask_for_offset_uncert(offset, self.unit)
-
-                uncert_contrib["all"] = m
-                u = m/ind
-               
-        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
-        ana.store("Uncertainty", "offset", u, "1")
-
-    def repeat_uncert(self, ana):
-
-        p_list = ana.pick("Pressure", "ind_corr", "Pa")
-        # *) bis 14.8.19
-        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
-        #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
-        cob = ana.org.get("Calibration", {}).get("CustomerObject", {})
-        producer = cob.get("Device", {}).get("Producer", "missing").lower().replace("\s", "")
-        type_head = cob.get("Setup", {}).get("TypeHead", "missing")
-        standard = ana.org.get("Calibration", {}).get("ToDo", {}).get("Standard", "missing")
-
-        if producer == "missing":
-            msg = "No Producer in Device"
-            self.log.warn(msg)
-            sys.exit(msg)
-
-        if standard == "missing":
-            msg = "No Standard in ToDo"
-            self.log.warn(msg)
-            sys.exit(msg)
-
-        if producer == "inficon" and standard == "FRS5":
-            if type_head == "10Torr" or type_head == "100Torr":
-                u = np.full(len(p_list), 2.9e-5)
-            else:
-                u = np.full(len(p_list), 1.0e-4)
-
-        else: #MKS und andere
-            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
-                                            [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
-
-        ana.store("Uncertainty", "repeat", u, "1")
-
-    def device_uncert(self, ana):
-        offset_uncert = ana.pick("Uncertainty", "offset", "1")
-        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-
-        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
-        if digit_uncert is not None:
-            p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
-        else:
-            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
-
-        add_uncert = ana.pick_dict("Uncertainty", "add")
-        if add_uncert is not None:
-            add_unit = add_uncert.get("Unit") 
-            if add_unit == "Pa":
-                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-                add_uncert = ana.pick("Uncertainty", "add", "Pa")
-                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
-            if add_unit == "1":
-                add_uncert = ana.pick("Uncertainty", "add", "1")
-                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
-
-        ana.store("Uncertainty", "device", u, "1")
 

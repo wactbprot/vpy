@@ -368,35 +368,47 @@ class Analysis(Document):
             print("New list is: " + str(reject_offset))
 
         return reject_offset        
-
-    def ask_for_skip(self):
-        """ Asks for points to skip. Returns the index array. 
-        """
-        skip = []
-        while True:
-            r = input("Skip datapoint number: ")
-            if r == "":
-                break
-            skip.append(int(r))
-
-        return skip
     
-    def ask_for_evis(self, e_vis=None):
+    def ask_for_head_temperature(self, temperature_head=None):
+        """ Asks for the temperature of the Head in C
+        (calibration certificate: T_2).  
+        """
+
+        q1 = "\n\n\nHead is\n* thermostated at T_2 = {}°C (enter if ok)\n* type T_2 in °C or \n* 0 for no correction: " 
+        text = input(q1.format(temperature_head))
+
+        if text == "0":
+            return None, None
+
+        if text != "":
+            return float(text), "C"
+
+        if text == "":
+            return temperature_head, "C"
+        
+            
+    def ask_for_evis(self, e_vis=None, temperature_head=None):
         """ Asks for e_vis.  
         """
-        e_vis = self.org.get('Calibration', {}).get('Result', {}).get('AuxValues', {}).get('Evis', e_vis)
-        if e_vis is None:
-            e_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Evis', 0)
+        org_calib = self.org.get('Calibration', {})
+        org_result = org_calib.get('Result', {})
+        org_ana = org_calib.get('Analysis', {})
         
-        text = input("estimate the relative (unit = 1) value for e_vis={} (type enter if ok): ".format(e_vis))
+        e_vis = org_result.get('AuxValues', {}).get('Evis', e_vis)
+        if e_vis is None:
+            e_vis = org_ana.get('AuxValues', {}).get('Evis', 0)
+        
+        q1 = "\n\n\nEstimate the relative (unit = 1) value for e_vis={} (type enter if ok): "
+        text = input(q1.format(e_vis))
         if text != "":
             e_vis = float(text)
 
-        u_vis = self.org.get('Calibration', {}).get('Result', {}).get('AuxValues', {}).get('Uvis')
+        u_vis = org_result.get('AuxValues', {}).get('Uvis')
         if u_vis is None:
-            u_vis = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('Uvis', 2e-3) 
+            u_vis = org_ana.get('AuxValues', {}).get('Uvis', 2e-3) 
 
-        text = input("estimate the uncertainty (unit = 1) u(e_vis)={} (type enter if ok): ".format(u_vis))
+        q2 = "\n\n\nEstimate the uncertainty (unit = 1) u(e_vis)={} (type enter if ok): "
+        text = input(q2.format(u_vis))
         if text != "":
             u_vis = float(text)
         
@@ -571,8 +583,8 @@ class Analysis(Document):
         device_uncert = self.pick("Uncertainty", "device", "1")
         u_ind_abs = device_uncert*p_ind
 
-        
         u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
+
         self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
         self.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , self.pressure_unit)
 

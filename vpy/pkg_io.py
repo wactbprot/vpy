@@ -1,6 +1,7 @@
 import argparse
 import sys
 import os
+import re
 import json
 import couchdb
 import tempfile
@@ -87,14 +88,13 @@ class Io(object):
         # -u update
         parser.add_argument('-u', action='store_true',
                             help='update calibration doc with standard-, constants-, etc- documents', default=False)
-        # -u update
+        # -a new AuxValues 
         parser.add_argument('-a', action='store_true',
                             help='keep Analysis AuxValues section', default=False)
         
-
         self.args = parser.parse_args()
 
-        # save doc
+        ## make args a bit more friendly
         if self.args.s:
             self.save = True
         else:
@@ -103,36 +103,33 @@ class Io(object):
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
             
-
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
-            
 
-    def save_plot(self, plot):
-        """The plan is:
-            * save the plot in a temporary file
-            * upload to a database document with a id based on param --id (cal-2018-... replaced by plt-2018-...)
-
-        .. todo::
-            There seems to be no api to access ``plot.title`` in
-            order to have a nice name for the plot. Solutions:
-
-            * add a ``timestamp``
-            * add a function name
-            * both
-            * name as param of ``save_plot``
-
-        :param plot: matplotlib plot
-        :type plot: class
-        """
-
-        if "savefig" in dir(plot):
-            f = tempfile.NamedTemporaryFile()
-            f.name = f.name+".pdf"
-            plot.savefig(f.name)
-            
+        if self.args.u:
+            self.update = True
         else:
-            pass
+            self.update = False
+
+        if self.args.a:
+            self.auxval = True
+        else:
+            self.auxval = False
+
+        if self.args.ids:
+            ids = re.split("[@;,:]",self.args.ids[0])
+            if len(ids) == 0:
+                sys.exit("no ids")
+            else:
+                self.ids = ids
+            
+        if self.args.skip:
+            self.skip = True
+        else:
+            self.skip = False
+
+        
+
     def read_json(self, fname):
         with open(fname) as json_doc_file:
             doc = json.load(json_doc_file)

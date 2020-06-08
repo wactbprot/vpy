@@ -250,7 +250,7 @@ class Document(object):
             ret = np.array([value], dtype=np.float)
         if isinstance(value, int):
             ret = np.array([value], dtype=np.float)
-    
+
         return ret
 
     def get_dict(self, key, value, o=False):

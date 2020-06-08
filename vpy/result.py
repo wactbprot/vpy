@@ -51,7 +51,7 @@ class Result(Analysis):
         "none":""
         }
 
-    def __init__(self, doc, result_type="expansion", skip=False):
+    def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
         
         init_dict = {"Skip":skip,
                     "Date": [{
@@ -62,7 +62,9 @@ class Result(Analysis):
                     },
                     "ResultType": result_type
              }
-
+        if with_values_section:
+             init_dict["Values"] = {}
+             
         self.ToDo = ToDo(doc)
         self.Const = Constants(doc)
         self.Val = Values(doc)
@@ -72,26 +74,11 @@ class Result(Analysis):
        
         super().__init__(doc, init_dict)
 
-    ## (vpy) bock04@i75464:~/vpy$ grep -r gatherby .
-    ##     ./vpy/result.py:    def gatherby_idx(self, l, compare_function):
-    ##     ./jupyter_utils.py:def gatherby_idx(l, compare_function):
-    ##
-    ## --> shipped function to values.py
-
     def to_si_expr(self, v, unit):
         return "\\SI{"+ v + "}{" + self.unit_trans[unit] + "}"
 
     def to_si_pm_expr(self, v, u, unit):
         return self.to_si_expr("" + v + "+-" + u, unit)
-
-    def make_calibration_data_section(self, ana):
-        """The Calibration data section should contain data valid
-        for the entire calibration run.
-
-        The former p_min, p_max values generated here belong to the
-        measurement (expanstion, direct measurement).
-        """
-        pass
 
     def gen_temperature_gas_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "gas", unit)
@@ -129,6 +116,28 @@ class Result(Analysis):
         sec["RoomTemperature"] = self.to_si_pm_expr(v, u, unit)
         
         return sec
+
+    def gen_temperature_head_entry(self, ana, sec, unit="K", k=2):
+        t = self.doc.get("AuxValues", {}).get("TemperatureHead")
+        if t:
+            unit = self.doc.get("AuxValues", {}).get("TemperatureHeadUnit")
+            t_unc = 0.5
+            v = self.Val.round_to_uncertainty(t, t_unc, 2)
+            u = self.Val.round_to_sig_dig(t_unc, 2)
+            sec["HeadTemperature"] = self.to_si_expr(v, unit)
+        
+        return sec
+
+    def gen_temperature_norm_entry(self, ana, sec, unit="K", k=2):
+        t = self.doc.get("AuxValues", {}).get("TemperatureNorm")
+        if t:
+            unit = self.doc.get("AuxValues", {}).get("TemperatureNormUnit")
+            t_unc = 0.1
+            v = self.Val.round_to_uncertainty(t, t_unc, 2)
+            u = self.Val.round_to_sig_dig(t_unc, 2)
+            sec["NormTemperature"] = self.to_si_expr(v, unit)
+        
+        return sec
     
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
@@ -140,21 +149,6 @@ class Result(Analysis):
         
         sec["EstimatedTemperature"] = self.to_si_pm_expr(v, u, unit)
         
-        return sec
-
-    def gen_temperature_correction(self, ana, sec):
-        p_tdo, p_tdo_unit = self.ToDo.Pres.get_value_and_unit("target")
-        conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
-
-        p_tdo = conv * p_tdo
-        #temperature correction only if more than 1 decade below 100 Pa
-        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]         
-
-        if len(p_tdo_evis) > 1:
-            sec["TemperatureCorrection"] = "yes"
-        else:
-            sec["TemperatureCorrection"] ="no"
-
         return sec
 
     def gen_meas_date_entry(self, ana, sec):
@@ -186,6 +180,27 @@ class Result(Analysis):
         
         return sec
 
+
+    def gen_temperature_correction(self, ana, sec):
+        """ Sets the TemperatureCorrection flag to yes if
+        * there is more than 1 point in the decade below 100 Pa and
+        * `TemperatureHead` is not `None`
+        """
+        p_tdo, p_tdo_unit = self.ToDo.Pres.get_value_and_unit("target")
+        conv = self.Const.get_conv(from_unit=p_tdo_unit, to_unit="Pa")
+
+        p_tdo = conv * p_tdo
+        #temperature correction only if more than 1 decade below 100 Pa
+        p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]
+        
+        temperature_head = self.doc.get("AuxValues", {}).get("TemperatureHead")
+        if temperature_head and len(p_tdo_evis) > 1:
+            sec["TemperatureCorrection"] = "yes"
+        else:
+            sec["TemperatureCorrection"] = "no"
+
+        return sec
+
     def extr_val(self, x):
         if type(x) is list:
             return x[0]
@@ -213,8 +228,7 @@ class Result(Analysis):
 
         val_fmt_str = "{:.1E}"
         ana_aux_values = ana.doc.get("AuxValues", {})
-        res_aux_values = self.doc.get("AuxValues", {})
-        av_idx = res_aux_values.get("AverageIndex")
+        av_idx = ana_aux_values.get("AverageIndex")
         uncert_contribs = ana_aux_values.get("OffsetUncertContrib")
         range_str = self.get_reduced_range_str(ana, av_idx)
         
@@ -246,22 +260,21 @@ class Result(Analysis):
         """
         
         sigma_null = self.doc.get("AuxValues", {}).get("SigmaNull")
-        sigma_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
+        sigma_corr_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
         sigma_std = self.doc.get("AuxValues", {}).get("SigmaStd")
         
-        if sigma_null and sigma_slope and sigma_std:
-            v = self.Val.round_to_uncertainty(sigma_null[0], 2e-3, 2)
+        if sigma_null and sigma_corr_slope and sigma_std:
+            v = self.Val.round_to_uncertainty(sigma_null, 2e-3, 2)
             sec["SigmaNull"] = self.to_si_expr(v, "none")
 
-            v = self.Val.round_to_uncertainty(sigma_slope[0], 2e-3, 2)
-            u = self.Val.round_to_uncertainty(sigma_std[0], 2e-3, 2)
+            v = self.Val.round_to_uncertainty(sigma_corr_slope, 2e-3, 2)
+            u = self.Val.round_to_uncertainty(sigma_std, 2e-3, 2)
             sec["SigmaCorrSlope"] =self.to_si_pm_expr(v, u, "1/Pa") 
         
-
-            v_mean = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean")[0])
+            v_mean = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean"))
             sec["OffsetMean"] = self.to_si_expr(v_mean, "DCR")
 
-            v_sd = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd")[0])
+            v_sd = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd"))
             sec["OffsetStd"] = self.to_si_expr(v_sd, "DCR")
        
         return sec
@@ -275,6 +288,8 @@ class Result(Analysis):
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)
+            sec = self.gen_temperature_head_entry(ana, sec)
+            sec = self.gen_temperature_norm_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
@@ -422,13 +437,18 @@ class Result(Analysis):
         return u_dev
 
     def get_reduced_error(self, ana, av_idx, unit):
-        error = ana.pick("Error", "ind", unit)
+        error = ana.pick("Error", "ind_temperature_corr", unit)
+        if error is None:
+            error = ana.pick("Error", "ind", unit)
         error = ana.reduce_by_average_index(value=error, average_index=av_idx)
         
         return error
 
     def get_reduced_cf(self, ana, av_idx, unit):
-        error = ana.pick("Error", "ind", unit)
+        error = ana.pick("Error", "ind_temperature_corr", unit)
+        if error is None:
+            error = ana.pick("Error", "ind", unit)
+
         if unit == "%":
             cf = 1.0/(error/100.0 +1.0)
         if unit == "1":
@@ -448,8 +468,10 @@ class Result(Analysis):
             return None
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
-        
-        av_idx = self.doc["AuxValues"]["AverageIndex"]
+
+        doc_aux_values = ana.doc.get("AuxValues", {}) 
+        av_idx = doc_aux_values.get("AverageIndex")
+        print(av_idx)
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
