@@ -11,3 +11,4 @@ vpy_docs
 .vscode
 pip-selfcheck.json
 *.pdf
+_doc/

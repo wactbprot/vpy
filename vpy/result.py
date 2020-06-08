@@ -51,7 +51,7 @@ class Result(Analysis):
         "none":""
         }
 
-    def __init__(self, doc, result_type="expansion", skip=False):
+    def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
         
         init_dict = {"Skip":skip,
                     "Date": [{
@@ -62,7 +62,9 @@ class Result(Analysis):
                     },
                     "ResultType": result_type
              }
-
+        if with_values_section:
+             init_dict["Values"] = {}
+             
         self.ToDo = ToDo(doc)
         self.Const = Constants(doc)
         self.Val = Values(doc)

@@ -1,0 +1,955 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>vpy.standard.se3 package &#8212; vpy 0.19.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="vpy.standard.se2 package" href="vpy.standard.se2.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.se2.html" title="vpy.standard.se2 package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" >vpy package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="vpy.standard.html" accesskey="U">vpy.standard package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-vpy.standard.se3">
+<span id="vpy-standard-se3-package"></span><h1>vpy.standard.se3 package<a class="headerlink" href="#module-vpy.standard.se3" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vpy.standard.se3.cal">
+<span id="vpy-standard-se3-cal-module"></span><h2>vpy.standard.se3.cal module<a class="headerlink" href="#module-vpy.standard.se3.cal" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.se3.cal.Cal">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.se3.cal.</code><code class="sig-name descname">Cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.se3.std.Se3" title="vpy.standard.se3.std.Se3"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.standard.se3.std.Se3</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.check_analysis">
+<code class="sig-name descname">check_analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em>, <em class="sig-param"><span class="n">chk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.check_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the analysis values against a given
+min/max-list (stored in <code class="docutils literal notranslate"><span class="pre">self.analysis_check</span></code>).
+Calculates a rating for each value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>res instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit) to pick the values from</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>chk instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit) to store the values in</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.check_state">
+<code class="sig-name descname">check_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em>, <em class="sig-param"><span class="n">chk</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.check_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the measured state values against a given
+min/max-list (stored in <code class="docutils literal notranslate"><span class="pre">self.state_check</span></code>).
+Calculates a rating for each value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>res instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit) to pick the values from</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>chk instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit) to store the values in</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.correction_delta_height">
+<code class="sig-name descname">correction_delta_height</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.correction_delta_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the relative contribution of the pressure 
+rise due to outgasing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)
+pick_dict(quantity, type)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.deviation_target_cal">
+<code class="sig-name descname">deviation_target_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.deviation_target_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the relative deviation between the target 
+pressure and the calculated calibration pressure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)
+pick_dict(quantity, type)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.deviation_target_fill">
+<code class="sig-name descname">deviation_target_fill</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.deviation_target_fill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the relative deviation from the target 
+filling pressure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)
+pick_dict(quantity, type)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.error_pressure_rise">
+<code class="sig-name descname">error_pressure_rise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.error_pressure_rise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the relative contribution of the pressure 
+rise due to outgasing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)
+pick_dict(quantity, type)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.loop_check_dict">
+<code class="sig-name descname">loop_check_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">check</span></em>, <em class="sig-param"><span class="n">compare</span></em>, <em class="sig-param"><span class="n">date</span></em>, <em class="sig-param"><span class="n">result</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.loop_check_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loops over the given <code class="docutils literal notranslate"><span class="pre">check</span></code> dict. Compares the entries witth <code class="docutils literal notranslate"><span class="pre">compare</span></code>
+and writes the results plus date to <code class="docutils literal notranslate"><span class="pre">result</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.offset_from_sample">
+<code class="sig-name descname">offset_from_sample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.offset_from_sample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.outgas_state">
+<code class="sig-name descname">outgas_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.outgas_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the outgasing rate of dut-a,b,c u (vacuum branch
+with dut valves closed) and v (vessel only). About 50% of the 
+outgasing rate is caused by the ion gauge (IG) which  is 
+switched of during the calibration. The factor <code class="docutils literal notranslate"><span class="pre">outgas_correction</span></code>
+takes this into account.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_cal">
+<code class="sig-name descname">pressure_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_cal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the calibration pressure nand stores the
+result under the path <em>Pressure, cal, mbar</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_delta_height">
+<code class="sig-name descname">pressure_delta_height</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">p_unit</span></em>, <em class="sig-param"><span class="n">f_name</span></em>, <em class="sig-param"><span class="n">gas</span><span class="o">=</span><span class="default_value">'N2'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_delta_height" title="Permalink to this definition">¶</a></dt>
+<dd><p>Follows QSE-SE3-19-3 at <a class="reference external" href="http://a73435.berlin.ptb.de:82/lab">http://a73435.berlin.ptb.de:82/lab</a>?</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_gn_corr">
+<code class="sig-name descname">pressure_gn_corr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_gn_corr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the corrected pressures of the group normal (gn)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_gn_mean">
+<code class="sig-name descname">pressure_gn_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_gn_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p><a href="#id1"><span class="problematic" id="id2">*</span></a>) checked that the function <cite>np.ma.average()</cite> gives the same 
+result as the function  <cite>self.Pres.weight_array_mean()</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_rise">
+<code class="sig-name descname">pressure_rise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_rise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the pressure rise due to outgasing.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>An investigation plus measurement is required to find a
+proper way to correct the current outgasing rate measured by IG
+who causes the most of the outgasing.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)
+pick_dict(quantity, type)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.pressure_state">
+<code class="sig-name descname">pressure_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.pressure_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>So far: a simple transfer of measured values to
+Analysis section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature">
+<code class="sig-name descname">temperature</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">channels</span></em>, <em class="sig-param"><span class="n">sufix</span><span class="o">=</span><span class="default_value">'_before'</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="o">=</span><span class="default_value">'ch_'</span></em>, <em class="sig-param"><span class="n">sufix_corr</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">prefix_corr</span><span class="o">=</span><span class="default_value">'corr_ch_'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_after">
+<code class="sig-name descname">temperature_after</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_after" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the temperature of the end volume.
+Stores result under the path <em>Temperature, after, K</em>
+The used  sensors are:
+<em>channel 1001 to 1030</em> and <em>channel 2001 to 2028</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N]) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_before">
+<code class="sig-name descname">temperature_before</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_before" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the temperature of the starting volumes.
+Stores result under the path  <em>Temperature, before, K</em>
+For the temperature of the medium (0.02l) volume the used  sensors are:
+<em>channel 3001 to 3003</em>
+For the temperature of the medium (0.2l) volume the used  sensors are:
+<em>channel 3004 to 3013</em>
+For the temperature of the large (2l) volume the used  sensors are:
+<em>channel 3014 to 3030</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_comp">
+<code class="sig-name descname">temperature_comp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_comp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the temperature of the room.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N]) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_gas_direct">
+<code class="sig-name descname">temperature_gas_direct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_gas_direct" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Defines the gas temperature as the </dt><dd><p>temperature of the vacuum pipes</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N]) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_gas_expansion">
+<code class="sig-name descname">temperature_gas_expansion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_gas_expansion" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Defines the gas temperature as the vessel </dt><dd><p>temperature after expansion</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N]) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_room">
+<code class="sig-name descname">temperature_room</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_room" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the temperature of the room.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.temperature_state">
+<code class="sig-name descname">temperature_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.temperature_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the correction factor for each sensor and stores the result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.time_state">
+<code class="sig-name descname">time_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.time_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>A transfer of absolute measure time to 
+relative measure time and stores the result in analysis section.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.volume_add">
+<code class="sig-name descname">volume_add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.volume_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds up a vector containing the additional volume and stores it.
+The additional volumes should be measured and analyzed before and stored
+under <em>Analysis.AuxValues.Volumes</em>. So far, the last measured values <em>[-1]</em>
+are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.volume_start">
+<code class="sig-name descname">volume_start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.volume_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a vector containing the start volume and stores it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.cal.Cal.volume_state">
+<code class="sig-name descname">volume_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.cal.Cal.volume_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates additional volumes of dut-a,b,c branch of state
+measurement documents.</p>
+<div class="math notranslate nohighlight">
+\[V_{add} = V_5 \frac{p_{after}}{p_{before} - p_{after}}\]</div>
+<p>Stores result under the path <em>Volume, add_x, cm^3</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>instance of a class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.se3.std">
+<span id="vpy-standard-se3-std-module"></span><h2>vpy.standard.se3.std module<a class="headerlink" href="#module-vpy.standard.se3.std" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.se3.std.Se3">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.se3.std.</code><code class="sig-name descname">Se3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.std.Se3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="vpy.standard.html#vpy.standard.standard.Standard" title="vpy.standard.standard.Standard"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.standard.standard.Standard</span></code></a></p>
+<p>Configuration and methodes of static expansion system SE3.</p>
+<p>There is a need to define the  <code class="docutils literal notranslate"><span class="pre">no_of_meas_points</span></code>:
+the time: <code class="docutils literal notranslate"><span class="pre">amt_fill</span></code> (absolut measure time of filling pressure)
+is used for this purpose if doc is a calibration. For the analysis of
+state measurements <code class="docutils literal notranslate"><span class="pre">amt</span></code> is used.</p>
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.analysis_check">
+<code class="sig-name descname">analysis_check</code><em class="property"> = {'Error': {'CalDeviation': {'Description': 'deviation between calculated and target calibration pressure.', 'Max': 0.05, 'Min': -0.05, 'Type': 'dev_cal', 'Unit': '1'}, 'Customer': {'Description': 'Error of the Customer gauge.', 'Max': 0.25, 'Min': -0.25, 'Type': 'ind', 'Unit': '1'}, 'FillDeviation': {'Description': 'deviation between calculated and measured filling pressure.', 'Max': 0.05, 'Min': -0.05, 'Type': 'dev_fill', 'Unit': '1'}, 'PressureRise': {'Description': 'relative contribution of pressure rise to the calibration pressure.', 'Max': 0.05, 'Min': -0.05, 'Type': 'rise', 'Unit': '1'}}, 'Temperature': {'StartVolume': {'Description': 'Temperature of the starting Volume', 'Max': 297.15, 'Min': 295.15, 'Type': 'before', 'Unit': 'K'}, 'Vessel': {'Description': 'Vessel Temperature', 'Max': 297.15, 'Min': 295.15, 'Type': 'after', 'Unit': 'K'}}}</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.analysis_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.compare_offset_types">
+<code class="sig-name descname">compare_offset_types</code><em class="property"> = ['1T_1-compare_offset', '1T_2-compare_offset', '1T_3-compare_offset', '10T_1-compare_offset', '10T_2-compare_offset', '10T_3-compare_offset', '100T_1-compare_offset', '100T_2-compare_offset', '100T_3-compare_offset', '1000T_1-compare_offset', '1000T_2-compare_offset', '1000T_3-compare_offset', '5T_1-compare_offset', '50T_1-compare_offset', '500T_1-compare_offset']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.compare_offset_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.compare_types">
+<code class="sig-name descname">compare_types</code><em class="property"> = ['1T_1-compare', '1T_2-compare', '1T_3-compare', '10T_1-compare', '10T_2-compare', '10T_3-compare', '100T_1-compare', '100T_2-compare', '100T_3-compare', '1000T_1-compare', '1000T_2-compare', '1000T_3-compare', '5T_1-compare', '50T_1-compare', '500T_1-compare']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.compare_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.std.Se3.expansion">
+<code class="sig-name descname">expansion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.std.Se3.expansion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a vector containing the expansion factors
+and stores it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.fill_dev_names">
+<code class="sig-name descname">fill_dev_names</code><em class="property"> = ['CDG_1T_1', 'CDG_1T_2', 'CDG_1T_3', 'CDG_10T_1', 'CDG_10T_2', 'CDG_10T_3', 'CDG_100T_1', 'CDG_100T_2', 'CDG_100T_3', 'CDG_1000T_1', 'CDG_1000T_2', 'CDG_1000T_3', 'CDG_5T_1', 'CDG_50T_1', 'CDG_500T_1']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.fill_dev_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.fill_types">
+<code class="sig-name descname">fill_types</code><em class="property"> = ['1T_1-fill', '1T_2-fill', '1T_3-fill', '10T_1-fill', '10T_2-fill', '10T_3-fill', '100T_1-fill', '100T_2-fill', '100T_3-fill', '1000T_1-fill', '1000T_2-fill', '1000T_3-fill', '5T_1-fill', '50T_1-fill', '500T_1-fill']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.fill_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.std.Se3.get_expansion_name">
+<code class="sig-name descname">get_expansion_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.std.Se3.get_expansion_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an np.array containing
+the expansion name (<code class="docutils literal notranslate"><span class="pre">f_s</span></code>, <code class="docutils literal notranslate"><span class="pre">f_m</span></code> or <code class="docutils literal notranslate"><span class="pre">f_l</span></code>)
+of the length: <code class="docutils literal notranslate"><span class="pre">self.no_of_meas_points`</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>array of expansion names</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>np.array of strings</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.std.Se3.get_gas">
+<code class="sig-name descname">get_gas</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.std.Se3.get_gas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the name of the calibration gas.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>gas (N2, He etc.)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.std.Se3.insert_state_results">
+<code class="sig-name descname">insert_state_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em>, <em class="sig-param"><span class="n">state_doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.std.Se3.insert_state_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes the volume, outgasing rate and time out of the 
+analysis of preliminary state measurements and
+stores it under the AuxValues section of the <em>res</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Param</dt>
+<dd class="field-even"><p>state doc, must contain lists under: 
+* State.Analysis.Values.Volume 
+* State.Analysis.Values.OutgasRate 
+* State.Analysis.Values.Time</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.large_temp_types">
+<code class="sig-name descname">large_temp_types</code><em class="property"> = ['ch_3014_before', 'ch_3015_before', 'ch_3016_before', 'ch_3017_before', 'ch_3018_before', 'ch_3019_before', 'ch_3020_before', 'ch_3021_before', 'ch_3022_before', 'ch_3023_before', 'ch_3024_before', 'ch_3025_before', 'ch_3026_before', 'ch_3027_before', 'ch_3028_before', 'ch_3029_before', 'ch_3030_before']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.large_temp_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.medium_temp_types">
+<code class="sig-name descname">medium_temp_types</code><em class="property"> = ['ch_3004_before', 'ch_3005_before', 'ch_3006_before', 'ch_3007_before', 'ch_3008_before', 'ch_3009_before', 'ch_3010_before', 'ch_3011_before', 'ch_3012_before', 'ch_3013_before']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.medium_temp_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.name">
+<code class="sig-name descname">name</code><em class="property"> = 'SE3'</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.offset_types">
+<code class="sig-name descname">offset_types</code><em class="property"> = ['1T_1-offset', '1T_2-offset', '1T_3-offset', '10T_1-offset', '10T_2-offset', '10T_3-offset', '100T_1-offset', '100T_2-offset', '100T_3-offset', '1000T_1-offset', '1000T_2-offset', '1000T_3-offset', '5T_1-offset', '50T_1-offset', '500T_1-offset']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.offset_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.small_temp_types">
+<code class="sig-name descname">small_temp_types</code><em class="property"> = ['ch_3001_before', 'ch_3002_before', 'ch_3003_before']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.small_temp_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.state_check">
+<code class="sig-name descname">state_check</code><em class="property"> = {'OutGasRate': {'Vessel': {'Description': 'Outgasig rate of vessel only', 'Max': 1e-09, 'Min': 1e-11, 'Type': 'outgas_v', 'Unit': 'mbar/s'}, 'VesselBranch': {'Description': 'Outgasig rate of vessel and dut branch (all dut branches closed)', 'Max': 5e-09, 'Min': 1e-11, 'Type': 'outgas_u', 'Unit': 'mbar/s'}, 'VesselDutABC': {'Description': 'Outgasig rate of vessel, dut branch and dut-abc', 'Max': 5e-09, 'Min': 1e-11, 'Type': 'outgas_abc', 'Unit': 'mbar/s'}, 'VesselDutBC': {'Description': 'Outgasig rate of vessel, dut branch and dut-bc', 'Max': 5e-09, 'Min': 1e-11, 'Type': 'outgas_bc', 'Unit': 'mbar/s'}, 'VesselDutC': {'Description': 'Outgasig rate of vessel, dut branch and dut-c', 'Max': 5e-09, 'Min': 1e-11, 'Type': 'outgas_c', 'Unit': 'mbar/s'}}, 'Pressure': {'CDG1000T1': {'Description': 'Offset of 1st 1000T CDG', 'Max': 5, 'Min': -5, 'Type': '1000T_1-state', 'Unit': 'Pa'}, 'CDG1000T2': {'Description': 'Offset of 2nd 1000T CDG', 'Max': 5, 'Min': -5, 'Type': '1000T_2-state', 'Unit': 'Pa'}, 'CDG1000T3': {'Description': 'Offset of 3rd 1000T CDG', 'Max': 5, 'Min': -5, 'Type': '1000T_3-state', 'Unit': 'Pa'}, 'CDG100T1': {'Description': 'Offset of 1st 100T CDG', 'Max': 3, 'Min': -3, 'Type': '100T_1-state', 'Unit': 'Pa'}, 'CDG100T2': {'Description': 'Offset of 2nd 100T CDG', 'Max': 3, 'Min': -3, 'Type': '100T_2-state', 'Unit': 'Pa'}, 'CDG100T3': {'Description': 'Offset of 3rd 100T CDG', 'Max': 3, 'Min': -3, 'Type': '100T_3-state', 'Unit': 'Pa'}, 'CDG10T1': {'Description': 'Offset of 1st 10T CDG', 'Max': 2, 'Min': -2, 'Type': '10T_1-state', 'Unit': 'Pa'}, 'CDG10T2': {'Description': 'Offset of 2nd 10T CDG', 'Max': 2, 'Min': -2, 'Type': '10T_2-state', 'Unit': 'Pa'}, 'CDG10T3': {'Description': 'Offset of 3rd 10T CDG', 'Max': 2, 'Min': -2, 'Type': '10T_3-state', 'Unit': 'Pa'}, 'CDG1T1': {'Description': 'Offset of 1st 1T CDG', 'Max': 1, 'Min': -1, 'Type': '1T_1-state', 'Unit': 'Pa'}, 'CDG1T2': {'Description': 'Offset of 2nd 1T CDG', 'Max': 1, 'Min': -1, 'Type': '1T_2-state', 'Unit': 'Pa'}, 'CDG1T3': {'Description': 'Offset of 3rd 1T CDG', 'Max': 1, 'Min': -1, 'Type': '1T_3-state', 'Unit': 'Pa'}, 'CDG500T1': {'Description': 'Offset of 1st 500T CDG', 'Max': 5, 'Min': -5, 'Type': '500T_1-state', 'Unit': 'Pa'}, 'CDG50T1': {'Description': 'Offset of 1st 50T CDG', 'Max': 5, 'Min': -5, 'Type': '50T_1-state', 'Unit': 'Pa'}, 'CDG5T1': {'Description': 'Offset of 1st 5T CDG', 'Max': 5, 'Min': -5, 'Type': '5T_1-state', 'Unit': 'Pa'}}, 'Temperature': {'Ch1001': {'Description': 'Pt-100 sensor of channel 1001', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1001state', 'Unit': 'K'}, 'Ch1002': {'Description': 'Pt-100 sensor of channel 1002', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1002state', 'Unit': 'K'}, 'Ch1003': {'Description': 'Pt-100 sensor of channel 1003', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1003state', 'Unit': 'K'}, 'Ch1004': {'Description': 'Pt-100 sensor of channel 1004', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1004state', 'Unit': 'K'}, 'Ch1005': {'Description': 'Pt-100 sensor of channel 1005', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1005state', 'Unit': 'K'}, 'Ch1006': {'Description': 'Pt-100 sensor of channel 1006', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1006state', 'Unit': 'K'}, 'Ch1007': {'Description': 'Pt-100 sensor of channel 1007', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1007state', 'Unit': 'K'}, 'Ch1008': {'Description': 'Pt-100 sensor of channel 1008', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1008state', 'Unit': 'K'}, 'Ch1009': {'Description': 'Pt-100 sensor of channel 1009', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1009state', 'Unit': 'K'}, 'Ch1010': {'Description': 'Pt-100 sensor of channel 1010', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1010state', 'Unit': 'K'}, 'Ch1011': {'Description': 'Pt-100 sensor of channel 1011', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1011state', 'Unit': 'K'}, 'Ch1012': {'Description': 'Pt-100 sensor of channel 1012', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1012state', 'Unit': 'K'}, 'Ch1013': {'Description': 'Pt-100 sensor of channel 1013', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1013state', 'Unit': 'K'}, 'Ch1014': {'Description': 'Pt-100 sensor of channel 1014', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1014state', 'Unit': 'K'}, 'Ch1015': {'Description': 'Pt-100 sensor of channel 1015', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1015state', 'Unit': 'K'}, 'Ch1016': {'Description': 'Pt-100 sensor of channel 1016', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1016state', 'Unit': 'K'}, 'Ch1017': {'Description': 'Pt-100 sensor of channel 1017', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1017state', 'Unit': 'K'}, 'Ch1018': {'Description': 'Pt-100 sensor of channel 1018', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1018state', 'Unit': 'K'}, 'Ch1019': {'Description': 'Pt-100 sensor of channel 1019', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1019state', 'Unit': 'K'}, 'Ch1020': {'Description': 'Pt-100 sensor of channel 1020', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1020state', 'Unit': 'K'}, 'Ch1021': {'Description': 'Pt-100 sensor of channel 1021', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1021state', 'Unit': 'K'}, 'Ch1022': {'Description': 'Pt-100 sensor of channel 1022', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1022state', 'Unit': 'K'}, 'Ch1023': {'Description': 'Pt-100 sensor of channel 1023', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1023state', 'Unit': 'K'}, 'Ch1024': {'Description': 'Pt-100 sensor of channel 1024', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1024state', 'Unit': 'K'}, 'Ch1025': {'Description': 'Pt-100 sensor of channel 1025', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1025state', 'Unit': 'K'}, 'Ch1026': {'Description': 'Pt-100 sensor of channel 1026', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1026state', 'Unit': 'K'}, 'Ch1027': {'Description': 'Pt-100 sensor of channel 1027', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1027state', 'Unit': 'K'}, 'Ch1028': {'Description': 'Pt-100 sensor of channel 1028', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1028state', 'Unit': 'K'}, 'Ch1029': {'Description': 'Pt-100 sensor of channel 1029', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1029state', 'Unit': 'K'}, 'Ch1030': {'Description': 'Pt-100 sensor of channel 1030', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_1030state', 'Unit': 'K'}, 'Ch2001': {'Description': 'Pt-100 sensor of channel 2001', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2001state', 'Unit': 'K'}, 'Ch2002': {'Description': 'Pt-100 sensor of channel 2002', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2002state', 'Unit': 'K'}, 'Ch2003': {'Description': 'Pt-100 sensor of channel 2003', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2003state', 'Unit': 'K'}, 'Ch2004': {'Description': 'Pt-100 sensor of channel 2004', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2004state', 'Unit': 'K'}, 'Ch2005': {'Description': 'Pt-100 sensor of channel 2005', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2005state', 'Unit': 'K'}, 'Ch2006': {'Description': 'Pt-100 sensor of channel 2006', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2006state', 'Unit': 'K'}, 'Ch2007': {'Description': 'Pt-100 sensor of channel 2007', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2007state', 'Unit': 'K'}, 'Ch2008': {'Description': 'Pt-100 sensor of channel 2008', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2008state', 'Unit': 'K'}, 'Ch2009': {'Description': 'Pt-100 sensor of channel 2009', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2009state', 'Unit': 'K'}, 'Ch2010': {'Description': 'Pt-100 sensor of channel 2010', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2010state', 'Unit': 'K'}, 'Ch2011': {'Description': 'Pt-100 sensor of channel 2011', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2011state', 'Unit': 'K'}, 'Ch2012': {'Description': 'Pt-100 sensor of channel 2012', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2012state', 'Unit': 'K'}, 'Ch2013': {'Description': 'Pt-100 sensor of channel 2013', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2013state', 'Unit': 'K'}, 'Ch2014': {'Description': 'Pt-100 sensor of channel 2014', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2014state', 'Unit': 'K'}, 'Ch2015': {'Description': 'Pt-100 sensor of channel 2015', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2015state', 'Unit': 'K'}, 'Ch2016': {'Description': 'Pt-100 sensor of channel 2016', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2016state', 'Unit': 'K'}, 'Ch2017': {'Description': 'Pt-100 sensor of channel 2017', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2017state', 'Unit': 'K'}, 'Ch2018': {'Description': 'Pt-100 sensor of channel 2018', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2018state', 'Unit': 'K'}, 'Ch2019': {'Description': 'Pt-100 sensor of channel 2019', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2019state', 'Unit': 'K'}, 'Ch2020': {'Description': 'Pt-100 sensor of channel 2020', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2020state', 'Unit': 'K'}, 'Ch2021': {'Description': 'Pt-100 sensor of channel 2021', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2021state', 'Unit': 'K'}, 'Ch2022': {'Description': 'Pt-100 sensor of channel 2022', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2022state', 'Unit': 'K'}, 'Ch2023': {'Description': 'Pt-100 sensor of channel 2023', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2023state', 'Unit': 'K'}, 'Ch2024': {'Description': 'Pt-100 sensor of channel 2024', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2024state', 'Unit': 'K'}, 'Ch2025': {'Description': 'Pt-100 sensor of channel 2025', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2025state', 'Unit': 'K'}, 'Ch2026': {'Description': 'Pt-100 sensor of channel 2026', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2026state', 'Unit': 'K'}, 'Ch2027': {'Description': 'Pt-100 sensor of channel 2027', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2027state', 'Unit': 'K'}, 'Ch2028': {'Description': 'Pt-100 sensor of channel 2028', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2028state', 'Unit': 'K'}, 'Ch2029': {'Description': 'Pt-100 sensor of channel 2029', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2029state', 'Unit': 'K'}, 'Ch2030': {'Description': 'Pt-100 sensor of channel 2030', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_2030state', 'Unit': 'K'}, 'Ch3001': {'Description': 'Pt-100 sensor of channel 3001', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3001state', 'Unit': 'K'}, 'Ch3002': {'Description': 'Pt-100 sensor of channel 3002', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3002state', 'Unit': 'K'}, 'Ch3003': {'Description': 'Pt-100 sensor of channel 3003', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3003state', 'Unit': 'K'}, 'Ch3004': {'Description': 'Pt-100 sensor of channel 3004', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3004state', 'Unit': 'K'}, 'Ch3005': {'Description': 'Pt-100 sensor of channel 3005', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3005state', 'Unit': 'K'}, 'Ch3006': {'Description': 'Pt-100 sensor of channel 3006', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3006state', 'Unit': 'K'}, 'Ch3007': {'Description': 'Pt-100 sensor of channel 3007', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3007state', 'Unit': 'K'}, 'Ch3008': {'Description': 'Pt-100 sensor of channel 3008', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3008state', 'Unit': 'K'}, 'Ch3009': {'Description': 'Pt-100 sensor of channel 3009', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3009state', 'Unit': 'K'}, 'Ch3010': {'Description': 'Pt-100 sensor of channel 3010', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3010state', 'Unit': 'K'}, 'Ch3011': {'Description': 'Pt-100 sensor of channel 3011', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3011state', 'Unit': 'K'}, 'Ch3012': {'Description': 'Pt-100 sensor of channel 3012', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3012state', 'Unit': 'K'}, 'Ch3013': {'Description': 'Pt-100 sensor of channel 3013', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3013state', 'Unit': 'K'}, 'Ch3014': {'Description': 'Pt-100 sensor of channel 3014', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3014state', 'Unit': 'K'}, 'Ch3015': {'Description': 'Pt-100 sensor of channel 3015', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3015state', 'Unit': 'K'}, 'Ch3016': {'Description': 'Pt-100 sensor of channel 3016', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3016state', 'Unit': 'K'}, 'Ch3017': {'Description': 'Pt-100 sensor of channel 3017', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3017state', 'Unit': 'K'}, 'Ch3018': {'Description': 'Pt-100 sensor of channel 3018', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3018state', 'Unit': 'K'}, 'Ch3019': {'Description': 'Pt-100 sensor of channel 3019', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3019state', 'Unit': 'K'}, 'Ch3020': {'Description': 'Pt-100 sensor of channel 3020', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3020state', 'Unit': 'K'}, 'Ch3021': {'Description': 'Pt-100 sensor of channel 3021', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3021state', 'Unit': 'K'}, 'Ch3022': {'Description': 'Pt-100 sensor of channel 3022', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3022state', 'Unit': 'K'}, 'Ch3023': {'Description': 'Pt-100 sensor of channel 3023', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3023state', 'Unit': 'K'}, 'Ch3024': {'Description': 'Pt-100 sensor of channel 3024', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3024state', 'Unit': 'K'}, 'Ch3025': {'Description': 'Pt-100 sensor of channel 3025', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3025state', 'Unit': 'K'}, 'Ch3026': {'Description': 'Pt-100 sensor of channel 3026', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3026state', 'Unit': 'K'}, 'Ch3027': {'Description': 'Pt-100 sensor of channel 3027', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3027state', 'Unit': 'K'}, 'Ch3028': {'Description': 'Pt-100 sensor of channel 3028', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3028state', 'Unit': 'K'}, 'Ch3029': {'Description': 'Pt-100 sensor of channel 3029', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3029state', 'Unit': 'K'}, 'Ch3030': {'Description': 'Pt-100 sensor of channel 3030', 'Max': 297.15, 'Min': 295.15, 'Type': 'ch_3030state', 'Unit': 'K'}}, 'Volume': {'Branch': {'Description': 'Additional volume of dut-branch. All dut valves are closed.', 'Max': 550.0, 'Min': 450.0, 'Type': 'add_branch', 'Unit': 'cm^3'}, 'BranchDutA': {'Description': 'Additional volume of dut a', 'Max': 1100.0, 'Min': 500.0, 'Type': 'add_a', 'Unit': 'cm^3'}, 'BranchDutB': {'Description': 'Additional volume of dut a and b together', 'Max': 1700.0, 'Min': 500.0, 'Type': 'add_ab', 'Unit': 'cm^3'}, 'BranchDutC': {'Description': 'Additional volume of dut a,b and c together', 'Max': 2100.0, 'Min': 500.0, 'Type': 'add_abc', 'Unit': 'cm^3'}, 'DutA': {'Description': 'Additional volume of dut a only', 'Max': 600.0, 'Min': 10.0, 'Type': 'a', 'Unit': 'cm^3'}, 'DutB': {'Description': 'Additional volume of dut b only', 'Max': 600.0, 'Min': 10.0, 'Type': 'b', 'Unit': 'cm^3'}, 'DutC': {'Description': 'Additional volume of dut c only', 'Max': 600.0, 'Min': 10.0, 'Type': 'c', 'Unit': 'cm^3'}}}</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.state_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.state_types">
+<code class="sig-name descname">state_types</code><em class="property"> = ['1T_1-state', '1T_2-state', '1T_3-state', '10T_1-state', '10T_2-state', '10T_3-state', '100T_1-state', '100T_2-state', '100T_3-state', '1000T_1-state', '1000T_2-state', '1000T_3-state', '5T_1-state', '50T_1-state', '500T_1-state']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.state_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.temp_dev_name">
+<code class="sig-name descname">temp_dev_name</code><em class="property"> = 'SE3_Temperature_Keithley'</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.temp_dev_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.std.Se3.time_meas">
+<code class="sig-name descname">time_meas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.std.Se3.time_meas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds a vector containing the measurement time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>Class with methode
+store(quantity, type, value, unit, [stdev], [N])) and
+pick(quantity, type, unit)</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>class</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.unit">
+<code class="sig-name descname">unit</code><em class="property"> = 'Pa'</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.std.Se3.vessel_temp_types">
+<code class="sig-name descname">vessel_temp_types</code><em class="property"> = ['ch_1001_after', 'ch_1002_after', 'ch_1003_after', 'ch_1004_after', 'ch_1005_after', 'ch_1006_after', 'ch_1007_after', 'ch_1008_after', 'ch_1009_after', 'ch_1010_after', 'ch_1011_after', 'ch_1012_after', 'ch_1013_after', 'ch_1014_after', 'ch_1015_after', 'ch_1016_after', 'ch_1017_after', 'ch_1018_after', 'ch_1019_after', 'ch_1020_after', 'ch_1021_after', 'ch_1022_after', 'ch_1023_after', 'ch_1024_after', 'ch_1025_after', 'ch_1026_after', 'ch_1027_after', 'ch_1028_after', 'ch_1029_after', 'ch_1030_after', 'ch_2001_after', 'ch_2002_after', 'ch_2003_after', 'ch_2004_after', 'ch_2005_after', 'ch_2006_after', 'ch_2007_after', 'ch_2008_after', 'ch_2009_after', 'ch_2010_after', 'ch_2011_after', 'ch_2012_after', 'ch_2013_after', 'ch_2014_after', 'ch_2015_after', 'ch_2016_after', 'ch_2017_after', 'ch_2018_after', 'ch_2019_after', 'ch_2020_after', 'ch_2021_after', 'ch_2022_after', 'ch_2023_after', 'ch_2024_after', 'ch_2025_after', 'ch_2026_after', 'ch_2027_after', 'ch_2028_after']</em><a class="headerlink" href="#vpy.standard.se3.std.Se3.vessel_temp_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.se3.uncert">
+<span id="vpy-standard-se3-uncert-module"></span><h2>vpy.standard.se3.uncert module<a class="headerlink" href="#module-vpy.standard.se3.uncert" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.se3.uncert.Uncert">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.se3.uncert.</code><code class="sig-name descname">Uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.standard.se3.std.Se3" title="vpy.standard.se3.std.Se3"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.standard.se3.std.Se3</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.cmc">
+<code class="sig-name descname">cmc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.cmc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.contrib_pressure_fill">
+<code class="sig-name descname">contrib_pressure_fill</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_fill_unit</span></em>, <em class="sig-param"><span class="n">skip_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.contrib_pressure_fill" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+(<a class="reference external" href="http://a73435.berlin.ptb.de:82/lab">http://a73435.berlin.ptb.de:82/lab</a>)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.contrib_temperature_vessel">
+<code class="sig-name descname">contrib_temperature_vessel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">T_unit</span></em>, <em class="sig-param"><span class="n">skip_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.contrib_temperature_vessel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+(<a class="reference external" href="http://a73435.berlin.ptb.de:82/lab">http://a73435.berlin.ptb.de:82/lab</a>)</p>
+<p>The contributions u_T_ch_cal u_T_ch (here u) appear N times so that:  sqrt 1/N^2 * N * u</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.contrib_temperature_volume_start">
+<code class="sig-name descname">contrib_temperature_volume_start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">T_unit</span></em>, <em class="sig-param"><span class="n">f_name</span></em>, <em class="sig-param"><span class="n">skip_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.contrib_temperature_volume_start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+(<a class="reference external" href="http://a73435.berlin.ptb.de:82/lab">http://a73435.berlin.ptb.de:82/lab</a>)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.corr_factors">
+<code class="sig-name descname">corr_factors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_F_abs</span></em>, <em class="sig-param"><span class="n">F_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.corr_factors" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>unit for abs. and rel. uncert. both = 1 (!)</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.expansion">
+<code class="sig-name descname">expansion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_f_abs</span></em>, <em class="sig-param"><span class="n">f_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.expansion" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>unit for abs. and rel. uncert. both = 1 (!)</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.group_normal_array">
+<code class="sig-name descname">group_normal_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">unit</span></em>, <em class="sig-param"><span class="n">take_type_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_type</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.group_normal_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.group_normal_n_vec">
+<code class="sig-name descname">group_normal_n_vec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_array</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.group_normal_n_vec" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.pressure_fill">
+<code class="sig-name descname">pressure_fill</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_p_fill</span></em>, <em class="sig-param"><span class="n">p_fill_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.pressure_fill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.pressure_rise">
+<code class="sig-name descname">pressure_rise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_p_rise</span></em>, <em class="sig-param"><span class="n">p_rise_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.pressure_rise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.uncert.Uncert.pressure_unit">
+<code class="sig-name descname">pressure_unit</code><em class="property"> = 'Pa'</em><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.pressure_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.uncert.Uncert.rel_unit">
+<code class="sig-name descname">rel_unit</code><em class="property"> = '1'</em><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.rel_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_corr_factors">
+<code class="sig-name descname">sens_corr_factors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_corr_factors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_expansion">
+<code class="sig-name descname">sens_expansion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_expansion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_pressure_fill">
+<code class="sig-name descname">sens_pressure_fill</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_pressure_fill" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_pressure_rise">
+<code class="sig-name descname">sens_pressure_rise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_pressure_rise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_temperature_after">
+<code class="sig-name descname">sens_temperature_after</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_temperature_after" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_temperature_before">
+<code class="sig-name descname">sens_temperature_before</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_temperature_before" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_volume_add">
+<code class="sig-name descname">sens_volume_add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_volume_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.sens_volume_start">
+<code class="sig-name descname">sens_volume_start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.sens_volume_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.temperature_after">
+<code class="sig-name descname">temperature_after</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_T_after</span></em>, <em class="sig-param"><span class="n">T_after_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.temperature_after" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.temperature_before">
+<code class="sig-name descname">temperature_before</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_T_before</span></em>, <em class="sig-param"><span class="n">T_before_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.temperature_before" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.uncert.Uncert.temperature_unit">
+<code class="sig-name descname">temperature_unit</code><em class="property"> = 'K'</em><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.temperature_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add">
+<code class="sig-name descname">volume_add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_V_add</span></em>, <em class="sig-param"><span class="n">V_add_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_pressure_0">
+<code class="sig-name descname">volume_add_pressure_0</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_p_0</span></em>, <em class="sig-param"><span class="n">p_0_unit</span></em>, <em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_pressure_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_pressure_1">
+<code class="sig-name descname">volume_add_pressure_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_p_1</span></em>, <em class="sig-param"><span class="n">p_1_unit</span></em>, <em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_pressure_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_pressure_r">
+<code class="sig-name descname">volume_add_pressure_r</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_p_r</span></em>, <em class="sig-param"><span class="n">p_r_unit</span></em>, <em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_pressure_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_sens_pressure_0">
+<code class="sig-name descname">volume_add_sens_pressure_0</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_sens_pressure_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_sens_pressure_1">
+<code class="sig-name descname">volume_add_sens_pressure_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_sens_pressure_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_sens_pressure_r">
+<code class="sig-name descname">volume_add_sens_pressure_r</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_sens_pressure_r" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_sens_volume_5">
+<code class="sig-name descname">volume_add_sens_volume_5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_sens_volume_5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_add_volume_5">
+<code class="sig-name descname">volume_add_volume_5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_V_5</span></em>, <em class="sig-param"><span class="n">V_5_unit</span></em>, <em class="sig-param"><span class="n">V_5</span></em>, <em class="sig-param"><span class="n">p_0</span></em>, <em class="sig-param"><span class="n">p_1</span></em>, <em class="sig-param"><span class="n">p_r</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_add_volume_5" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_start">
+<code class="sig-name descname">volume_start</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">u_V_start</span></em>, <em class="sig-param"><span class="n">V_start_unit</span></em>, <em class="sig-param"><span class="n">p_fill</span></em>, <em class="sig-param"><span class="n">p_rise</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">V_add</span></em>, <em class="sig-param"><span class="n">V_start</span></em>, <em class="sig-param"><span class="n">T_after</span></em>, <em class="sig-param"><span class="n">T_before</span></em>, <em class="sig-param"><span class="n">F</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.standard.se3.uncert.Uncert.volume_unit">
+<code class="sig-name descname">volume_unit</code><em class="property"> = 'cm^3'</em><a class="headerlink" href="#vpy.standard.se3.uncert.Uncert.volume_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.standard.se3.uncert_test">
+<span id="vpy-standard-se3-uncert-test-module"></span><h2>vpy.standard.se3.uncert_test module<a class="headerlink" href="#module-vpy.standard.se3.uncert_test" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.standard.se3.uncert_test.TestUncertSE3">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.standard.se3.uncert_test.</code><code class="sig-name descname">TestUncertSE3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">methodName</span><span class="o">=</span><span class="default_value">'runTest'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert_test.TestUncertSE3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert_test.TestUncertSE3.setUp">
+<code class="sig-name descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert_test.TestUncertSE3.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hook method for setting up the test fixture before exercising it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="vpy.standard.se3.uncert_test.TestUncertSE3.test_cmc">
+<code class="sig-name descname">test_cmc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.standard.se3.uncert_test.TestUncertSE3.test_cmc" title="Permalink to this definition">¶</a></dt>
+<dd><p>tests the piecewise repeatability</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vpy.standard.se3 package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.se3.cal">vpy.standard.se3.cal module</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.se3.std">vpy.standard.se3.std module</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.se3.uncert">vpy.standard.se3.uncert module</a></li>
+<li><a class="reference internal" href="#module-vpy.standard.se3.uncert_test">vpy.standard.se3.uncert_test module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vpy.standard.se2.html"
+                        title="previous chapter">vpy.standard.se2 package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vpy.standard.se3.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.se2.html" title="vpy.standard.se2 package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" >vpy package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="vpy.standard.html" >vpy.standard package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Bock.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,27 @@
+vpy.display package
+===================
+
+.. automodule:: vpy.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+vpy.display.display module
+--------------------------
+
+.. automodule:: vpy.display.display
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+vpy.display.se3 module
+----------------------
+
+.. automodule:: vpy.display.se3
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
