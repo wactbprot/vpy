@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>vpy &#8212; vpy 0.19.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vpy package" href="vpy.html" />
+    <link rel="prev" title="Welcome to vpy’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.html" title="vpy package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to vpy’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="vpy">
+<h1>vpy<a class="headerlink" href="#vpy" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="vpy.html">vpy package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#vpy">vpy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#virtual-env">virtual env</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#install-dependencies">install dependencies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#docu-gen">docu gen</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#run-script-with-file">run script with file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#run-script-with-database">run script with database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#unit-tests">unit tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#code-coverage-tool">code coverage tool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.html#relayserver">relayServer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="vpy.device.html">vpy.device package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.cdg">vpy.device.cdg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.cdg_test">vpy.device.cdg_test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.device">vpy.device.device module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.dmm">vpy.device.dmm module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.qbs">vpy.device.qbs module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.rsg">vpy.device.rsg module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.device.html#module-vpy.device.srg">vpy.device.srg module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.display.html">vpy.display package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="vpy.display.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.display.html#module-vpy.display.display">vpy.display.display module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.display.html#module-vpy.display.se3">vpy.display.se3 module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="vpy.standard.html">vpy.standard package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.html#subpackages">Subpackages</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="vpy.standard.html#module-vpy.standard.standard">vpy.standard.standard module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.analysis">vpy.analysis module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.analysis_test">vpy.analysis_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.calibration_devices">vpy.calibration_devices module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.constants">vpy.constants module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.display">vpy.display module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document">vpy.document module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.document_test">vpy.document_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.helper">vpy.helper module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_io">vpy.pkg_io module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.pkg_log">vpy.pkg_log module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.result">vpy.result module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.todo">vpy.todo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.todo_test">vpy.todo_test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values">vpy.values module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vpy.html#module-vpy.values_test">vpy.values_test module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to vpy’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vpy.html"
+                        title="next chapter">vpy package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.html" title="vpy package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to vpy’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Bock.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

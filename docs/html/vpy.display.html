@@ -1,0 +1,367 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>vpy.display package &#8212; vpy 0.19.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="vpy.standard package" href="vpy.standard.html" />
+    <link rel="prev" title="vpy.device package" href="vpy.device.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.html" title="vpy.standard package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="vpy.device.html" title="vpy.device package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" accesskey="U">vpy package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-vpy.display">
+<span id="vpy-display-package"></span><h1>vpy.display package<a class="headerlink" href="#module-vpy.display" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-vpy.display.display">
+<span id="vpy-display-display-module"></span><h2>vpy.display.display module<a class="headerlink" href="#module-vpy.display.display" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.display.display.Display">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.display.display.</code><code class="sig-name descname">Display</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.display.Display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="vpy.display.display.Display.add_point_no">
+<code class="sig-name descname">add_point_no</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.display.Display.add_point_no" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-vpy.display.se3">
+<span id="vpy-display-se3-module"></span><h2>vpy.display.se3 module<a class="headerlink" href="#module-vpy.display.se3" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="vpy.display.se3.SE3">
+<em class="property">class </em><code class="sig-prename descclassname">vpy.display.se3.</code><code class="sig-name descname">SE3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">doc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#vpy.display.display.Display" title="vpy.display.display.Display"><code class="xref py py-class docutils literal notranslate"><span class="pre">vpy.display.display.Display</span></code></a></p>
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.check_e_vis">
+<code class="sig-name descname">check_e_vis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.check_e_vis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.check_outlier_err">
+<code class="sig-name descname">check_outlier_err</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">label</span><span class="o">=</span><span class="default_value">'measurement'</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.check_outlier_err" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.check_outlier_sigma">
+<code class="sig-name descname">check_outlier_sigma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">label</span><span class="o">=</span><span class="default_value">'measurement'</span></em>, <em class="sig-param"><span class="n">p_unit</span><span class="o">=</span><span class="default_value">'Pa'</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.check_outlier_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.check_sigma">
+<code class="sig-name descname">check_sigma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.check_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.display.se3.SE3.e_unit">
+<code class="sig-name descname">e_unit</code><em class="property"> = '1'</em><a class="headerlink" href="#vpy.display.se3.SE3.e_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.e_vis_line">
+<code class="sig-name descname">e_vis_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.e_vis_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.e_vis_model_line">
+<code class="sig-name descname">e_vis_model_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.e_vis_model_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_average_index_flat">
+<code class="sig-name descname">get_average_index_flat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_average_index_flat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_e_vis">
+<code class="sig-name descname">get_e_vis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_e_vis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_e_vis_fit_params">
+<code class="sig-name descname">get_e_vis_fit_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_e_vis_fit_params" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_e_vis_model">
+<code class="sig-name descname">get_e_vis_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_e_vis_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_err">
+<code class="sig-name descname">get_err</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_err" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_err_model">
+<code class="sig-name descname">get_err_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_err_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_error_mean">
+<code class="sig-name descname">get_error_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_error_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_p_cal">
+<code class="sig-name descname">get_p_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_p_cal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_p_ind_mean">
+<code class="sig-name descname">get_p_ind_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_p_ind_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_err">
+<code class="sig-name descname">get_red_err</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_err" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_err_temp_corr">
+<code class="sig-name descname">get_red_err_temp_corr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_err_temp_corr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_p_cal">
+<code class="sig-name descname">get_red_p_cal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_p_cal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_sigma">
+<code class="sig-name descname">get_red_sigma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_u_dev">
+<code class="sig-name descname">get_red_u_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_u_dev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_u_off">
+<code class="sig-name descname">get_red_u_off</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_u_off" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_u_rep">
+<code class="sig-name descname">get_red_u_rep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_u_rep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_u_std">
+<code class="sig-name descname">get_red_u_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_u_std" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_red_u_tot">
+<code class="sig-name descname">get_red_u_tot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_red_u_tot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_sigma">
+<code class="sig-name descname">get_sigma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_sigma_null">
+<code class="sig-name descname">get_sigma_null</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_sigma_null" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_sigma_slope">
+<code class="sig-name descname">get_sigma_slope</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_sigma_slope" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.get_u_mean">
+<code class="sig-name descname">get_u_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.get_u_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.display.se3.SE3.non_linestyle">
+<code class="sig-name descname">non_linestyle</code><em class="property"> = 'None'</em><a class="headerlink" href="#vpy.display.se3.SE3.non_linestyle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.display.se3.SE3.norm_marker">
+<code class="sig-name descname">norm_marker</code><em class="property"> = 'o'</em><a class="headerlink" href="#vpy.display.se3.SE3.norm_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.display.se3.SE3.norm_markersize">
+<code class="sig-name descname">norm_markersize</code><em class="property"> = 10</em><a class="headerlink" href="#vpy.display.se3.SE3.norm_markersize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.display.se3.SE3.p_unit">
+<code class="sig-name descname">p_unit</code><em class="property"> = 'Pa'</em><a class="headerlink" href="#vpy.display.se3.SE3.p_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot">
+<code class="sig-name descname">plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">label</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot_e_vis">
+<code class="sig-name descname">plot_e_vis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot_e_vis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot_e_vis_model">
+<code class="sig-name descname">plot_e_vis_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot_e_vis_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot_err_diff">
+<code class="sig-name descname">plot_err_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot_err_diff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot_mean">
+<code class="sig-name descname">plot_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot_mean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot_sigma">
+<code class="sig-name descname">plot_sigma</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot_sigma" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.plot_uncert">
+<code class="sig-name descname">plot_uncert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ana</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.plot_uncert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="vpy.display.se3.SE3.s_unit">
+<code class="sig-name descname">s_unit</code><em class="property"> = '1'</em><a class="headerlink" href="#vpy.display.se3.SE3.s_unit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.show" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.tlg">
+<code class="sig-name descname">tlg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.tlg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="vpy.display.se3.SE3.xlog_plot">
+<code class="sig-name descname">xlog_plot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">label</span><span class="o">=</span><span class="default_value">'data'</span></em>, <em class="sig-param"><span class="n">show</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#vpy.display.se3.SE3.xlog_plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">vpy.display package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-vpy.display.display">vpy.display.display module</a></li>
+<li><a class="reference internal" href="#module-vpy.display.se3">vpy.display.se3 module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="vpy.device.html"
+                        title="previous chapter">vpy.device package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vpy.standard.html"
+                        title="next chapter">vpy.standard package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vpy.display.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="vpy.standard.html" title="vpy.standard package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="vpy.device.html" title="vpy.device package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">vpy 0.19.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >vpy</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="vpy.html" >vpy package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Thomas Bock.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>
