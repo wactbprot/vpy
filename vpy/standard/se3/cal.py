@@ -424,7 +424,7 @@ class Cal(Se3):
             gn_offset_types = self.compare_offset_types
             gn_target = self.Pres.get_value("target_pressure", self.unit)
             sufix = "compare"
-        
+
         for i in range(len(gn_ind_types)):
             GNDevice = self.FillDevs[i]
             self.log.debug("Working on filling pressure of device {}".format(GNDevice.name))

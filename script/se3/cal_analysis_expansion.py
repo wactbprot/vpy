@@ -24,11 +24,12 @@ def main():
     for id in io.ids:
         id = id.replace("\"", "") 
         doc = io.get_doc_db(id)
-        cal = Cal(doc)
+
         
         if io.update:
             doc = io.update_cal_doc(doc, base_doc)
-            
+
+        cal = Cal(doc)            
         if io.auxval: ## get new the AuxValues from related (meas_date) state measurement 
             meas_date = cal.Date.first_measurement()
             state_doc = io.get_state_doc("se3", date=meas_date) 
