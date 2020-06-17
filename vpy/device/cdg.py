@@ -36,6 +36,7 @@ class Cdg(Device):
     }
     max_voltage = 10.0 # v
     type_head_cmr = { # Pa
+        "0.11mbar": 11.0,
         "1.1mbar": 110.0,
         "11mbar": 1100.0, 
         "110mbar": 11000.0,
@@ -46,6 +47,7 @@ class Cdg(Device):
         "1000mbar": 100000.0
     }
     cmr_base_factor =  { # Pa
+        "0.11mbar": 10.0,
         "1.1mbar": 100.0,
         "11mbar": 1000.0, 
         "110mbar":  10000.0,
@@ -240,7 +242,7 @@ class Cdg(Device):
                 return p
 
             if self.conversion_type == "cmr":
-                return (pressure_value +self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
+                return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
                 
             msg = "conversion type not implemented"
             self.log.error(msg)
