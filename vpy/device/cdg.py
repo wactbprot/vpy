@@ -75,7 +75,7 @@ class Cdg(Device):
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
 
     def e_vis_limit(self):
-        return 100.0, "Pa"
+        return 1.0, 100.0, "Pa"
     
     def e_vis_model(self, p, a, b, c, d, e):
         return d + e / (a * p**2 + b * p + c * np.sqrt(p) + 1)
@@ -87,6 +87,14 @@ class Cdg(Device):
         out = np.isnan(e)
         p = p[np.logical_not(out)]
         e = e[np.logical_not(out)]
+
+        p_vis_lower_lim, p_vis_upper_lim, p_vis_lim_unit = self.e_vis_limit()
+
+        idx = np.where(np.less_equal(p, p_vis_upper_lim) & np.greater_equal(p, p_vis_lower_lim))
+    
+        p = np.take(p, idx)[0]
+        e = np.take(e, idx)[0]
+
         params, _ = curve_fit(self.e_vis_model, p, e, bounds=self.e_vis_bounds(), maxfev=10000)
         return params
 
@@ -195,7 +203,7 @@ class Cdg(Device):
         if t_gas_dict.get("Unit") !=  t_norm_dict.get("Unit") or t_gas_dict.get("Unit") !=  t_head_dict.get("Unit"):
             sys.exit("wrong t units")
 
-        p_vis_lim , p_vis_lim_unit = self.e_vis_limit()
+        p_vis_lower_lim, p_vis_upper_lim, p_vis_lim_unit = self.e_vis_limit()
         if p_cal_dict.get("Unit") != p_vis_lim_unit:
             sys.exit("wrong p units")
             
@@ -207,9 +215,9 @@ class Cdg(Device):
         p_cal = np.array(p_cal_dict.get("Value"))
 
         ec = np.full(len(x), np.nan)
-        
-        idx = np.where(p_cal < p_vis_lim)
-        odx = np.where(p_cal > p_vis_lim)
+
+        idx = np.where(np.less_equal(p_cal, p_vis_upper_lim))
+        odx = np.where(np.greater(p_cal, p_vis_upper_lim))
         
         if np.shape(idx)[1] == 0:
             return x
@@ -515,6 +523,7 @@ class Cdg(Device):
                 p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
                 add_uncert = ana.pick("Uncertainty", "add", "Pa")
                 u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
+
             if add_unit == "1":
                 add_uncert = ana.pick("Uncertainty", "add", "1")
                 u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))

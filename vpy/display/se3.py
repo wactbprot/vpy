@@ -205,7 +205,6 @@ class SE3(Display):
         x = self.get_p_ind_mean(ana)
         y = self.get_error_mean(ana)
         u = self.get_u_mean(ana)
-        self.e_vis_line(ana, show=False)
         self.plt.errorbar(x, y, yerr=u, label="certificate")
         if show:
             self.show()

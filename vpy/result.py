@@ -29,9 +29,9 @@ class Result(Analysis):
     }
     unit_cell = {
         "1": "",
-        "mbar": "{(\\(\\si{\\mbar}\\))}",
-        "Pa":"{(\\(\\si{\\pascal}\\))}",
-        "%": "{(\\(\\si{\\percent}\\))}",
+        "mbar": "{in \\(\\si{\\mbar}\\)}",
+        "Pa":"{in \\(\\si{\\pascal}\\)}",
+        "%": "{in \\(\\si{\\percent}\\)}",
         "N":"",
         "range":"",
         }
@@ -118,9 +118,9 @@ class Result(Analysis):
         return sec
 
     def gen_temperature_head_entry(self, ana, sec, unit="K", k=2):
-        t = self.doc.get("AuxValues", {}).get("TemperatureHead")
+        t = ana.doc.get("AuxValues", {}).get("TemperatureHead")
         if t:
-            unit = self.doc.get("AuxValues", {}).get("TemperatureHeadUnit")
+            unit = ana.doc.get("AuxValues", {}).get("TemperatureHeadUnit")
             t_unc = 0.5
             v = self.Val.round_to_uncertainty(t, t_unc, 2)
             u = self.Val.round_to_sig_dig(t_unc, 2)
@@ -129,9 +129,9 @@ class Result(Analysis):
         return sec
 
     def gen_temperature_norm_entry(self, ana, sec, unit="K", k=2):
-        t = self.doc.get("AuxValues", {}).get("TemperatureNorm")
+        t = ana.doc.get("AuxValues", {}).get("TemperatureNorm")
         if t:
-            unit = self.doc.get("AuxValues", {}).get("TemperatureNormUnit")
+            unit = ana.doc.get("AuxValues", {}).get("TemperatureNormUnit")
             t_unc = 0.1
             v = self.Val.round_to_uncertainty(t, t_unc, 2)
             u = self.Val.round_to_sig_dig(t_unc, 2)
@@ -191,9 +191,9 @@ class Result(Analysis):
 
         p_tdo = conv * p_tdo
         #temperature correction only if more than 1 decade below 100 Pa
+
         p_tdo_evis = [p_tdo[i] for i in range(len(p_tdo)) if p_tdo[i] < 9.5]
-        
-        temperature_head = self.doc.get("AuxValues", {}).get("TemperatureHead")
+        temperature_head = ana.doc.get("AuxValues", {}).get("TemperatureHead")
         if temperature_head and len(p_tdo_evis) > 1:
             sec["TemperatureCorrection"] = "yes"
         else:
@@ -209,9 +209,9 @@ class Result(Analysis):
        
     def gen_cdg_entry(self, ana, sec):
 
-        e_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Evis"))
-        u_vis = self.extr_val(self.doc.get("AuxValues", {}).get("Uvis"))
-        cf_vis = self.extr_val(self.doc.get("AuxValues", {}).get("CFvis"))
+        e_vis = self.extr_val(ana.doc.get("AuxValues", {}).get("Evis"))
+        u_vis = self.extr_val(ana.doc.get("AuxValues", {}).get("Uvis"))
+        cf_vis = self.extr_val(ana.doc.get("AuxValues", {}).get("CFvis"))
 
         if e_vis is not None and u_vis is not None:
             sec["Evis"] = self.to_si_expr(self.Val.round_to_uncertainty(e_vis, u_vis, 2), "none")

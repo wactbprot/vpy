@@ -113,18 +113,18 @@ def main():
         
         ## default uncert. contrib.  repeat
         cus_dev.repeat_uncert(ana)
-        
-        ## default uncert. contrib.  device
-        cus_dev.device_uncert(ana)
+
+        ## add. uncert. contrib.
         if "uncert_dict" in dir(cus_dev):
             ## e.g. for digitalisation uncert.
-            u_dev = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
+            u_add = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
                                              meas_unit=ana.pressure_unit,
                                              return_unit=ana.pressure_unit,
                                              res=ana,
                                              skip_source="standard",
                                              prefix=False)
-            
+        cus_dev.device_uncert(ana)
+        
         ## the uncertainty of the standard is 
         # already calculated at analysis step            
         ana.total_uncert() 
