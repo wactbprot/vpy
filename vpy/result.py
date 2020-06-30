@@ -35,7 +35,7 @@ class Result(Analysis):
         "N":"",
         "range":"",
         }
-    
+
     dcc_unit = {
         "1":"\\one",
         "mbar": "\\hecto\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
@@ -50,9 +50,12 @@ class Result(Analysis):
         "DCR":"\\per\\second",
         "none":""
         }
+    k_trans = {1:0.68,
+               2:0.95,
+               3:1,}
 
     def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
-        
+
         init_dict = {"Skip":skip,
                     "Date": [{
                     "Type": "generated",
@@ -64,14 +67,14 @@ class Result(Analysis):
              }
         if with_values_section:
              init_dict["Values"] = {}
-             
+
         self.ToDo = ToDo(doc)
         self.Const = Constants(doc)
         self.Val = Values(doc)
         self.Date = Date(doc)
         self.lang = doc.get("Calibration",{}).get("Customer",{}).get("Lang", "en")
         self.org = copy.deepcopy(doc)
-       
+
         super().__init__(doc, init_dict)
 
     def to_si_expr(self, v, unit):
@@ -84,13 +87,21 @@ class Result(Analysis):
         t = ana.pick("Temperature", "gas", unit)
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
-        
+
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
         u = self.Val.round_to_sig_dig(t_unc, 2)
-        
+
+        d={}
+        d["TemperatureGas"] = float(v)
+        d["TemperatureGasUnit"] = "K"
+        d["TemperatureGasUncertainty"] = float(u)
+        d["TemperatureGasCoverageFactor"] = k
+        d["TemperatureGasProb"] = self.k_trans[k]
+        ana.store_dict(quant='AuxValues', d=d, dest=None)
+
         sec["GasTemperature"] = self.to_si_pm_expr(v, u, unit)
 
-        return sec        
+        return sec
 
     def gen_temperature_gas_entry_se2(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "gas", unit)
@@ -100,21 +111,29 @@ class Result(Analysis):
 
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
         u = self.Val.round_to_sig_dig(t_unc, 2)
-        
+
         sec["GasTemperature"] = self.to_si_pm_expr(v, u, unit)
 
         return sec
-    
+
     def gen_temperature_room_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "room", unit)
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
-        
+
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
         u = self.Val.round_to_sig_dig(t_unc, 1)
-        
+
+        d={}
+        d["TemperatureRoom"] = float(v)
+        d["TemperatureRoomUnit"] = "K"
+        d["TemperatureRoomUncertainty"] = float(u)
+        d["TemperatureRoomCoverageFactor"] = k
+        d["TemperatureRoomProb"] = self.k_trans[k]
+        ana.store_dict(quant='AuxValues', d=d, dest=None)
+
         sec["RoomTemperature"] = self.to_si_pm_expr(v, u, unit)
-        
+
         return sec
 
     def gen_temperature_head_entry(self, ana, sec, unit="K", k=2):
@@ -125,7 +144,7 @@ class Result(Analysis):
             v = self.Val.round_to_uncertainty(t, t_unc, 2)
             u = self.Val.round_to_sig_dig(t_unc, 2)
             sec["HeadTemperature"] = self.to_si_expr(v, unit)
-        
+
         return sec
 
     def gen_temperature_norm_entry(self, ana, sec, unit="K", k=2):
@@ -136,9 +155,9 @@ class Result(Analysis):
             v = self.Val.round_to_uncertainty(t, t_unc, 2)
             u = self.Val.round_to_sig_dig(t_unc, 2)
             sec["NormTemperature"] = self.to_si_expr(v, unit)
-        
+
         return sec
-    
+
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
         t_mean = np.mean(t) - 4. + 273.15
@@ -146,24 +165,24 @@ class Result(Analysis):
 
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
         u = self.Val.round_to_sig_dig(t_unc, 2)
-        
+
         sec["EstimatedTemperature"] = self.to_si_pm_expr(v, u, unit)
-        
+
         return sec
 
     def gen_meas_date_entry(self, ana, sec):
 
         sec["MeasurementDate"] = self.Date.first_measurement()
-        
-        return sec 
-    
+
+        return sec
+
     def gen_min_max_entry(self, ana, sec, unit="Pa"):
 
         p_min, p_max, todo_unit = self.ToDo.get_min_max_pressure()
         conv = float(self.Const.get_conv(from_unit=todo_unit, to_unit=unit))
         sec["PressureRangeBegin"] = self.to_si_expr("{:.1e}".format(p_min*conv), unit)
         sec["PressureRangeEnd"] = self.to_si_expr("{:.1e}".format(p_max*conv), unit)
-               
+
         return sec
 
     def gen_min_max_entry_direct_se2(self, ana, sec, unit="Pa"):
@@ -177,7 +196,7 @@ class Result(Analysis):
         if len(p_cal)>0:
             sec["PressureRangeDirectBegin"] =  self.to_si_expr("{:.1e}".format(min(p_cal)), unit)
             sec["PressureRangeDirectEnd"] =  self.to_si_expr("{:.1e}".format(max(p_cal)), unit)
-        
+
         return sec
 
 
@@ -206,7 +225,7 @@ class Result(Analysis):
             return x[0]
         else:
             return x
-       
+
     def gen_cdg_entry(self, ana, sec):
 
         e_vis = self.extr_val(ana.doc.get("AuxValues", {}).get("Evis"))
@@ -216,14 +235,14 @@ class Result(Analysis):
         if e_vis is not None and u_vis is not None:
             sec["Evis"] = self.to_si_expr(self.Val.round_to_uncertainty(e_vis, u_vis, 2), "none")
             sec["UncertEvis"] = self.to_si_expr(self.Val.round_to_sig_dig(u_vis, 2), "none")
-            
-        
+
+
         if cf_vis and u_vis:
             sec["CFvis"] = self.to_si_expr(self.Val.round_to_uncertainty(cf_vis, u_vis, 2), "none")
             sec["UncertCFvis"] = self.to_si_expr(self.Val.round_to_sig_dig(u_vis, 2), "none")
-        
+
         return sec
-    
+
     def gen_uncert_offset_entry(self, ana, sec, unit="Pa"):
 
         val_fmt_str = "{:.1E}"
@@ -231,57 +250,71 @@ class Result(Analysis):
         av_idx = ana_aux_values.get("AverageIndex")
         uncert_contribs = ana_aux_values.get("OffsetUncertContrib")
         range_str = self.get_reduced_range_str(ana, av_idx)
-        
+
         if uncert_contribs and "Unit" in uncert_contribs:
             if uncert_contribs["Unit"] is not unit:
                 sys.exit("Unexpected as offset unit")
             entr = {}
             for r in uncert_contribs:
                 value = None
-                if r is not "Unit":
+                if r != "Unit":
                     if range_str:
                         if r in range_str:
                             value =  val_fmt_str.format(uncert_contribs[r])
                     else:
                         value =  val_fmt_str.format(uncert_contribs[r])
-                        
+
                     if value:
                         entr[r] = self.to_si_expr(value, unit)
 
             sec["OffsetUncertContrib"] = entr
 
-        return sec  
+        return sec
 
-    def gen_srg_entry(self, ana, sec):
+    def gen_srg_entry(self, ana, sec, k=2):
         """
             ..todo::
 
                 s. issue https://a75436.berlin.ptb.de/vaclab/vpy/issues/15
         """
-        
-        sigma_null = self.doc.get("AuxValues", {}).get("SigmaNull")
-        sigma_corr_slope = self.doc.get("AuxValues", {}).get("SigmaCorrSlope")
-        sigma_std = self.doc.get("AuxValues", {}).get("SigmaStd")
-        
-        if sigma_null and sigma_corr_slope and sigma_std:
-            v = self.Val.round_to_uncertainty(sigma_null, 2e-3, 2)
-            sec["SigmaNull"] = self.to_si_expr(v, "none")
 
-            v = self.Val.round_to_uncertainty(sigma_corr_slope, 2e-3, 2)
-            u = self.Val.round_to_uncertainty(sigma_std, 2e-3, 2)
-            sec["SigmaCorrSlope"] =self.to_si_pm_expr(v, u, "1/Pa") 
-        
-            v_mean = "{:.4E}".format(self.doc.get("AuxValues", {}).get("OffsetMean"))
+        sigma_null = ana.doc.get("AuxValues", {}).get("SigmaNull")
+        sigma_corr_slope = ana.doc.get("AuxValues", {}).get("SigmaCorrSlope")
+        sigma_std = ana.doc.get("AuxValues", {}).get("SigmaStd")
+
+        if sigma_null and sigma_corr_slope and sigma_std:
+            d = {}
+            u_r = 2e-3
+            v = self.Val.round_to_uncertainty(sigma_null, u_r, 2)
+            sec["SigmaNull"] = self.to_si_expr(v, "none")
+            d["SigmaNull"] = float(v)
+            d["SigmaNullUnit"] = "1"
+            d["SigmaNullUncertainty"] = float( self.Val.round_to_uncertainty(sigma_null * u_r, u_r, 2))
+            d["SigmaNullCoverageFactor"] = k
+            d["SigmaNullCoverageProb"] = self.k_trans[k]
+
+            v = self.Val.round_to_uncertainty(sigma_corr_slope, sigma_std*k, 2)
+            u = self.Val.round_to_uncertainty(sigma_std*k, u_r, 2)
+            sec["SigmaCorrSlope"] = self.to_si_pm_expr(v, u, "1/Pa")
+            d["SigmaCorrSlope"] = float(v)
+            d["SigmaCorrSlopeUncertainty"] = float(u)
+            d["SigmaCorrSlopeUnit"] = "1/Pa"
+            d["SigmaCorrSlopeCoverageFactor"] = k
+            d["SigmaCorrSlopeCoverageProb"] = self.k_trans[k]
+
+            v_mean = "{:.4E}".format(ana.doc.get("AuxValues", {}).get("OffsetMean"))
             sec["OffsetMean"] = self.to_si_expr(v_mean, "DCR")
 
-            v_sd = "{:.1E}".format(self.doc.get("AuxValues", {}).get("OffsetStd"))
+            v_sd = "{:.1E}".format(ana.doc.get("AuxValues", {}).get("OffsetStd"))
             sec["OffsetStd"] = self.to_si_expr(v_sd, "DCR")
-       
+
+            self.store_dict(quant='AuxValues', d=d, dest=None)
+
         return sec
 
     def make_measurement_data_section(self, ana, k=2, result_type="expansion", pressure_unit="Pa"):
-        """The measurement data section should contain data 
-        belonging to one measurement (gas species, expansion or direct comp. etc) only. 
+        """The measurement data section should contain data
+        belonging to one measurement (gas species, expansion or direct comp. etc) only.
         """
         sec = {}
         if result_type == "expansion":
@@ -297,31 +330,31 @@ class Result(Analysis):
         if result_type == "se2_expansion":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
-            sec = self.gen_temperature_correction(ana, sec)            
+            sec = self.gen_temperature_correction(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
 
         if result_type == "se2_direct":
-            sec = self.gen_temperature_room_entry(ana, sec)    
+            sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
-            sec = self.gen_srg_entry(ana, sec)  
+            sec = self.gen_srg_entry(ana, sec)
 
         if result_type == "se2_expansion_direct":
             sec = self.gen_temperature_gas_entry_se2(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
-            sec = self.gen_temperature_correction(ana, sec)            
+            sec = self.gen_temperature_correction(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
-            sec = self.gen_min_max_entry_direct_se2(ana, sec)            
+            sec = self.gen_min_max_entry_direct_se2(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
-            sec = self.gen_srg_entry(ana, sec)  
+            sec = self.gen_srg_entry(ana, sec)
 
         if result_type == "direct":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
-            
+
         if result_type == "pressure_balance":
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
@@ -332,7 +365,7 @@ class Result(Analysis):
             sec = self.gen_min_max_entry(ana, sec)
 
         sec = self.gen_uncert_offset_entry(ana, sec)
-        
+
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
     def make_cal_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
@@ -355,7 +388,7 @@ class Result(Analysis):
         error_str = self.Val.round_to_uncertainty_array(error, u_total*k, 2)
 
         return error_str
-    
+
     def make_cf_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         cf = self.get_reduced_cf(ana, av_idx, error_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
@@ -370,7 +403,7 @@ class Result(Analysis):
         u_std_k2 = u_std*cal*k #pressure_unit
         u_std_k2_str = self.Val.round_to_sig_dig_array(u_std_k2, 2)
 
-        return  u_std_k2_str     
+        return  u_std_k2_str
 
     def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
@@ -379,9 +412,9 @@ class Result(Analysis):
         u_dev_k2 = u_dev*ind*k #pressure_unit
         u_dev_k2_str = self.Val.round_to_sig_dig_array(u_dev_k2, 2)
 
-        return  u_dev_k2_str     
+        return  u_dev_k2_str
 
-    def make_uncert_error_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):      
+    def make_uncert_error_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
@@ -389,31 +422,31 @@ class Result(Analysis):
         u_e_k2 = u_total*ind/cal*k
         u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
 
-        return  u_e_k2_str     
+        return  u_e_k2_str
 
     def make_uncert_cf_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
-        
+
         u_cf_k2 = u_total*cal/ind*k
         u_cf_k2_str = self.Val.round_to_sig_dig_array(u_cf_k2, 2)
 
-        return  u_cf_k2_str   
+        return  u_cf_k2_str
 
     def get_reduced_pressure_ind(self, ana, av_idx, unit):
         ind_dict = ana.pick_dict("Pressure", "ind_corr")
         ind_conv = self.Const.get_conv(from_unit=ind_dict.get("Unit"), to_unit=unit)
 
-        ind = np.array(ind_dict.get("Value"), dtype=np.float)  * ind_conv 
+        ind = np.array(ind_dict.get("Value"), dtype=np.float)  * ind_conv
         ind = ana.reduce_by_average_index(value=ind, average_index=av_idx)
-        
+
         return ind
 
     def get_reduced_pressure_cal(self, ana, av_idx, unit):
-        cal_dict = ana.pick_dict("Pressure", "cal") 
+        cal_dict = ana.pick_dict("Pressure", "cal")
         cal_conv = self.Const.get_conv(from_unit=cal_dict.get("Unit"), to_unit=unit)
-        cal = cal_dict.get("Value") * cal_conv 
+        cal = cal_dict.get("Value") * cal_conv
         cal = ana.reduce_by_average_index(value=cal, average_index=av_idx)
 
         return cal
@@ -427,13 +460,13 @@ class Result(Analysis):
     def get_reduced_uncert_std(self, ana, av_idx, unit):
         u_std = ana.pick("Uncertainty", "standard", unit)
         u_std = ana.reduce_by_average_index(value=u_std, average_index=av_idx)
-        
+
         return u_std
-    
+
     def get_reduced_uncert_dev(self, ana, av_idx, unit):
         u_dev = ana.pick("Uncertainty", "device", unit)
         u_dev = ana.reduce_by_average_index(value=u_dev, average_index=av_idx)
-        
+
         return u_dev
 
     def get_reduced_error(self, ana, av_idx, unit):
@@ -441,7 +474,7 @@ class Result(Analysis):
         if error is None:
             error = ana.pick("Error", "ind", unit)
         error = ana.reduce_by_average_index(value=error, average_index=av_idx)
-        
+
         return error
 
     def get_reduced_cf(self, ana, av_idx, unit):
@@ -469,7 +502,7 @@ class Result(Analysis):
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
 
-        doc_aux_values = ana.doc.get("AuxValues", {}) 
+        doc_aux_values = ana.doc.get("AuxValues", {})
         av_idx = doc_aux_values.get("AverageIndex")
         print(av_idx)
         k = 2
@@ -497,7 +530,7 @@ class Result(Analysis):
                                             "Value": cal_str,
                                             "HeadCell": self.head_cell["cal"],
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
-        
+
         self.store_dict(quant="Table", d = {"Type": "ind_corr",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
@@ -536,7 +569,7 @@ class Result(Analysis):
                                             "Value": cf_str,
                                             "HeadCell": self.head_cell["cf"],
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
-          
+
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
                                             "DCCOut": False,
                                             "Unit": error_unit,
@@ -558,18 +591,18 @@ class Result(Analysis):
                                                 "HeadCell": self.head_cell["N"],
                                                 "UnitCell": self.unit_cell["N"]
                                                 }, dest=None)
-       
+
         if range_str is not None:
             self.store_dict(quant="Table", d = {"Type": "ind",
                                                 "Unit": "1",
                                                 "Value": range_str,
                                                 "HeadCell": self.head_cell["range"],
-                                                "UnitCell": self.unit_cell["range"]}, dest=None) 
-    
+                                                "UnitCell": self.unit_cell["range"]}, dest=None)
+
         self.log.info("Result error table written")
 
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
         error = self.get_reduced_error(ana, av_idx, error_unit)
         u = self.get_reduced_uncert_total(ana, av_idx, error_unit)
-        
+
         return ind, error, u

@@ -13,7 +13,7 @@ class Cdg(Device):
         "0.001Torr":  0.133322,
         "001Torr":   1.33322,
         "0.01Torr":   1.33322,
-        "0.1Torr":   13.3322,  
+        "0.1Torr":   13.3322,
         "01Torr":   13.3322,
         "025Torr":   2.5*13.3322,
         "1Torr":    133.322,
@@ -28,7 +28,7 @@ class Cdg(Device):
         "1mbar": 100.0,
         "1.1mbar": 100.0,
         "10mbar": 1000.0,
-        "11mbar": 1000.0, 
+        "11mbar": 1000.0,
         "100mbar": 10000.0,
         "110mbar": 10000.0,
         "1000mbar": 100000.0,
@@ -38,22 +38,22 @@ class Cdg(Device):
     type_head_cmr = { # Pa
         "0.11mbar": 11.0,
         "1.1mbar": 110.0,
-        "11mbar": 1100.0, 
+        "11mbar": 1100.0,
         "110mbar": 11000.0,
         "1100mbar": 110000.0,
         "1mbar": 100.0,
-        "10mbar": 1000.0, 
+        "10mbar": 1000.0,
         "100mbar": 10000.0,
         "1000mbar": 100000.0
     }
     cmr_base_factor =  { # Pa
         "0.11mbar": 10.0,
         "1.1mbar": 100.0,
-        "11mbar": 1000.0, 
+        "11mbar": 1000.0,
         "110mbar":  10000.0,
         "1100mbar": 100000.0,
         "1mbar": 100.0,
-        "10mbar": 1000.0, 
+        "10mbar": 1000.0,
         "100mbar":  10000.0,
         "1000mbar": 100000.0
     }
@@ -70,16 +70,16 @@ class Cdg(Device):
         "X0.1":0.1,
         "X0.01":0.01,
     }
-    
+
     range_extend = 0.005 # relativ
-    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa 
+    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa
 
     def e_vis_limit(self):
         return 1.0, 100.0, "Pa"
-    
+
     def e_vis_model(self, p, a, b, c, d, e):
         return d + e / (a * p**2 + b * p + c * np.sqrt(p) + 1)
-    
+
     def e_vis_bounds(self):
         return ([0, 0, 0, -np.inf, 0], [np.inf, np.inf, np.inf, np.inf, np.inf])
 
@@ -91,7 +91,7 @@ class Cdg(Device):
         p_vis_lower_lim, p_vis_upper_lim, p_vis_lim_unit = self.e_vis_limit()
 
         idx = np.where(np.less_equal(p, p_vis_upper_lim) & np.greater_equal(p, p_vis_lower_lim))
-    
+
         p = np.take(p, idx)[0]
         e = np.take(e, idx)[0]
 
@@ -103,7 +103,7 @@ class Cdg(Device):
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
-        
+
         if dev:
             self.doc = dev
             dev_setup = dev.get('Setup')
@@ -114,7 +114,7 @@ class Cdg(Device):
                 use_unit = dev_setup.get('UseUnit')
                 type_head = dev_setup.get('TypeHead')
                 conversion_type =  dev_setup.get('ConversionType')
-                
+
                 if type_head:
                     self.producer = "missing"
                     if "mks" in dev_device["Producer"].lower():
@@ -122,7 +122,7 @@ class Cdg(Device):
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
-                    
+
                             if not conversion_type:
                                 self.conversion_type = "factor"
 
@@ -131,7 +131,7 @@ class Cdg(Device):
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
-                    
+
                             if not conversion_type:
                                 self.conversion_type = "factor"
 
@@ -140,7 +140,7 @@ class Cdg(Device):
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
-                    
+
                             if not conversion_type:
                                 self.conversion_type = "factor"
 
@@ -149,16 +149,16 @@ class Cdg(Device):
                         if type_head in self.type_head_cmr:
                             self.max_p = self.type_head_cmr.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
-                    
+
                             if not conversion_type:
                                 self.conversion_type = "cmr"
-                                
+
                 if use_from and use_to and use_unit:
                     conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
                     self.max_p = float(use_to) * conv
                     self.min_p = float(use_from) * conv
 
-                        
+
                 if not "max_p" in dir(self):
                     msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
                     self.log.error(msg)
@@ -166,10 +166,10 @@ class Cdg(Device):
 
                 if conversion_type:
                     self.conversion_type = conversion_type
-                
+
                 if type_head:
                     self.type_head = type_head
-                    
+
             if 'Interpol' in dev:
                 # pressure
                 v, u = self.get_value_and_unit('p_ind')
@@ -177,7 +177,7 @@ class Cdg(Device):
                 self.interpol_p = v * conv
                 # error
                 self.interpol_e = self.get_value(value_type='e', value_unit='1')
-                                
+
                 interpol_min = np.min(self.interpol_p)
                 interpol_max = np.max(self.interpol_p)
 
@@ -196,7 +196,7 @@ class Cdg(Device):
 
 
     def temperature_correction(self, x_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, x_vis, x_vis_unit):
-        
+
         if x_dict.get("Unit") !=  x_vis_unit:
             sys.exit("wrong x units")
 
@@ -206,7 +206,7 @@ class Cdg(Device):
         p_vis_lower_lim, p_vis_upper_lim, p_vis_lim_unit = self.e_vis_limit()
         if p_cal_dict.get("Unit") != p_vis_lim_unit:
             sys.exit("wrong p units")
-            
+
         x = np.array(x_dict.get("Value"))
         x_vis = np.array(x_vis)
         t_gas = np.array(t_gas_dict.get("Value"))
@@ -218,46 +218,46 @@ class Cdg(Device):
 
         idx = np.where(np.less_equal(p_cal, p_vis_upper_lim))
         odx = np.where(np.greater(p_cal, p_vis_upper_lim))
-        
+
         if np.shape(idx)[1] == 0:
             return x
         else:
             ec[idx] = x_vis + (np.take(x, idx) - x_vis) * (np.sqrt(t_head/t_norm) - 1)/(np.sqrt(t_head/np.take(t_gas, idx)) - 1)
 
         if np.shape(odx)[1] != 0:
-            ec[odx] = np.take(x, odx) 
+            ec[odx] = np.take(x, odx)
 
         return  ec
-    
+
     def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= 'Pa', gas= "N2"):
         """Converts the measured pressure in self.unit. If the unit is V
-        this conversions are implemented: 
-        
+        this conversions are implemented:
+
             * factor ... u * max_p / max_voltage
             * cmr ... (u + cmr_offset) * cmr_factor * cmr_base_factor[type_head]
         """
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
-        
+
         if pressure_unit == "V":
             if self.conversion_type == "factor":
                 if range_dict:
-                    range_mult = np.array([self.range_mult.get(x) for x in range_dict.get('Value') ]) 
+                    range_mult = np.array([self.range_mult.get(x) for x in range_dict.get('Value') ])
                     p = pressure_value * self.max_p/self.max_voltage * range_mult
                 else:
                     p = pressure_value * self.max_p/self.max_voltage
-                
+
                 return p
 
             if self.conversion_type == "cmr":
                 return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
-                
+
             msg = "conversion type not implemented"
             self.log.error(msg)
             sys.exit(msg)
         else:
             return pressure_value * self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
-            
+
     def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
         """
         Returns the interpolation error at the points where:
@@ -270,7 +270,7 @@ class Cdg(Device):
         """
         N = len(p_interpol)
         e = np.full(N, np.nan)
-        
+
         if unit_target is None and p_target is None:
             unit_target = unit_interpol
             p_target = p_interpol
@@ -279,21 +279,21 @@ class Cdg(Device):
             conv_interpol = 1.0
         else:
             conv_interpol = self.Const.get_conv(unit_interpol, self.unit)
-        
+
         if unit_target == self.unit:
             conv_target = 1.0
         else:
             conv_target = self.Const.get_conv(unit_target, self.unit)
 
         f_e = self.interp_function(self.interpol_p, self.interpol_e)
-        
+
         idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
         odx = (p_interpol*conv_target > self.interpol_min) & (p_interpol*conv_target < self.interpol_max)
         ndx = idx & odx
-       
+
         if len(ndx) > 0:
             e[ndx] = f_e(p_interpol[ndx]*conv_interpol)
-            
+
 
         return e
 
@@ -318,7 +318,7 @@ class Cdg(Device):
         """
         # smooth
         ## p = self.conv_smooth(pressure)
-        ## e = self.conv_smooth(error)       
+        ## e = self.conv_smooth(error)
         p = pressure
         e = error
 
@@ -326,21 +326,21 @@ class Cdg(Device):
         idx = self.Vals.gatherby_idx(p, self.Vals.diff_less(0.2))
         p = [np.mean(p[i]) for i in idx]
         e = [np.mean(e[i]) for i in idx]
-        
+
         # extrapolate
         p, e = self.fill_to_dev_borders(p, e)
 
         #interpolate function
         f_e = self.interp_function(p, e)
-        
+
         # default values
         p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
-        
+
         # cal. interpol on default values
         e_default = f_e( p_default )
 
         return  p_default, e_default
-    
+
     def get_dmin_idx(self, d):
         m = np.amin(d)
         return np.where(d == m)[0][0]
@@ -353,7 +353,7 @@ class Cdg(Device):
         extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
         d = p - extr_p_low
         i = self.get_dmin_idx(d)
-        
+
         extr_e_low = np.array([e[i]])
 
         extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
@@ -363,15 +363,15 @@ class Cdg(Device):
 
         ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
         ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
-        
+
         return ret_p, ret_e
 
     def conv_smooth(self, data, n=3):
         """Generates smooth data by a convolution.
-        Bondaries (left and right) are calculated 
+        Bondaries (left and right) are calculated
         from mean values.
         """
-        
+
         weights = np.ones(n) / n
 
         start_array = np.array([np.nanmean(data[0:n])])
@@ -382,21 +382,21 @@ class Cdg(Device):
 
     def rm_nan(self, x, ldx=None):
         """Removes data from the given list by:
-        
+
         * testing ``np.isnan()``
         * or the given (logical) vector ldx
         """
         if not isinstance(x,np.ndarray):
             sys.exit("rm_nan x argument has wrong type")
-            
+
         if not isinstance(ldx, np.ndarray):
             ldx = np.logical_not(np.isnan(x))
-           
+
         return x[ldx], ldx
 
     def shape_pressure(self, p):
-        """Shapes the pressures by means of 
-        ``self.min`` and ``self.max`` in the 
+        """Shapes the pressures by means of
+        ``self.min`` and ``self.max`` in the
         unit ``self.unit``
 
         :param p: pressure in the unit self.unit
@@ -414,21 +414,21 @@ class Cdg(Device):
         self.log.debug("index vector is: {idx}".format(idx=idx))
         arr[idx] = p[idx]
         self.log.debug("returning array is: {arr}".format(arr=arr))
-        
+
         return arr
-       
+
 
     def get_default_values(self, x_min, x_max):
         i_min = np.where(self.interpol_pressure_points > x_min)[0][0]
         i_max = np.where(self.interpol_pressure_points < x_max)[0][-1]
-        
+
         start_array = np.array([x_min])
         med_array = self.interpol_pressure_points[i_min:i_max]
         end_array = np.array([x_max])
-        
-        return np.concatenate((start_array, med_array, end_array )) 
-    
-    
+
+        return np.concatenate((start_array, med_array, end_array ))
+
+
     def offset_uncert(self, ana, use_idx = None):
         """
         The offset uncertainty is calculated by means of `np.diff(offset)`.
@@ -443,10 +443,10 @@ class Cdg(Device):
         if  use_idx is not None:
             o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
             for i in o:
-                ind[i] = np.nan 
-                offset[i] = np.nan 
+                ind[i] = np.nan
+                offset[i] = np.nan
 
-        u = np.full(len(ind), np.nan) 
+        u = np.full(len(ind), np.nan)
         uncert_contrib = {"Unit": self.unit}
 
         if range_str is not None:
@@ -459,7 +459,7 @@ class Cdg(Device):
                     m = np.nanmean(np.abs(np.diff(offset[i_r])))
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
-                    
+
                     uncert_contrib[r] = m
                     u[i_r] = m/ind[i_r]
         else:
@@ -473,7 +473,7 @@ class Cdg(Device):
 
                 uncert_contrib["all"] = m
                 u = m/ind
-               
+
         ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u, "1")
 
@@ -481,7 +481,7 @@ class Cdg(Device):
 
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         # *) bis 14.8.19
-        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950], 
+        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950],
         #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
         if self.producer == "missing":
             msg = "No Producer in Device"
@@ -500,8 +500,8 @@ class Cdg(Device):
                 u = np.full(len(p_list), 1.0e-4)
 
         else: #MKS und andere
-            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.], 
-                                            [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])            
+            u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.],
+                                            [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
 
         ana.store("Uncertainty", "repeat", u, "1")
 
@@ -518,7 +518,7 @@ class Cdg(Device):
 
         add_uncert = ana.pick_dict("Uncertainty", "add")
         if add_uncert is not None:
-            add_unit = add_uncert.get("Unit") 
+            add_unit = add_uncert.get("Unit")
             if add_unit == "Pa":
                 p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
                 add_uncert = ana.pick("Uncertainty", "add", "Pa")
@@ -530,7 +530,7 @@ class Cdg(Device):
 
         ana.store("Uncertainty", "device", u, "1")
 
-        
+
 class InfCdg(Cdg):
     """Inficon CDGs are usable two decades only
     """
