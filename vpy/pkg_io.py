@@ -12,7 +12,7 @@ class Io(object):
     """
 
     def __init__(self, db_url="http://localhost:5984", db_name = "vl_db"):
-        """Change the configuration the python way by a 
+        """Change the configuration the python way by a
         direct access to io.config....
         """
 
@@ -42,7 +42,7 @@ class Io(object):
             },
         "all":{
             "log_data_view":"log_data/name-date"
-        }    
+        }
         }
         self.make_plot =  self.config["plot"]["make"]
 
@@ -88,10 +88,13 @@ class Io(object):
         # -u update
         parser.add_argument('-u', action='store_true',
                             help='update calibration doc with standard-, constants-, etc- documents', default=False)
-        # -a new AuxValues 
+        # -a new AuxValues
         parser.add_argument('-a', action='store_true',
                             help='keep Analysis AuxValues section', default=False)
-        
+        # -- target_pressure
+        parser.add_argument("--point", type=str, nargs=1,
+                            help="select a point from a measurement row")
+
         self.args = parser.parse_args()
 
         ## make args a bit more friendly
@@ -102,7 +105,7 @@ class Io(object):
 
         if self.args.db:
             self.config["db"]["name"] = self.args.db[0]
-            
+
         if self.args.srv:
             self.config["db"]["url"] = self.args.srv[0]
 
@@ -122,13 +125,11 @@ class Io(object):
                 sys.exit("no ids")
             else:
                 self.ids = ids
-            
+
         if self.args.skip:
             self.skip = True
         else:
             self.skip = False
-
-        
 
     def read_json(self, fname):
         with open(fname) as json_doc_file:
@@ -155,9 +156,9 @@ class Io(object):
             sys.exit(err_msg)
 
     def save_doc(self, doc):
-        """Saves the document if cli param *-s* is on. 
+        """Saves the document if cli param *-s* is on.
         If the cli param *--file* is given
-        the docoment is saved to: *new.<filename>*. Otherwise, the 
+        the docoment is saved to: *new.<filename>*. Otherwise, the
         document is stored by means of *set_doc_db()*
         """
         if self.save:
@@ -207,9 +208,9 @@ class Io(object):
         """
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
-        
+
         return db.save(doc)
-      
+
 
     def update_cal_doc(self, doc, base_doc):
         """More or less a merge between ``doc`` and ``base_doc``.
@@ -223,15 +224,15 @@ class Io(object):
         :returns: updated calibration document
         :rtype: dict
         """
-      
+
         if 'Calibration' in doc:
             for k, v in base_doc.items():
                 doc['Calibration'][k] = v
-           
+
         else:
             err_msg = "wrong data structure"
             sys.exit(err_msg)
-        
+
         return doc
 
     def get_base_doc(self, name):
@@ -286,10 +287,10 @@ class Io(object):
 
         :param meas_date: measurement date in the form yyyy-mm-dd
         :type meas_date: str
-        
+
         :param std: name of the calibration standard
         :type std: str
-        
+
         :returns: document
         :rtype: dict
         """
@@ -303,16 +304,16 @@ class Io(object):
         else:
             for item in db.view(view):
                 doc = item.value
-            
+
         return doc
-    
+
     def get_pn_by_date(self, std, cert, date):
         """
-        Returns the calibration document for a 
+        Returns the calibration document for a
         check standard (cert: 0.1Torr PN SE2: 0118 or
-        10Torr PN SE2: 9911) for the given date (format yyyy-mm-dd) 
+        10Torr PN SE2: 9911) for the given date (format yyyy-mm-dd)
         and std (SE2, SE3)
-        """  
+        """
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
         view = self.config['standards'][std]['pn_view']
@@ -320,9 +321,9 @@ class Io(object):
         doc = None
         for item in db.view(view, key="{date}_{cert}".format(date=date, cert=cert)):
             doc = item.value
-        
+
         return doc
-    
+
     def get_hist_data(self, std):
         """Gets and returns an array containing history data.
         Please use  the view ``se3_req/views/group_normal_hist/`` as a
@@ -347,18 +348,18 @@ class Io(object):
         return dat
 
     def get_log_data(self, task_name, date_from, date_to):
-        """Gets and returns an array containing the log data 
+        """Gets and returns an array containing the log data
         produced by a certain task.
 
         :param task_name: name of the task
         :type task_name: str
-        
+
         :param date_from: start date in the form 2020-04-22_14-44
         :type date_from: str
-        
+
         :param date_to: end date in the form 2020-04-22_14-45
         :type date_to: str
-        
+
         :returns: document
         :rtype: dict
         """
