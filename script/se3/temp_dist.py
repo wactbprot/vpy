@@ -1,5 +1,5 @@
 """
-python script/se3/temp_dist.py --ids cal-2020-se3-kk-75127_0001 --srv http://a73434:5984
+python script/se3/temp_dist.py --ids cal-2020-se3-kk-75127_0001 --srv http://a73434:5984 --point 2
 """
 
 
@@ -126,7 +126,7 @@ def main():
     ax.yaxis.pane.set_edgecolor('w')
     ax.zaxis.pane.set_edgecolor('w')
 
-    ax.grid(False)
+    #ax.grid(False)
 
     ax.set_xlabel('x in mm (window $\\rightarrow$ DKM)')
     ax.set_zlabel('z in mm (bottom $\\rightarrow$ top)')
