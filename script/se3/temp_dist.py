@@ -20,6 +20,20 @@ n_i = 7
 n_o = 12
 n_h = 200 # helper circles
 
+o_o = np.pi/n_o ## offset mantel
+o_h = 4*np.pi/n_i ## offset stirn hinten
+
+dir_vec =  ["cw",   "cw",   "cw",     "cw",     "cw",   "cw",  "cw",   "cw",   "cw",   "cw",   "ccw", ]
+dist_vec = ["a",    "a",    "e",      "o",      "e",    "o",   "e",    "o",    "e",    "a",    "a",   ]
+o_vec =    [0,      0,      o_o,      o_o,      o_o,    o_o,   o_o,    o_o,    o_o,    0,      o_h,   ]
+n_vec =    [1,      n_i,    n_o,      n_o,      n_o,    n_o,   n_o,    n_o,    n_o,    1,      n_i,   ]
+y_vec =    [-y_t/2, -y_t/2, -dy_o*3,  -dy_o*2,  -dy_o,  0,     dy_o,   dy_o*2, dy_o*3, y_t/2,  y_t/2, ]
+r_vec =    [0,      r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    0,      r_i,   ]
+rh_vec =    [r_o,    r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    r_o,    r_i,   ]
+
+
+channels = list(range(1001, 1031)) + list(range(2001, 2029))
+
 def gen_x(alpha, r):
     return r * np.sin(alpha)
 
@@ -49,18 +63,6 @@ def put_sensor(d, i):
             return False
 
 def main():
-    o_o = np.pi/n_o ## offset mantel
-    o_h = 4*np.pi/n_i ## offset stirn hinten
-
-    dir_vec =  ["cw",   "cw",   "cw",     "cw",     "cw",   "cw",  "cw",   "cw",   "cw",   "cw",   "ccw", ]
-    dist_vec = ["a",    "a",    "e",      "o",      "e",    "o",   "e",    "o",    "e",    "a",    "a",   ]
-    o_vec =    [0,      0,      o_o,      o_o,      o_o,    o_o,   o_o,    o_o,    o_o,    0,      o_h,   ]
-    n_vec =    [1,      n_i,    n_o,      n_o,      n_o,    n_o,   n_o,    n_o,    n_o,    1,      n_i,   ]
-    y_vec =    [-y_t/2, -y_t/2, -dy_o*3,  -dy_o*2,  -dy_o,  0,     dy_o,   dy_o*2, dy_o*3, y_t/2,  y_t/2, ]
-    r_vec =    [0,      r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    0,      r_i,   ]
-
-    channels = list(range(1001, 1031)) + list(range(2001, 2029))
-
     io = Io()
     io.eval_args()
     if io.ids:
@@ -87,6 +89,13 @@ def main():
     sl_arr = [] ## sensor labels
     cl_arr = [] ## chamber labels
 
+    #h_y = np.linspace(-y_t/2,y_t/2, 20)
+    #alpha = gen_alpha(50, 0)
+    #x = np.outer(r_o * np.sin(alpha), np.ones(len(h_y)))
+    #y = np.outer(np.ones(len(alpha)),h_y)
+    #z = np.outer(r_o * np.cos(alpha),np.ones(len(h_y)))
+    #ax.plot_wireframe(x, y, z, color= "lightgray")
+
     s = 0
     for i, _ in enumerate(y_vec):
         alpha = gen_alpha( n_vec[i], o_vec[i], dir_vec[i])
@@ -109,10 +118,11 @@ def main():
 
         ## helper
         alpha = gen_alpha(n_h, 0)
-        x = gen_x(alpha, r_vec[i])
+        x = gen_x(alpha, rh_vec[i])
         y = np.full(n_h, y_vec[i])
-        z = gen_z(alpha, r_vec[i])
+        z = gen_z(alpha, rh_vec[i])
         ax.plot(x, y, z, c= "lightgray")
+
 
     p = ax.scatter(x_arr, y_arr, z_arr, s=np.pi*0.5**2*500, c=t_i, cmap="RdYlBu_r", alpha=0.5)
 
@@ -132,9 +142,10 @@ def main():
     ax.set_zlabel('z in mm (bottom $\\rightarrow$ top)')
     ax.set_ylabel('y in mm (wall $\\rightarrow$ SE1)')
 
-    ax.set_xlim3d(-r_o, r_o)
-    ax.set_ylim3d(-0.5*y_t, 0.5*y_t)
-    ax.set_zlim3d(-r_o, r_o)
+    f = 1.2
+    ax.set_xlim3d(-f*r_o, f*r_o)
+    ax.set_ylim3d(-y_t, y_t)
+    ax.set_zlim3d(-f*r_o, f*r_o)
 
     plt.show()
 
