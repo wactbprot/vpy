@@ -5,10 +5,9 @@ class SE3(Display):
     p_unit = "Pa"
     e_unit = "1"
     s_unit = "1"
-    non_linestyle = "None"
     norm_markersize = 10
-    norm_marker = "o"
-    
+
+
     def __init__(self, doc):
         super().__init__(doc)
 
@@ -29,7 +28,7 @@ class SE3(Display):
 
     def get_p_ind_mean(self, ana):
         return ana.pick("Pressure", "ind_mean", self.p_unit, dest="AuxValues")
-    
+
     def get_error_mean(self, ana):
         return ana.pick("Error", "ind_mean", self.e_unit, dest="AuxValues")
 
@@ -58,10 +57,10 @@ class SE3(Display):
         return ana.pick("Pressure", "cal", self.p_unit)
 
     def get_err(self, ana):
-        return ana.pick("Error", "ind", self.e_unit) 
+        return ana.pick("Error", "ind", self.e_unit)
 
     def get_sigma(self, ana):
-        return ana.pick("Sigma", "eff", self.s_unit) 
+        return ana.pick("Sigma", "eff", self.s_unit)
 
     def get_red_sigma(self, ana):
         return ana.pick("Sigma", "red_eff", "1", dest="AuxValues")
@@ -70,37 +69,37 @@ class SE3(Display):
         return ana.pick("Pressure", "red_cal", self.p_unit, dest="AuxValues")
 
     def get_red_err(self, ana):
-        return ana.pick("Error", "red_ind", self.e_unit, dest="AuxValues") 
+        return ana.pick("Error", "red_ind", self.e_unit, dest="AuxValues")
 
     def get_red_err_temp_corr(self, ana):
-        return ana.pick("Error", "red_ind_temp_corr", self.e_unit, dest="AuxValues") 
+        return ana.pick("Error", "red_ind_temp_corr", self.e_unit, dest="AuxValues")
 
     def get_err_model(self, ana):
-        return ana.pick("Error", "model", self.e_unit, dest="AuxValues") 
+        return ana.pick("Error", "model", self.e_unit, dest="AuxValues")
 
     def tlg(self):
         self.plt.title(self.main_title)
         self.plt.legend()
         self.plt.grid()
-        
+
     def show(self):
         self.tlg()
         self.plt.show()
-        
-    
-    def plot(self, x, y, label="data", show=True):        
+
+
+    def plot(self, x, y, label="data", show=True, linestyle= "None", marker="o"):
         self.plt.plot(x, y,
-                      marker = self.norm_marker,
-                      linestyle = self.non_linestyle,
+                      marker = marker,
+                      linestyle = linestyle,
                       markersize = self.norm_markersize,
                       label=label)
         if show:
             self.show()
-            
-    def xlog_plot(self, x, y, label="data", show=True):    
+
+    def xlog_plot(self, x, y, label="data", show=True, linestyle= "None", marker="o"):
         self.plt.xscale('symlog', linthreshx=1e-12)
-        self.plot(x, y, label=label, show=show)    
-    
+        self.plot(x, y, linestyle=linestyle, marker=marker, label=label, show=show)
+
     def check_outlier_err(self, ana, label="measurement", show=True):
         x = self.get_p_cal(ana)
         y = self.get_err(ana)
@@ -108,7 +107,7 @@ class SE3(Display):
         self.plt.xlabel("p in {}".format(self.p_unit))
         self.plt.ylabel("e in {}".format(self.e_unit))
         self.xlog_plot(x , y, label=label, show=show)
-        
+
     def check_outlier_sigma(self, ana, label="measurement", p_unit="Pa", show=True):
         x = self.get_p_cal(ana)
         y = self.get_sigma(ana)
@@ -137,17 +136,17 @@ class SE3(Display):
         self.xlog_plot(x , y, label="red. measurement", show=False)
         x = self.get_red_p_cal(ana)
         y = self.get_err_model(ana)
-        self.xlog_plot(x , y, label="model", show=show)
-       
-        
+        self.xlog_plot(x , y, linestyle="solid", label="model", marker="None", show=show)
+
+
     def plot_e_vis_model(self, ana):
         self.check_e_vis(ana, show=False)
         self.e_vis_model_line(ana)
-        
+
     def plot_e_vis(self, ana):
         self.check_e_vis(ana, show=False)
         self.e_vis_line(ana)
-        
+
     def plot_err_diff(self, ana, show=True):
         if show:
             self.plt.cla()
@@ -158,7 +157,7 @@ class SE3(Display):
         self.plt.xlabel("p in {}".format(self.p_unit))
         self.plt.ylabel("$e_{corr} - e$")
         self.add_point_no(x, y)
-        self.xlog_plot(x , y, label="error diff.", show=show)       
+        self.xlog_plot(x , y, label="error diff.", show=show)
 
     def plot_uncert(self, ana, show=True):
         self.plt.cla()
@@ -169,7 +168,7 @@ class SE3(Display):
         u_dev = self.get_red_u_dev(ana)
         u_tot = self.get_red_u_tot(ana)
         u_off = self.get_red_u_off(ana)
-        
+
         y = np.vstack([u_rep, u_off,])
         labels =      ["u_rep","u_off",]
 
@@ -182,9 +181,9 @@ class SE3(Display):
         self.plt.ylabel("u(k=1) in {}".format(self.e_unit))
         self.tlg()
 
-        self.plt.subplot(212)    
+        self.plt.subplot(212)
         y = np.vstack([u_std, u_dev,])
-        labels = [     "u_std","u_dev",]
+        labels = ["u_std","u_dev",]
 
         self.plt.xscale('symlog', linthreshx=1e-12)
         self.plt.stackplot(x, u_tot, labels=["u_total (sq. sum)"], alpha=1)
@@ -192,7 +191,7 @@ class SE3(Display):
 
         self.plt.xlabel("p in {}".format(self.p_unit))
         self.plt.ylabel("u(k=1) in {}".format(self.e_unit))
-                
+
         self.show()
 
     def plot_mean(self, ana, show=True):
