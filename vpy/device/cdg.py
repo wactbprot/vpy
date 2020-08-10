@@ -75,7 +75,10 @@ class Cdg(Device):
     interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa
 
     def e_vis_limit(self):
-        return 1.0, 100.0, "Pa"
+        if self.max_p <= 14:
+            return .1, 100.0, "Pa"
+        else:
+            return 1.0, 100.0, "Pa"
 
     def e_vis_model(self, p, a, b, c, d, e):
         return d + e / (a * p**2 + b * p + c * np.sqrt(p) + 1)
@@ -443,6 +446,7 @@ class Cdg(Device):
         if  use_idx is not None:
             o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
             for i in o:
+                print(i)
                 ind[i] = np.nan
                 offset[i] = np.nan
 
@@ -467,6 +471,7 @@ class Cdg(Device):
                 m = self.ask_for_offset_uncert(offset, self.unit)
             else:
                 m = np.nanmean(np.abs(np.diff(offset)))
+
                 if m == 0.0:
                     ## Abschätzung 0.1% vom kleinsten p_ind
                     m = self.ask_for_offset_uncert(offset, self.unit)

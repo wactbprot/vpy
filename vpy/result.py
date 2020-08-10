@@ -85,6 +85,8 @@ class Result(Analysis):
 
     def gen_temperature_gas_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "gas", unit)
+        av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
+        t = np.take(t,av_idx)
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
 
@@ -118,6 +120,8 @@ class Result(Analysis):
 
     def gen_temperature_room_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "room", unit)
+        av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
+        t = np.take(t,av_idx)
         t_mean = np.mean(t)
         t_unc = np.std(t)*k
 
@@ -160,6 +164,8 @@ class Result(Analysis):
 
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
+        av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
+        t = np.take(t,av_idx)
         t_mean = np.mean(t) - 4. + 273.15
         t_unc = 0.5
 
