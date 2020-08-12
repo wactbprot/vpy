@@ -45,7 +45,7 @@ class Se3(Standard):
                         "ch_1010_after", "ch_1011_after", "ch_1012_after",
                         "ch_1013_after", "ch_1014_after", "ch_1015_after",
                         "ch_1016_after", "ch_1017_after", "ch_1018_after",
-                        "ch_1019_after", "ch_1020_after", 
+                        "ch_1019_after", "ch_1020_after",
                         "ch_1021_after", "ch_1022_after", "ch_1023_after",
                         "ch_1024_after", "ch_1025_after", "ch_1026_after",
                         "ch_1027_after", "ch_1028_after", "ch_1029_after",
@@ -55,7 +55,7 @@ class Se3(Standard):
                         "ch_2009_after", "ch_2010_after", "ch_2011_after",
                         "ch_2012_after", "ch_2013_after", "ch_2014_after",
                         "ch_2015_after", "ch_2016_after", "ch_2017_after",
-                        "ch_2018_after", "ch_2019_after", 
+                        "ch_2018_after", "ch_2019_after",
                         "ch_2020_after", "ch_2021_after", "ch_2022_after",
                         "ch_2023_after", "ch_2024_after", "ch_2025_after",
                         "ch_2026_after", "ch_2027_after", "ch_2028_after", ]
@@ -68,34 +68,34 @@ class Se3(Standard):
                     "CDG_5T_1", "CDG_50T_1", "CDG_500T_1",
     ]
 
-    
+
     fill_types = [
                     "1T_1-fill", "1T_2-fill", "1T_3-fill",
                     "10T_1-fill",  "10T_2-fill", "10T_3-fill",
                     "100T_1-fill", "100T_2-fill", "100T_3-fill",
-                    "1000T_1-fill", "1000T_2-fill", "1000T_3-fill", 
+                    "1000T_1-fill", "1000T_2-fill", "1000T_3-fill",
                     "5T_1-fill", "50T_1-fill", "500T_1-fill",
     ]
-    
+
     compare_types = [
                     "1T_1-compare", "1T_2-compare", "1T_3-compare",
                     "10T_1-compare",  "10T_2-compare", "10T_3-compare",
                     "100T_1-compare", "100T_2-compare", "100T_3-compare",
                     "1000T_1-compare", "1000T_2-compare", "1000T_3-compare",
                     "5T_1-compare", "50T_1-compare", "500T_1-compare",]
-    
+
     compare_offset_types = [
                     "1T_1-compare_offset", "1T_2-compare_offset", "1T_3-compare_offset",
                     "10T_1-compare_offset",  "10T_2-compare_offset", "10T_3-compare_offset",
                     "100T_1-compare_offset", "100T_2-compare_offset", "100T_3-compare_offset",
-                    "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset", 
+                    "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset",
                     "5T_1-compare_offset", "50T_1-compare_offset", "500T_1-compare_offset",]
-    
+
     state_types = [
                     "1T_1-state", "1T_2-state", "1T_3-state",
                     "10T_1-state",  "10T_2-state", "10T_3-state",
                     "100T_1-state", "100T_2-state", "100T_3-state",
-                    "1000T_1-state", "1000T_2-state", "1000T_3-state", 
+                    "1000T_1-state", "1000T_2-state", "1000T_3-state",
                     "5T_1-state", "50T_1-state", "500T_1-state",]
 
     offset_types = [
@@ -105,18 +105,18 @@ class Se3(Standard):
                     "1000T_1-offset", "1000T_2-offset", "1000T_3-offset",
                     "5T_1-offset", "50T_1-offset", "500T_1-offset",
     ]
-   
+
     analysis_check = {
         "Error":{
             "Customer":{"Type":"ind", "Unit": "1", "Max":0.25, "Min":-0.25, "Description":"Error of the Customer gauge."},
-            "FillDeviation": {"Type":"dev_fill", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and measured filling pressure."},           
-            "CalDeviation": {"Type":"dev_cal", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and target calibration pressure."}, 
-            "PressureRise": {"Type":"rise", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"relative contribution of pressure rise to the calibration pressure."}, 
-                      
+            "FillDeviation": {"Type":"dev_fill", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and measured filling pressure."},
+            "CalDeviation": {"Type":"dev_cal", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"deviation between calculated and target calibration pressure."},
+            "PressureRise": {"Type":"rise", "Unit": "1", "Max":0.05, "Min":-0.05, "Description":"relative contribution of pressure rise to the calibration pressure."},
+
         },
         "Temperature":{
-            "Vessel":{"Type":"after", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Vessel Temperature"},        
-            "StartVolume":{"Type":"before", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Temperature of the starting Volume"}, 
+            "Vessel":{"Type":"after", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Vessel Temperature"},
+            "StartVolume":{"Type":"before", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Temperature of the starting Volume"},
         }
     }
 
@@ -129,6 +129,17 @@ class Se3(Standard):
           "DutA":{"Type":"a", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut a only"},
           "DutB":{"Type":"b", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut b only"},
           "DutC":{"Type":"c", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut c only"}
+        },
+        "OutGasRate":{
+            "Vessel":{"Type":"outgas_vessel_starting_volumes", "Unit": "mbar/s" , "Max":2e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel if starting volumes inlet valves are closed and outlet valves are open"},
+            "Vessel":{"Type":"outgas_pressure_inlet", "Unit": "mbar/s" , "Max":3e-9, "Min": 1e-11,"Description":"Outgasig rate for pressure at the starting volumes inlet valves."},
+            "Vessel":{"Type":"outgas_pressure_outlet", "Unit": "mbar/s" , "Max":3e-9, "Min": 1e-11,"Description":"Outgasig rate for pressure at the starting volumes outlet valves."},
+            "DutBranch":{"Type":"pressure_loss", "Unit": "mbar/s" , "Max":5e-9, "Min": -5e-9,"Description":"Integral leak test; pressure loss in detour pipe"},
+            "Vessel":{"Type":"outgas_v", "Unit": "mbar/s" , "Max":2e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel only"},
+            "VesselBranch":{"Type":"outgas_u", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11, "Description":"Outgasig rate of vessel and dut branch (all dut branches closed)"},
+            "VesselDutABC":{"Type":"outgas_abc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-abc"},
+            "VesselDutBC":{"Type":"outgas_bc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-bc"},
+            "VesselDutC":{"Type":"outgas_c", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-c"},
         },
         "Pressure":{
           "CDG1T1":{"Type":"1T_1-state", "Unit": "Pa" , "Max":1, "Min": -1,"Description":"Offset of 1st 1T CDG"},
@@ -147,13 +158,7 @@ class Se3(Standard):
           "CDG50T1":{"Type":"50T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 50T CDG"},
           "CDG500T1":{"Type":"500T_1-state", "Unit": "Pa" , "Max":5, "Min": -5,"Description":"Offset of 1st 500T CDG"},
         },
-        "OutGasRate":{
-          "Vessel":{"Type":"outgas_v", "Unit": "mbar/s" , "Max":1e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel only"},
-          "VesselBranch":{"Type":"outgas_u", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11, "Description":"Outgasig rate of vessel and dut branch (all dut branches closed)"},
-          "VesselDutABC":{"Type":"outgas_abc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-abc"},
-          "VesselDutBC":{"Type":"outgas_bc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-bc"},
-          "VesselDutC":{"Type":"outgas_c", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-c"},
-        },
+
         "Temperature":{
           "Ch1001":{"Type":"ch_1001state", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Pt-100 sensor of channel 1001"},
           "Ch1002":{"Type":"ch_1002state", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Pt-100 sensor of channel 1002"},
@@ -247,7 +252,7 @@ class Se3(Standard):
           "Ch3030":{"Type":"ch_3030state", "Unit": "K" , "Max":297.15, "Min":295.15, "Description":"Pt-100 sensor of channel 3030"}
         }
     }
-   
+
     def __init__(self, doc):
         super().__init__(doc, self.name)
 
@@ -264,23 +269,23 @@ class Se3(Standard):
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
-        
+
         if 'Calibration' in doc:
             no_points_indicator = self.Time.get_value("amt_fill", "ms")
             if no_points_indicator is None:
                 no_points_indicator = self.Time.get_value("amt_meas", "ms")
             self.no_of_meas_points = len(no_points_indicator)
-        
-        ## Temperature device  
+
+        ## Temperature device
         if self.temp_dev_name in self.Cobj.cob_by_name:
             self.TDev = Dmm(doc, self.Cobj.get_by_name(self.temp_dev_name))
-        
+
         ## Filling pressure
         self.FillDevs =[]
         for d in self.fill_dev_names:
             if d in self.Cobj.cob_by_name:
                 self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
-        
+
     def get_gas(self):
         """Returns the name of the calibration gas.
 
@@ -355,19 +360,19 @@ class Se3(Standard):
         res.store("Time", "meas", t, "min")
 
     def insert_state_results(self, res, state_doc):
-        """Takes the volume, outgasing rate and time out of the 
+        """Takes the volume, outgasing rate and time out of the
         analysis of preliminary state measurements and
         stores it under the AuxValues section of the *res*
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
                 pick(quantity, type, unit)
-        :param: state doc, must contain lists under: 
-                * State.Analysis.Values.Volume 
-                * State.Analysis.Values.OutgasRate 
+        :param: state doc, must contain lists under:
+                * State.Analysis.Values.Volume
+                * State.Analysis.Values.OutgasRate
                 * State.Analysis.Values.Time
         :type: dict
-        """ 
+        """
         doc_id = state_doc.get('_id')
 
         values = state_doc.get('State', {}).get('Analysis',{}).get('Values', {})
@@ -388,5 +393,3 @@ class Se3(Standard):
                 res.store_dict('Time', time, dest="AuxValues")
         else:
             sys.exit('missing time section in state doc {}'.format(doc_id))
-        
-        
