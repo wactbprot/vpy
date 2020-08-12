@@ -29,7 +29,7 @@ def main():
         if io.update:
             doc = io.update_cal_doc(doc, base_doc)
 
-        cal = Cal(doc)            
+        cal = Cal(doc)
         if io.auxval: ## get new the AuxValues from related (meas_date) state measurement 
             meas_date = cal.Date.first_measurement()
             state_doc = io.get_state_doc("se3", date=meas_date) 
@@ -100,6 +100,7 @@ def main():
             cus_dev.range_trans(ana)
                 
         if cal.ToDo.type == "sigma":
+            ana.store('Error', 'ind', p_ind/p_cal-1, '1') ## used for check analysis
             ana.store('Sigma', 'eff', p_ind/p_cal, '1')
 
         io.save_doc(ana.build_doc())           

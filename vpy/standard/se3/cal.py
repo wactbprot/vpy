@@ -56,7 +56,6 @@ class Cal(Se3):
             for head in check[quant]:  # ... VesselBranch
                 if isinstance(check[quant][head], dict):
                     dct = check[quant][head]
-
                     val = compare.pick(quant, dct['Type'], dct['Unit'])
                     rnd_val = []
                     rtn_val = []
