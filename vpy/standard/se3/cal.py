@@ -382,9 +382,6 @@ class Cal(Se3):
         p_fill = res.pick("Pressure", "fill", self.unit)
         self.log.debug("filling pressure is: {}".format(p_fill))
 
-        F_real_gas = res.pick("Correction", "rg", "1")
-        self.log.debug("real gas correction is: {}".format(F_real_gas))
-
         f = res.pick("Expansion", "uncorr", "1")
         self.log.debug("expansion factor is: {}".format(f))
 
@@ -409,11 +406,17 @@ class Cal(Se3):
         f_prime = 1.0/(1.0 / f + V_add / V_start)
         res.store("Expansion", "corr", f_prime, "1")
 
-        F_delta_heigth = res.pick("Correction", "delta_heigth", "1")
-        self.log.debug("Heigth correction is: {}".format(F_delta_heigth))
+        K_real_gas = res.pick("Correction", "rg", "1")
+        self.log.debug("real gas correction is: {}".format(K_real_gas))
+
+        K_delta_heigth = res.pick("Correction", "delta_heigth", "1")
+        self.log.debug("Heigth correction is: {}".format(K_delta_heigth))
+
+        K_f_pressure =  res.pick("Correction", "f_p_dependency", "1")
+        self.log.debug("valve closing pressure dep.: {}".format(K_f_pressure))
 
         ## calibration pressure:
-        p_cal = f_prime * p_fill * F_real_gas * T_corr * F_delta_heigth + p_rise
+        p_cal = f_prime * p_fill * K_real_gas * T_corr * K_delta_heigth * K_f_pressure + p_rise
         self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
 
         res.store("Pressure", "cal", p_cal, self.unit)
@@ -540,6 +543,32 @@ class Cal(Se3):
         F = 1 + dp/p_fill
 
         res.store("Correction", "delta_heigth", F,  "1")
+
+    def correction_f_pressure(self, res):
+        """Calculates the correction of the expansion
+        ratio due to pressure dependency of closing process.
+        (see valve paper 6.1 pressure dependend correction factor)
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        f_name = self.get_expansion_name()
+        F  = np.full(len(f_name), 1.0)
+
+        ## hard wired unit because of corr_f_p_a
+        p_fill = res.pick("Pressure", "fill", "Pa")
+
+        i_s = np.where(f_name == "f_s")
+        if np.shape(i_s)[1] > 0:
+            a = self.get_value("corr_f_p_a", "1/Pa")
+            b = self.get_value("corr_f_p_b", "1")
+
+        F[i_s] = (1 - a * p_fill[i_s] + b)
+
+        res.store("Correction", "f_p_dependency", F,  "1")
 
     def pressure_delta_height(self, p, p_unit, f_name, gas="N2"):
         """ Follows QSE-SE3-19-3 at http://a73435.berlin.ptb.de:82/lab?

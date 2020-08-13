@@ -74,7 +74,7 @@
         },
         {
             "Type": "ind_offset",
-            "Unit": "Pa"
+            "Unit": "V"
         },
         {
             "Type": "1T_1-fill",
@@ -142,36 +142,12 @@
         },
         {
             "Type": "ind",
-            "Unit": "Pa"
+            "Unit": "V"
         }
     ],
     "Expansion": [
         {
             "Type": "name",
-            "Unit": null
-        }
-    ],
-    "Range": [
-        {
-            "Type": "offset",
-            "Unit": "1"
-        },
-        {
-            "Type": "ind",
-            "Unit": "1"
-        }
-    ],
-    "Position": [
-        {
-            "Type": "dut_a",
-            "Unit": null
-        },
-        {
-            "Type": "dut_b",
-            "Unit": null
-        },
-        {
-            "Type": "dut_c",
             "Unit": null
         }
     ],
@@ -549,6 +525,20 @@
         {
             "Type": "ch_2030_after",
             "Unit": "C"
+        }
+    ],
+    "Position": [
+        {
+            "Type": "dut_a",
+            "Unit": null
+        },
+        {
+            "Type": "dut_b",
+            "Unit": null
+        },
+        {
+            "Type": "dut_c",
+            "Unit": null
         }
     ]
 }

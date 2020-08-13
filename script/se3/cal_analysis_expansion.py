@@ -22,17 +22,17 @@ def main():
     cmc = True
     base_doc = io.get_base_doc("se3")
     for id in io.ids:
-        id = id.replace("\"", "") 
+        id = id.replace("\"", "")
         doc = io.get_doc_db(id)
 
-        
+
         if io.update:
             doc = io.update_cal_doc(doc, base_doc)
 
-        cal = Cal(doc)            
-        if io.auxval: ## get new the AuxValues from related (meas_date) state measurement 
+        cal = Cal(doc)
+        if io.auxval: ## get new the AuxValues from related (meas_date) state measurement
             meas_date = cal.Date.first_measurement()
-            state_doc = io.get_state_doc("se3", date=meas_date) 
+            state_doc = io.get_state_doc("se3", date=meas_date)
             ana = Analysis(doc, analysis_type="expansion")
 
             cal.insert_state_results(ana, state_doc)
@@ -43,7 +43,7 @@ def main():
         cus_dev = init_customer_device(doc)
 
         uncert = Uncert(doc)
-        
+
         cal.pressure_gn_corr(ana)
         cal.pressure_gn_mean(ana)
         cal.deviation_target_fill(ana)
@@ -57,16 +57,17 @@ def main():
         cal.expansion(ana)
         cal.pressure_rise(ana)
         cal.correction_delta_height(ana)
+        cal.correction_f_pressure(ana)
         cal.pressure_cal(ana)
         cal.error_pressure_rise(ana)
         cal.deviation_target_cal(ana)
-        
-        ## uncert. calculation        
+
+        ## uncert. calculation
         if cmc:
-            # bis update CMC Einträge --> vorh. CMC Einträge  
+            # bis update CMC Einträge --> vorh. CMC Einträge
             # cal uncertainty of standard
             uncert.cmc(ana)
-        else:            
+        else:
             uncert.define_model()
             uncert.gen_val_dict(ana)
             uncert.gen_val_array(ana)
@@ -81,29 +82,29 @@ def main():
         ## calculate customer indication
         gas = cal.Aux.get_gas()
         temperature_dict = ana.pick_dict('Temperature', 'after')
-        offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
+        offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
         ind_dict = cal.Pres.get_dict('Type', 'ind' )
         range_dict = cal.Range.get_dict('Type', 'ind' )
-        
+
         offset = cus_dev.pressure(offset_dict, temperature_dict, range_dict=range_dict, unit = cal.unit, gas=gas)
         ind = cus_dev.pressure(ind_dict, temperature_dict, range_dict=range_dict, unit = cal.unit, gas=gas)
-        
+
         ana.store("Pressure", "offset", offset, cal.unit)
         ana.store("Pressure", "ind", ind, cal.unit)
         ana.store("Pressure", "ind_corr", ind - offset, cal.unit)
-        
+
         p_ind = ana.pick("Pressure", "ind_corr", cal.unit)
-        p_cal = ana.pick("Pressure", "cal" , cal.unit)        
-        
+        p_cal = ana.pick("Pressure", "cal" , cal.unit)
+
         if cal.ToDo.type == "error":
             ana.store('Error', 'ind', p_ind/p_cal-1, '1')
             cus_dev.range_trans(ana)
-                
+
         if cal.ToDo.type == "sigma":
             ana.store('Sigma', 'eff', p_ind/p_cal, '1')
 
-        io.save_doc(ana.build_doc())           
- 
+        io.save_doc(ana.build_doc())
+
     print(json.dumps(ret))
 
 if __name__ == "__main__":

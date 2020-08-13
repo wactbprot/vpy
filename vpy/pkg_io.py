@@ -15,6 +15,11 @@ class Io(object):
         """Change the configuration the python way by a
         direct access to io.config....
         """
+        usr = os.environ.get('CAL_USR')
+        pwd = os.environ.get('CAL_PWD')
+
+        if usr and pwd:
+            db_url = db_url.replace('http://','http://{usr}:{pwd}@'.format(usr=usr, pwd=pwd))
 
         self.config = {
             "plot": {"path": "temppath", "make": True},
@@ -245,6 +250,7 @@ class Io(object):
         :returns: updated calibration document
         :rtype: dict
         """
+
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['all_doc_view']
