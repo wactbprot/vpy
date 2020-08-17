@@ -134,6 +134,19 @@ class Uncert(Se3):
 
         return u_total
 
+    def contrib_temperature_after(self, T, T_unit, skip_type=None):
+        """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
+        (http://a73435.berlin.ptb.de:82/lab)
+
+        """
+        u_1 = self.contrib_temperature_vessel(T, T_unit)
+        u_2 = self.get_value("u_T_after_2", self.temperature_unit)
+        u_3 = self.get_value("u_T_after_3", self.temperature_unit)
+        u_4 = self.get_value("u_T_after_4", self.temperature_unit)
+        u_5 = self.get_value("u_T_after_5", self.temperature_unit)
+
+        return  np.sqrt(np.power(u_1, 2) + np.power(u_2, 2) +np.power(u_3, 2) +np.power(u_4, 2) +np.power(u_5, 2))
+
     def contrib_temperature_volume_start(self, T, T_unit, f_name, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
@@ -170,7 +183,7 @@ class Uncert(Se3):
         i_m = np.where(f_name == "f_m")
         i_l = np.where(f_name == "f_l")
 
-        u_1 = contrib_temperature_volume_start(T, T_unit, f_name)
+        u_1 = self.contrib_temperature_volume_start(T, T_unit, f_name)
         u_2 = self.get_value("u_T_before_2", self.temperature_unit)
         u_3 = np.full(len(T), np.nan)
         if len(i_s) > 0:
@@ -179,10 +192,11 @@ class Uncert(Se3):
             u_3[i_m] = self.get_value("u_T_before_m_3", self.temperature_unit)
         if len(i_l) > 0:
             u_3[i_l] = self.get_value("u_T_before_l_3", self.temperature_unit)
-         u_4 = self.get_value("u_T_before_4", self.temperature_unit)
-         u_5 = self.get_value("u_T_before_5", self.temperature_unit)
 
-        return "--> next"
+        u_4 = self.get_value("u_T_before_4", self.temperature_unit)
+        u_5 = self.get_value("u_T_before_5", self.temperature_unit)
+
+        return  np.sqrt(np.power(u_1, 2) + np.power(u_2, 2) +np.power(u_3, 2) +np.power(u_4, 2) +np.power(u_5, 2))
 
 
     def contrib_pressure_fill(self, p_fill, p_fill_unit, skip_type=None):
@@ -208,6 +222,9 @@ class Uncert(Se3):
     def contrib_pressure_rise(self, p_rise, p_rise_unit, skip_type=None):
         u = self.get_value("u_outgas_correction", self.rel_unit)
         return u * p_rise
+
+    #def contrib_corr_factors(self, u_p_fill, p_fill_unit, skip_type=None):
+        #u_1 = np.abs(self.get_value("u_gas_dependency_1", self.rel_unit) *(1 -  ...
 
     def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if p_fill_unit == self.rel_unit:
@@ -276,7 +293,7 @@ class Uncert(Se3):
             self.log.error(msg)
             sys.exit(msg)
 
-        return self.sens_volume_start(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+        return self.sens_temperature_after(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
 
     def temperature_before(self, u_T_before, T_before_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if T_before_unit == self.rel_unit:
@@ -288,7 +305,7 @@ class Uncert(Se3):
             self.log.error(msg)
             sys.exit(msg)
 
-        return self.sens_volume_start(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
+        return self.sens_temperature_before(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
 
     def corr_factors(self, u_F_abs, F_unit,  p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         """

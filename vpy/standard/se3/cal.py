@@ -501,7 +501,6 @@ class Cal(Se3):
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), e_off, '1')
 
-
             p_arr.append(p_corr)
             u_arr.append(u_corr)
 
@@ -512,11 +511,12 @@ class Cal(Se3):
         n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=u_arr)
 
         w =  np.power(u_arr/p_arr, -1)
+
         sum_w = np.nansum(w, axis = 0) ## ok
         prod_pw = np.multiply(w, p_arr) ## ok
         p_mean_weight = np.nansum(prod_pw, axis = 0) / sum_w
 
-        p_mean_weight = np.nanmean(p_arr, axis=0)
+        #p_mean_weight = np.nanmean(p_arr, axis=0)
         res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
         res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 
@@ -564,7 +564,7 @@ class Cal(Se3):
             a = self.get_value("corr_f_p_a", "1/Pa")
             b = self.get_value("corr_f_p_b", "1")
 
-        F[i_s] = (1 - a * p_fill[i_s] + b)
+            F[i_s] = (1 - a * p_fill[i_s] + b)
 
         res.store("Correction", "f_p_dependency", F,  "1")
 

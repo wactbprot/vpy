@@ -72,9 +72,9 @@ def main():
 
     u_p_fill = uncert.pressure_fill(uncert.contrib_pressure_fill(p_fill, "Pa"), "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
     u_p_rise = uncert.pressure_rise(uncert.contrib_pressure_rise(p_rise, "Pa"), "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
-    #u_T_before = uncert.temperature_before(, "K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
-    #u_T_after = uncert.temperature_after(uncert.contrib_temperature_vessel(T_after, "K"), "K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
-    print(uncert.contrib_temperature_volume_start(T_before, "K", f_name = f_name))
+
+    uncert.temperature_before(uncert.contrib_temperature_before(T_before, "K", f_name = f_name),"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)/p_cal
+    print(uncert.temperature_after(uncert.contrib_temperature_after(T_after, "K"),"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)/p_cal)
     ##
     ## u1 = np.abs(uncert.sens_pressure_fill(*inp)*u_fill_vpy/p_cal)
     ## u2 = np.abs(uncert.sens_pressure_rise(*inp)* u_p_rise/p_cal)
