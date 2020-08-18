@@ -1,14 +1,17 @@
 """
-python script/se3/cal_result_error.py --ids 'cal-2018-se3-kk-75050_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+script works for SE3, FRS and DKM measurements
+
+python script/cal_result_error.py --ids 'cal-2020-se3-kk-75012_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
 sys.path.append(".")
+
 import json
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.result import Result
 from vpy.display.se3 import SE3 as Display
-
+from vpy.todo import ToDo
 from vpy.helper import init_customer_device, result_analysis_init
 
 def main():
@@ -19,24 +22,33 @@ def main():
     cmc = False
     for id in io.ids:
         doc = io.get_doc_db(id)
-        display = Display(doc)
+        tdo = ToDo(doc)
 
+        if tdo.type != "error":
+            sys.exit("wrong script")
+
+        display = Display(doc)
         cus_dev = init_customer_device(doc)
         ana = result_analysis_init(doc)
 
         ## generate result instance with analysis res type
         ## set skip flag to ignore result for cert
-        res = Result(doc, result_type=ana.analysis_type, skip=io.skip)
+        result_type = ana.analysis_type
+        std = tdo.get_standard()
+        if std == "FRS5":
+            result_type = "pressure_balance"
+        if std == "DKM_PPC4":
+            result_type = "rotary_piston_gauge"
 
-        if res.ToDo.type != "error":
-            sys.exit("wrong script")
+        res = Result(doc, result_type=result_type, skip=io.skip)
+
 
         p_cal = ana.pick('Pressure', 'cal', ana.pressure_unit)
         p_ind_corr = ana.pick('Pressure', 'ind_corr', ana.pressure_unit)
         err = ana.pick("Error", "ind", "1")
 
-        conv = res.Const.get_conv(from_unit=ana.pressure_unit, to_unit=res.ToDo.pressure_unit)
-        average_index = res.ToDo.make_average_index(p_cal*conv, res.ToDo.pressure_unit)
+        conv = res.Const.get_conv(from_unit=ana.pressure_unit, to_unit=tdo.pressure_unit)
+        average_index = tdo.make_average_index(p_cal*conv, tdo.pressure_unit)
 
         ## will be filled up with aux values:
         d = {}
@@ -88,8 +100,8 @@ def main():
             ## cal. temperature norm.
             t_head = temperature_head + res.Const.get_conv(from_unit=head_unit, to_unit="K")
             t_head_dict = {"Value":t_head, "Unit":"K"}
-            tdo_unit = res.ToDo.temperature_unit
-            t_target = res.ToDo.Temp.get_value("target", tdo_unit) + res.Const.get_conv(from_unit=tdo_unit, to_unit="K")
+            tdo_unit = tdo.temperature_unit
+            t_target = tdo.Temp.get_value("target", tdo_unit) + res.Const.get_conv(from_unit=tdo_unit, to_unit="K")
             t_norm_dict = {"Value":t_target, "Unit":"K"}
             e_dict = ana.pick_dict("Error", "ind")
             p_cal_dict = ana.pick_dict('Pressure', 'cal')

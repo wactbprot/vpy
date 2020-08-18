@@ -510,7 +510,7 @@ class Result(Analysis):
 
         doc_aux_values = ana.doc.get("AuxValues", {})
         av_idx = doc_aux_values.get("AverageIndex")
-        print(av_idx)
+
         k = 2
         prob = 0.95
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)

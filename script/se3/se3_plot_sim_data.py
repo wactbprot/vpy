@@ -70,12 +70,25 @@ def main():
     K_2 =  res.pick("Correction", "f_p_dependency", "1")
     K = K_0 * K_1 * K_2
 
-    u_p_fill = uncert.pressure_fill(uncert.contrib_pressure_fill(p_fill, "Pa"), "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
-    u_p_rise = uncert.pressure_rise(uncert.contrib_pressure_rise(p_rise, "Pa"), "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+    u_c_1 = uncert.contrib_pressure_fill(p_fill, "Pa")
+    u_1 = uncert.pressure_fill(u_c_1, "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
 
-    uncert.temperature_before(uncert.contrib_temperature_before(T_before, "K", f_name = f_name),"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)/p_cal
-    print(uncert.temperature_after(uncert.contrib_temperature_after(T_after, "K"),"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)/p_cal)
-    ##
+    u_c_2 = uncert.contrib_pressure_rise(p_rise, "Pa")
+    u_2 = uncert.pressure_rise(u_c_2, "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+    u_c_3 = uncert.contrib_temperature_before(T_before, "K", f_name = f_name)
+    u_3 = uncert.temperature_before(u_c_3,"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+    u_c_4 = uncert.contrib_temperature_after(T_after, "K")
+    u_4 = uncert.temperature_after(u_c_4,"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+    u_c_5 = uncert.contrib_expansion(f, f_name)
+    u_5 = uncert.expansion(u_c_5, "1", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+    u_c_6 = uncert.contrib_volume_add(f, f_name)
+    u_6 = uncert.volume_add(u_c_5, "1", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+    print(u_6)
+
     ## u1 = np.abs(uncert.sens_pressure_fill(*inp)*u_fill_vpy/p_cal)
     ## u2 = np.abs(uncert.sens_pressure_rise(*inp)* u_p_rise/p_cal)
     ## u3 = np.abs(uncert.sens_temperature_after(*inp)*u_T_after[0]/p_cal)

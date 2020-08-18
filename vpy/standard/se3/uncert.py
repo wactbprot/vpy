@@ -12,9 +12,9 @@ class Uncert(Se3):
     def __init__(self, doc):
         super().__init__(doc)
 
-    # -------------------------
-    ## add volume
-    # -------------------------
+    # -----------------------------------
+    ## sens. coeff. related to add volume
+    # -----------------------------------
     def volume_add_sens_volume_5(self, V_5, p_0, p_1, p_r):
         return (p_1 - p_r)/(p_0 - p_1)
 
@@ -75,9 +75,9 @@ class Uncert(Se3):
 
         return self.volume_add_sens_pressure_r(V_5, p_0, p_1, p_r) * u
 
-    # -------------------------
-    ## calib. pressure
-    # -------------------------
+    ## --------------------------------------------
+    ## sens. coeff. related to calib. pressure
+    ## --------------------------------------------
     def sens_pressure_fill(self, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         return F*T_after/T_before/(V_add/V_start + 1/f)
 
@@ -115,7 +115,9 @@ class Uncert(Se3):
             u_arr.append(u_i)
 
         return u_arr
-
+    ## --------------------------------
+    ## collect all uncert contributions
+    ## --------------------------------
     def contrib_temperature_vessel(self, T, T_unit, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
         (http://a73435.berlin.ptb.de:82/lab)
@@ -219,12 +221,42 @@ class Uncert(Se3):
 
         return u_total_w
 
+    def contrib_expansion(self, f,  f_name, skip_type=None):
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+
+        u = np.full(len(f_name), np.nan)
+        if len(i_s) > 0:
+            u[i_s] = self.get_value("u_f_s", "1")
+        if len(i_m) > 0:
+            u[i_m] = self.get_value("u_f_m", "1")
+        if len(i_l) > 0:
+            u[i_l] = self.get_value("u_f_l", "1")
+
+        return  u * f
+
     def contrib_pressure_rise(self, p_rise, p_rise_unit, skip_type=None):
         u = self.get_value("u_outgas_correction", self.rel_unit)
         return u * p_rise
 
-    #def contrib_corr_factors(self, u_p_fill, p_fill_unit, skip_type=None):
-        #u_1 = np.abs(self.get_value("u_gas_dependency_1", self.rel_unit) *(1 -  ...
+
+    def contrib_volume_add(self, p_0=np.array([1250.0]), p_1=np.array([500.0]), p_r=np.array([0.0]), p_unit="Pa", skip_type=None):
+        u_p_0 = self.get_value("u_p_0", self.rel_unit)
+        u_p_1 = self.get_value("u_p_1", self.rel_unit)
+        u_p_r = self.get_value("u_p_r", self.pressure_unit)
+        u_V_5 = self.get_value("u_V_5", "cm^3")
+        u_V_add_stat = self.get_value("u_V_add_stat", "cm^3")
+        V_5 = self.get_value("V_5", "cm^3")
+
+        u_abs_V_5 = self.volume_add_volume_5(u_V_5, "cm^3", V_5, p_0, p_1, p_r) # cm^3
+        u_abs_p_0 = self.volume_add_pressure_0(u_p_0, "1", V_5, p_0, p_1, p_r) # cm^3
+        u_abs_p_1 = self.volume_add_pressure_1(u_p_1, "1", V_5, p_0, p_1, p_r) # cm^3
+        u_abs_p_r = self.volume_add_pressure_r(u_p_r, "Pa", V_5, p_0, p_1, p_r) # cm^3
+
+        u_abs_sys = np.sqrt(np.power(u_abs_V_5, 2) + np.power(u_abs_p_0, 2) + np.power(u_abs_p_1, 2) + np.power(u_abs_p_r, 2))
+
+        return np.sqrt(np.power(u_abs_sys, 2) + np.power(u_V_add_stat, 2))
 
     def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if p_fill_unit == self.rel_unit:

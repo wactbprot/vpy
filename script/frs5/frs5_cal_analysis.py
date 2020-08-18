@@ -1,5 +1,5 @@
 """
-python script/frs5/frs5_cal_analysis.py --ids 'cal-2018-frs5-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' #  -u 
+python script/frs5/frs5_cal_analysis.py --ids 'cal-2018-frs5-kk-75001_0001' --db 'vl_db' --srv 'http://localhost:5984' #  -u
 """
 import sys
 import os
@@ -13,10 +13,7 @@ from vpy.device.cdg import InfCdg
 import numpy as np
 import matplotlib.pyplot as plt
 
-from vpy.device.cdg import InfCdg, Cdg
-from vpy.device.srg import Srg
-from vpy.device.rsg import Rsg
-from vpy.device.qbs import Qbs
+from vpy.helper import init_customer_device, result_analysis_init
 
 def main():
     io = Io()
@@ -26,7 +23,7 @@ def main():
     ret = {'ok':True}
 
     if '--ids' in args:
-        idx_ids = args.index('--ids') + 1 
+        idx_ids = args.index('--ids') + 1
         try:
             ids = args[idx_ids].split(';')
         except:
@@ -41,30 +38,20 @@ def main():
         base_doc = io.get_base_doc("frs5")
         for id in ids:
             doc = io.get_doc_db(id)
-           
+
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
-            
-            if 'CustomerObject' in doc['Calibration']:
-                customer_device = doc['Calibration']['CustomerObject']
-                dev_class = customer_device.get('Class', "generic")
-                if dev_class == 'SRG':
-                    CustomerDevice = Srg(doc, customer_device)
-                if dev_class == 'CDG':
-                    CustomerDevice = Cdg(doc, customer_device)
-                if dev_class == 'RSG':
-                    CustomerDevice = Rsg(doc, {})
-                if dev_class == 'QBS':
-                    CustomerDevice = Qbs(doc, {})
-            
-            cal = Cal(doc)  
+
+            cus_dev = init_customer_device(doc)
+
+            cal = Cal(doc)
             res = Analysis(doc)
             uncert = Uncert(doc)
-        
+
             cal.temperature(res)
             cal.pressure_res(res)
             cal.pressure_cal(res)
-            
+
             ## calculate the uncertainty of the standard
             uncert.total_standard(res)
 
@@ -73,21 +60,21 @@ def main():
 
             ## todo meas temp room, gas
             temperature_dict = {}
-            
-            offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )    
+
+            offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
-            
-            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
-            ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
+
+            offset = cus_dev.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
+            ind = cus_dev.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
             res.store("Pressure", "offset", offset, cal.unit)
             res.store("Pressure", "ind", ind, cal.unit)
             res.store("Pressure", "ind_corr", ind - offset, cal.unit)
-            
+
             # error for rating procedures
             ind = res.pick("Pressure", "ind_corr", cal.unit)
-            cal = res.pick("Pressure", "cal" , cal.unit)        
+            cal = res.pick("Pressure", "cal" , cal.unit)
             res.store('Error', 'ind', ind/cal-1, '1')
-            CustomerDevice.range_trans(res)
+            cus_dev.range_trans(res)
 
             io.save_doc(res.build_doc())
 

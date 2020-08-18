@@ -446,7 +446,6 @@ class Cdg(Device):
         if  use_idx is not None:
             o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
             for i in o:
-                print(i)
                 ind[i] = np.nan
                 offset[i] = np.nan
 
