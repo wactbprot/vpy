@@ -42,7 +42,6 @@ def main():
 
         res = Result(doc, result_type=result_type, skip=io.skip)
 
-
         p_cal = ana.pick('Pressure', 'cal', ana.pressure_unit)
         p_ind_corr = ana.pick('Pressure', 'ind_corr', ana.pressure_unit)
         err = ana.pick("Error", "ind", "1")
@@ -158,7 +157,7 @@ def main():
         display.plot_uncert(ana)
 
         # start making data sections
-        res.make_measurement_data_section(ana, result_type=ana.analysis_type)
+        res.make_measurement_data_section(ana, result_type=result_type)
 
         # start build cert table
         p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')

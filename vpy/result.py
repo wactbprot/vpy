@@ -165,7 +165,7 @@ class Result(Analysis):
     def gen_temperature_estimated_entry(self, ana, sec, unit="K", k=2):
         t = ana.pick("Temperature", "frs5", "C")
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
-        t = np.take(t,av_idx)
+        t = np.take(t, av_idx)
         t_mean = np.mean(t) - 4. + 273.15
         t_unc = 0.5
 
@@ -323,13 +323,15 @@ class Result(Analysis):
         belonging to one measurement (gas species, expansion or direct comp. etc) only.
         """
         sec = {}
+        sec = self.gen_min_max_entry(ana, sec)
+        sec = self.gen_uncert_offset_entry(ana, sec)
+
         if result_type == "expansion":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)
             sec = self.gen_temperature_head_entry(ana, sec)
             sec = self.gen_temperature_norm_entry(ana, sec)
-            sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
 
@@ -337,13 +339,11 @@ class Result(Analysis):
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)
-            sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
 
         if result_type == "se2_direct":
             sec = self.gen_temperature_room_entry(ana, sec)
-            sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
 
@@ -351,7 +351,6 @@ class Result(Analysis):
             sec = self.gen_temperature_gas_entry_se2(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
             sec = self.gen_temperature_correction(ana, sec)
-            sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry_direct_se2(ana, sec)
             sec = self.gen_cdg_entry(ana, sec)
             sec = self.gen_srg_entry(ana, sec)
@@ -359,7 +358,6 @@ class Result(Analysis):
         if result_type == "direct":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
-            sec = self.gen_min_max_entry(ana, sec)
 
         if result_type == "pressure_balance":
             sec = self.gen_min_max_entry(ana, sec)
@@ -369,8 +367,6 @@ class Result(Analysis):
         if result_type == "rotary_piston_gauge":
             sec = self.gen_min_max_entry(ana, sec)
             sec = self.gen_min_max_entry(ana, sec)
-
-        sec = self.gen_uncert_offset_entry(ana, sec)
 
         self.store_dict(quant="MeasurementData", d=sec, dest=None, plain=True)
 
