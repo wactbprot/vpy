@@ -240,8 +240,8 @@ class Uncert(Se3):
         u = self.get_value("u_outgas_correction", self.rel_unit)
         return u * p_rise
 
+    def contrib_volume_add(self, p_0, p_1, p_r, p_unit="Pa", skip_type=None):
 
-    def contrib_volume_add(self, p_0=np.array([1250.0]), p_1=np.array([500.0]), p_r=np.array([0.0]), p_unit="Pa", skip_type=None):
         u_p_0 = self.get_value("u_p_0", self.rel_unit)
         u_p_1 = self.get_value("u_p_1", self.rel_unit)
         u_p_r = self.get_value("u_p_r", self.pressure_unit)
