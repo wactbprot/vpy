@@ -87,11 +87,14 @@ def main():
     u_5 = uncert.expansion(u_c_5, "1", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
 
     p_0 = np.array([1250.0])
-    p_1 = np.array([500.0])
+    p_1 = np.array([800.0])
     p_r = np.array([0.0])
     u_c_6 = uncert.contrib_volume_add(p_0, p_1, p_r, "Pa")
     u_6 = uncert.volume_add(u_c_6, "cm^3", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
 
+    u_c_7 = uncert.contrib_volume_start(f_name)
+    u_7 = uncert.volume_start(u_c_7, "cm^3", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+    print(u_7/p_cal)
 
     ## u1 = np.abs(uncert.sens_pressure_fill(*inp)*u_fill_vpy/p_cal)
     ## u2 = np.abs(uncert.sens_pressure_rise(*inp)* u_p_rise/p_cal)

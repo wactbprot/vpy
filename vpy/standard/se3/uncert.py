@@ -258,6 +258,21 @@ class Uncert(Se3):
 
         return np.sqrt(np.power(u_abs_sys, 2) + np.power(u_V_add_stat, 2))
 
+    def contrib_volume_start(self, f_name):
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+
+        u = np.full(len(f_name), np.nan)
+        if len(i_s) > 0:
+            u[i_s] = self.get_value("u_V_s", "cm^3")
+        if len(i_m) > 0:
+            u[i_m] = self.get_value("u_V_m", "cm^3")
+        if len(i_l) > 0:
+            u[i_l] = self.get_value("u_V_l", "cm^3")
+
+        return u
+
     def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if p_fill_unit == self.rel_unit:
             u = u_p_fill * p_fill
