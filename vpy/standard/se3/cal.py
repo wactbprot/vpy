@@ -753,3 +753,22 @@ class Cal(Se3):
             n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))
 
         res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)
+
+    def all(self, ana):
+        self.pressure_gn_corr(ana)
+        self.pressure_gn_mean(ana)
+        self.deviation_target_fill(ana)
+        self.temperature_before(ana)
+        self.temperature_after(ana)
+        self.temperature_room(ana)
+        self.temperature_gas_expansion(ana)
+        self.real_gas_correction(ana)
+        self.volume_add(ana)
+        self.volume_start(ana)
+        self.expansion(ana)
+        self.pressure_rise(ana)
+        self.correction_delta_height(ana)
+        self.correction_f_pressure(ana)
+        self.pressure_cal(ana)
+        self.error_pressure_rise(ana)
+        self.deviation_target_cal(ana)

@@ -116,7 +116,7 @@ class Uncert(Se3):
 
         return u_arr
     ## --------------------------------
-    ## collect all uncert contributions
+    ## uncert contributions
     ## --------------------------------
     def contrib_temperature_vessel(self, T, T_unit, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
@@ -147,7 +147,11 @@ class Uncert(Se3):
         u_4 = self.get_value("u_T_after_4", self.temperature_unit)
         u_5 = self.get_value("u_T_after_5", self.temperature_unit)
 
-        return  np.sqrt(np.power(u_1, 2) + np.power(u_2, 2) +np.power(u_3, 2) +np.power(u_4, 2) +np.power(u_5, 2))
+        return  np.sqrt(np.power(u_1, 2) +
+                        np.power(u_2, 2) +
+                        np.power(u_3, 2) +
+                        np.power(u_4, 2) +
+                        np.power(u_5, 2))
 
     def contrib_temperature_volume_start(self, T, T_unit, f_name, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
@@ -172,9 +176,9 @@ class Uncert(Se3):
         u_T_ch =  self.TDev.get_total_uncert(T, T_unit, self.temperature_unit, take_type_list=["u3" ,"u4", "u5", "u6"], skip_type=skip_type)
 
         ## sqrt 1/N^2 * N * u
-        u_total = np.sqrt(np.power(u_T_ptb, 2) +  np.divide(np.power(u_T_ch_cal, 2), N) + np.divide(np.power(u_T_ch, 2),N))
-
-        return u_total
+        return np.sqrt(np.power(u_T_ptb, 2) +
+                       np.divide(np.power(u_T_ch_cal, 2), N) +
+                       np.divide(np.power(u_T_ch, 2),N))
 
     def contrib_temperature_before(self, T, T_unit, f_name, skip_type=None):
         """Calculation of uncertainty follows QSE-SE3-19-1.ipynb
@@ -198,7 +202,11 @@ class Uncert(Se3):
         u_4 = self.get_value("u_T_before_4", self.temperature_unit)
         u_5 = self.get_value("u_T_before_5", self.temperature_unit)
 
-        return  np.sqrt(np.power(u_1, 2) + np.power(u_2, 2) +np.power(u_3, 2) +np.power(u_4, 2) +np.power(u_5, 2))
+        return np.sqrt(np.power(u_1, 2) +
+                       np.power(u_2, 2) +
+                       np.power(u_3, 2) +
+                       np.power(u_4, 2) +
+                       np.power(u_5, 2))
 
 
     def contrib_pressure_fill(self, p_fill, p_fill_unit, skip_type=None):
@@ -210,7 +218,8 @@ class Uncert(Se3):
         u_p_ind_abs = self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u4", "u5", "u6" ], skip_type=skip_type)
 
         ## no need to skip_types for weights
-        w =  np.power(self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u1", "u2", "u3", "u4", "u5", "u6" ]), -1)
+        ## dont use u(p_cal) for the weights
+        w =  np.power(self.group_normal_array(p_fill, p_fill_unit, take_type_list=["u2", "u3", "u4", "u5", "u6" ]), -1)
         sum_w = np.nansum(w, axis = 0)
 
         u_p_cal_abs = self.Vals.square_array_sum(u_p_cal_abs)
@@ -254,9 +263,11 @@ class Uncert(Se3):
         u_abs_p_1 = self.volume_add_pressure_1(u_p_1, "1", V_5, p_0, p_1, p_r) # cm^3
         u_abs_p_r = self.volume_add_pressure_r(u_p_r, "Pa", V_5, p_0, p_1, p_r) # cm^3
 
-        u_abs_sys = np.sqrt(np.power(u_abs_V_5, 2) + np.power(u_abs_p_0, 2) + np.power(u_abs_p_1, 2) + np.power(u_abs_p_r, 2))
+        u_abs_sys = np.sqrt(np.power(u_abs_V_5, 2) + np.power(u_abs_p_0, 2) +
+                            np.power(u_abs_p_1, 2) + np.power(u_abs_p_r, 2))
 
-        return np.sqrt(np.power(u_abs_sys, 2) + np.power(u_V_add_stat, 2))
+        return np.sqrt(np.power(u_abs_sys, 2) +
+                       np.power(u_V_add_stat, 2))
 
     def contrib_volume_start(self, f_name):
         i_s = np.where(f_name == "f_s")
@@ -273,6 +284,48 @@ class Uncert(Se3):
 
         return u
 
+    def contrib_corr_factors(self,  p_fill, p_unit, f_name, gas):
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+
+        u = np.full(len(f_name), np.nan)
+        if p_unit == "Pa":
+            u_K_0 = self.get_value("u_K_0", "1/Pa")*p_fill
+        else:
+            sys.exit("implement me")
+
+        u_K_1 = np.full(len(f_name), np.nan)
+        if len(i_s) > 0:
+            u_K_1[i_s] = self.get_value("u_K_1", "1")
+        if len(i_m) > 0:
+            u_K_1[i_m] = 0.0
+        if len(i_l) > 0:
+            u_K_1[i_l] = 0.0
+
+        u_K_2 = self.get_value("u_K_2", "1")
+
+        u_F_0 = self.get_value("u_F_0", "1")
+        u_F_1 = self.get_value("u_F_1", "1")
+        u_F_2 = self.get_value("u_F_2", "1")
+
+        M   = self.Cons.get_mol_weight(gas, "kg/mol")
+        u_F_3a = self.get_value("u_F_3a", "1")
+        u_F_3b = self.get_value("u_F_3b", "kg/mol")
+
+        u_F_3 = np.abs(u_F_3a*(1 - np.sqrt(M)/np.sqrt(u_F_3b)))
+
+        return np.sqrt(np.power(u_K_0 ,2) +
+                       np.power(u_K_1 ,2) +
+                       np.power(u_K_2 ,2) +
+                       np.power(u_F_0 ,2) +
+                       np.power(u_F_1 ,2) +
+                       np.power(u_F_2 ,2) +
+                       np.power(u_F_3 ,2))
+
+    ## --------------------------------
+    ## abs. uncert. calculated by sens * uncert
+    ## --------------------------------
     def pressure_fill(self, u_p_fill, p_fill_unit, p_fill, p_rise, f, V_add, V_start, T_after, T_before, F):
         if p_fill_unit == self.rel_unit:
             u = u_p_fill * p_fill
@@ -361,6 +414,72 @@ class Uncert(Se3):
                 unit for abs. and rel. uncert. both = 1 (!)
         """
         return self.sens_corr_factors(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u_F_abs
+
+
+    def total(self, ana):
+
+        p_cal = ana.pick("Pressure", "cal", "Pa")
+        p_fill = ana.pick("Pressure", "fill", "Pa")
+        p_rise = ana.pick("Pressure", "rise", "Pa")
+        f = ana.pick("Expansion", "uncorr", "1")
+        V_add = ana.pick("Volume", "add", "cm^3")
+        V_start = ana.pick("Volume", "start", "cm^3")
+        T_after = ana.pick("Temperature", "after", "K")
+        T_before = ana.pick("Temperature", "before", "K")
+        K_0 = ana.pick("Correction", "rg", "1")
+        K_1 = ana.pick("Correction", "delta_heigth", "1")
+        K_2 =  ana.pick("Correction", "f_p_dependency", "1")
+        K = K_0 * K_1 * K_2
+
+        ## V_add measurement
+        p_0 = np.array([1250.0])
+        p_1 = np.array([800.0])
+        p_r = np.array([0.0])
+
+        ## cal. uncert.
+        f_name = self.get_expansion_name()
+
+        u_c_1 = self.contrib_pressure_fill(p_fill, "Pa")
+        u_1 = self.pressure_fill(u_c_1, "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+
+        u_c_2 = self.contrib_pressure_rise(p_rise, "Pa")
+        u_2 = self.pressure_rise(u_c_2, "Pa", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        u_c_3 = self.contrib_temperature_before(T_before, "K", f_name = f_name)
+        u_3 = self.temperature_before(u_c_3,"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        u_c_4 = self.contrib_temperature_after(T_after, "K")
+        u_4 = self.temperature_after(u_c_4,"K", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        u_c_5 = self.contrib_expansion(f, f_name)
+        u_5 = self.expansion(u_c_5, "1", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        u_c_6 = self.contrib_volume_add(p_0, p_1, p_r, "Pa")
+        u_6 = self.volume_add(u_c_6, "cm^3", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        u_c_7 = self.contrib_volume_start(f_name)
+        u_7 = self.volume_start(u_c_7, "cm^3", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        u_c_8 = self.contrib_corr_factors( p_fill, "Pa", f_name, "N2")
+        u_8 = self.corr_factors(u_c_8, "1", p_fill, p_rise, f, V_add, V_start, T_after, T_before, K)
+
+        ana.store("Uncertainty", "p_fill",   np.abs(u_1/p_cal), "1")
+        ana.store("Uncertainty", "p_rise",   np.abs(u_2/p_cal), "1")
+        ana.store("Uncertainty", "T_before", np.abs(u_3/p_cal), "1")
+        ana.store("Uncertainty", "T_after",  np.abs(u_4/p_cal), "1")
+        ana.store("Uncertainty", "f",        np.abs(u_5/p_cal), "1")
+        ana.store("Uncertainty", "V_add",    np.abs(u_6/p_cal), "1")
+        ana.store("Uncertainty", "V_start",  np.abs(u_7/p_cal), "1")
+        ana.store("Uncertainty", "K",        np.abs(u_8/p_cal), "1")
+
+        u = np.sqrt(np.power(u_1 ,2) + np.power(u_2 ,2) + np.power(u_3 ,2) +
+                    np.power(u_4 ,2) + np.power(u_5 ,2) + np.power(u_6 ,2) +
+                    np.power(u_7 ,2) + np.power(u_8 ,2))
+
+        ana.store("Uncertainty", "standard", u/p_cal , "1")
+
+        return u
 
     # -------------------------
     ## vaclab cmc records

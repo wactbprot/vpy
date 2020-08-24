@@ -33,6 +33,12 @@ def main(io, cal):
         except:
            fail = True
 
+
+    #gen_sim_data(cal, target_pressures= [0.011, 0.013,  0.02, 0.03, 0.05, 0.07, 0.09,
+    #                                     0.1,   0.13,   0.2,  0.3,  0.5,  0.7,   0.9,
+    #                                     1,     1.3,    2,    3,    5,    7,     9,
+    #                                     10,    13,     20,   30,   50,   70,    90,
+    #                                     100,   133,])
     gen_sim_data(cal, target_pressures= list( np.logspace(-2, 2, num=80)))
 
 def gen_sim_value_struct(val_dict, out_file_name="values_struct.json", path="vpy/standard/se3"):

@@ -26,7 +26,7 @@ def get_fill_pressures(cal, target_pressure, target_unit):
         p_s = target_pressure / cal.get_value("f_s", "1")[0]
         p_m = target_pressure / cal.get_value("f_m", "1")[0]
         p_l = target_pressure / cal.get_value("f_l", "1")[0]
-    
+
         return np.array([p_s, p_m, p_l])
     else:
         sys.exit("units dont match")
@@ -40,19 +40,19 @@ def get_fill_pressure_uncert_rel(cal, target_fill, target_unit):
             Dev = cal.FillDevs[i]
             u_i = Dev.get_total_uncert(target_fill, target_unit, target_unit)
             u.append(u_i)
-        
+
         return cal.Pres.invers_array_sum(u/target_fill)
     else:
         sys.exit("units dont match")
 
-def skip_by_pressure(cal, p, u, unit="Pa", min_p=80, max_p=133322, replacement = np.inf):
+def skip_by_pressure(cal, p, u, unit="Pa", min_p=94.0, max_p=133322, replacement = np.inf):
     if cal.unit == unit:
 
-        out = (p <= min_p)  
+        out = (p <= min_p)
         if len(out) > 0:
            u[out] = replacement
 
-        out = (p > max_p)  
+        out = (p > max_p)
         if len(out) > 0:
            u[out] = replacement
 
@@ -72,13 +72,13 @@ def gen_result_dict(target_fill, u_rel, target_unit, force=None):
         i = f_list.index(force)
     else:
         i = get_min_idx(u_rel)
-        
+
     if np.isnan(i):
         return {"error": "all expasion sequences deliver nan"}
     else:
-        return {"Pressure_fill.Value":   target_fill[i], 
-                "Pressure_fill.Type":    "target_fill", 
-                "Pressure_fill.Unit":    target_unit, 
+        return {"Pressure_fill.Value":   target_fill[i],
+                "Pressure_fill.Type":    "target_fill",
+                "Pressure_fill.Unit":    target_unit,
                 "Uncertainty_cal.Value": u_rel[i],
                 "Uncertainty_cal.Type":  "cal_estimated",
                 "Uncertainty_cal.Unit":  "1",
@@ -89,33 +89,33 @@ def main(cal):
     args = sys.argv
     fail = False
     if '--target_pressure' in args:
-        idx_p = args.index('--target_pressure') + 1 
+        idx_p = args.index('--target_pressure') + 1
         try:
              target_pressure = float(args[idx_p])
         except:
            fail = True
     if '--pressure_unit' in args:
-        unit_i = args.index('--pressure_unit') + 1 
+        unit_i = args.index('--pressure_unit') + 1
         try:
             target_unit = str(args[unit_i])
         except:
            fail = True
     if not fail:
-        ## cal target fill p_fill_i from target cal 
+        ## cal target fill p_fill_i from target cal
         target_fill = get_fill_pressures(cal, target_pressure, target_unit)
         ## cal expasion uncertainties u(f_i)
         f_uncert_rel = get_expansion_uncert_rel(cal, target_pressure, target_unit)
         ## cal filling pressures uncertainties u(p_fill_i)
         fill_uncert_rel = get_fill_pressure_uncert_rel(cal, target_fill, target_unit)
         ## cal total uncert from u(f) and u(p_fill_i)
-        ## 
-        ## choose filling pressure without f uncert 
+        ##
+        ## choose filling pressure without f uncert
         ## until they are determined again
         ## done
         ## determined see QSE-SE3-20-2
         ## u_rel = fill_uncert_rel
         u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
-        
+
         ## skip low and high filling pressures
         u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=80, max_p=133322.0)
 
@@ -126,6 +126,6 @@ def main(cal):
 if __name__ == "__main__":
 
     io = Io()
-    base_doc = io.get_base_doc(name="se3") 
+    base_doc = io.get_base_doc(name="se3")
     cal = Cal(base_doc)
     main(cal)

@@ -214,8 +214,11 @@ class Io(object):
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
 
-        return db.save(doc)
+        old_doc = self.get_doc_db(doc["_id"])
+        if not 'error' in old_doc:
+            doc["_rev"] = old_doc["_rev"]
 
+        return db.save(doc)
 
     def update_cal_doc(self, doc, base_doc):
         """More or less a merge between ``doc`` and ``base_doc``.
