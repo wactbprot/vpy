@@ -11,7 +11,7 @@ from script.se3.cal_filling_pressure import gen_result_dict, get_expansion_uncer
 
 """
 renew data **struct**:
-python script/se3/se3_gen_sim_data.py --id 'cal-2019-se3-kk-75051_0001'
+python script/se3/gen_sim_data.py --id 'cal-2019-se3-kk-75051_0001'
 
 generate sim **data**:
 python script/se3/gen_sim_data.py
@@ -20,19 +20,17 @@ python script/se3/gen_sim_data.py
 def main(io, cal):
     io.eval_args()
     args = sys.argv
-    fail = False
-    ret = {'ok':True}
+
+
 
     if '--id' in args:
-        idx_ids = args.index('--id') + 1
+        id = args[args.index('--id') + 1]
         try:
-            id = args[idx_ids]
             doc = io.get_doc_db(id)
             val_dict = doc.get("Calibration", {}).get("Measurement", {}).get("Values", {})
             gen_sim_value_struct(val_dict)
         except:
-           fail = True
-
+           sys.exit("failed to build structure from: {}".format(id))
 
     #gen_sim_data(cal, target_pressures= [0.011, 0.013,  0.02, 0.03, 0.05, 0.07, 0.09,
     #                                     0.1,   0.13,   0.2,  0.3,  0.5,  0.7,   0.9,

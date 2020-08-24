@@ -309,7 +309,7 @@ class Uncert(Se3):
         u_F_1 = self.get_value("u_F_1", "1")
         u_F_2 = self.get_value("u_F_2", "1")
 
-        M   = self.Cons.get_mol_weight(gas, "kg/mol")
+        M = self.Cons.get_mol_weight(gas, "kg/mol")
         u_F_3a = self.get_value("u_F_3a", "1")
         u_F_3b = self.get_value("u_F_3b", "kg/mol")
 
