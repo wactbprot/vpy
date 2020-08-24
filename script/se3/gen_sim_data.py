@@ -21,8 +21,6 @@ def main(io, cal):
     io.eval_args()
     args = sys.argv
 
-
-
     if '--id' in args:
         id = args[args.index('--id') + 1]
         try:
@@ -32,12 +30,12 @@ def main(io, cal):
         except:
            sys.exit("failed to build structure from: {}".format(id))
 
-    #gen_sim_data(cal, target_pressures= [0.011, 0.013,  0.02, 0.03, 0.05, 0.07, 0.09,
-    #                                     0.1,   0.13,   0.2,  0.3,  0.5,  0.7,   0.9,
-    #                                     1,     1.3,    2,    3,    5,    7,     9,
-    #                                     10,    13,     20,   30,   50,   70,    90,
-    #                                     100,   133,])
-    gen_sim_data(cal, target_pressures= list( np.logspace(-2, 2, num=80)))
+    gen_sim_data(cal, target_pressures= [0.013,  0.02, 0.03, 0.05, 0.07, 0.09,
+                                         0.13,   0.2,  0.3,  0.5,  0.7,   0.9,
+                                         1.3,    2,    3,    5,    7,     9,
+                                         13,     20,   30,   50,   70,    90,
+                                         133,])
+    #gen_sim_data(cal, target_pressures= list( np.logspace(-2, 2, num=80)))
 
 def gen_sim_value_struct(val_dict, out_file_name="values_struct.json", path="vpy/standard/se3"):
     res_dict = {}

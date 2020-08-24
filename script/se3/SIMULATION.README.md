@@ -1,8 +1,9 @@
 # How to build simulated se3 calibration data
 
-Change to vpy root dir:
+Change to vpy root dir activate the venv:
 ```shell
 cd vpy
+source bin/activate
 ```
 If there is something new in in the base docs (e.g. `constants`, `std-se3` etc.):
 
@@ -17,13 +18,12 @@ Change the list of target pressures in
 python script/se3/gen_sim_data.py
 ```
 
-recalculate pressures and uncertainties by:
+Recalculate the simulation pressures and uncertainties by:
 
 ```shell
 python script/se3/cal_sim_data.py -s
 ```
-
-This saves a document with the id `"se3-sim"`. Use this document to generate a plot by:
+The `-s` flag saves a document with the id `"cal-sim-se3"`. Use this document to generate a plot by:
 
 ```shell
 python script/se3/plot_sim_data.py

@@ -214,8 +214,8 @@ class Io(object):
         srv = couchdb.Server(self.config['db']['url'])
         db = srv[self.config['db']['name']]
 
-        old_doc = self.get_doc_db(doc["_id"])
-        if not 'error' in old_doc:
+        old_doc = db.get(doc["_id"])
+        if old_doc and not 'error' in old_doc:
             doc["_rev"] = old_doc["_rev"]
 
         return db.save(doc)

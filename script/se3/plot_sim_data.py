@@ -1,10 +1,7 @@
 import sys
 import os
-import numpy as np
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 from vpy.analysis import Analysis
-from vpy.standard.se3.uncert import Uncert
-from vpy.standard.se3.cal import Cal
 from vpy.pkg_io import Io
 
 import matplotlib.pyplot as plt
@@ -18,7 +15,7 @@ def main():
 
     plt.rc('font', **font)
     io = Io()
-    doc = io.get_doc_db("se3-sim")
+    doc = io.get_doc_db("cal-sim-se3")
     ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
 
     p_cal = ana.pick("Pressure", "cal", "Pa")

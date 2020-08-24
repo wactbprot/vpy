@@ -11,7 +11,7 @@ def main():
 
     io = Io()
     io.eval_args()
-    doc = {"_id": "se3-sim",
+    doc = {"_id": "cal-sim-se3",
         "Calibration":{"Measurement":{}}}
 
     base_doc = io.get_base_doc("se3")
