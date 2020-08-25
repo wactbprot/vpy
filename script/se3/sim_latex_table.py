@@ -8,11 +8,14 @@ from vpy.pkg_io import Io
 def to_si(x):
     return ["\SI{}{:0.1e}{}{}".format("{",y,"}", "{}") for y in x]
 
-def main():
-    io = Io()
-    doc = io.get_doc_db("cal-sim-se3")
-    ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
+def main(io, config):
+    struct_path = config.get("struct_path")
+    cal_file = config.get("cal_file")
+    result_name = config.get("result_name")
 
+    doc = io.read_json("{}/{}".format(struct_path, cal_file))
+
+    ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
 
     p_cal = ana.pick("Pressure", "cal", "Pa")
     u_1 = ana.pick("Uncertainty", "p_fill", "1")
@@ -41,8 +44,12 @@ def main():
 
     print(df.to_latex(index=False, escape=False))
 
-    with open('se3-uncert-contrib.tex', 'w') as tf:
+    with open("{}.tex".format(result_name), 'w') as tf:
         tf.write(df.to_latex(index=False, escape=False))
 
 if __name__ == "__main__":
-    main()
+    with open('./script/se3/sim_config.json') as f:
+        config = json.load(f)
+
+    io = Io()
+    main(io, config)

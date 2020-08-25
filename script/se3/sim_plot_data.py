@@ -1,4 +1,6 @@
 import sys
+import json
+
 import os
 sys.path.append(".")
 from vpy.analysis import Analysis
@@ -7,15 +9,19 @@ from vpy.pkg_io import Io
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
-def main():
+
+def main(io, config):
+    struct_path = config.get("struct_path")
+    cal_file = config.get("cal_file")
+    result_name = config.get("result_name")
+
+    doc = io.read_json("{}/{}".format(struct_path, cal_file))
+
     col_map = ['C0', 'C1','C2', 'C3','C4', 'C5','C6', 'C7','C8','C9']
     font = {'family' : 'normal',
     #'weight' : 'bold',
             'size'   : 18}
     plt.rc('font', **font)
-
-    io = Io()
-    doc = io.get_doc_db("cal-sim-se3")
     ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
 
     p_cal = ana.pick("Pressure", "cal", "Pa")
@@ -66,9 +72,12 @@ def main():
     plt.ylabel('$u$ (relative)')
     plt.grid(True)
     plt.legend()
-    plt.savefig("se3_uncert_overview.pdf")
+    plt.savefig("{}.pdf".format(result_name))
     plt.show()
 
 
 if __name__ == "__main__":
-    main()
+    with open('./script/se3/sim_config.json') as f:
+        config = json.load(f)
+    io = Io()
+    main(io, config)

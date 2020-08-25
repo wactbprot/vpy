@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 import numpy as np
 sys.path.append(os.environ["VIRTUAL_ENV"])
 from vpy.analysis import Analysis
@@ -8,14 +9,16 @@ from vpy.standard.se3.cal import Cal
 from vpy.pkg_io import Io
 from vpy.helper import init_customer_device
 
-def main():
+def main(io, config):
 
-    io = Io()
+
     io.eval_args()
     doc = {"_id": "cal-sim-se3",
         "Calibration":{
                        "Measurement":{}}}
-
+    struct_path = config.get("struct_path")
+    values_file = config.get("values_file")
+    cal_file = config.get("cal_file")
 
     ##-----------------------------------------
     ## standard
@@ -23,13 +26,12 @@ def main():
     base_doc = io.get_base_doc("se3")
     doc = io.update_cal_doc(doc, base_doc)
 
-    vals = io.read_json("./vpy/standard/se3/values_sim.json")
-    aux_vals = io.read_json("./vpy/standard/se3/meas_aux_values.json")
-    ana_aux_vals = io.read_json("./vpy/standard/se3/ana_aux_values.json")
+    vals = io.read_json("{}/{}".format(struct_path, values_file))
+    aux_vals = io.read_json("{}/meas_aux_values.json".format(struct_path))
+    ana_aux_vals = io.read_json("{}/ana_aux_values.json".format(struct_path))
 
     doc['Calibration']['Measurement']['Values'] = vals
     doc['Calibration']['Measurement']['AuxValues'] = aux_vals
-
 
     ana = Analysis(doc, insert_dict={'AuxValues': ana_aux_vals}, analysis_type="expansion")
 
@@ -40,18 +42,9 @@ def main():
     ##-----------------------------------------
     ## device
     ##-----------------------------------------
-    doc['Calibration']['CustomerObject'] = {"Name": "0.1Torr_sim",
-                                            "Type": "Kapazitives Membranvakuummeter",
-                                            "Class": "CDG",
-                                            "Setup": {"TypeHead": "0.1Torr",
-                                                      "Unit": "Pa"},
-                                            "Device": {"Producer": "MKS Instruments"},
-                                            "Uncertainty":[{"Type":"digit",
-                                                            "Value":2.9e-6,
-                                                            "Unit":"Pa"}
-                                                           ]}
+    doc['Calibration']['CustomerObject'] = config.get("customer_object")
     cus_dev = init_customer_device(doc)
-    gas = "N2"
+    gas = config.get("gas")
 
     temperature_dict = ana.pick_dict('Temperature', 'after')
     offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
@@ -83,7 +76,13 @@ def main():
 
     ana.total_uncert()
 
-    io.save_doc(ana.build_doc())
+
+    with open("{}/{}".format(struct_path, cal_file), 'w') as f:
+        json.dump(ana.build_doc(), f, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
-    main()
+    with open('./script/se3/sim_config.json') as f:
+        config = json.load(f)
+
+    io = Io()
+    main(io, config)

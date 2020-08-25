@@ -17,7 +17,7 @@ generate sim **data**:
 python script/se3/gen_sim_data.py
 """
 
-def main(io, cal):
+def main(io, cal, config):
     io.eval_args()
     args = sys.argv
 
@@ -30,11 +30,7 @@ def main(io, cal):
         except:
            sys.exit("failed to build structure from: {}".format(id))
 
-    gen_sim_data(cal, target_pressures= [0.013,  0.02, 0.03, 0.05, 0.07, 0.09,
-                                         0.13,   0.2,  0.3,  0.5,  0.7,   0.9,
-                                         1.3,    2,    3,    5,    7,     9,
-                                         13,     20,   30,   50,   70,    90,
-                                         133,])
+    gen_sim_data(cal, config )
     #gen_sim_data(cal, target_pressures= list( np.logspace(-2, 2, num=80)))
 
 def gen_sim_value_struct(val_dict, out_file_name="values_struct.json", path="vpy/standard/se3"):
@@ -68,50 +64,6 @@ def get_fill_and_expansion(cal,target_pressures, target_unit):
 
     return target_fill_value, expansion_name_value
 
-def sim_fill_pressure(struct_dict, target_fill, target_unit):
-    c_type = struct_dict.get("Type")
-    c_unit = struct_dict.get("Unit")
-
-    if c_unit == target_unit:
-        p = [p_i  for p_i in target_fill]
-    else:
-        sys.exit("impl. unit conversion")
-
-    return p
-
-def sim_fill_offset(struct_dict, target_fill, target_unit):
-    c_type = struct_dict.get("Type")
-    c_unit = struct_dict.get("Unit")
-
-    if c_unit == target_unit:
-        p = [0.0  for p_i in target_fill]
-    else:
-        sys.exit("impl. unit conversion")
-
-    return p
-
-def sim_ind_pressure(struct_dict, target_pressures, target_unit, abs_dev=0, rel_dev=1e-3):
-    c_type = struct_dict.get("Type")
-    c_unit = struct_dict.get("Unit")
-
-    if c_unit == target_unit:
-        p = [(p_i + abs_dev)*(1 + rel_dev)  for p_i in target_pressures]
-    else:
-        sys.exit("impl. unit conversion")
-
-    return p
-
-def sim_ind_offset(struct_dict, target_pressures, target_unit, abs_std=1e-5):
-    c_type = struct_dict.get("Type")
-    c_unit = struct_dict.get("Unit")
-
-    if c_unit == target_unit:
-        p = list(np.random.normal(0, abs_std, len(target_pressures)))
-    else:
-        sys.exit("impl. unit conversion")
-
-    return p
-
 def sim_temperature_before(struct_dict, target_fill, target_unit):
     c_type = struct_dict.get("Type")
     c_unit = struct_dict.get("Unit")
@@ -126,8 +78,46 @@ def sim_temperature_before(struct_dict, target_fill, target_unit):
 
     return T
 
+def sim_fill_pressure(struct_dict, target_fill, target_unit):
+    c_unit = struct_dict.get("Unit")
+    if c_unit == target_unit:
+        p = [p_i  for p_i in target_fill]
+    else:
+        sys.exit("impl. unit conversion")
+
+    return p
+
+def sim_fill_offset(struct_dict, target_fill, target_unit):
+    c_unit = struct_dict.get("Unit")
+
+    if c_unit == target_unit:
+        p = [0.0  for p_i in target_fill]
+    else:
+        sys.exit("impl. unit conversion")
+
+    return p
+
+def sim_ind_pressure(struct_dict, target_pressures, target_unit, ind_abs_dev=0, ind_rel_dev=1e-3):
+    c_unit = struct_dict.get("Unit")
+
+    if c_unit == target_unit:
+        p = [(p_i + ind_abs_dev)*(1 + ind_rel_dev)  for p_i in target_pressures]
+    else:
+        sys.exit("impl. unit conversion")
+
+    return p
+
+def sim_ind_offset(struct_dict, target_pressures, target_unit, ind_offset_abs_std=1e-5):
+    c_unit = struct_dict.get("Unit")
+
+    if c_unit == target_unit:
+        p = list(np.random.normal(0, ind_offset_abs_std, len(target_pressures)))
+    else:
+        sys.exit("impl. unit conversion")
+
+    return p
+
 def sim_temperature_after(struct_dict, target_fill, target_unit):
-    c_type = struct_dict.get("Type")
     c_unit = struct_dict.get("Unit")
 
     if c_unit == target_unit:
@@ -138,16 +128,11 @@ def sim_temperature_after(struct_dict, target_fill, target_unit):
     return T
 
 def sim_position(struct_dict, target_fill):
-    c_type = struct_dict.get("Type")
-
-    if c_type == "dut_a":
-            pass
-            # etc. impl sim data here
     pos = ["open"  for p_i in target_fill]
 
     return pos
 
-def sim_time(struct_dict, target_fill):
+def sim_time(struct_dict, target_fill, meas_time_ms=20000.0):
     c_type = struct_dict.get("Type")
 
     if c_type == "amt_fill":
@@ -155,14 +140,20 @@ def sim_time(struct_dict, target_fill):
     if c_type == "amt_expansion_start":
         t = [100000*i + 0.0  for i, p in enumerate(target_fill)]
     if c_type == "amt_expansion_end":
-        t = [100000*i + 20000.0  for i, p in enumerate(target_fill)]
+        t = [100000*i + meas_time_ms  for i, p in enumerate(target_fill)]
 
     return t
 
-def gen_sim_data(cal, target_pressures=[0.01, 0.05, 0.09, 0.1, 0.5, 0.9, 1, 5, 9, 10, 50, 90], target_unit="Pa", struct_file_name="values_struct.json", out_file_name="values_sim.json", path="vpy/standard/se3"):
+def gen_sim_data(cal, config):
 
-    with open("{}/{}".format(path, struct_file_name)) as jfn:
-        val_dict = json.load(jfn)
+    target_pressures = config.get("target_pressures")
+    struct_path = config.get("struct_path")
+    struct_file = config.get("struct_file")
+    target_unit = config.get("target_unit")
+    values_file = config.get("values_file")
+
+    with open("{}/{}".format(struct_path, struct_file)) as f:
+        val_dict = json.load(f)
 
     target_fill, exp_name = get_fill_and_expansion(cal, target_pressures, target_unit)
     for quant in val_dict:
@@ -177,10 +168,13 @@ def gen_sim_data(cal, target_pressures=[0.01, 0.05, 0.09, 0.1, 0.5, 0.9, 1, 5, 9
                 d["Value"] = target_fill
 
             if quant == "Pressure" and c_type == "ind":
-                d["Value"] = sim_ind_pressure(d, target_pressures, target_unit)
+                d["Value"] = sim_ind_pressure(d, target_pressures, target_unit,
+                                              ind_abs_dev = config.get("ind_abs_dev"),
+                                              ind_rel_dev = config.get("ind_rel_dev"))
 
             if quant == "Pressure" and c_type == "ind_offset":
-                d["Value"] = sim_ind_offset(d, target_pressures, target_unit)
+                d["Value"] = sim_ind_offset(d, target_pressures, target_unit,
+                                            ind_offset_abs_std=config.get("ind_offset_abs_std"))
 
             if quant == "Expansion" and c_type == "name":
                 d["Value"] = exp_name
@@ -201,14 +195,18 @@ def gen_sim_data(cal, target_pressures=[0.01, 0.05, 0.09, 0.1, 0.5, 0.9, 1, 5, 9
                d["Value"] = sim_position(d, target_fill)
 
             if quant == "Time":
-               d["Value"] = sim_time(d, target_fill)
+               d["Value"] = sim_time(d, target_fill,
+                                     meas_time_ms=config.get("meas_time_ms"))
 
 
-    with open("{}/{}".format(path, out_file_name), 'w') as f:
+    with open("{}/{}".format(struct_path, values_file), 'w') as f:
         json.dump(val_dict, f, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
+    with open('./script/se3/sim_config.json') as f:
+        config = json.load(f)
+
     io = Io()
     base_doc = io.get_base_doc(name="se3")
     cal = Cal(base_doc)
-    main(io, cal)
+    main(io, cal, config)
