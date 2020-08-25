@@ -74,7 +74,7 @@
         },
         {
             "Type": "ind_offset",
-            "Unit": "V"
+            "Unit": "Pa"
         },
         {
             "Type": "1T_1-fill",
@@ -142,7 +142,7 @@
         },
         {
             "Type": "ind",
-            "Unit": "V"
+            "Unit": "Pa"
         }
     ],
     "Expansion": [

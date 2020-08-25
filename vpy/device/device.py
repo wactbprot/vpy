@@ -190,6 +190,9 @@ class Device(Document):
 
     def convert_to_return_unit(self, u, u_unit, meas_vec, meas_unit, return_unit):
         if u_unit and meas_unit and return_unit:
+            if return_unit == "1" and u_unit != "1" and u_unit == meas_unit:
+                return u/meas_vec, return_unit
+
             if u_unit != "1":
                 conv = self.Const.get_conv(from_unit=u_unit, to_unit=return_unit)
                 if u_unit == "C" and return_unit == "K":

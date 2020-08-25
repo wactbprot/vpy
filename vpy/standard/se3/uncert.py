@@ -471,7 +471,7 @@ class Uncert(Se3):
         ana.store("Uncertainty", "f",        np.abs(u_5/p_cal), "1")
         ana.store("Uncertainty", "V_add",    np.abs(u_6/p_cal), "1")
         ana.store("Uncertainty", "V_start",  np.abs(u_7/p_cal), "1")
-        ana.store("Uncertainty", "K",        np.abs(u_8/p_cal), "1")
+        ana.store("Uncertainty", "KF",        np.abs(u_8/p_cal), "1")
 
         u = np.sqrt(np.power(u_1 ,2) + np.power(u_2 ,2) + np.power(u_3 ,2) +
                     np.power(u_4 ,2) + np.power(u_5 ,2) + np.power(u_6 ,2) +

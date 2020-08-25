@@ -73,9 +73,6 @@ def sim_fill_pressure(struct_dict, target_fill, target_unit):
     c_unit = struct_dict.get("Unit")
 
     if c_unit == target_unit:
-        if c_type.startswith("1T"):
-            pass
-            # etc. impl sim data here
         p = [p_i  for p_i in target_fill]
     else:
         sys.exit("impl. unit conversion")
@@ -87,10 +84,29 @@ def sim_fill_offset(struct_dict, target_fill, target_unit):
     c_unit = struct_dict.get("Unit")
 
     if c_unit == target_unit:
-        if c_type.startswith("1T"):
-            pass
-            # etc. impl sim data here
         p = [0.0  for p_i in target_fill]
+    else:
+        sys.exit("impl. unit conversion")
+
+    return p
+
+def sim_ind_pressure(struct_dict, target_pressures, target_unit, abs_dev=0, rel_dev=1e-3):
+    c_type = struct_dict.get("Type")
+    c_unit = struct_dict.get("Unit")
+
+    if c_unit == target_unit:
+        p = [(p_i + abs_dev)*(1 + rel_dev)  for p_i in target_pressures]
+    else:
+        sys.exit("impl. unit conversion")
+
+    return p
+
+def sim_ind_offset(struct_dict, target_pressures, target_unit, abs_std=1e-5):
+    c_type = struct_dict.get("Type")
+    c_unit = struct_dict.get("Unit")
+
+    if c_unit == target_unit:
+        p = list(np.random.normal(0, abs_std, len(target_pressures)))
     else:
         sys.exit("impl. unit conversion")
 
@@ -115,9 +131,6 @@ def sim_temperature_after(struct_dict, target_fill, target_unit):
     c_unit = struct_dict.get("Unit")
 
     if c_unit == target_unit:
-        if c_type.startswith("1T"):
-            pass
-            # etc. impl sim data here
         T = [23.0  for p_i in target_fill]
     else:
         sys.exit("impl. unit conversion")
@@ -162,6 +175,12 @@ def gen_sim_data(cal, target_pressures=[0.01, 0.05, 0.09, 0.1, 0.5, 0.9, 1, 5, 9
 
             if quant == "Pressure" and c_type == "target_fill":
                 d["Value"] = target_fill
+
+            if quant == "Pressure" and c_type == "ind":
+                d["Value"] = sim_ind_pressure(d, target_pressures, target_unit)
+
+            if quant == "Pressure" and c_type == "ind_offset":
+                d["Value"] = sim_ind_offset(d, target_pressures, target_unit)
 
             if quant == "Expansion" and c_type == "name":
                 d["Value"] = exp_name

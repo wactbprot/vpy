@@ -33,7 +33,7 @@ def main():
                        "$u(V_\text{add})$"         : to_si(u_5),
                        "$u(T_\text{before})$"      : to_si(u_6),
                        "$u(T_\text{after})$"       : to_si(u_7),
-                       "$u(K)$"                    : to_si(u_8),
+                       "$u(K_iF_i)$"               : to_si(u_8),
                        #"$u_g$"                     : to_si(u),
                        "$U_g$"                     : to_si(u*2),
                        "$U_g\cdot p_\text{cal}$/Pa" :to_si(u*2*p_cal),

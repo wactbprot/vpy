@@ -484,9 +484,6 @@ class Cdg(Device):
     def repeat_uncert(self, ana):
 
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
-        # *) bis 14.8.19
-        #u = np.asarray([np.piecewise(p, [p <= 10, (p > 10 and p <= 950), p > 950],
-        #                                [0.0008,                 0.0003, 0.0001]).tolist() for p in p_list])
         if self.producer == "missing":
             msg = "No Producer in Device"
             self.log.warn(msg)
@@ -513,12 +510,19 @@ class Cdg(Device):
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
 
-        digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
-        if digit_uncert is not None:
-            p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+
+        digit_uncert_dict = ana.pick_dict("Uncertainty", "digit")
+        if digit_uncert_dict is not None:
+            if digit_uncert_dict.get("Unit") == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
+                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+            else:
+                digit_uncert = ana.pick("Uncertainty", "digit", "1")
+                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert, 2))
         else:
             u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+
 
         add_uncert = ana.pick_dict("Uncertainty", "add")
         if add_uncert is not None:
