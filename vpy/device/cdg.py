@@ -1,9 +1,10 @@
 import sys
+import datetime
 import numpy as np
 from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from ..device.device import Device
-from ..values import Values, Range
+from ..values import Values, Range, Time
 
 
 class Cdg(Device):
@@ -438,6 +439,8 @@ class Cdg(Device):
         Drift influences are avoided.
         """
 
+
+
         range_str = Range(ana.org).get_str("offset")
         ind = ana.pick("Pressure", "ind_corr", self.unit)
         offset = ana.pick("Pressure", "offset", self.unit)
@@ -450,35 +453,55 @@ class Cdg(Device):
                 offset[i] = np.nan
 
         u = np.full(len(ind), np.nan)
-        uncert_contrib = {"Unit": self.unit}
 
-        if range_str is not None:
-            range_unique = np.unique(range_str)
-            for r in range_unique:
-                i_r = np.where(range_str == r)
-                ## sometimes all offset[i_r] are nan
-                all_nan = np.all(np.isnan(offset[i_r]))
-                if np.shape(i_r)[1] > 0 and not all_nan:
-                    m = np.nanmean(np.abs(np.diff(offset[i_r])))
-                    if m == 0.0:
-                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
 
-                    uncert_contrib[r] = m
-                    u[i_r] = m/ind[i_r]
-        else:
-            if len(offset) < 2:
-                m = self.ask_for_offset_uncert(offset, self.unit)
+        t_ms = Time(ana.org).get_str("amt_fill")
+        days = [datetime.datetime.fromtimestamp(int(t)/1000.0).day for t in t_ms]
+
+        u_rel_day = {}
+        u_abs_day = {}
+
+        for day in np.unique(days):
+            uncert_contrib = {"Unit": self.unit}
+            ddx = np.where(np.equal(days, day))
+            day_offset = np.take(offset, ddx)[0]
+            day_ind = np.take(ind, ddx)[0]
+
+            if range_str is not None:
+                day_range_str = np.take(range_str, ddx)[0]
+                range_unique = np.unique(day_range_str)
+                for r in range_unique:
+                    i_r = np.where(day_range_str == r)
+                    ## sometimes all day_offset[i_r] are nan
+                    all_nan = np.all(np.isnan(day_offset[i_r]))
+                    if np.shape(i_r)[1] > 0 and not all_nan:
+                        m = np.nanmean(np.abs(np.diff(day_offset[i_r])))
+                        if m == 0.0:
+                            m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, day_range_str=r)
+
+                        uncert_contrib[r] = m
+                        u_abs_day[day] = uncert_contrib
+                        u[i_r] = m/day_ind[i_r]
             else:
-                m = np.nanmean(np.abs(np.diff(offset)))
+                if len(day_offset) < 2:
+                    m = self.ask_for_offset_uncert(day_offset, self.unit)
+                else:
+                    m = np.nanmean(np.abs(np.diff(day_offset)))
 
-                if m == 0.0:
-                    ## Abschätzung 0.1% vom kleinsten p_ind
-                    m = self.ask_for_offset_uncert(offset, self.unit)
+                    if m == 0.0:
+                        ## Abschätzung 0.1% vom kleinsten p_ind
+                        m = self.ask_for_offset_uncert(day_offset, self.unit)
 
-                uncert_contrib["all"] = m
-                u = m/ind
+                    uncert_contrib["all"] = m
+                    u_abs_day[day] = uncert_contrib
+                    u = m/day_ind
+            u_rel_day[day] = u
 
-        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
+        u = np.array([])
+        for day in np.unique(days):
+            u = np.concatenate((u, u_rel_day[day]), axis=None)
+            print(u_abs_day[day]) ---------> next
+        #ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u, "1")
 
     def repeat_uncert(self, ana):
