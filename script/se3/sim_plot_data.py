@@ -14,14 +14,13 @@ def main(io, config):
     struct_path = config.get("struct_path")
     cal_file = config.get("cal_file")
     result_name = config.get("result_name")
+    plot_title = config.get("plot_title")
+    font = config.get("plot_font")
+    col_map =  config.get("plot_col_map")
 
+    plt.rc('font', **font)
     doc = io.read_json("{}/{}".format(struct_path, cal_file))
 
-    col_map = ['C0', 'C1','C2', 'C3','C4', 'C5','C6', 'C7','C8','C9']
-    font = {'family' : 'normal',
-    #'weight' : 'bold',
-            'size'   : 18}
-    plt.rc('font', **font)
     ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
 
     p_cal = ana.pick("Pressure", "cal", "Pa")
@@ -61,20 +60,17 @@ def main(io, config):
     plt.plot(p_cal, u_7, 'd-',lw=2, color=col_map[8], label="$T_{after}$" )
     plt.plot(p_cal, u_8, 'x-',lw=2, color=col_map[9], label="$K_iF_j$" )
 
-
-
-
+    plt.title(plot_title)
 
     plt.xscale('symlog', linthreshx=1e-12)
     plt.yscale('symlog', linthreshy=1e-12)
     plt.ylim((1e-6, 1e-2))
-    plt.xlabel('$p_{}$ in {}'.format("{cal}", "Pa"))
+    plt.xlabel('$p_{cal}$ in Pa')
     plt.ylabel('$u$ (relative)')
     plt.grid(True)
     plt.legend()
     plt.savefig("{}.pdf".format(result_name))
     plt.show()
-
 
 if __name__ == "__main__":
     with open('./script/se3/sim_config.json') as f:

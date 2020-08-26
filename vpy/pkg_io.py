@@ -32,7 +32,8 @@ class Io(object):
                     "all_doc_view": "se3_req/doc",
                     "state_doc_view": "se3_req/state",
                     "hist_data": "se3_req/group_normal_hist",
-                    "device_info": "se3_req/group_normal_info"
+                    "device_info": "se3_req/group_normal_info",
+                    "device_repeat":"se3_req/repeat"
                 },
                 "se2": {
                     "all_doc_view": "se2_req/doc",
@@ -401,6 +402,27 @@ class Io(object):
         view = self.config['standards'][std]['device_info']
         for item in db.view(view):
 
+            dat.append(item.value)
+
+
+        return dat
+
+    def get_device_repeat(self, typehead_producer, std="se3"):
+        """Gets and returns an array containing
+        error of indication and calibration pressure.
+
+        :param std: name of the calibration standard
+        :type std: str
+
+        :returns: document
+        :rtype: dict
+        """
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        dat = []
+
+        view = self.config['standards'][std]['device_repeat']
+        for item in db.view(view, key=typehead_producer):
             dat.append(item.value)
 
 

@@ -11,15 +11,19 @@
  "gas":"N2",
  "customer_object":{"Class": "CDG",
                     "Device": {"Producer": "MKS Instruments"},
-                    "Setup": {"TypeHead": "0.1Torr",
+                    "Setup": {"TypeHead": "1Torr",
                               "Unit": "Pa"},
                     "Uncertainty":[{"Type":"digit",
                                     "Value":2.9e-6,
                                     "Unit":"Pa"}
                                   ]},
+ "plot_title":"SE3 uncert. overview",
  "result_name":"se3_uncert_overview",
  "values_file":"values_sim.json",
  "struct_file":"values_struct.json",
  "cal_file":"cal-sim-se3.json",
- "struct_path":"vpy/standard/se3"
+ "struct_path":"vpy/standard/se3",
+ "plot_col_map": ["C0", "C1", "C2", "C3", "C4", "C5", "C6", "C7", "C8","C9"],
+ "plot_font": {"family" : "normal",
+               "size"   : 18}
 }
