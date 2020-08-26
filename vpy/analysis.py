@@ -8,7 +8,7 @@ import math
 
 class Analysis(Document):
     """Holds a deep copy of ``document``. Container for storing
-    the results of the calculation. 
+    the results of the calculation.
     """
 
     def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None, pressure_unit = "Pa",  error_unit ="1"):
@@ -31,7 +31,7 @@ class Analysis(Document):
         if analysis_type:
             init_dict['AnalysisType'] = analysis_type
             self.analysis_type = analysis_type
-             
+
         if insert_dict:
             for insert_key in insert_dict:
                 init_dict[insert_key] = insert_dict[insert_key]
@@ -63,10 +63,10 @@ class Analysis(Document):
         value = self.make_writable(value)
         append = True
 
-        o = {"Type": val_type, 
-             "Value": value, 
+        o = {"Type": val_type,
+             "Value": value,
              "Unit": unit}
-        
+
         if descr is not None:
             o["Description"] = descr
 
@@ -92,7 +92,7 @@ class Analysis(Document):
                     self.log.info("replace values of type {}".format(val_type))
 
             # append if not exist
-            if append:    
+            if append:
                 self.doc[dest][quant].append(o)
                 self.log.info("append values of type {} in {}".format(val_type, quant))
         else:
@@ -115,8 +115,8 @@ class Analysis(Document):
                 self.log.info("append values of type {}".format(val_type))
 
     def store_dict(self, quant, d, dest='Values', plain=False):
-        """ Appends a dict to document under the given destination. 
-        Use this function if the dict d has not a ``Type``, ``Value``, 
+        """ Appends a dict to document under the given destination.
+        Use this function if the dict d has not a ``Type``, ``Value``,
         ``Unit`` structure. Otherwise use ``store()``.
 
         The document structure ``self.doc`` afterwards is:
@@ -178,21 +178,21 @@ class Analysis(Document):
                         self.doc[dest][quant].append(d)
                     if isinstance(self.doc[dest][quant], dict):
                         self.doc[dest][quant].update(d)
-                        
+
                 if dest is None and quant is not None:
                     if quant not in self.doc:
                         self.doc[quant] = []
-                    
+
                     if isinstance(self.doc[quant], list):
                         self.doc[quant].append(d)
                     if isinstance(self.doc[quant], dict):
                         self.doc[quant].update(d)
 
-                    
+
                 if dest is not None and quant is None:
                     if dest not in self.doc:
                         self.doc[dest] = []
-                    
+
                     if isinstance(self.doc[dest], list):
                         self.doc[dest].append(d)
                     if isinstance(self.doc[dest], dict):
@@ -224,8 +224,8 @@ class Analysis(Document):
         return ret
 
     def pick_dict(self, quant, dict_type, dest='Values'):
-        """Picks and returns an already calculated value. 
-        
+        """Picks and returns an already calculated value.
+
         A possible call signature is:
 
         .. code-block:: python
@@ -248,13 +248,13 @@ class Analysis(Document):
                     break
         if  dict_type is None and dest in self.doc and quant in self.doc[dest]:
             ret = self.doc[dest][quant]
-        
+
         if  dict_type is None and dest is None and quant in self.doc:
             ret = self.doc[quant]
-        
+
         if  dict_type is None and dest in self.doc and quant is None:
             ret = self.doc[dest]
-        
+
         if ret is None:
             msg = "dict with type {} not found".format(dict_type)
             self.log.warn(msg)
@@ -276,7 +276,7 @@ class Analysis(Document):
         value_ret = None
         sd_ret = None
         n_ret = None
-        
+
         if dest in self.doc:
             if quant in self.doc[dest]:
                 doc = self.doc[dest][quant]
@@ -284,24 +284,24 @@ class Analysis(Document):
                     if d.get('Type') == dict_type:
                         if with_stats:
                             value_ret, sd_ret, n_ret = self.get_value(dict_type, dict_unit, o=d, with_stats=with_stats)
-                        else:    
+                        else:
                             value_ret = self.get_value(dict_type, dict_unit, o=d)
             else:
                 msg = "{} not in Values".format(quant)
                 self.log.warn(msg)
         else:
-            msg = "{} not in self.doc".format(dest)            
+            msg = "{} not in self.doc".format(dest)
             self.log.warn(msg)
 
-        if value_ret is None: 
+        if value_ret is None:
             msg = "dict with type {} not found".format(dict_type)
             self.log.warn(msg)
-        
+
         if with_stats:
             return value_ret, sd_ret, n_ret
         else:
             return value_ret
-    
+
     def make_writable(self, a):
         """ converts array, nd.array etc. to json writable lists.
 
@@ -313,7 +313,7 @@ class Analysis(Document):
             else:
                 a = a.tolist()
             b = []
-            for v in a:  
+            for v in a:
                 if not isinstance(v, str) and (math.isnan(v) or math.isinf(v)):
                     b.append(None)
                 else:
@@ -332,9 +332,9 @@ class Analysis(Document):
         """ Asks for points to reject. removes this points from average_index.
         Returns the resulting array of arrays.
         """
-        
+
         reject = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('RejectIndex', [])
-        
+
         text = input("Do you want to keep the current set of rejected data points with indices: " + str(reject) + " (type enter if ok)? ")
         if text != "":
             text = input("Type in new list: ").replace("[","").replace("]","").split(",")
@@ -354,9 +354,9 @@ class Analysis(Document):
         """ Asks for points to reject. removes this points from average_index.
         Returns the resulting array of arrays.
         """
-        
+
         reject_offset = self.org.get('Calibration', {}).get('Analysis', {}).get('AuxValues', {}).get('RejectIndexOffset', [])
-        
+
         print("offset index before manual remove: " + str(self.flatten(average_index)))
         text = input("Do you want to keep the current set of rejected offset points with indices: " + str(reject_offset) + " (type enter if ok)? ")
         if text != "":
@@ -367,14 +367,14 @@ class Analysis(Document):
                 reject_offset = []
             print("New list is: " + str(reject_offset))
 
-        return reject_offset        
-    
+        return reject_offset
+
     def ask_for_head_temperature(self, temperature_head=None):
         """ Asks for the temperature of the Head in C
-        (calibration certificate: T_2).  
+        (calibration certificate: T_2).
         """
 
-        q1 = "\n\n\nHead is\n* thermostated at T_2 = {}°C (enter if ok)\n* type T_2 in °C or \n* 0 for no correction: " 
+        q1 = "\n\n\nHead is\n* thermostated at T_2 = {}°C (enter if ok)\n* type T_2 in °C or \n* 0 for no correction: "
         text = input(q1.format(temperature_head))
 
         if text == "0":
@@ -385,19 +385,19 @@ class Analysis(Document):
 
         if text == "":
             return temperature_head, "C"
-        
-            
+
+
     def ask_for_evis(self, e_vis=None, temperature_head=None):
-        """ Asks for e_vis.  
+        """ Asks for e_vis.
         """
         org_calib = self.org.get('Calibration', {})
         org_result = org_calib.get('Result', {})
         org_ana = org_calib.get('Analysis', {})
-        
+
         e_vis = org_result.get('AuxValues', {}).get('Evis', e_vis)
         if e_vis is None:
             e_vis = org_ana.get('AuxValues', {}).get('Evis', 0)
-        
+
         q1 = "\n\n\nEstimate the relative (unit = 1) value for e_vis={} (type enter if ok): "
         text = input(q1.format(e_vis))
         if text != "":
@@ -405,13 +405,13 @@ class Analysis(Document):
 
         u_vis = org_result.get('AuxValues', {}).get('Uvis')
         if u_vis is None:
-            u_vis = org_ana.get('AuxValues', {}).get('Uvis', 2e-3) 
+            u_vis = org_ana.get('AuxValues', {}).get('Uvis', 2e-3)
 
         q2 = "\n\n\nEstimate the uncertainty (unit = 1) u(e_vis)={} (type enter if ok): "
         text = input(q2.format(u_vis))
         if text != "":
             u_vis = float(text)
-        
+
         return e_vis, 1/(e_vis +1), u_vis, "1"
 
 
@@ -460,7 +460,7 @@ class Analysis(Document):
                         r1[j].append(i)
                         break
                 else: r1[i] = [i]
-            r1 = list(r1.values())    
+            r1 = list(r1.values())
             if len(r1) > 1:
                 faktor = faktor / np.max(faktor)
                 rangemultiplier = np.full(len(faktor), "nothing")
@@ -479,7 +479,7 @@ class Analysis(Document):
 
         # if np.std(np.take(p_off, r1[0])) < np.std(np.take(p_off, r2[0])): r = r1
         # else: r = r2
-        
+
         return r1
 
     def coarse_error_filtering(self, average_index):
@@ -489,13 +489,13 @@ class Analysis(Document):
         error_dict = self.pick_dict(quant='Error', dict_type='ind')
         error_unit = error_dict.get('Unit')
         error_value = error_dict.get('Value')
-        if error_unit == "%": 
+        if error_unit == "%":
             threshold = 50.0
             found_threshold = True
-        if error_unit == "1": 
+        if error_unit == "1":
             threshold = 0.5
             found_threshold = True
-        
+
         if found_threshold:
             self.log.debug("average index before coarse error filtering:{}".format(average_index))
             average_index = [[j for j in i if abs(error_value[j]) < threshold] for i in average_index]
@@ -521,14 +521,14 @@ class Analysis(Document):
 
         ..todo::
 
-                function returns empty arrays for 
+                function returns empty arrays for
                 ```len(agerage_index) < 3```
 
         """
         error_dict = self.pick_dict(quant='Error', dict_type='ind')
         error = error_dict.get('Value')
         self.log.debug("average index before fine error filtering: {}".format(average_index))
-    
+
         k = 0
         while True:
             r = []
@@ -544,7 +544,7 @@ class Analysis(Document):
                 # collect indices of neighbors
                 #print("s["+str(i)+"]="+str(s[i]))
                 l = average_index[s[i] - 1: s[i] + 2]
-                ref_idx = [item for sublist in l for item in sublist] # flatten                
+                ref_idx = [item for sublist in l for item in sublist] # flatten
                 rr = []
                 for j in range(len(average_index[i])):
                     # indices of neighbors only
@@ -566,24 +566,23 @@ class Analysis(Document):
                 break
             average_index = r
             self.log.debug("average index after fine error filtering: {}".format(average_index))
-            
+
         return average_index, ref_mean, ref_std, k
-    
+
     def reduce_by_average_index(self,  value, average_index):
         """Calculates the mean value for each target pressure.
         """
         return np.asarray([np.nanmean(np.take(value, i)) for i in average_index])
-    
+
     def total_uncert(self):
-        
+
         p_cal = self.pick("Pressure", "cal", self.pressure_unit)
         standard_uncert = self.pick("Uncertainty", "standard", self.error_unit)
 
         p_ind = self.pick("Pressure", "ind_corr", self.pressure_unit)
-        device_uncert = self.pick("Uncertainty", "device", "1")
-        u_ind_abs = device_uncert*p_ind
+        device_uncert = self.pick("Uncertainty", "device", self.error_unit)
 
-        u_rel = p_ind / p_cal * np.sqrt(np.power(u_ind_abs / p_ind, 2) + np.power(standard_uncert, 2))
+        u_rel = p_ind / p_cal * np.sqrt(np.power(device_uncert, 2) + np.power(standard_uncert, 2))
 
         self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
         self.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , self.pressure_unit)
@@ -596,7 +595,7 @@ class Analysis(Document):
         """
         if doc is not None:
             self.org = doc
-            
+
         if "Calibration" in self.org:
             self.org['Calibration'][dest] = self.doc
         elif "State" in self.org:

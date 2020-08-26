@@ -8,11 +8,11 @@ class Cal(Se3):
 
     def __init__(self, doc):
         super().__init__(doc)
-    
+
     def check_analysis(self, res, chk):
         """ Checks the analysis values against a given
         min/max-list (stored in ``self.analysis_check``).
-        Calculates a rating for each value. 
+        Calculates a rating for each value.
 
         :param: res instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -27,11 +27,11 @@ class Cal(Se3):
 
         dt = self.Time.amt_to_date("amt_fill", "ms")
         self.loop_check_dict(check=self.analysis_check, compare=res, date=dt, result=chk)
-           
+
     def check_state(self, res, chk):
         """ Checks the measured state values against a given
         min/max-list (stored in ``self.state_check``).
-        Calculates a rating for each value. 
+        Calculates a rating for each value.
 
         :param: res instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -43,20 +43,19 @@ class Cal(Se3):
             pick(quantity, type, unit) to store the values in
         :type: class
         """
-        
+
         dt = self.Time.amt_to_date("amt", "ms")
         self.loop_check_dict(check=self.state_check, compare=res, date=dt, result=chk)
-        
+
     def loop_check_dict(self, check, compare,  date, result):
         """Loops over the given ``check`` dict. Compares the entries witth ``compare``
-        and writes the results plus date to ``result`` 
-       
-        """ 
+        and writes the results plus date to ``result``
+
+        """
         for quant in check:  # m ... Temperature ect.
             for head in check[quant]:  # ... VesselBranch
                 if isinstance(check[quant][head], dict):
                     dct = check[quant][head]
-
                     val = compare.pick(quant, dct['Type'], dct['Unit'])
                     rnd_val = []
                     rtn_val = []
@@ -71,7 +70,7 @@ class Cal(Se3):
 
                     for v in val:
                         if np.isnan(v):
-                            rtn_val.append("NaN") 
+                            rtn_val.append("NaN")
                             rnd_val.append("NaN")
                         else:
                             rnd_val.append('{:0.4e}'.format(v))
@@ -92,10 +91,10 @@ class Cal(Se3):
 
     def outgas_state(self, res):
         """ Calculates the outgasing rate of dut-a,b,c u (vacuum branch
-        with dut valves closed) and v (vessel only). About 50% of the 
-        outgasing rate is caused by the ion gauge (IG) which  is 
+        with dut valves closed) and v (vessel only). About 50% of the
+        outgasing rate is caused by the ion gauge (IG) which  is
         switched of during the calibration. The factor ``outgas_correction``
-        takes this into account.   
+        takes this into account.
 
         :param: instance of a class with methode
             store(quantity, type, value, unit, [stdev], [N])) and
@@ -105,17 +104,26 @@ class Cal(Se3):
 
         time_conv = self.Cons.get_conv("ms", "s")
 
-        m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / time_conv  
-        m_bc = self.OutGas.get_value("rise_bc_slope_x", "mbar/ms") / time_conv 
-        m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / time_conv 
-        m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / time_conv 
-        m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / time_conv 
+        m_abc = self.OutGas.get_value("rise_abc_slope_x", "mbar/ms") / time_conv
+        m_bc = self.OutGas.get_value("rise_bc_slope_x", "mbar/ms") / time_conv
+        m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / time_conv
+        m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / time_conv
+        m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / time_conv
+        l_s = self.OutGas.get_value("loss_slope_x", "mbar/ms") / time_conv
+        m_b = self.OutGas.get_value("rise_inlet_closed_outlet_open_slope_x", "mbar/ms") / time_conv
+        m_is = self.OutGas.get_value("rise_pressure_inlet_slope_x", "mbar/ms") / time_conv
+        m_os = self.OutGas.get_value("rise_pressure_outlet_slope_x", "mbar/ms") / time_conv
 
         res.store("OutGasRate", "outgas_abc",  m_abc, "mbar/s")
         res.store("OutGasRate", "outgas_bc",  m_bc, "mbar/s")
         res.store("OutGasRate", "outgas_c",  m_c, "mbar/s")
         res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
         res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
+        res.store("OutGasRate", "pressure_loss",  l_s, "mbar/s")
+        res.store("OutGasRate", "outgas_vessel_starting_volumes",  m_b, "mbar/s")
+        res.store("OutGasRate", "outgas_pressure_inlet",  m_is, "mbar/s")
+        res.store("OutGasRate", "outgas_pressure_outlet",  m_os, "mbar/s")
+
 
     def temperature_state(self, res):
         """ Adds the correction factor for each sensor and stores the result.
@@ -133,7 +141,7 @@ class Cal(Se3):
             res.store("Temperature", "ch_{}state".format(ch), t_mean, "K")
 
     def time_state(self, res):
-        """A transfer of absolute measure time to 
+        """A transfer of absolute measure time to
         relative measure time and stores the result in analysis section.
 
         :param: instance of a class with methode
@@ -144,9 +152,9 @@ class Cal(Se3):
         t = self.Time.get_rmt(dict_type="amt", unit="ms")
         conv2s = self.Cons.get_conv(from_unit="ms", to_unit="s")
         conv2min = self.Cons.get_conv(from_unit="s", to_unit="min")
-        
+
         res.store("Time", "amt", t *conv2s*conv2min, "ms")
-    
+
     def pressure_state(self, res):
         """ So far: a simple transfer of measured values to
         Analysis section.
@@ -242,7 +250,7 @@ class Cal(Se3):
         """Builds up a vector containing the additional volume and stores it.
         The additional volumes should be measured and analyzed before and stored
         under *Analysis.AuxValues.Volumes*. So far, the last measured values *[-1]*
-        are used. 
+        are used.
 
         :param: instance of a class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -254,7 +262,7 @@ class Cal(Se3):
         vol_a = res.pick('Volume', dict_type='a', dict_unit='cm^3', dest='AuxValues')[-1]
         vol_b = res.pick('Volume', dict_type='b', dict_unit='cm^3', dest='AuxValues')[-1]
         vol_c = res.pick('Volume', dict_type='c', dict_unit='cm^3', dest='AuxValues')[-1]
-        
+
         dut_a = self.Pos.get_str('dut_a')
         dut_b = self.Pos.get_str('dut_b')
         dut_c = self.Pos.get_str('dut_c')
@@ -274,9 +282,9 @@ class Cal(Se3):
 
         res.store("Volume", "add",   vol, "cm^3")
 
-    
+
     def deviation_target_fill(self, res):
-        """Calculates the relative deviation from the target 
+        """Calculates the relative deviation from the target
         filling pressure.
 
         :param: instance of a class with methode
@@ -289,9 +297,9 @@ class Cal(Se3):
         pressure_fill = res.pick('Pressure', 'fill', 'Pa')
 
         res.store('Error', 'dev_fill', pressure_fill/target_fill -1.0, '1')
-    
+
     def deviation_target_cal(self, res):
-        """Calculates the relative deviation between the target 
+        """Calculates the relative deviation between the target
         pressure and the calculated calibration pressure.
 
         :param: instance of a class with methode
@@ -304,10 +312,10 @@ class Cal(Se3):
         pressure_cal = res.pick('Pressure', 'cal', 'Pa')
 
         res.store('Error', 'dev_cal', pressure_cal/target_cal -1.0, '1')
-    
+
     def pressure_rise(self, res):
-        """Calculates the pressure rise due to outgasing. 
-        
+        """Calculates the pressure rise due to outgasing.
+
         .. note::
 
                 An investigation plus measurement is required to find a
@@ -326,11 +334,11 @@ class Cal(Se3):
         end_time = self.Time.get_value('amt_expansion_end', 'ms')
         time_conv = self.Cons.get_conv(from_unit="ms", to_unit="s")
         dt = (end_time - start_time) * time_conv
-        
+
         pos_dut_a = self.Pos.get_str('dut_a')
         pos_dut_b = self.Pos.get_str('dut_b')
         pos_dut_c = self.Pos.get_str('dut_c')
-        
+
         outgas_abc = res.pick('OutGasRate', dict_type='outgas_abc', dict_unit='mbar/s', dest='AuxValues')[-1]
         outgas_bc = res.pick('OutGasRate', dict_type='outgas_bc', dict_unit='mbar/s', dest='AuxValues')[-1]
         outgas_c = res.pick('OutGasRate', dict_type='outgas_c', dict_unit='mbar/s', dest='AuxValues')[-1]
@@ -340,11 +348,11 @@ class Cal(Se3):
 
         pressure_conv = self.Cons.get_conv(from_unit="mbar", to_unit=self.unit)
         rise =  outgas_v * pressure_conv * dt #* outgas_correction
-       
+
         res.store('Pressure', 'rise', rise , self.unit)
-    
+
     def error_pressure_rise(self, res):
-        """Calculates the relative contribution of the pressure 
+        """Calculates the relative contribution of the pressure
         rise due to outgasing.
 
         :param: instance of a class with methode
@@ -355,7 +363,7 @@ class Cal(Se3):
         """
         p_cal = res.pick('Pressure', 'cal', self.unit)
         p_rise = res.pick('Pressure', 'rise', self.unit)
-        e_rise = p_rise/p_cal 
+        e_rise = p_rise/p_cal
         res.store('Error', 'rise', e_rise, '1')
 
     def pressure_cal(self, res):
@@ -368,13 +376,10 @@ class Cal(Se3):
         :type: class
         """
         ## removed implicit pfill etc. calculation
-        
+
         p_fill = res.pick("Pressure", "fill", self.unit)
         self.log.debug("filling pressure is: {}".format(p_fill))
 
-        F_real_gas = res.pick("Correction", "rg", "1")
-        self.log.debug("real gas correction is: {}".format(F_real_gas))
-        
         f = res.pick("Expansion", "uncorr", "1")
         self.log.debug("expansion factor is: {}".format(f))
 
@@ -399,20 +404,26 @@ class Cal(Se3):
         f_prime = 1.0/(1.0 / f + V_add / V_start)
         res.store("Expansion", "corr", f_prime, "1")
 
-        F_delta_heigth = res.pick("Correction", "delta_heigth", "1")
-        self.log.debug("Heigth correction is: {}".format(F_delta_heigth))
-        
+        K_real_gas = res.pick("Correction", "rg", "1")
+        self.log.debug("real gas correction is: {}".format(K_real_gas))
+
+        K_delta_heigth = res.pick("Correction", "delta_heigth", "1")
+        self.log.debug("Heigth correction is: {}".format(K_delta_heigth))
+
+        K_f_pressure =  res.pick("Correction", "f_p_dependency", "1")
+        self.log.debug("valve closing pressure dep.: {}".format(K_f_pressure))
+
         ## calibration pressure:
-        p_cal = f_prime * p_fill * F_real_gas * T_corr * F_delta_heigth + p_rise
+        p_cal = f_prime * p_fill * K_real_gas * T_corr * K_delta_heigth * K_f_pressure + p_rise
         self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
-        
+
         res.store("Pressure", "cal", p_cal, self.unit)
-    
+
     def pressure_gn_corr(self, res):
         """Calculates the corrected pressures of the group normal (gn)
         """
         meas_time = self.Time.get_value("amt_fill", "ms")
-  
+
         if res.analysis_type == 'expansion':
             gn_ind_types = self.fill_types
             gn_offset_types = self.offset_types
@@ -424,11 +435,11 @@ class Cal(Se3):
             gn_offset_types = self.compare_offset_types
             gn_target = self.Pres.get_value("target_pressure", self.unit)
             sufix = "compare"
-        
+
         for i in range(len(gn_ind_types)):
             GNDevice = self.FillDevs[i]
             self.log.debug("Working on filling pressure of device {}".format(GNDevice.name))
-           
+
             # get indicatted pressure and unit
             p_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i])
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
@@ -442,9 +453,9 @@ class Cal(Se3):
                 p_off_conv = p_off ## already in self.unit
             else:
                 p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
-           
+
             p = p_ind_conv - p_off_conv
-          
+
             if gn_target is not None:
                 e = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)
             else:
@@ -452,15 +463,15 @@ class Cal(Se3):
 
             # correct pressure with interpol. values from last calib.
             p_corr = p / (e + 1.0)
-       
+
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), p_off_conv/p_corr, '1')
-    
+
     def pressure_gn_mean(self, res):
         """
-        *) checked that the function `np.ma.average()` gives the same 
-        result as the function  `self.Pres.weight_array_mean()` 
+        *) checked that the function `np.ma.average()` gives the same
+        result as the function  `self.Pres.weight_array_mean()`
         """
         if res.analysis_type == 'expansion':
             gn_ind_types = self.fill_types
@@ -471,7 +482,7 @@ class Cal(Se3):
             gn_ind_types = self.compare_types
             sufix = "compare"
             res_type ="cal"
-        
+
         p_arr = []
         u_arr = []
         for i in range(len(self.FillDevs)):
@@ -480,37 +491,37 @@ class Cal(Se3):
             e      = res.pick("Error","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
             e_off  = res.pick("Error","{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
             u_corr = GNDevice.get_total_uncert(p_corr, self.unit, self.unit, take_type_list=["u2", "u3", "u4", "u5", "u6" ])
-            
+
             ## only use p if u exist
             np.put(p_corr, np.where(np.isnan(u_corr)), np.nan)
             np.put(e, np.where(np.isnan(u_corr)), np.nan)
             np.put(e_off, np.where(np.isnan(u_corr)), np.nan)
-            
+
             res.store("Pressure", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), p_corr, self.unit)
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), e_off, '1')
-    
 
             p_arr.append(p_corr)
             u_arr.append(u_corr)
-        
+
         p_arr = np.array(p_arr)
         u_arr = np.array(u_arr)
-       
+
         p_std = np.nanstd(p_arr, axis=0)
         n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=u_arr)
-           
+
         w =  np.power(u_arr/p_arr, -1)
+
         sum_w = np.nansum(w, axis = 0) ## ok
         prod_pw = np.multiply(w, p_arr) ## ok
         p_mean_weight = np.nansum(prod_pw, axis = 0) / sum_w
-        
-        p_mean_weight = np.nanmean(p_arr, axis=0)
+
+        #p_mean_weight = np.nanmean(p_arr, axis=0)
         res.store("Pressure", "{res_type}".format(res_type=res_type), p_mean_weight, self.unit, p_std, n)
         res.store("Error", "{res_type}_dev".format(res_type=res_type), p_std/p_mean_weight, "1")
 
     def correction_delta_height(self, res):
-        """Calculates the relative contribution of the pressure 
+        """Calculates the relative contribution of the pressure
         rise due to outgasing.
 
         :param: instance of a class with methode
@@ -520,16 +531,42 @@ class Cal(Se3):
         :type: class
         """
         f_name = self.get_expansion_name()
-       
+
         p_fill = res.pick("Pressure", "fill", self.unit)
-        
-        
+
+
         gas = self.get_gas()
-        
+
         dp = self.pressure_delta_height(p=p_fill, p_unit=self.unit, f_name=f_name, gas=gas)
         F = 1 + dp/p_fill
-      
+
         res.store("Correction", "delta_heigth", F,  "1")
+
+    def correction_f_pressure(self, res):
+        """Calculates the correction of the expansion
+        ratio due to pressure dependency of closing process.
+        (see valve paper 6.1 pressure dependend correction factor)
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+            pick_dict(quantity, type)
+        :type: class
+        """
+        f_name = self.get_expansion_name()
+        F  = np.full(len(f_name), 1.0)
+
+        ## hard wired unit because of corr_f_p_a
+        p_fill = res.pick("Pressure", "fill", "Pa")
+
+        i_s = np.where(f_name == "f_s")
+        if np.shape(i_s)[1] > 0:
+            a = self.get_value("corr_f_p_a", "1/Pa")
+            b = self.get_value("corr_f_p_b", "1")
+
+            F[i_s] = (1 - a * p_fill[i_s] + b)
+
+        res.store("Correction", "f_p_dependency", F,  "1")
 
     def pressure_delta_height(self, p, p_unit, f_name, gas="N2"):
         """ Follows QSE-SE3-19-3 at http://a73435.berlin.ptb.de:82/lab?
@@ -560,7 +597,7 @@ class Cal(Se3):
         g = self.Cons.get_value("g", "m/s^2")
 
         dp = - h_i * p * M * g /R / T
-        
+
         return dp * self.Cons.get_conv(from_unit="Pa", to_unit=self.unit)
 
     def temperature(self, channels, sufix="_before", prefix="ch_", sufix_corr="", prefix_corr="corr_ch_"):
@@ -649,7 +686,7 @@ class Cal(Se3):
         """
         t_mean, t_stdv, t_N = self.temperature(list(range(2029, 2031)), "_after")
         res.store("Temperature", "room", t_mean, "K", t_stdv, t_N)
-    
+
     def temperature_comp(self, res):
         """Calculates the temperature of the room.
 
@@ -664,7 +701,7 @@ class Cal(Se3):
         res.store("Temperature", "room", t_mean, "K", t_stdv, t_N)
 
     def temperature_gas_expansion(self, res):
-        """Defines the gas temperature as the vessel 
+        """Defines the gas temperature as the vessel
          temperature after expansion
 
         :param: instance of a class with methode
@@ -676,7 +713,7 @@ class Cal(Se3):
         res.store("Temperature", "gas", gas_temp, "K")
 
     def temperature_gas_direct(self, res):
-        """Defines the gas temperature as the 
+        """Defines the gas temperature as the
          temperature of the vacuum pipes
 
         :param: instance of a class with methode
@@ -708,11 +745,30 @@ class Cal(Se3):
                     offs[i_r] = np.nanmean(offset_sample_value)
                     n_offs[i_r] = np.count_nonzero(~np.isnan(offset_sample_value))
                     sd_offs[i_r]= np.nanstd(offset_sample_value)
-                
+
         else:
-            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset") 
+            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
             offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
             sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
-            n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))      
-   
+            n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))
+
         res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)
+
+    def all(self, ana):
+        self.pressure_gn_corr(ana)
+        self.pressure_gn_mean(ana)
+        self.deviation_target_fill(ana)
+        self.temperature_before(ana)
+        self.temperature_after(ana)
+        self.temperature_room(ana)
+        self.temperature_gas_expansion(ana)
+        self.real_gas_correction(ana)
+        self.volume_add(ana)
+        self.volume_start(ana)
+        self.expansion(ana)
+        self.pressure_rise(ana)
+        self.correction_delta_height(ana)
+        self.correction_f_pressure(ana)
+        self.pressure_cal(ana)
+        self.error_pressure_rise(ana)
+        self.deviation_target_cal(ana)

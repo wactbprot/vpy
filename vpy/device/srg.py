@@ -80,7 +80,7 @@ class Srg(Device):
         
         return  np.sqrt(srg_temperature/reference_temperature)
 
-    def pressure(self, pressure_dict, temperature_dict, unit= "Pa", gas= "N2"):
+    def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= "Pa", gas= "N2"):
         """Calculates the presssure by means of dcr_conversion.
         Returns the pressure in the given unit.
         """

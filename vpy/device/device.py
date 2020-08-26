@@ -15,7 +15,7 @@ class Device(Document):
         self.ToDo = ToDo(doc)
         self.Vals = Values({})
 
-        if "CalibrationObject" in dev: 
+        if "CalibrationObject" in dev:
             dev = dev.get('CalibrationObject')
 
         if "CustomerObject" in dev:
@@ -23,7 +23,7 @@ class Device(Document):
 
         if "Uncertainty" in dev:
             self.uncert_dict = dev.get('Uncertainty')
-        
+
         self.name = dev.get("Name")
         super().__init__(dev)
 
@@ -43,12 +43,12 @@ class Device(Document):
         else:
             return False
 
-    def check_source_skip(self, uncert_dict, skip ): 
+    def check_source_skip(self, uncert_dict, skip ):
         if skip is not None:
             return self.check_skip(uncert_dict, "Source", skip)
         else:
             return False
-    
+
     def check_type_skip(self, uncert_dict, skip ):
         if skip is not None:
             return self.check_skip(uncert_dict, "UncertType", skip)
@@ -72,22 +72,22 @@ class Device(Document):
         can be skipped.
 
         For digitalisation uncertainties an `Resolution` key may be
-        provided.  
-        
+        provided.
+
         .. note::
 
             Typ-A: Ermittlung aus der statistischen Analyse mehrerer
             statistisch unabhängiger Messwerte aus einer
-            Messwiederholung.  
+            Messwiederholung.
             Typ-B: Ermittlung ohne statistische
             Methoden, beispielsweise durch Entnahme der Werte aus
             einem Kalibrierschein...
 
-        :param meas_vec: array containing values of the measurment 
-                         vector the uncertainties are related to 
+        :param meas_vec: array containing values of the measurment
+                         vector the uncertainties are related to
         :type meas_vec: np.array
 
-        :param  meas_unit: unit of meas_vec  
+        :param  meas_unit: unit of meas_vec
         :type  meas_unit: str
 
         :param return_unit: unit of the return values
@@ -97,11 +97,11 @@ class Device(Document):
         :rtype: np.array
 
         """
-        
+
         uncert_arr = []
         if "uncert_dict" in self.__dict__:
             u_dict = self.uncert_dict
-            
+
             for u_i in u_dict:
                 if self.check_source_skip(u_i, skip_source):
                     continue
@@ -130,7 +130,7 @@ class Device(Document):
                 if u_val is not None:
                     u[range_index] = float(u_val)
                     u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
-                    
+
                 if digit is not None:
                     exp = np.floor(np.log10(np.abs(meas_vec[range_index])))
                     u[range_index] = [digit * 0.29 * 10**e for e in exp]
@@ -159,7 +159,7 @@ class Device(Document):
             from_val = from_val[0]
         if type(to_val) == np.ndarray:
             to_val = to_val[0]
-            
+
         N = np.shape(meas_vec)[0]
         n = np.full(N, False)
         a = np.full(N, True)
@@ -174,7 +174,7 @@ class Device(Document):
                 return n
         else:
             return a
-        
+
     def convert_range_to_meas_unit(self, meas_unit, range_unit, from_val, to_val):
         if from_val and to_val and meas_unit and range_unit:
             range_conv = self.Const.get_conv(from_unit=range_unit, to_unit=meas_unit)
@@ -190,6 +190,9 @@ class Device(Document):
 
     def convert_to_return_unit(self, u, u_unit, meas_vec, meas_unit, return_unit):
         if u_unit and meas_unit and return_unit:
+            if return_unit == "1" and u_unit != "1" and u_unit == meas_unit:
+                return u/meas_vec, return_unit
+
             if u_unit != "1":
                 conv = self.Const.get_conv(from_unit=u_unit, to_unit=return_unit)
                 if u_unit == "C" and return_unit == "K":
@@ -230,11 +233,9 @@ class Device(Document):
             ana.store('Range', 'ind', range_str, '1')
 
     def ask_for_offset_uncert(self, offset, unit, range_str="all"):
-        """ Asks for u(offset).  
+        """ Asks for u(offset).
         """
         print("\n\n\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n")
-        print(offset)
-    
         u =  float(input("\n\nType in offset uncertainty in {}: ".format(unit)))
         d =  input("\n\nType in the distribution of the given uncerainty: r[ect] or n[ormal]: ")
 
@@ -242,5 +243,3 @@ class Device(Document):
             return u
         if d.startswith("r"):
             return u*0.29
-
-

@@ -151,30 +151,6 @@
             "Unit": null
         }
     ],
-    "Range": [
-        {
-            "Type": "offset",
-            "Unit": "1"
-        },
-        {
-            "Type": "ind",
-            "Unit": "1"
-        }
-    ],
-    "Position": [
-        {
-            "Type": "dut_a",
-            "Unit": null
-        },
-        {
-            "Type": "dut_b",
-            "Unit": null
-        },
-        {
-            "Type": "dut_c",
-            "Unit": null
-        }
-    ],
     "Time": [
         {
             "Type": "amt_fill",
@@ -549,6 +525,20 @@
         {
             "Type": "ch_2030_after",
             "Unit": "C"
+        }
+    ],
+    "Position": [
+        {
+            "Type": "dut_a",
+            "Unit": null
+        },
+        {
+            "Type": "dut_b",
+            "Unit": null
+        },
+        {
+            "Type": "dut_c",
+            "Unit": null
         }
     ]
 }

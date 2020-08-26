@@ -7,7 +7,8 @@ from ..calibration_devices import CalibrationObject
 
 
 class Standard(Document):
-    """All standards need ``Constants`` and ``CalibrationObjects``
+    """All standards need ``Constants`` and ``CalibrationObjects``.
+    ``Values({})`` provides many useful functions.
     """
     low_is_best = [0,1,2,3,4,5,6,7,8,9]
     high_is_best = [9,8,7,6,5,4,3,2,1,0]
@@ -20,34 +21,33 @@ class Standard(Document):
                             'Pressure':center_is_best,
                             'Volume' : between_is_ok,
                             'Temperature': center_is_best,
-                            'Fallback': all_bad,
-                            }
+                            'Fallback': all_bad,}
 
     def __init__(self, doc, name):
 
         self.Cons = Constants(doc)
         self.Cobj = CalibrationObject(doc)
-        self.Vals = Values({}) ## provides many useful functions
-        
+        self.Vals = Values({})
+
         if 'State' in doc:
-            doc = doc['State']
+            doc = doc.get('State')
 
         if 'Calibration' in doc:
-            doc = doc['Calibration']
+            doc = doc.get('Calibration')
 
         if "ToDo" in doc:
             self.ToDo = ToDo(doc)
 
         if 'Standard' in doc:
-            doc = doc['Standard']
+            doc = doc.get('Standard')
 
             if isinstance(doc, list):
                 for s in doc:
-                    if s['Name'] == name:
+                    if s.get('Name') == name:
                         super().__init__(s)
 
             if isinstance(doc, dict):
-                if doc['Name'] == name:
+                if doc.get('Name') == name:
                     super().__init__(doc)
 
     def real_gas_correction(self, res):
@@ -62,8 +62,8 @@ class Standard(Document):
 
         vconv = self.Cons.get_conv("m^3", "cm^3")
         R = self.Cons.get_value("R", "Pa m^3/mol/K") * vconv
-       
-        p = res.pick("Pressure", "fill", self.unit) 
+
+        p = res.pick("Pressure", "fill", self.unit)
 
         rg = 1. / (1. + p * B / (R * T))
 

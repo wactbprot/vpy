@@ -36,8 +36,8 @@ class Values(Document):
                     super().__init__(doc[name])
                 else:
                     super().__init__({})
-    
-   
+
+
     def unit_convert(self, val, a, b="1"):
         """Returns value (or numpy array of values) converted from unit a to unit b.
         Returns value in SI units if no third argument is given.
@@ -76,7 +76,7 @@ class Values(Document):
         """Converts rectangular distrib.
         to normal distrib."""
         return a*0.29
-    
+
     def cnt_nan(self, d):
         return np.count_nonzero(~np.isnan(d))
 
@@ -96,7 +96,7 @@ class Values(Document):
                     break
             else: groups[i] = [i]
         return list(groups.values())
-    
+
     def diff_less(self, d):
         return lambda x, y: abs(x-y)/((x+y)/2)<d
 
@@ -115,7 +115,7 @@ class Values(Document):
         if not np.isfinite(val): return "nan"
 
         #check if val is exactly zero
-        if not(val == 0):                            
+        if not(val == 0):
             #determine exponent of val to basis 10
             val_power = int(np.floor(np.log10(abs(val))))
             #round val by generating an integer with digits matching the number significant digits
@@ -142,13 +142,13 @@ class Values(Document):
                 val_str = val_str + "0"
             return val_str + str(abs(- n + val_power +1))
 
-        #if val is not exactly zero and scientific notation is switched off   
+        #if val is not exactly zero and scientific notation is switched off
         if not(scientific) and val_power < 0: return f"{val:.{n - val_power - 1}f}"
         if not(scientific) and 0 <= val_power:
             n = n - val_power - 1
             if n < 0: n = 0
             return f"{val:.{n}f}"
-            
+
         #in cases of scientific notation
         n = n - 1
         if n < 0: n = 0
@@ -190,9 +190,9 @@ class Values(Document):
 
     def invers_array_sum(self, a):
         """Calculates the invers sum of columns the given array.
-        
+
         .. code ::
-            
+
             invers_array_sum([
                             [a1, a2, a3],
                             [b1, b2, b3]
@@ -202,9 +202,9 @@ class Values(Document):
 
     def invers_array_square_sum(self, a):
         """Calculates the invers sum of columns the given array.
-        
+
         .. code ::
-            
+
             invers_array_sum([
                             [a1, a2, a3],
                             [b1, b2, b3]
@@ -216,7 +216,7 @@ class Values(Document):
         return np.sqrt(np.nansum(np.power(a, 2), axis=0))
 
     def weight_array_mean(self, x, w):
-        """ Calculates  a w weighted array mean following 
+        """ Calculates  a w weighted array mean following
         Cox, Metrologia, 2002, 39, 591,  equation (1)
         """
         return np.nansum(np.array(x)/np.power(np.array(w), 2), axis=0)/np.nansum(1/np.power(np.array(w), 2), axis=0)
@@ -226,15 +226,15 @@ class Values(Document):
          https://de.wikipedia.org/wiki/Lineare_Einfachregression
          """
         n = len(x)
-        
+
         avr_x = np.sum(x)/n
         avr_y = np.sum(y)/n
 
         m = np.sum((x - avr_x) * (y - avr_y))/np.sum((x - avr_x)**2)
         b = avr_y - m * avr_x
-        
+
         var_s = np.sum((y - b - m * x)**2)/(n-2)
-        
+
         var_b = var_s * np.sum(x**2) / (n * np.sum((x - avr_x)**2))
         var_m = var_s * 1.0 / np.sum((x - avr_x)**2)
 
@@ -319,15 +319,15 @@ class Time(Values):
 
         :param dict_type: name of the Type (e.g. amt_fill)
         :type dict_type: str
-     
+
         :param unit: expected unit of the Type (e.g. ms)
         :type unit: str
-        
+
         :returns: relative measure time
         :rtype: np.array | None
-        """ 
+        """
         amt = self.get_value(dict_type, unit)
-        if unit == "ms":        
+        if unit == "ms":
             return np.array([datetime.fromtimestamp(d/1000.0).strftime('%Y-%m-%d %H:%M:%S') for d in amt])
         else:
             sys.exit("todo: care about unit conversion")
@@ -337,20 +337,20 @@ class Time(Values):
 class Date(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Date', quant)
-    
+
     def first_measurement(self):
         """Returns the first measurement date. The expected
         structure is:
-        
+
         .. code-block:: javascript
-        
+
              "Date": [
                         {
                         "Type": "measurement",
                         "Value": [ "2018-10-19 09:01", "2018-10-20 09:01"]
                         }
                      ]
-        
+
         at the path: ``Calibration.Measurement``
 
         :returns: first entry where the type is measurement
@@ -361,7 +361,7 @@ class Date(Values):
         if isinstance(date_arr, np.ndarray):
             if isinstance(date_arr[0], str):
                 date = date_arr[0].split(' ')[0]
-                if not len(date) == 10: 
+                if not len(date) == 10:
                     sys.exit("implement me!")
             else:
                 sys.exit("implement me!")
@@ -427,6 +427,7 @@ class AuxValues(Document):
         ret = np.full(N, np.nan)
         time = self.get_value(auxtime, timeunit)
         value = self.get_value(auxval, valunit)
+
         if len(time) == len(value):
             i = 0
             for tm in meastime:
