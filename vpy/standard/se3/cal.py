@@ -59,25 +59,26 @@ class Cal(Se3):
                     val = compare.pick(quant, dct['Type'], dct['Unit'])
                     rnd_val = []
                     rtn_val = []
-                    min = dct['Min']
-                    max = dct['Max']
+                    v_min = dct['Min']
+                    v_max = dct['Max']
 
-                    v_vec = np.linspace(min, max, 10)
+                    v_vec = np.linspace(v_min, v_max, 10)
                     if quant in self.rating_distributions:
                         r_vec = self.rating_distributions[quant]
                     else:
                         r_vec = self.rating_distributions['Fallback']
 
                     for v in val:
+
                         if np.isnan(v):
                             rtn_val.append("NaN")
                             rnd_val.append("NaN")
                         else:
                             rnd_val.append('{:0.4e}'.format(v))
-                            if v < min:
-                                rtn_val.append( r_vec[0])
-                            elif v > max:
-                                rtn_val.append( r_vec[-1])
+                            if v < v_min:
+                                rtn_val.append(9)
+                            elif v > v_max:
+                                rtn_val.append(9)
                             else:
                                 d = np.abs(v_vec - v)
                                 i = np.argmin(d)
@@ -123,6 +124,18 @@ class Cal(Se3):
         res.store("OutGasRate", "outgas_vessel_starting_volumes",  m_b, "mbar/s")
         res.store("OutGasRate", "outgas_pressure_inlet",  m_is, "mbar/s")
         res.store("OutGasRate", "outgas_pressure_outlet",  m_os, "mbar/s")
+
+    def pressure_loss(self, res):
+        """ Calculates the pressure loss.
+
+        :param: instance of a class with methode
+            store(quantity, type, value, unit, [stdev], [N])) and
+            pick(quantity, type, unit)
+        :type: class
+        """
+        time_conv = self.Cons.get_conv("ms", "s")
+        l_s = self.OutGas.get_value("loss_slope_x", "mbar/ms") / time_conv
+        res.store("PressureLoss", "gas_inlet",  l_s, "mbar/s")
 
 
     def temperature_state(self, res):

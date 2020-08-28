@@ -13,10 +13,11 @@ class Standard(Document):
     low_is_best = [0,1,2,3,4,5,6,7,8,9]
     high_is_best = [9,8,7,6,5,4,3,2,1,0]
     center_is_best = [8,6,4,2,0,1,3,5,7,9]
-    between_is_ok = [3,1,0,0,0,0,0,0,1,3]
+    between_is_ok = [9,4,2,0,0,0,0,2,4,9]
     all_bad = [9,9,9,9,9,9,9,9,9,9]
 
     rating_distributions = {'OutGasRate': low_is_best,
+                            'PressureLoss':between_is_ok,
                             'Error':center_is_best,
                             'Pressure':center_is_best,
                             'Volume' : between_is_ok,

@@ -121,6 +121,19 @@ class Se3(Standard):
     }
 
     state_check = {
+        "PressureLoss":{
+            "Valves":{"Type":"gas_inlet", "Unit": "mbar/s" , "Max":1e-5, "Min": -1e-5,"Description":"Integral leak test; pressure loss in detour pipe"},
+        },
+        "OutGasRate":{
+            "VesselIO":{"Type":"outgas_vessel_starting_volumes", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate of vessel if starting volumes inlet valves are closed and outlet valves are open"},
+            "VesselI":{"Type":"outgas_pressure_inlet", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate for pressure at the starting volumes inlet valves."},
+            "VesselO":{"Type":"outgas_pressure_outlet", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate for pressure at the starting volumes outlet valves."},
+            "Vessel":{"Type":"outgas_v", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate of vessel only"},
+            "VesselBranch":{"Type":"outgas_u", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10, "Description":"Outgasig rate of vessel and dut branch (all dut branches closed)"},
+            "VesselDutABC":{"Type":"outgas_abc", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate of vessel, dut branch and dut-abc"},
+            "VesselDutBC":{"Type":"outgas_bc", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate of vessel, dut branch and dut-bc"},
+            "VesselDutC":{"Type":"outgas_c", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate of vessel, dut branch and dut-c"},
+        },
         "Volume": {
           "Branch":{"Type":"add_branch", "Unit": "cm^3" , "Max":550.0, "Min":450.0, "Description":"Additional volume of dut-branch. All dut valves are closed."},
           "BranchDutA":{"Type":"add_a", "Unit": "cm^3" , "Max":1100.0, "Min":500.0, "Description":"Additional volume of dut a"},
@@ -129,17 +142,6 @@ class Se3(Standard):
           "DutA":{"Type":"a", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut a only"},
           "DutB":{"Type":"b", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut b only"},
           "DutC":{"Type":"c", "Unit": "cm^3" , "Max":600.0, "Min":10.0, "Description":"Additional volume of dut c only"}
-        },
-        "OutGasRate":{
-            "Vessel":{"Type":"outgas_vessel_starting_volumes", "Unit": "mbar/s" , "Max":2e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel if starting volumes inlet valves are closed and outlet valves are open"},
-            "Vessel":{"Type":"outgas_pressure_inlet", "Unit": "mbar/s" , "Max":3e-9, "Min": 1e-11,"Description":"Outgasig rate for pressure at the starting volumes inlet valves."},
-            "Vessel":{"Type":"outgas_pressure_outlet", "Unit": "mbar/s" , "Max":3e-9, "Min": 1e-11,"Description":"Outgasig rate for pressure at the starting volumes outlet valves."},
-            "DutBranch":{"Type":"pressure_loss", "Unit": "mbar/s" , "Max":5e-9, "Min": -5e-9,"Description":"Integral leak test; pressure loss in detour pipe"},
-            "Vessel":{"Type":"outgas_v", "Unit": "mbar/s" , "Max":2e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel only"},
-            "VesselBranch":{"Type":"outgas_u", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11, "Description":"Outgasig rate of vessel and dut branch (all dut branches closed)"},
-            "VesselDutABC":{"Type":"outgas_abc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-abc"},
-            "VesselDutBC":{"Type":"outgas_bc", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-bc"},
-            "VesselDutC":{"Type":"outgas_c", "Unit": "mbar/s" , "Max":5e-9, "Min": 1e-11,"Description":"Outgasig rate of vessel, dut branch and dut-c"},
         },
         "Pressure":{
           "CDG1T1":{"Type":"1T_1-state", "Unit": "Pa" , "Max":1, "Min": -1,"Description":"Offset of 1st 1T CDG"},
@@ -385,6 +387,16 @@ class Se3(Standard):
         if 'OutGasRate' in values:
             for outgasrate in values.get('OutGasRate'):
                 res.store_dict('OutGasRate', outgasrate, dest="AuxValues")
+        else:
+            sys.exit('missing outGas rate section in state doc {}'.format(doc_id))
+
+        if 'PressureLoss' in values:
+            for pressure_loss in values.get('PressureLoss'):
+                res.store_dict('PressureLoss', pressure_loss, dest="AuxValues")
+
+        if 'Pressure' in values:
+            for pressure in values.get('Pressure'):
+                res.store_dict('Pressure', pressure, dest="AuxValues")
         else:
             sys.exit('missing outGas rate section in state doc {}'.format(doc_id))
 
