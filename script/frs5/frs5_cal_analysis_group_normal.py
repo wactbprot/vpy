@@ -59,13 +59,15 @@ def main():
             for dev in devs:            
                 p_offset = cal.Pres.get_value( '{}-offset'.format(dev), cal.unit)    
                 p_ind = cal.Pres.get_value('{}-ind'.format(dev), cal.unit)
-            
+                p_ind_corr = p_ind - p_offset
                 res.store("Pressure", '{}-offset'.format(dev), p_offset, cal.unit)
                 res.store("Pressure",'{}-ind'.format(dev), p_ind, cal.unit)
-                res.store("Pressure",'{}-ind_corr'.format(dev), p_ind - p_offset, cal.unit)
+                res.store("Pressure",'{}-ind_corr'.format(dev), p_ind_corr, cal.unit)
                 
-                res.store('Error', '{}-ind'.format(dev), p_ind/p_cal-1, '1')
-
+                res.store('Error', '{}-ind'.format(dev), p_ind_corr/p_cal-1, '1')
+                print(dev)
+                print("----------------------------")
+                print(p_ind_corr/p_cal-1)
             io.save_doc(res.build_doc())
 
 if __name__ == "__main__":

@@ -110,7 +110,6 @@ class Cal(Se3):
         m_c = self.OutGas.get_value("rise_c_slope_x", "mbar/ms") / time_conv
         m_u = self.OutGas.get_value("rise_u_slope_x", "mbar/ms") / time_conv
         m_v = self.OutGas.get_value("rise_base_slope_x", "mbar/ms") / time_conv
-        l_s = self.OutGas.get_value("loss_slope_x", "mbar/ms") / time_conv
         m_b = self.OutGas.get_value("rise_inlet_closed_outlet_open_slope_x", "mbar/ms") / time_conv
         m_is = self.OutGas.get_value("rise_pressure_inlet_slope_x", "mbar/ms") / time_conv
         m_os = self.OutGas.get_value("rise_pressure_outlet_slope_x", "mbar/ms") / time_conv
@@ -120,7 +119,6 @@ class Cal(Se3):
         res.store("OutGasRate", "outgas_c",  m_c, "mbar/s")
         res.store("OutGasRate", "outgas_u",  m_u, "mbar/s")
         res.store("OutGasRate", "outgas_v",  m_v, "mbar/s")
-        res.store("OutGasRate", "pressure_loss",  l_s, "mbar/s")
         res.store("OutGasRate", "outgas_vessel_starting_volumes",  m_b, "mbar/s")
         res.store("OutGasRate", "outgas_pressure_inlet",  m_is, "mbar/s")
         res.store("OutGasRate", "outgas_pressure_outlet",  m_os, "mbar/s")
@@ -134,7 +132,7 @@ class Cal(Se3):
         :type: class
         """
         time_conv = self.Cons.get_conv("ms", "s")
-        l_s = self.OutGas.get_value("loss_slope_x", "mbar/ms") / time_conv
+        l_s = self.PressureLoss.get_value("loss_slope_x", "mbar/ms") / time_conv
         res.store("PressureLoss", "gas_inlet",  l_s, "mbar/s")
 
 

@@ -10,7 +10,7 @@ from ...device.rsg import Rsg
 
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, Position, Expansion, Date, Range
+from ...values import Temperature, Pressure, Time, AuxSe3, OutGasRate, PressureLoss, Position, Expansion, Date, Range
 from ..standard import Standard
 
 
@@ -270,6 +270,7 @@ class Se3(Standard):
 
         if 'State' in doc:
             self.OutGas = OutGasRate(doc)
+            self.PressureLoss = PressureLoss(doc)
             self.no_of_meas_points = len(self.Time.get_value("amt", "ms"))
 
         if 'Calibration' in doc:
