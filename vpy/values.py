@@ -276,6 +276,10 @@ class OutGasRate(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'OutGasRate', quant)
 
+class PressureLoss(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'PressureLoss', quant)
+
 class Position(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Position', quant)

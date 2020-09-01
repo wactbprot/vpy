@@ -3,20 +3,14 @@ python script/dkm_ppc4/dkm_ppc4_cal_analysis.py --ids 'cal-2018-dkm_ppc4-kk-7500
 """
 import sys
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.dkm_ppc4.cal import Cal
 from vpy.standard.dkm_ppc4.uncert import Uncert
-from vpy.device.cdg import InfCdg
-import numpy as np
-import matplotlib.pyplot as plt
 
-from vpy.device.cdg import InfCdg, Cdg
-from vpy.device.srg import Srg
-from vpy.device.rsg import Rsg
-from vpy.device.qbs import Qbs
+import numpy as np
 
 def main():
     io = Io()
@@ -45,20 +39,8 @@ def main():
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
             
-            if 'CustomerObject' in doc['Calibration']:
-                customer_device = doc['Calibration']['CustomerObject']
-                dev_class = customer_device.get('Class', "generic")
-                if dev_class == 'SRG':
-                    CustomerDevice = Srg(doc, customer_device)
-                if dev_class == 'CDG':
-                    CustomerDevice = Cdg(doc, customer_device)
-                if dev_class == 'RSG':
-                    CustomerDevice = Rsg(doc, customer_device)
-                if dev_class == 'QBS':
-                    CustomerDevice = Qbs(doc, customer_device)
-            
             res = Analysis(doc)
-            uncert = Uncert(doc)
+           
             cal = Cal(doc)
             cal.temperature(res)
             cal.temperature_correction(res)
@@ -67,22 +49,23 @@ def main():
             cal.pressure_cal(res)
             
             # cal uncert of standard
+            uncert = Uncert(doc)
             uncert.total(res)
 
             ## calculate customer indication
             gas = cal.Aux.get_gas()
 
-            devs = (
-                #"100T_1", "100T_2", "100T_3",
-                "500T_1",
-                "1000T_1", "1000T_2", "1000T_3",
-                )
+            devs = ("50T_1",
+                    "100T_1", "100T_2", "100T_3",
+                    "500T_1",
+                    "1000T_1", "1000T_2", "1000T_3",)
 
             p_cal = res.pick("Pressure", "cal", cal.unit)
             for dev in devs:            
                 p_offset = cal.Pres.get_value( '{}-offset'.format(dev), cal.unit)    
                 p_ind = cal.Pres.get_value('{}-ind'.format(dev), cal.unit)
                 e = p_ind/p_cal-1
+                print("----------------") 
                 print(dev)
                 print(p_cal)
                 print(e)
