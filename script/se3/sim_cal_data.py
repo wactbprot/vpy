@@ -14,7 +14,8 @@ def main(io, config):
 
     io.eval_args()
     doc = {"_id": "cal-sim-se3",
-        "Calibration":{
+        "Calibration":{"ToDo":{"Standard": "SE3",
+                               "Type": "error"},
                        "Measurement":{}}}
     struct_path = config.get("struct_path")
     values_file = config.get("values_file")
@@ -33,16 +34,20 @@ def main(io, config):
     doc['Calibration']['Measurement']['Values'] = vals
     doc['Calibration']['Measurement']['AuxValues'] = aux_vals
 
-    ana = Analysis(doc, insert_dict={'AuxValues': ana_aux_vals}, analysis_type="expansion")
-
-    cal = Cal(doc)
-    cal.all(ana)
-    Uncert(doc).total(ana)
-
     ##-----------------------------------------
     ## device
     ##-----------------------------------------
     doc['Calibration']['CustomerObject'] = config.get("customer_object")
+
+    ##-----------------------------------------
+    ## ini
+    ##-----------------------------------------
+    ana = Analysis(doc, insert_dict={'AuxValues': ana_aux_vals}, analysis_type="expansion")
+    cal = Cal(doc)
+    cal.all(ana)
+    Uncert(doc).total(ana)
+
+
     cus_dev = init_customer_device(doc)
     gas = config.get("gas")
 
@@ -63,7 +68,7 @@ def main(io, config):
     cus_dev.range_trans(ana)
 
     cus_dev.offset_uncert(ana)
-    cus_dev.repeat_uncert(ana)
+    cus_dev.repeat_uncert(ana, cmc=False)
 
     if "uncert_dict" in dir(cus_dev):
         u_add = cus_dev.get_total_uncert(meas_vec=p_ind,

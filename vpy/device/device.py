@@ -25,6 +25,7 @@ class Device(Document):
             self.uncert_dict = dev.get('Uncertainty')
 
         self.name = dev.get("Name")
+        self.dev_class = dev.get("Class")
         super().__init__(dev)
 
     def check_skip(self, uncert_dict, prop, skip):
