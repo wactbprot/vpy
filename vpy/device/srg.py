@@ -11,16 +11,16 @@ class Srg(Device):
     sigma_min_pressure = 0.1
     sigma_max_pressure = 1.33322
     total_relative_uncertainty_k2 = 2.6e-3 ## workaround
-    
+
     def __init__(self, doc, dev):
         super().__init__(doc, dev)
 
-        
+
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
         return self.doc.get("Name")
-    
+
     def make_sigma_index(self, p_cal, unit):
         """Replaces the `ToDo.make_average_index()`
         since all pressures in the range `p_cal[i] > min_p and p_cal[i] < max_p`
@@ -53,7 +53,7 @@ class Srg(Device):
             conv_m = self.Const.get_conv(from_unit='g', to_unit='kg')
             conv_V = self.Const.get_conv(from_unit='cm^3', to_unit='m^3')
             rho = self.get_value("Density","g/cm^3")*conv_m/conv_V
-        
+
         d   = self.get_value("d", "m")
         if d is None:
             conv_s = self.Const.get_conv(from_unit='mm', to_unit='m')
@@ -64,9 +64,9 @@ class Srg(Device):
         M   = self.Const.get_value("molWeight_" + gas, "kg/mol")
 
         conv = self.Const.get_conv("Pa", unit)
-        
+
         return np.sqrt(8*R*T/(np.pi*M))*np.pi*d*rho/20*conv
-    
+
     def temperature_correction(self, temperature_dict):
         """Calculates the temperature correction to the reference temperature
         """
@@ -77,32 +77,32 @@ class Srg(Device):
         if temperature_unit == "C":
             conv = self.Const.get_conv(from_unit='C', to_unit='K')
             srg_temperature += conv
-        
+
         return  np.sqrt(srg_temperature/reference_temperature)
 
     def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= "Pa", gas= "N2"):
         """Calculates the presssure by means of dcr_conversion.
         Returns the pressure in the given unit.
         """
-       
+
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float) # np.array also converts None to na
-      
+
 
         if pressure_unit == "DCR":
             dcr_conv = self.dcr_conversion(unit, gas)
             self.log.debug(dcr_conv)
-            
+
             temp_corr = self.temperature_correction(temperature_dict)
             self.log.debug(temp_corr)
 
             pressure = pressure_value * dcr_conv  *temp_corr
         else:
             pressure = pressure_value * self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
-        
+
         return pressure
 
-    def sigma_null(self, p_cal, cal_unit, p_ind, ind_unit, k = 2):
+    def sigma_null(self, p_cal, cal_unit, p_ind, ind_unit):
         """
         https://de.wikipedia.org/wiki/Lineare_Einfachregression
         k = coverage factor
@@ -111,7 +111,7 @@ class Srg(Device):
         m ... slope
         b ... sigma_0
         var_m ... var(m)
-        var_b ... var(b) 
+        var_b ... var(b)
         u ... u(m/sigma_0)
 
         print(sens_m * var_m**0.5)
@@ -127,21 +127,24 @@ class Srg(Device):
         0.0001720421398635844
         0.00011476238813591167
         -2.17870974810604e-05
-        -2.1787097481060404e-05        
+        -2.1787097481060404e-05
         """
-        
+
         conv = self.Const.get_conv(from_unit=ind_unit, to_unit=cal_unit)
         p_ind = p_ind * conv
         x = p_cal
         y = p_ind/p_cal
-                
-        m, b, var_m, var_b = self.Vals.lin_reg(x, y)
 
+        m, b, var_m, var_b = self.Vals.lin_reg(x, y)
+        #print(m)
+        #print(b)
+        #print(var_m)
+        #print(var_b)
         sens_b = (m / b**2)
         sens_m = (1.0 / b)
-       
-        u = k * (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty_k2/2.0 * m/b)**2)**0.5
-              
+
+        u = (sens_m**2 * var_m  + sens_b**2 * var_b +  (self.total_relative_uncertainty_k2/2.0 * m/b)**2)**0.5
+        #print(u)
         return b, m, u
 
     def uncert_sigma_eff(self, ana):
@@ -152,38 +155,38 @@ class Srg(Device):
         sigma = ana.pick("Sigma", "eff", "1")
         N = len(sigma)
         u_rel = 4.0e-4
-    
+
         ana.store("Uncertainty", "sigma_eff", np.full(N, u_rel), "1")
-        
+
     def uncert_ind(self, ana):
         sigma = ana.pick("Sigma", "eff", "1")
         N = len(sigma)
         u_rel = 1.0e-4
-        
+
         ana.store("Uncertainty", "ind", np.full(N, u_rel), "1")
-        
+
     def uncert_temperature(self, ana):
         sigma = ana.pick("Sigma", "eff", "1")
         N = len(sigma)
         u_rel = 3.4e-4
-        
+
         ana.store("Uncertainty", "temperature", np.full(N, u_rel), "1")
-        
+
     def uncert_offset(self, ana):
         sigma = ana.pick("Sigma", "eff", "1")
         N = len(sigma)
         u_rel = 5.1e-5
-    
+
         ana.store("Uncertainty", "offset", np.full(N, u_rel), "1")
 
     def uncert_repeat(self, ana):
         sigma = ana.pick("Sigma", "eff", "1")
         N = len(sigma)
         u_rel = 6.0e-4
-        
+
         ana.store("Uncertainty", "repeat", np.full(N, u_rel), "1")
 
-         
+
     def device_uncert(self, ana):
         u_1 = ana.pick("Uncertainty", "offset", "1")
         u_2 = ana.pick("Uncertainty", "repeat", "1")

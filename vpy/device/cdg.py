@@ -117,6 +117,9 @@ class Cdg(Device):
                 use_to = dev_setup.get('UseTo')
                 use_unit = dev_setup.get('UseUnit')
                 type_head = dev_setup.get('TypeHead')
+                if type_head:
+                    type_head = type_head.replace(".","")
+
                 conversion_type =  dev_setup.get('ConversionType')
 
                 if type_head:
@@ -529,8 +532,8 @@ class Cdg(Device):
         ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':u_abs}, dest=None)
         ana.store("Uncertainty", "offset", u_rel_arr, "1")
 
-    def repeat_uncert(self, ana):
-
+    def repeat_uncert(self, ana, cmc=True):
+        ok = False
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         if self.producer == "missing":
             msg = "No Producer in Device"
@@ -547,8 +550,42 @@ class Cdg(Device):
                 u = np.full(len(p_list), 2.9e-5)
             else:
                 u = np.full(len(p_list), 1.0e-4)
+            ok = True
 
-        else: #MKS und andere
+        if not cmc and self.type_head == "01Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+            ## calculation follows:
+            ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
+
+            m = 9.3e-06 #Pa/Pa
+            b = 0.00026 #Pa
+            u_rel_min = 0.0015 # 1
+            p_min = 0.167 # Pa
+
+            u = np.full(len(p_list), u_rel_min)
+            idx = np.where(p_list > p_min)[0]
+            if len(idx) > 0:
+                u[idx] = m + b/p_list[idx]
+
+            ok = True
+
+        if not cmc and self.type_head == "1Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+            ## calculation follows:
+            ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
+
+            m = 2.53e-05 #Pa/Pa
+            b = 0.00047 #Pa
+            u_rel_min = 0.000731 # 1
+            p_min = 0.67 # Pa
+
+            u = np.full(len(p_list), u_rel_min)
+            idx = np.where(p_list > p_min)[0]
+            if len(idx) > 0:
+                u[idx] = m + b/p_list[idx]
+
+            ok = True
+
+
+        if not ok: #Rest
             u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.],
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
 
