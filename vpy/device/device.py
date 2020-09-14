@@ -29,6 +29,7 @@ class Device(Document):
 
         self.name = dev.get("Name")
         self.dev_class = dev.get("Class")
+
         super().__init__(dev)
 
     def interp_function(self, x, y):
@@ -130,14 +131,9 @@ class Device(Document):
         arr = np.full(p.shape[0], np.nan)
         l_list = np.less_equal(p, self.max_p)
         u_list = np.greater_equal(p, self.min_p)
-
-        self.log.debug("lower list is: {l_list}".format(l_list=l_list))
-        self.log.debug("upper list is: {u_list}".format(u_list=u_list))
-
         idx = np.where( u_list & l_list)
-        self.log.debug("index vector is: {idx}".format(idx=idx))
+
         arr[idx] = p[idx]
-        self.log.debug("returning array is: {arr}".format(arr=arr))
 
         return arr
 
@@ -261,7 +257,6 @@ class Device(Document):
                     u, return_unit = self.convert_to_return_unit( u, meas_unit, meas_vec, meas_unit, return_unit)
 
                 uncert_arr.append( u )
-                self.log.debug("Found type {}, append {} to uncertainty array".format(u_type, u))
 
                 if prefix:
                     type_name="{dev}_{u_type}".format(dev=self.name, u_type=u_type)
