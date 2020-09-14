@@ -135,7 +135,7 @@ class Se3(Standard):
             "VesselDutC":{"Type":"outgas_c", "Unit": "mbar/s" , "Max":1e-8, "Min": 1e-10,"Description":"Outgasig rate of vessel, dut branch and dut-c"},
         },
         "Volume": {
-          "Branch":{"Type":"add_branch", "Unit": "cm^3" , "Max":550.0, "Min":450.0, "Description":"Additional volume of dut-branch. All dut valves are closed."},
+          "Branch":{"Type":"add_branch", "Unit": "cm^3" , "Max":600.0, "Min":500.0, "Description":"Additional volume of dut-branch. All dut valves are closed."},
           "BranchDutA":{"Type":"add_a", "Unit": "cm^3" , "Max":1100.0, "Min":500.0, "Description":"Additional volume of dut a"},
           "BranchDutB":{"Type":"add_ab", "Unit": "cm^3" , "Max":1700.0, "Min":500.0, "Description":"Additional volume of dut a and b together"},
           "BranchDutC":{"Type":"add_abc", "Unit": "cm^3" , "Max":2100.0, "Min":500.0, "Description":"Additional volume of dut a,b and c together"},
