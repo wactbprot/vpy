@@ -300,7 +300,8 @@ class Result(Analysis):
             d["SigmaNullCoverageProb"] = self.k_trans[k]
 
             v = self.Val.round_to_uncertainty(sigma_corr_slope, sigma_std*k, 2)
-            u = self.Val.round_to_uncertainty(sigma_std*k, u_r, 2)
+            u = self.Val.round_to_sig_dig(sigma_std*k, 2)
+
             sec["SigmaCorrSlope"] = self.to_si_pm_expr(v, u, "1/Pa")
             d["SigmaCorrSlope"] = float(v)
             d["SigmaCorrSlopeUncertainty"] = float(u)

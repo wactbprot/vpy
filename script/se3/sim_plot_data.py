@@ -5,6 +5,7 @@ import os
 sys.path.append(".")
 from vpy.analysis import Analysis
 from vpy.pkg_io import Io
+from vpy.helper import init_customer_device
 
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
@@ -22,6 +23,7 @@ def main(io, config):
     doc = io.read_json("{}/{}".format(struct_path, cal_file))
 
     ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
+    cuco = init_customer_device(doc)
 
     p_cal = ana.pick("Pressure", "cal", "Pa")
 
@@ -60,7 +62,7 @@ def main(io, config):
     plt.plot(p_cal, u_7, 'd-',lw=2, color=col_map[8], label="$T_{after}$" )
     plt.plot(p_cal, u_8, 'x-',lw=2, color=col_map[9], label="$K_iF_j$" )
 
-    plt.title(plot_title)
+    plt.title("{} \n Geräteklasse: {}, Vollausschlag: {}, Hersteller: {}".format(plot_title, cuco.dev_class, cuco.type_head, cuco.producer.upper()))
 
     plt.xscale('symlog', linthreshx=1e-12)
     plt.yscale('symlog', linthreshy=1e-12)

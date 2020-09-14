@@ -1,10 +1,10 @@
 import sys
+import datetime
 import numpy as np
-from scipy.interpolate import interp1d
 from scipy.optimize import curve_fit
 from ..device.device import Device
-from ..values import Values, Range
-
+from ..values import Values, Range, Time
+from ..constants import Constants
 
 class Cdg(Device):
     unit = "Pa"
@@ -71,9 +71,6 @@ class Cdg(Device):
         "X0.01":0.01,
     }
 
-    range_extend = 0.005 # relativ
-    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa
-
     def e_vis_limit(self):
         if self.max_p <= 14:
             return .1, 100.0, "Pa"
@@ -102,7 +99,7 @@ class Cdg(Device):
         return params
 
     def __init__(self, doc, dev):
-        super().__init__(doc, dev)
+        self.Const = Constants(doc)
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
@@ -116,12 +113,24 @@ class Cdg(Device):
                 use_to = dev_setup.get('UseTo')
                 use_unit = dev_setup.get('UseUnit')
                 type_head = dev_setup.get('TypeHead')
+                if type_head:
+                    type_head = type_head.replace(".","")
+
                 conversion_type =  dev_setup.get('ConversionType')
 
                 if type_head:
                     self.producer = "missing"
                     if "mks" in dev_device["Producer"].lower():
                         self.producer = "mks"
+                        if type_head in self.type_head_factor:
+                            self.max_p = self.type_head_factor.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
+
+                            if not conversion_type:
+                                self.conversion_type = "factor"
+
+                    if "edwards" in dev_device["Producer"].lower():
+                        self.producer = "edwards"
                         if type_head in self.type_head_factor:
                             self.max_p = self.type_head_factor.get(type_head)
                             self.min_p = self.max_p / 10.0**self.usable_decades
@@ -173,30 +182,32 @@ class Cdg(Device):
                 if type_head:
                     self.type_head = type_head
 
-            if 'Interpol' in dev:
-                # pressure
-                v, u = self.get_value_and_unit('p_ind')
-                conv = self.Const.get_conv(from_unit=u, to_unit=self.unit)
-                self.interpol_p = v * conv
-                # error
-                self.interpol_e = self.get_value(value_type='e', value_unit='1')
+        if 'Interpol' in dev:
+            # pressure
+            v, u = self.get_value_and_unit('p_ind')
+            conv = self.Const.get_conv(from_unit=u, to_unit=self.unit)
+            self.interpol_p = v * conv
+            # error
+            self.interpol_e = self.get_value(value_type='e', value_unit='1')
 
-                interpol_min = np.min(self.interpol_p)
-                interpol_max = np.max(self.interpol_p)
+            interpol_min = np.min(self.interpol_p)
+            interpol_max = np.max(self.interpol_p)
 
-                if self.min_p > interpol_min:
-                    self.interpol_min = self.min_p
-                else:
-                    self.interpol_min = interpol_min
-                if self.max_p > interpol_max:
-                    self.interpol_max =  interpol_max
-                else:
-                    self.interpol_max =  self.max_p
+            if self.min_p > interpol_min:
+                self.interpol_min = self.min_p
+            else:
+                self.interpol_min = interpol_min
+            if self.max_p > interpol_max:
+                self.interpol_max =  interpol_max
+            else:
+                self.interpol_max =  self.max_p
+
         else:
             msg = "Can't find device"
             self.log.error(msg)
             sys.exit(msg)
 
+        super().__init__(doc, dev)
 
     def temperature_correction(self, x_dict, p_cal_dict, t_gas_dict, t_head_dict, t_norm_dict, x_vis, x_vis_unit):
 
@@ -299,138 +310,8 @@ class Cdg(Device):
 
 
         return e
-
-    def interp_function(self, x, y):
-        return interp1d(x, y, kind="linear")
-
     def error(self, p_cal, p_ind, p_unit):
         return np.divide(p_ind, p_cal) - 1.0, '1'
-
-    def cal_interpol(self, pressure, error):
-        """Calculates a interpolation vector for the relative
-        error of indication.
-
-        This is done as follows:
-            # conv_smooth ( --> no longer!, absorbs e-characteristics!) replaced by:
-            # mean of mult meas. points
-            # extrapolate values to the borders
-            # get_default_values
-            # gen. interp. functions
-            # interpolate default values
-
-        """
-        # smooth
-        ## p = self.conv_smooth(pressure)
-        ## e = self.conv_smooth(error)
-        p = pressure
-        e = error
-
-        ## mean of mult meas. points
-        idx = self.Vals.gatherby_idx(p, self.Vals.diff_less(0.2))
-        p = [np.mean(p[i]) for i in idx]
-        e = [np.mean(e[i]) for i in idx]
-
-        # extrapolate
-        p, e = self.fill_to_dev_borders(p, e)
-
-        #interpolate function
-        f_e = self.interp_function(p, e)
-
-        # default values
-        p_default = self.get_default_values( np.nanmin(p), np.nanmax(p))
-
-        # cal. interpol on default values
-        e_default = f_e( p_default )
-
-        return  p_default, e_default
-
-    def get_dmin_idx(self, d):
-        m = np.amin(d)
-        return np.where(d == m)[0][0]
-
-    def fill_to_dev_borders(self, p, e):
-        """Use the first/last value in the array of e and u
-        as an extrapolation to the devive borders. Reduce the start/end
-        value of p by `self.range_extend` to overcome possible intervall issues.
-        """
-        extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
-        d = p - extr_p_low
-        i = self.get_dmin_idx(d)
-
-        extr_e_low = np.array([e[i]])
-
-        extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
-        d = extr_p_high - p
-        j = self.get_dmin_idx(d)
-        extr_e_high = np.array([e[j]])
-
-        ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
-        ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
-
-        return ret_p, ret_e
-
-    def conv_smooth(self, data, n=3):
-        """Generates smooth data by a convolution.
-        Bondaries (left and right) are calculated
-        from mean values.
-        """
-
-        weights = np.ones(n) / n
-
-        start_array = np.array([np.nanmean(data[0:n])])
-        med_array = np.convolve(data, weights, mode='valid')
-        end_array = np.array([np.nanmean(data[-n-1:-1])])
-
-        return np.concatenate((start_array, med_array, end_array ))
-
-    def rm_nan(self, x, ldx=None):
-        """Removes data from the given list by:
-
-        * testing ``np.isnan()``
-        * or the given (logical) vector ldx
-        """
-        if not isinstance(x,np.ndarray):
-            sys.exit("rm_nan x argument has wrong type")
-
-        if not isinstance(ldx, np.ndarray):
-            ldx = np.logical_not(np.isnan(x))
-
-        return x[ldx], ldx
-
-    def shape_pressure(self, p):
-        """Shapes the pressures by means of
-        ``self.min`` and ``self.max`` in the
-        unit ``self.unit``
-
-        :param p: pressure in the unit self.unit
-        :type p: np.array
-        """
-        p = np.nan_to_num(p)
-        arr = np.full(p.shape[0], np.nan)
-        l_list = np.less_equal(p, self.max_p)
-        u_list = np.greater_equal(p, self.min_p)
-
-        self.log.debug("lower list is: {l_list}".format(l_list=l_list))
-        self.log.debug("upper list is: {u_list}".format(u_list=u_list))
-
-        idx = np.where( u_list & l_list)
-        self.log.debug("index vector is: {idx}".format(idx=idx))
-        arr[idx] = p[idx]
-        self.log.debug("returning array is: {arr}".format(arr=arr))
-
-        return arr
-
-
-    def get_default_values(self, x_min, x_max):
-        i_min = np.where(self.interpol_pressure_points > x_min)[0][0]
-        i_max = np.where(self.interpol_pressure_points < x_max)[0][-1]
-
-        start_array = np.array([x_min])
-        med_array = self.interpol_pressure_points[i_min:i_max]
-        end_array = np.array([x_max])
-
-        return np.concatenate((start_array, med_array, end_array ))
-
 
     def offset_uncert(self, ana, use_idx = None):
         """
@@ -450,39 +331,75 @@ class Cdg(Device):
                 offset[i] = np.nan
 
         u = np.full(len(ind), np.nan)
-        uncert_contrib = {"Unit": self.unit}
 
-        if range_str is not None:
-            range_unique = np.unique(range_str)
-            for r in range_unique:
-                i_r = np.where(range_str == r)
-                ## sometimes all offset[i_r] are nan
-                all_nan = np.all(np.isnan(offset[i_r]))
-                if np.shape(i_r)[1] > 0 and not all_nan:
-                    m = np.nanmean(np.abs(np.diff(offset[i_r])))
-                    if m == 0.0:
-                        m = self.ask_for_offset_uncert(offset[i_r], self.unit, range_str=r)
+        ## time expan.:
+        t_ms = Time(ana.org).get_str("amt_fill")
+        if t_ms is None:
+            ## time direct & frs5:
+            t_ms = Time(ana.org).get_str("amt_meas")
 
-                    uncert_contrib[r] = m
-                    u[i_r] = m/ind[i_r]
-        else:
-            if len(offset) < 2:
-                m = self.ask_for_offset_uncert(offset, self.unit)
+        days = [datetime.datetime.fromtimestamp(int(t)/1000.0).day for t in t_ms]
+
+        u_rel_day_arr = {}
+        u_abs_day = {}
+
+        for day in np.unique(days):
+            uncert_contrib = {}
+            ddx = np.where(np.equal(days, day))
+            day_offset = np.take(offset, ddx)[0]
+            day_ind = np.take(ind, ddx)[0]
+
+            if range_str is not None:
+                day_range_str = np.take(range_str, ddx)[0]
+                range_unique = np.unique(day_range_str)
+                for r in range_unique:
+                    i_r = np.where(day_range_str == r)
+                    ## sometimes all day_offset[i_r] are nan
+                    all_nan = np.all(np.isnan(day_offset[i_r]))
+                    if len(i_r) > 0 and not all_nan:
+                        m = np.nanmean(np.abs(np.diff(day_offset[i_r])))
+                        if m == 0.0:
+                            m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, day_range_str=r)
+
+                        uncert_contrib[r] = m
+                        u_abs_day[day] = uncert_contrib
+                        u[i_r] = m/day_ind[i_r]
             else:
-                m = np.nanmean(np.abs(np.diff(offset)))
+                if len(day_offset) < 2:
+                    m = self.ask_for_offset_uncert(day_offset, self.unit)
+                else:
+                    m = np.nanmean(np.abs(np.diff(day_offset)))
 
-                if m == 0.0:
-                    ## Abschätzung 0.1% vom kleinsten p_ind
-                    m = self.ask_for_offset_uncert(offset, self.unit)
+                    if m == 0.0:
+                        ## Abschätzung 0.1% vom kleinsten p_ind
+                        m = self.ask_for_offset_uncert(day_offset, self.unit)
 
-                uncert_contrib["all"] = m
-                u = m/ind
+                    uncert_contrib["all"] = m
+                    u_abs_day[day] = uncert_contrib
+                    u = m/day_ind
+            u_rel_day_arr[day] = u
 
-        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':uncert_contrib}, dest=None)
-        ana.store("Uncertainty", "offset", u, "1")
+        u_rel_arr = np.array([])
+        u_abs = {}
 
-    def repeat_uncert(self, ana):
+        for day in np.unique(days):
+            u_rel_arr = np.concatenate((u_rel_arr, u_rel_day_arr[day]), axis=None)
+            for e in u_abs_day[day]:
+                if not e in u_abs:
+                    u_abs[e] =  np.array([])
+                u_abs[e] = np.append(u_abs[e], u_abs_day[day][e])
 
+
+        for e in u_abs:
+            u_abs[e] = np.mean(u_abs[e])
+
+
+        u_abs["Unit"] = self.unit
+        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':u_abs}, dest=None)
+        ana.store("Uncertainty", "offset", u_rel_arr, "1")
+
+    def repeat_uncert(self, ana, cmc=True):
+        ok = False
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         if self.producer == "missing":
             msg = "No Producer in Device"
@@ -499,8 +416,42 @@ class Cdg(Device):
                 u = np.full(len(p_list), 2.9e-5)
             else:
                 u = np.full(len(p_list), 1.0e-4)
+            ok = True
 
-        else: #MKS und andere
+        if not cmc and self.type_head == "01Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+            ## calculation follows:
+            ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
+
+            m = 9.3e-06 #Pa/Pa
+            b = 0.00026 #Pa
+            u_rel_min = 0.0015 # 1
+            p_min = 0.167 # Pa
+
+            u = np.full(len(p_list), u_rel_min)
+            idx = np.where(p_list > p_min)[0]
+            if len(idx) > 0:
+                u[idx] = m + b/p_list[idx]
+
+            ok = True
+
+        if not cmc and self.type_head == "1Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+            ## calculation follows:
+            ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
+
+            m = 2.53e-05 #Pa/Pa
+            b = 0.00047 #Pa
+            u_rel_min = 0.000731 # 1
+            p_min = 0.67 # Pa
+
+            u = np.full(len(p_list), u_rel_min)
+            idx = np.where(p_list > p_min)[0]
+            if len(idx) > 0:
+                u[idx] = m + b/p_list[idx]
+
+            ok = True
+
+
+        if not ok: #Rest
             u = np.asarray([np.piecewise(p, [p <= 9.5, (p > 9.5 and p <= 35.), (p > 35. and p <= 95.), p > 95.],
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
 
