@@ -4,6 +4,7 @@ from ..device.device import Device
 from ..constants import Constants
 
 class Qbs(Device):
+    unit = "Pa"
 
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
