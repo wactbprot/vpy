@@ -172,10 +172,7 @@ class Cdg(Device):
 
 
                 if not "max_p" in dir(self):
-                    msg = "missing definition for type head {head} and/or no use range given".format(head=type_head)
-                    self.log.error(msg)
-                    sys.exit(msg)
-
+                    sys.exit("missing definition for type head {head} and/or no use range given".format(head=type_head))
                 if conversion_type:
                     self.conversion_type = conversion_type
 
@@ -203,9 +200,7 @@ class Cdg(Device):
                 self.interpol_max =  self.max_p
 
         else:
-            msg = "Can't find device"
-            self.log.error(msg)
-            sys.exit(msg)
+            sys.exit("Can't find device")
 
         super().__init__(doc, dev)
 
@@ -266,9 +261,7 @@ class Cdg(Device):
             if self.conversion_type == "cmr":
                 return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
 
-            msg = "conversion type not implemented"
-            self.log.error(msg)
-            sys.exit(msg)
+            sys.exit("conversion type not implemented")
         else:
             return pressure_value * self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
 
@@ -402,14 +395,10 @@ class Cdg(Device):
         ok = False
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         if self.producer == "missing":
-            msg = "No Producer in Device"
-            self.log.warn(msg)
-            sys.exit(msg)
+            sys.exit("No Producer in Device")
 
         if self.ToDo.get_standard() == "missing":
-            msg = "No Standard in ToDo"
-            self.log.warn(msg)
-            sys.exit(msg)
+            sys.exit("No Standard in ToDo")
 
         if self.producer == "inficon" and self.ToDo.get_standard() == "FRS5":
             if self.type_head == "10Torr" or self.type_head == "100Torr":
