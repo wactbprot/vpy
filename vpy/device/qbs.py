@@ -1,6 +1,7 @@
 import numpy as np
 import sympy as sym
 from ..device.device import Device
+from ..constants import Constants
 
 class Qbs(Device):
 
