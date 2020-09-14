@@ -1,17 +1,20 @@
 import sys
 import numpy as np
 from ..document import Document
-from ..constants import Constants
 from ..values import Values, Pressure, AuxValues, Range
 from ..todo import ToDo
+from scipy.interpolate import interp1d
 
 class Device(Document):
     """ Class should be complete with
     self.Const and self.Dev, nothing more
     """
 
+    range_extend = 0.005 # relativ
+    interpol_pressure_points = np.logspace(-3, 5, num=81) # Pa
+
     def __init__(self, doc, dev):
-        self.Const = Constants(doc)
+
         self.ToDo = ToDo(doc)
         self.Vals = Values({})
 
@@ -27,6 +30,126 @@ class Device(Document):
         self.name = dev.get("Name")
         self.dev_class = dev.get("Class")
         super().__init__(dev)
+
+    def interp_function(self, x, y):
+        return interp1d(x, y, kind="linear")
+
+    def cal_interpol(self, x, y):
+        """Calculates a interpolation vector for y vs. x.
+
+        This is done as follows:
+            # conv_smooth ( --> no longer!, absorbs e-characteristics!) replaced by:
+            # mean of mult meas. points
+            # extrapolate values to the borders
+            # get_default_values
+            # gen. interp. functions
+            # interpolate default values
+
+        """
+        ## mean of mult meas. points
+        idx = self.Vals.gatherby_idx(x, self.Vals.diff_less(0.2))
+        x = [np.mean(x[i]) for i in idx]
+        y = [np.mean(y[i]) for i in idx]
+
+        # extrapolate
+        x, y = self.fill_to_dev_borders(x, y)
+
+        #interpolate function
+        f_y = self.interp_function(x, y)
+
+        # default values
+        x_default = self.get_default_values( np.nanmin(x), np.nanmax(x))
+
+        # cal. interpol on default values
+        y_default = f_y( x_default )
+
+        return  x_default, y_default
+
+    def get_dmin_idx(self, d):
+        m = np.amin(d)
+        return np.where(d == m)[0][0]
+
+    def fill_to_dev_borders(self, p, e):
+        """Use the first/last value in the array of e and u
+        as an extrapolation to the devive borders. Reduce the start/end
+        value of p by `self.range_extend` to overcome possible intervall issues.
+        """
+        extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
+        d = p - extr_p_low
+        i = self.get_dmin_idx(d)
+
+        extr_e_low = np.array([e[i]])
+
+        extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
+        d = extr_p_high - p
+        j = self.get_dmin_idx(d)
+        extr_e_high = np.array([e[j]])
+
+        ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
+        ret_e = np.concatenate( (extr_e_low, e, extr_e_high), axis=None)
+
+        return ret_p, ret_e
+
+    def conv_smooth(self, data, n=3):
+        """Generates smooth data by a convolution.
+        Bondaries (left and right) are calculated
+        from mean values.
+        """
+
+        weights = np.ones(n) / n
+
+        start_array = np.array([np.nanmean(data[0:n])])
+        med_array = np.convolve(data, weights, mode='valid')
+        end_array = np.array([np.nanmean(data[-n-1:-1])])
+
+        return np.concatenate((start_array, med_array, end_array ))
+
+    def rm_nan(self, x, ldx=None):
+        """Removes data from the given list by:
+
+        * testing ``np.isnan()``
+        * or the given (logical) vector ldx
+        """
+        if not isinstance(x,np.ndarray):
+            sys.exit("rm_nan x argument has wrong type")
+
+        if not isinstance(ldx, np.ndarray):
+            ldx = np.logical_not(np.isnan(x))
+
+        return x[ldx], ldx
+
+    def shape_pressure(self, p):
+        """Shapes the pressures by means of
+        ``self.min`` and ``self.max`` in the
+        unit ``self.unit``
+
+        :param p: pressure in the unit self.unit
+        :type p: np.array
+        """
+        p = np.nan_to_num(p)
+        arr = np.full(p.shape[0], np.nan)
+        l_list = np.less_equal(p, self.max_p)
+        u_list = np.greater_equal(p, self.min_p)
+
+        self.log.debug("lower list is: {l_list}".format(l_list=l_list))
+        self.log.debug("upper list is: {u_list}".format(u_list=u_list))
+
+        idx = np.where( u_list & l_list)
+        self.log.debug("index vector is: {idx}".format(idx=idx))
+        arr[idx] = p[idx]
+        self.log.debug("returning array is: {arr}".format(arr=arr))
+
+        return arr
+
+    def get_default_values(self, x_min, x_max):
+        i_min = np.where(self.interpol_pressure_points > x_min)[0][0]
+        i_max = np.where(self.interpol_pressure_points < x_max)[0][-1]
+
+        start_array = np.array([x_min])
+        med_array = self.interpol_pressure_points[i_min:i_max]
+        end_array = np.array([x_max])
+
+        return np.concatenate((start_array, med_array, end_array ))
 
     def check_skip(self, uncert_dict, prop, skip):
         if prop in uncert_dict:

@@ -64,7 +64,7 @@ def main(io, config):
                        "$u_{\text{CDG}}$"      : to_si(u_4),
                        "$u_{\text{ges.}}$"     : to_si(u_5),
                        "$U_{\text{ges.}}$"     : to_si(u_5*2),
-                       "$U_{\text{ges.}}\cdot p_\text{cal}$/Pa$"     : to_si(u_5*2*p_cal),
+                       "$U_{\text{ges.}}\cdot p_\text{cal}$/Pa"     : to_si(u_5*2*p_cal),
                        })
 
     with open("{}_{}_{}_{}.tex".format(result_name, cuco.dev_class, cuco.type_head, cuco.producer.upper()), 'w') as tf:
