@@ -66,10 +66,6 @@ class Device(Document):
 
         return  x_default, y_default
 
-    def get_dmin_idx(self, d):
-        m = np.amin(d)
-        return np.where(d == m)[0][0]
-
     def fill_to_dev_borders(self, p, e):
         """Use the first/last value in the array of e and u
         as an extrapolation to the devive borders. Reduce the start/end
@@ -77,13 +73,13 @@ class Device(Document):
         """
         extr_p_low = np.array([self.min_p*(1.0 - self.range_extend)])
         d = p - extr_p_low
-        i = self.get_dmin_idx(d)
+        i = self.np.argmin(d)
 
         extr_e_low = np.array([e[i]])
 
         extr_p_high = np.array([self.max_p*(1.0 + self.range_extend)])
         d = extr_p_high - p
-        j = self.get_dmin_idx(d)
+        j = self.np.argmin(d)
         extr_e_high = np.array([e[j]])
 
         ret_p = np.concatenate( (extr_p_low, p, extr_p_high), axis=None)
