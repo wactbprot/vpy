@@ -49,10 +49,8 @@ class Document(object):
         """
 
         N = len(iter_list)
-        self.log.debug("working on list {}".format(iter_list))
         for i, val in enumerate(iter_list):
             il_item = "{}{}{}".format(prefix, val, sufix)
-            self.log.debug("search for name: {}".format(il_item))
             vec = self.get_value(il_item, unit)
 
             if i == 0:
@@ -82,13 +80,6 @@ class Document(object):
             if "Unit" in obj:
                 unit = obj['Unit']
                 value = self.get_value(d_type, unit, obj)
-            else:
-                msg = "Missing Unit propertyfor Type: {}".format(d_type)
-                self.log.warn(msg)
-
-        else:
-            msg = "Type {} not found".format(d_type)
-            self.log.warn(msg)
 
         return value, unit
 
@@ -123,12 +114,8 @@ class Document(object):
                     if "Value" in obj:
                         ret = sym.sympify(obj["Value"])
                 else:
-                    errmsg = "Unit is {} not {}".format(obj["Unit"], unit)
-                    self.log.error(errmsg)
-                    sys.exit(errmsg)
 
-        else:
-            self.log.error("Expression of Type {} not found".format(t))
+                    sys.exit("Unit is {} not {}".format(obj["Unit"], unit))
 
         return ret
 
@@ -144,13 +131,13 @@ class Document(object):
         """
 
         obj = self.get_object("Type", t)
-        
+
         if obj and "Value" in obj:
             if isinstance(obj["Value"], list):
                 return np.array(obj["Value"])
         else:
             return None
-            
+
     def get_value_full(self, t, unit, N):
         """same as ``self.get_value`` but returns
         an array of the length ``self.no_of_meas_points``
@@ -173,13 +160,10 @@ class Document(object):
             if np.shape(val) == (1,):
                 ret = np.full(N, val)
             else:
-                errmsg="more than one value"
-                self.log.error(errmsg)
-                sys.exit(errmsg)
+                sys.exit("more than one value")
         else:
-            errmsg="value is empty"
-            self.log.error(errmsg)
-            sys.exit(errmsg)
+            sys.exit("value is empty")
+
         return ret
 
     def get_value(self, value_type, value_unit, o=False, with_stats=False):
@@ -205,12 +189,8 @@ class Document(object):
 
         if obj:
             if "Unit" in  obj:
-                if obj["Unit"] == value_unit:
-                    self.log.debug("value_unit of Type: {} is {}".format(value_type, value_unit))
-                else:
-                    errmsg="On attempt to get value of Type {}: Unit is {} not {}".format(value_type, obj["Unit"], value_unit)
-                    self.log.error(errmsg)
-                    sys.exit(errmsg)
+                if obj["Unit"] != value_unit:
+                    sys.exit("On attempt to get value of Type {}: Unit is {} not {}".format(value_type, obj["Unit"], value_unit))
 
             if "Value" in obj:
                 value_ret = self.safe_float_array(obj['Value'])
@@ -220,14 +200,12 @@ class Document(object):
                 sd_ret = self.safe_float_array(obj['SdValue'])
             else:
                 sd_ret = None
-            
+
             if "N" in obj:
                 n_ret = self.safe_float_array(obj['N'])
             else:
                 n_ret = None
-        else:
-            self.log.warning("Value of Type {} not found".format(value_type))
-        
+
         if with_stats:
             return value_ret, sd_ret, n_ret
         else:
