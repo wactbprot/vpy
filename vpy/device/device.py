@@ -35,6 +35,45 @@ class Device(Document):
     def interp_function(self, x, y):
         return interp1d(x, y, kind="linear")
 
+    def get_error_interpol(self, p_interpol, unit_interpol, p_target=None, unit_target=None):
+        """
+        Returns the interpolation error at the points where:
+
+        (p_target > self.interpol_min) & (p_target < self.interpol_max)
+
+        .. todo::
+
+                implement expected unit of the return value
+        """
+        N = len(p_interpol)
+        e = np.full(N, np.nan)
+
+        if unit_target is None and p_target is None:
+            unit_target = unit_interpol
+            p_target = p_interpol
+
+        if unit_interpol == self.unit:
+            conv_interpol = 1.0
+        else:
+            conv_interpol = self.Const.get_conv(unit_interpol, self.unit)
+
+        if unit_target == self.unit:
+            conv_target = 1.0
+        else:
+            conv_target = self.Const.get_conv(unit_target, self.unit)
+
+        f_e = self.interp_function(self.interpol_p, self.interpol_e)
+
+        idx = (p_target*conv_target > self.interpol_min) & (p_target*conv_target < self.interpol_max)
+        odx = (p_interpol*conv_target > self.interpol_min) & (p_interpol*conv_target < self.interpol_max)
+        ndx = idx & odx
+
+        if len(ndx) > 0:
+            e[ndx] = f_e(p_interpol[ndx]*conv_interpol)
+
+
+        return e
+
     def cal_interpol(self, x, y):
         """Calculates a interpolation vector for y vs. x.
 

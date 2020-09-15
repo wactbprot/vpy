@@ -447,9 +447,10 @@ class Cal(Se3):
             gn_target = self.Pres.get_value("target_pressure", self.unit)
             sufix = "compare"
 
-        for i in range(len(gn_ind_types)):
+        for i in range(len(self.FillDevs)):
             GNDevice = self.FillDevs[i]
-            self.log.debug("Working on filling pressure of device {}".format(GNDevice.name))
+            if GNDevice.name != self.fill_dev_names[i]:
+                sys.exit("Filling pressure devicees in unexpected order")
 
             # get indicatted pressure and unit
             p_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i])
@@ -498,6 +499,9 @@ class Cal(Se3):
         u_arr = []
         for i in range(len(self.FillDevs)):
             GNDevice = self.FillDevs[i]
+            if GNDevice.name != self.fill_dev_names[i]:
+                sys.exit("Filling pressure devicees in unexpected order")
+
             p_corr = res.pick("Pressure","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit=self.unit)
             e      = res.pick("Error","{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
             e_off  = res.pick("Error","{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), dict_unit="1")
