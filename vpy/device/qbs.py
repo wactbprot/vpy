@@ -14,6 +14,17 @@ class Qbs(Device):
 
         super().__init__(doc, dev)
 
+        dev_setup = dev.get('Setup')
+        if dev_setup:
+            use_from = dev_setup.get('UseFrom')
+            use_to = dev_setup.get('UseTo')
+            use_unit = dev_setup.get('UseUnit')
+
+        if use_from and use_to and use_unit:
+            conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
+            self.max_p = float(use_to) * conv
+            self.min_p = float(use_from) * conv
+
         if 'Interpol' in dev:
             # pressure
             v, u = self.get_value_and_unit('p_ind')
@@ -34,16 +45,6 @@ class Qbs(Device):
             else:
                 self.interpol_max =  self.max_p
 
-        dev_setup = dev.get('Setup')
-        if dev_setup:
-            use_from = dev_setup.get('UseFrom')
-            use_to = dev_setup.get('UseTo')
-            use_unit = dev_setup.get('UseUnit')
-
-        if use_from and use_to and use_unit:
-            conv = self.Const.get_conv(from_unit=use_unit, to_unit=self.unit)
-            self.max_p = float(use_to) * conv
-            self.min_p = float(use_from) * conv
 
 
 
