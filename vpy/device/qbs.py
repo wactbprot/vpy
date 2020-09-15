@@ -12,6 +12,8 @@ class Qbs(Device):
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
 
+        super().__init__(doc, dev)
+
         if 'Interpol' in dev:
             # pressure
             v, u = self.get_value_and_unit('p_ind')
@@ -43,7 +45,7 @@ class Qbs(Device):
             self.max_p = float(use_to) * conv
             self.min_p = float(use_from) * conv
 
-        super().__init__(doc, dev)
+
 
     def get_name(self):
         return self.doc['Name']
