@@ -259,27 +259,24 @@ class Io(object):
         db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['all_doc_view']
 
-        doc = {
-            "Standard": {},
-            "Constants": {},
-            "CalibrationObject": []
-        }
+        doc = {"Standard": {},
+               "Constants": {},
+               "CalibrationObject": [],}
         cob = {}
         val = {}
 
         for i in db.view(view):
             if i.key == "Standard":
-                doc["Standard"] = i.value["Standard"]
+                doc["Standard"] = i.value.get("Standard")
 
             if i.key == "Constants":
-                doc["Constants"] = i.value["Constants"]
+                doc["Constants"] = i.value.get("Constants")
 
             if i.key == "CalibrationObject":
-                cob[i.value["CalibrationObject"]["Sign"]
-                    ] = i.value["CalibrationObject"]
+                cob[i.value["CalibrationObject"]["Sign"]] = i.value.get("CalibrationObject")
 
-            if i.key.startswith("Result"):
-                val[i.value["Sign"]] = i.value["Result"]
+            if i.key.startswith("Result") and i.value.get("Result"):
+                val[i.value["Sign"]] = i.value.get("Result")
 
         for j in cob:
             if j in val:
