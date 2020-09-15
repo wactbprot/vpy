@@ -62,6 +62,6 @@ class Qbs(Device):
         :type runit: str
         """
 
-        e_expr = self.get_expression("e", "%")
+        e_expr = self.get_expression("error", "%")
         f = sym.lambdify(sym.Symbol('p'), e_expr, "numpy")
         return f(p)

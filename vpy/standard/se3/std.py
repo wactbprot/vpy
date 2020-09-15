@@ -6,7 +6,7 @@ import numpy as np
 from ...device.dmm import Dmm
 from ...device.cdg import InfCdg, Cdg
 from ...device.srg import Srg
-from ...device.rsg import Rsg
+from ...device.qbs import Qbs
 
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
@@ -60,51 +60,48 @@ class Se3(Standard):
                         "ch_2023_after", "ch_2024_after", "ch_2025_after",
                         "ch_2026_after", "ch_2027_after", "ch_2028_after", ]
 
-    fill_dev_names = [
-                    "CDG_1T_1",  "CDG_1T_2", "CDG_1T_3",
+    fill_dev_names = ["CDG_1T_1",  "CDG_1T_2", "CDG_1T_3",
                     "CDG_10T_1",  "CDG_10T_2",  "CDG_10T_3",
                     "CDG_100T_1", "CDG_100T_2", "CDG_100T_3",
                     "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3",
                     "CDG_5T_1", "CDG_50T_1", "CDG_500T_1",
-    ]
+                    "QBS_1",]
 
 
-    fill_types = [
-                    "1T_1-fill", "1T_2-fill", "1T_3-fill",
-                    "10T_1-fill",  "10T_2-fill", "10T_3-fill",
-                    "100T_1-fill", "100T_2-fill", "100T_3-fill",
-                    "1000T_1-fill", "1000T_2-fill", "1000T_3-fill",
-                    "5T_1-fill", "50T_1-fill", "500T_1-fill",
-    ]
+    fill_types = ["1T_1-fill", "1T_2-fill", "1T_3-fill",
+                  "10T_1-fill",  "10T_2-fill", "10T_3-fill",
+                  "100T_1-fill", "100T_2-fill", "100T_3-fill",
+                  "1000T_1-fill", "1000T_2-fill", "1000T_3-fill",
+                  "5T_1-fill", "50T_1-fill", "500T_1-fill",
+                  "qbs-fill",]
 
-    compare_types = [
-                    "1T_1-compare", "1T_2-compare", "1T_3-compare",
+    compare_types = ["1T_1-compare", "1T_2-compare", "1T_3-compare",
                     "10T_1-compare",  "10T_2-compare", "10T_3-compare",
                     "100T_1-compare", "100T_2-compare", "100T_3-compare",
                     "1000T_1-compare", "1000T_2-compare", "1000T_3-compare",
-                    "5T_1-compare", "50T_1-compare", "500T_1-compare",]
+                    "5T_1-compare", "50T_1-compare", "500T_1-compare",
+                    "qbs-compare",]
 
-    compare_offset_types = [
-                    "1T_1-compare_offset", "1T_2-compare_offset", "1T_3-compare_offset",
+    compare_offset_types = ["1T_1-compare_offset", "1T_2-compare_offset", "1T_3-compare_offset",
                     "10T_1-compare_offset",  "10T_2-compare_offset", "10T_3-compare_offset",
                     "100T_1-compare_offset", "100T_2-compare_offset", "100T_3-compare_offset",
                     "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset",
-                    "5T_1-compare_offset", "50T_1-compare_offset", "500T_1-compare_offset",]
+                    "5T_1-compare_offset", "50T_1-compare_offset", "500T_1-compare_offset",
+                    "qbs-compare_offset",]
 
-    state_types = [
-                    "1T_1-state", "1T_2-state", "1T_3-state",
-                    "10T_1-state",  "10T_2-state", "10T_3-state",
-                    "100T_1-state", "100T_2-state", "100T_3-state",
-                    "1000T_1-state", "1000T_2-state", "1000T_3-state",
-                    "5T_1-state", "50T_1-state", "500T_1-state",]
+    state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
+                   "10T_1-state",  "10T_2-state", "10T_3-state",
+                   "100T_1-state", "100T_2-state", "100T_3-state",
+                   "1000T_1-state", "1000T_2-state", "1000T_3-state",
+                   "5T_1-state", "50T_1-state", "500T_1-state",
+                   "qbs-state",]
 
-    offset_types = [
-                    "1T_1-offset", "1T_2-offset", "1T_3-offset",
+    offset_types = ["1T_1-offset", "1T_2-offset", "1T_3-offset",
                     "10T_1-offset",  "10T_2-offset", "10T_3-offset",
                     "100T_1-offset", "100T_2-offset", "100T_3-offset",
                     "1000T_1-offset", "1000T_2-offset", "1000T_3-offset",
                     "5T_1-offset", "50T_1-offset", "500T_1-offset",
-    ]
+                    "qbs-offset",]
 
     analysis_check = {
         "Error":{
@@ -287,7 +284,10 @@ class Se3(Standard):
         self.FillDevs =[]
         for d in self.fill_dev_names:
             if d in self.Cobj.cob_by_name:
-                self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+                if d.startswith("CDG"):
+                    self.FillDevs.append(InfCdg(doc, self.Cobj.get_by_name(d)))
+                if d.startswith("QBS"):
+                    self.FillDevs.append(Qbs(doc, self.Cobj.get_by_name(d)))
 
     def get_gas(self):
         """Returns the name of the calibration gas.
