@@ -121,7 +121,7 @@ def main():
             display.plot_err_diff(ana)
 
         ## offset contrib
-        cus_dev.offset_uncert(ana, use_idx = flat_average_index)
+        cus_dev.offset_uncert(ana,  reject_index =  reject_index)
 
         ## default uncert. contrib.  repeat
         cus_dev.repeat_uncert(ana)

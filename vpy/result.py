@@ -172,7 +172,22 @@ class Result(Analysis):
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
         u = self.Val.round_to_sig_dig(t_unc, 2)
 
+        d={}
+        d["TemperatureGas"] = float(v)
+        d["TemperatureGasUnit"] = "K"
+        d["TemperatureGasUncertainty"] = float(u)
+        d["TemperatureGasCoverageFactor"] = k
+        d["TemperatureGasProb"] = self.k_trans[k]
+        d["TemperatureRoom"] = float(v)
+        d["TemperatureRoomUnit"] = "K"
+        d["TemperatureRoomUncertainty"] = float(u)
+        d["TemperatureRoomCoverageFactor"] = k
+        d["TemperatureRoomProb"] = self.k_trans[k]
+        ana.store_dict(quant='AuxValues', d=d, dest=None)
+
         sec["EstimatedTemperature"] = self.to_si_pm_expr(v, u, unit)
+        sec["GasTemperature"] = self.to_si_pm_expr(v, u, unit)
+        sec["RoomTemperature"] = self.to_si_pm_expr(v, u, unit)
 
         return sec
 
