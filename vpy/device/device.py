@@ -389,7 +389,7 @@ class Device(Document):
     def ask_for_offset_uncert(self, offset, unit, range_str="all"):
         """ Asks for u(offset).
         """
-        print("\n\n\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n")
+        print("\n\n\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n".format(range_str=range_str))
         u =  float(input("\n\nType in offset uncertainty in {}: ".format(unit)))
         d =  input("\n\nType in the distribution of the given uncerainty: r[ect] or n[ormal]: ")
 
