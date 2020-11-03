@@ -277,7 +277,6 @@ class Cdg(Device):
         ind = ana.pick("Pressure", "ind_corr", self.unit)
         offset = ana.pick("Pressure", "offset", self.unit)
 
-
         ## time expan.:
         t_ms = Time(ana.org).get_str("amt_fill")
         if t_ms is None:
@@ -291,7 +290,7 @@ class Cdg(Device):
                 offset[i] = np.nan
 
 
-        u = np.full(len(ind), np.nan)
+        #u = np.full(len(ind), np.nan)
         days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
         days =  np.array(days)
 
@@ -302,25 +301,29 @@ class Cdg(Device):
                 continue
             uncert_contrib = {}
             ddx = np.where(np.equal(days, day))
-            print(ddx)
             day_offset = np.take(offset, ddx)[0]
             day_ind = np.take(ind, ddx)[0]
-
+            u_abs_day[day] = {}
             if range_str is not None:
                 day_range_str = np.take(range_str, ddx)[0]
                 range_unique = np.unique(day_range_str)
+                u_rel_day_arr[day] = np.full(len(day_ind), np.nan)
+
                 for r in range_unique:
                     i_r = np.where(day_range_str == r)
                     ## sometimes all day_offset[i_r] are nan
                     all_nan = np.all(np.isnan(day_offset[i_r]))
-                    if len(i_r) > 0 and not all_nan:
-                        m = np.nanmean(np.abs(np.diff(day_offset[i_r])))
-                        if m == 0.0:
-                            m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, day_range_str=r)
 
-                        uncert_contrib[r] = m
-                        u_abs_day[day] = uncert_contrib
-                        u[i_r] = m/day_ind[i_r]
+                    if np.shape(i_r)[1] > 1 and not all_nan:
+                        m = np.nanmean(np.abs(np.diff(day_offset[i_r])))
+                    else:
+                        m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, range_str=r)
+
+                    if m == 0.0:
+                        m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, range_str=r)
+
+                    u_abs_day[day][r] = m
+                    u_rel_day_arr[day][i_r] = m/day_ind[i_r]
             else:
                 if len(day_offset) < 2:
                     m = self.ask_for_offset_uncert(day_offset, self.unit)
@@ -331,8 +334,7 @@ class Cdg(Device):
                         ## Abschätzung 0.1% vom kleinsten p_ind
                         m = self.ask_for_offset_uncert(day_offset, self.unit)
 
-                uncert_contrib["all"] = m
-                u_abs_day[day] = uncert_contrib
+                u_abs_day[day]["all"] = m
                 u_rel_day_arr[day] = m/day_ind
 
         u_rel_arr = np.array([])
