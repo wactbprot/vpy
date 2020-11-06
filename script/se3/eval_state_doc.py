@@ -13,7 +13,6 @@ def main():
     io.eval_args()
     doc = io.get_state_doc(name="se3")
     base_doc = io.get_base_doc(name="se3")
-
     for k, v in base_doc.items():
         doc['State'][k] = v
 

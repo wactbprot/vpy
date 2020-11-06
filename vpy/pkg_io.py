@@ -25,7 +25,8 @@ class Io(object):
             "plot": {"path": "temppath", "make": True},
             "db": {
                 "url": db_url ,
-                "name": db_name
+                "name": db_name,
+                "work_db":"{}_work".format(db_name)
             },
             "standards": {
                 "se3": {
@@ -302,11 +303,11 @@ class Io(object):
         :rtype: dict
         """
         srv = couchdb.Server(self.config['db']['url'])
-        db = srv[self.config['db']['name']]
+        db = srv[self.config['db']['work_db']]
         view = self.config['standards'][name]['state_doc_view']
 
         if date:
-            for item in db.view(view, startkey="20170101", endkey=date.replace("-","")):
+            for item in db.view(view, startkey="20200101", endkey=date.replace("-","")):
                 doc = item.value
         else:
             for item in db.view(view):
