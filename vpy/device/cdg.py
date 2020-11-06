@@ -351,9 +351,10 @@ class Cdg(Device):
 
 
         for e in u_abs:
-            u_abs[e] = np.mean(u_abs[e])
+            u_abs[e] = u_abs[e][-1] #
 
         u_abs["Unit"] = self.unit
+
         ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':u_abs}, dest=None)
         ana.store("Uncertainty", "offset", u_rel_arr, "1")
 
