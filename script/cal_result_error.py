@@ -161,6 +161,7 @@ def main():
 
         # start build cert table
         p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
+
         ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")
         ana.store("Uncertainty", "total_mean", u_mv, "1", dest="AuxValues")
