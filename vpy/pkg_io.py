@@ -58,6 +58,7 @@ class Io(object):
         Parses the command line argumets.
         Traverse database commandline options to ``self.config``
         """
+
         parser = argparse.ArgumentParser()
         # --id
         parser.add_argument("--id", type=str, nargs=1,
@@ -101,6 +102,9 @@ class Io(object):
         # -- target_pressure
         parser.add_argument("--point", type=str, nargs=1,
                             help="select a point from a measurement row")
+        # -- measure now
+        parser.add_argument("-n", action='store_true',
+                            help="measure data set now")
 
         self.args = parser.parse_args()
 
@@ -127,16 +131,23 @@ class Io(object):
             self.auxval = False
 
         if self.args.ids:
-            ids = re.split("[@;,:]",self.args.ids[0])
+            ids = re.split("[@;,:]", self.args.ids[0])
             if len(ids) == 0:
-                sys.exit("no ids")
+                self.ids = False
             else:
                 self.ids = ids
+        else:
+            self.ids = False
 
         if self.args.skip:
             self.skip = True
         else:
             self.skip = False
+
+        if self.args.n:
+            self.n = True
+        else:
+            self.n = False
 
     def read_json(self, fname):
         with open(fname) as json_doc_file:

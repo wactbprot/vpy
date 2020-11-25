@@ -1,13 +1,17 @@
 """
 python script/se3/temp_dist.py --ids cal-2020-se3-kk-75127_0001 --srv http://a73434:5984 --point 2
+python script/se3/temp_dist.py --now
 """
 
-
+import requests
+import json
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 import numpy as np
 from vpy.pkg_io import Io
 from vpy.standard.se3.cal import Cal
+from vpy.values import Temperature
+from vpy.device.dmm import Dmm
 
 from matplotlib.colors import LinearSegmentedColormap
 
@@ -29,10 +33,13 @@ o_vec =    [0,      0,      o_o,      o_o,      o_o,    o_o,   o_o,    o_o,    o
 n_vec =    [1,      n_i,    n_o,      n_o,      n_o,    n_o,   n_o,    n_o,    n_o,    1,      n_i,   ]
 y_vec =    [-y_t/2, -y_t/2, -dy_o*3,  -dy_o*2,  -dy_o,  0,     dy_o,   dy_o*2, dy_o*3, y_t/2,  y_t/2, ]
 r_vec =    [0,      r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    0,      r_i,   ]
-rh_vec =    [r_o,    r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    r_o,    r_i,   ]
+rh_vec =    [r_o,    r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    r_o,    r_i,  ]
 
 
 channels = list(range(1001, 1031)) + list(range(2001, 2029))
+
+dev_hub ={"host": "localhost",
+          "port" :"55555"}
 
 def gen_x(alpha, r):
     return r * np.sin(alpha)
@@ -69,13 +76,27 @@ def main():
         doc = io.get_doc_db(io.ids[0])
         cal = Cal(doc)
 
-    if io.args.point:
-        p = int(io.args.point[0])
-    else:
-        p = -1
+        t_arr = cal.Temp.get_array("ch_", channels, "_after", "C")
+        cor_arr = cal.TDev.get_array("corr_ch_", channels,"", "K")
 
-    t_arr = cal.Temp.get_array("ch_", channels, "_after", "C")
-    cor_arr = cal.TDev.get_array("corr_ch_", channels,"", "K")
+        if io.args.point:
+            p = int(io.args.point[0])
+        else:
+            p = -1
+
+    if io.n:
+        with open('./script/se3/temp_dist_task.json') as f:
+            data = json.load(f)
+        dev_hub_url ="http://{}:{}".format(dev_hub.get("host"), dev_hub.get("port"))
+        req = requests.post(dev_hub_url, data=json.dumps(data))
+        res = req.json()
+        tem = Temperature({"Measurement":{"Values":{"Temperature":res.get("Result")}}})
+        t_arr = tem.get_array("ch_", channels, "_now", "C")
+
+        base_doc = io.get_base_doc("se3")
+        cal = Cal(base_doc)
+        cor_arr = cal.TDev.get_array("corr_ch_", channels,"", "K")
+        p = 0
 
     t = t_arr + cor_arr
     t_i = np.array([e[p] for e in t])
@@ -122,7 +143,6 @@ def main():
         y = np.full(n_h, y_vec[i])
         z = gen_z(alpha, rh_vec[i])
         ax.plot(x, y, z, c= "lightgray")
-
 
     p = ax.scatter(x_arr, y_arr, z_arr, s=np.pi*0.5**2*500, c=t_i, cmap="RdYlBu_r", alpha=0.5)
 
