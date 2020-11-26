@@ -2,7 +2,7 @@
 python script/se3/temp_dist.py --ids cal-2020-se3-kk-75127_0001 --srv http://a73434:5984 --point 2
 python script/se3/temp_dist.py --now
 """
-
+import datetime
 import requests
 import json
 from mpl_toolkits.mplot3d import Axes3D
@@ -18,11 +18,11 @@ from matplotlib.colors import LinearSegmentedColormap
 y_t = 980 # mm t ... total
 dy_o = 110 # o ... outer
 r_i = 180 # i ... inner
-r_o = 280
+n_h = 200 # h ... helper circles
 
+r_o = 280
 n_i = 7
 n_o = 12
-n_h = 200 # helper circles
 
 o_o = np.pi/n_o ## offset mantel
 o_h = 4*np.pi/n_i ## offset stirn hinten
@@ -38,8 +38,10 @@ rh_vec =    [r_o,    r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    
 
 channels = list(range(1001, 1031)) + list(range(2001, 2029))
 
-dev_hub ={"host": "localhost",
-          "port" :"55555"}
+with open('./script/se3/temp_dist_config.json') as f:
+    conf = json.load(f)
+conf_dev_hub = conf.get("dev_hub")
+conf_plot = conf.get("plot")
 
 def gen_x(alpha, r):
     return r * np.sin(alpha)
@@ -72,6 +74,7 @@ def put_sensor(d, i):
 def main():
     io = Io()
     io.eval_args()
+
     if io.ids:
         doc = io.get_doc_db(io.ids[0])
         cal = Cal(doc)
@@ -85,16 +88,13 @@ def main():
             p = -1
 
     if io.n:
-        with open('./script/se3/temp_dist_task.json') as f:
-            data = json.load(f)
-        dev_hub_url ="http://{}:{}".format(dev_hub.get("host"), dev_hub.get("port"))
-        req = requests.post(dev_hub_url, data=json.dumps(data))
-        res = req.json()
-        tem = Temperature({"Measurement":{"Values":{"Temperature":res.get("Result")}}})
-        t_arr = tem.get_array("ch_", channels, "_now", "C")
+        doc = io.get_base_doc("se3")
+        res = requests.post(conf_dev_hub.get("url"), data=json.dumps(conf_dev_hub.get("dmm_task"))).json()
 
-        base_doc = io.get_base_doc("se3")
-        cal = Cal(base_doc)
+        doc["Measurement"] = {"Values":{"Temperature":res.get("Result")}}
+        cal = Cal(doc)
+
+        t_arr = cal.Temp.get_array("ch_", channels, "_now", "C")
         cor_arr = cal.TDev.get_array("corr_ch_", channels,"", "K")
         p = 0
 
@@ -144,25 +144,31 @@ def main():
         z = gen_z(alpha, rh_vec[i])
         ax.plot(x, y, z, c= "lightgray")
 
-    p = ax.scatter(x_arr, y_arr, z_arr, s=np.pi*0.5**2*500, c=t_i, cmap="RdYlBu_r", alpha=0.5)
-
-    fig.colorbar(p, ax=ax)
+    fig.colorbar(
+        ax.scatter(x_arr, y_arr, z_arr,
+                   c = t_i,
+                   cmap = conf_plot.get("color_map"),
+                   s = conf_plot.get("sphere_size"),
+                   alpha = 0.5),
+        ax=ax)
 
     ax.xaxis.pane.fill = False
     ax.yaxis.pane.fill = False
     ax.zaxis.pane.fill = False
-
     ax.xaxis.pane.set_edgecolor('w')
     ax.yaxis.pane.set_edgecolor('w')
     ax.zaxis.pane.set_edgecolor('w')
 
-    #ax.grid(False)
+    ax.grid(False)
 
-    ax.set_xlabel('x in mm (window $\\rightarrow$ DKM)')
-    ax.set_zlabel('z in mm (bottom $\\rightarrow$ top)')
-    ax.set_ylabel('y in mm (wall $\\rightarrow$ SE1)')
+    ax.set_title("temperature distribution SE3 calibration vessel\n{}".format(
+        datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+    ax.set_xlabel(conf_plot.get("xlab"))
+    ax.set_zlabel(conf_plot.get("zlab"))
+    ax.set_ylabel(conf_plot.get("ylab"))
 
-    f = 1.2
+    f = conf_plot.get("axis_enlarge")
+
     ax.set_xlim3d(-f*r_o, f*r_o)
     ax.set_ylim3d(-y_t, y_t)
     ax.set_zlim3d(-f*r_o, f*r_o)

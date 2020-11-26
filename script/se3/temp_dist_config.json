@@ -1,0 +1,30 @@
+{"dev_hub":{"url": "http://localhost:55555",
+            "dmm_task":{"Action": "VXI11",
+                        "Host": "e75440",
+                        "Device":"inst0",
+                        "Value": "tempscan_after()\n",
+                        "PostProcessing": [
+                            "var _res = _x.trim().split(';'), _chobj = {}, Result = [];",
+                            "for(var _i = 0; _i < _res.length; _i++){",
+                            "var _both = _res[_i].split(':'),",
+                            "_channel = _both[0].replace('+',''),",
+                            "_value = parseFloat(_both[1]);",
+                            "if(_chobj[_channel]){",
+                            "_chobj[_channel].push(_value);",
+                            "}else{",
+                            "_chobj[_channel] = [_value];",
+                            "}",
+                            "}",
+                            "for(var _j in _chobj){",
+                            "_tmst = _.vlStat(_chobj[_j]);",
+                            "Result.push(_.vlRes('ch_' + _j + '_now', _tmst.mv, 'C', false, _tmst.sd, _tmst.N));}"
+                        ]
+                       }
+           },
+ "plot":{"xlab":"x in mm (window $\\rightarrow$ DKM)",
+         "ylab":"y in mm (wall $\\rightarrow$ SE1)",
+         "zlab":"z in mm (bottom $\\rightarrow$ top)",
+         "axis_enlarge":1.2,
+         "sphere_size":200,
+         "color_map":"RdYlBu_r"}
+}
