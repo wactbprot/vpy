@@ -21,7 +21,8 @@
                         ]
                        }
            },
- "plot":{"xlab":"x in mm (window $\\rightarrow$ DKM)",
+ "plot":{"title":"temperature distribution SE3 calibration vessel\n{date}",
+         "xlab":"x in mm (window $\\rightarrow$ DKM)",
          "ylab":"y in mm (wall $\\rightarrow$ SE1)",
          "zlab":"z in mm (bottom $\\rightarrow$ top)",
          "axis_enlarge":1.2,
