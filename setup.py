@@ -34,6 +34,7 @@ setup(
                                     'htmlcov'
                                     ]),
     install_requires=['couchdb',
+                      'requests',
                       'coloredlogs',
                       'numpy',
                       'scipy',
