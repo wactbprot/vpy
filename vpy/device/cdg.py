@@ -315,7 +315,7 @@ class Cdg(Device):
                     k = i_r and i_d
                     k = k[0]
 
-                    if np.shape(k)[1] > 1 and not np.all(np.isnan(offset[k])):
+                    if np.shape(k)[0] > 1 and not np.all(np.isnan(offset[k])):
                         m = np.nanmean(np.abs(np.diff(offset[k])))
                     else:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
