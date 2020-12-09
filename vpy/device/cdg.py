@@ -312,8 +312,7 @@ class Cdg(Device):
                     i_r = np.where(range_str == r)
 
                     ## range ^ day index
-                    k = i_r and i_d
-                    k = k[0]
+                    k = np.intersect1d(i_d, i_r)
 
                     if np.shape(k)[0] > 1 and not np.all(np.isnan(offset[k])):
                         m = np.nanmean(np.abs(np.diff(offset[k])))
