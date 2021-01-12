@@ -284,6 +284,7 @@ class Cdg(Device):
         if t_ms is None:
             ## time direct & frs5:
             t_ms = Time(ana.org).get_str("amt_meas")
+
         t_ms = [int(t) for t in t_ms]
         ## make elements not in use_idx nan:
         if reject_index is not None:
@@ -291,73 +292,54 @@ class Cdg(Device):
                 ind[i] = np.nan
                 offset[i] = np.nan
 
-
-        #u = np.full(len(ind), np.nan)
         days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
         days =  np.array(days)
 
-        u_rel_day_arr = {}
-        u_abs_day = {}
+        ##
+        u_rel_arr = np.full(len(t_ms), np.nan)
+        u_abs_arr = np.full(len(t_ms), np.nan)
+        offset_contrib = {"Unit": self.unit}
         for day in np.unique(days):
             if np.isnan(day):
                 continue
-            uncert_contrib = {}
-            ddx = np.where(np.equal(days, day))
-            day_offset = np.take(offset, ddx)[0]
-            day_ind = np.take(ind, ddx)[0]
-            u_abs_day[day] = {}
+            ## day index
+            i_d = np.where(np.equal(days, day))
+
             if range_str is not None:
-                day_range_str = np.take(range_str, ddx)[0]
-                range_unique = np.unique(day_range_str)
-                u_rel_day_arr[day] = np.full(len(day_ind), np.nan)
+                for r in np.unique(np.take(range_str, i_d)[0]):
 
-                for r in range_unique:
-                    i_r = np.where(day_range_str == r)
-                    ## sometimes all day_offset[i_r] are nan
-                    all_nan = np.all(np.isnan(day_offset[i_r]))
+                    ## range index
+                    i_r = np.where(range_str == r)
 
-                    if np.shape(i_r)[1] > 1 and not all_nan:
-                        m = np.nanmean(np.abs(np.diff(day_offset[i_r])))
+                    ## range ^ day index
+                    k = np.intersect1d(i_d, i_r)
+
+                    if np.shape(k)[0] > 1 and not np.all(np.isnan(offset[k])):
+                        m = np.nanmean(np.abs(np.diff(offset[k])))
                     else:
-                        m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, range_str=r)
+                        m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
 
                     if m == 0.0:
-                        m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, range_str=r)
+                        m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
 
-                    u_abs_day[day][r] = m
-                    u_rel_day_arr[day][i_r] = m/day_ind[i_r]
+                    offset_contrib[r] = m
+                    u_abs_arr[k] = m
+                    u_rel_arr[k] = m/ind[k]
             else:
-                if len(day_offset) < 2:
-                    m = self.ask_for_offset_uncert(day_offset, self.unit)
+                if len(offset[i_d]) < 2:
+                    m = self.ask_for_offset_uncert(offset[i_d], self.unit)
                 else:
-                    m = np.nanmean(np.abs(np.diff(day_offset)))
+                    m = np.nanmean(np.abs(np.diff(offset[i_d])))
 
-                    if m == 0.0 or np.all(np.isnan(day_offset)):
+                    if m == 0.0 or np.all(np.isnan(offset[i_d])):
                         ## Abschätzung 0.1% vom kleinsten p_ind
-                        m = self.ask_for_offset_uncert(day_offset, self.unit)
+                        m = self.ask_for_offset_uncert(offset[i_d], self.unit)
 
-                u_abs_day[day]["all"] = m
-                u_rel_day_arr[day] = m/day_ind
+                offset_contrib["all"] = m
+                u_abs_arr[i_d] = m
+                u_rel_arr[i_d] = m/ind[i_d]
 
-        u_rel_arr = np.array([])
-        u_abs = {}
-
-        for day in np.unique(days):
-            if np.isnan(day):
-                continue
-            u_rel_arr = np.concatenate((u_rel_arr, u_rel_day_arr[day]), axis=None)
-            for e in u_abs_day[day]:
-                if not e in u_abs:
-                    u_abs[e] =  np.array([])
-                u_abs[e] = np.append(u_abs[e], u_abs_day[day][e])
-
-
-        for e in u_abs:
-            u_abs[e] = u_abs[e][-1] #
-
-        u_abs["Unit"] = self.unit
-
-        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':u_abs}, dest=None)
+        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib': offset_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u_rel_arr, "1")
 
     def repeat_uncert(self, ana, cmc=True):
