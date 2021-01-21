@@ -18,7 +18,11 @@ def main(io, config):
     result_name = config.get("result_name")
 
     #doc = io.read_json("{}/{}".format(struct_path, cal_file))
-    doc = io.get_doc_db("cal-2020-se3-kk-75021_0001") # 0.1Torr
+    #doc = io.get_doc_db("cal-2020-se3-kk-75021_0001") # 0.1mbar
+    #u_digit_abs = 2.9e-7 #Pa
+
+    doc = io.get_doc_db("cal-2020-se3-kk-75093_0001") # 1torr
+    u_digit_abs = 2.9e-6 #Pa
 
     ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
     cuco = init_customer_device(doc)
@@ -61,7 +65,7 @@ def main(io, config):
     u_2 = ana.pick("Uncertainty", "repeat", "1")
     u_3 = ana.pick("Uncertainty", "digit", "1")
     if not u_3:
-        u_3 = 2.9e-7/p_ind
+        u_3 = u_digit_abs/p_ind
     u_4 = ana.pick("Uncertainty", "device", "1")
     u_5 = np.sqrt(np.power(u_4,2) +  np.power(u,2))
 
@@ -73,7 +77,7 @@ def main(io, config):
                        "$u_{\text{repeat}}$"                   : to_si(u_2),
                        "$u_{\text{digit}}$"                    : to_si(u_3),
                        "$u_{\text{CDG}}$"                      : to_si(u_4),
-                       "$U_{e}$"     : to_si(u_5*2*p_ind/p_cal),
+                       "$U_{e}$"                               : to_si(u_5*2*p_ind/p_cal),
                        })
 
     print(df.to_latex(index=False, escape=False))
