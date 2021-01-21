@@ -17,8 +17,8 @@ class Result(Analysis):
     head_cell = {
         "cal": "{\\(p_\\text{cal}\\)}",
         "ind": "{\\(p_\\text{ind}\\)}",
-        "offset": "{\\(p_\\text{r}\\)}",
-        "ind_corr": "{\\(p_\\text{ind} - p_\\text{r}\\)}",
+        "offset": "{\\(p_\\text{ind,r}\\)}",
+        "ind_corr": "{\\(p_\\text{ind} - p_\\text{ind,r}\\)}",
         "uncert_total_rel": "{\\(U(k=2)\\)}",
         "uncert_total_abs": "{\\(U(k=2)\\)}",
         "uncert_total_rel_cf": "{\\(U(CF)\\)}",
