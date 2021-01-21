@@ -4,7 +4,6 @@ import numpy as np
 from scipy.optimize import curve_fit
 from ..device.device import Device
 from ..values import Values, Range, Time
-from ..constants import Constants
 
 class Cdg(Device):
     unit = "Pa"
@@ -101,7 +100,6 @@ class Cdg(Device):
         return params
 
     def __init__(self, doc, dev):
-        self.Const = Constants(doc)
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
