@@ -1,11 +1,13 @@
 import numpy as np
 import sympy as sym
 from ..device.device import Device
+from ..constants import Constants
 
 class Qbs(Device):
     unit = "Pa"
 
     def __init__(self, doc, dev):
+        self.Const = Constants(doc)
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')

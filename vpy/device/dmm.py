@@ -1,10 +1,11 @@
 import numpy as np
 from ..device.device import Device
-
+from ..constants import Constants
 
 class Dmm(Device):
 
     def __init__(self, doc, dev):
+        self.Const = Constants(doc)
         super().__init__(doc, dev)
 
         self.name = dev.get('Name')
