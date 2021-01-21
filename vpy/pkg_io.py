@@ -318,7 +318,7 @@ class Io(object):
         view = self.config['standards'][name]['state_doc_view']
 
         if date:
-            for item in db.view(view, startkey="20200101", endkey=date.replace("-","")):
+            for item in db.view(view, startkey="20210101", endkey=date.replace("-","")):
                 doc = item.value
         else:
             for item in db.view(view):
