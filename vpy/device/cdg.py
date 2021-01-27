@@ -433,8 +433,6 @@ class Cdg(Device):
 class InfCdg(Cdg):
     """Inficon CDGs are usable two decades only
     """
-
     usable_decades = 2
-
     def __init__(self, doc, dev):
         super().__init__(doc, dev)

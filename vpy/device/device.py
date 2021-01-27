@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from ..document import Document
 from ..values import Values, Pressure, AuxValues, Range
+from ..constants import Constants
 from ..todo import ToDo
 from scipy.interpolate import interp1d
 
@@ -17,6 +18,7 @@ class Device(Document):
 
         self.ToDo = ToDo(doc)
         self.Vals = Values({})
+        self.Const = Constants(doc)
 
         if "CalibrationObject" in dev:
             dev = dev.get('CalibrationObject')

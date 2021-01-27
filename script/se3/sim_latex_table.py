@@ -1,9 +1,11 @@
 import sys
 import os
 import json
+import numpy as np
 import pandas as pd
 sys.path.append(".")
 from vpy.analysis import Analysis
+from vpy.standard.se3.uncert import Uncert
 from vpy.pkg_io import Io
 from vpy.helper import init_customer_device
 
@@ -15,12 +17,21 @@ def main(io, config):
     cal_file = config.get("cal_file")
     result_name = config.get("result_name")
 
-    doc = io.read_json("{}/{}".format(struct_path, cal_file))
+    #doc = io.read_json("{}/{}".format(struct_path, cal_file))
+    #doc = io.get_doc_db("cal-2020-se3-kk-75021_0001") # 0.1mbar
+    #u_digit_abs = 2.9e-7 #Pa
+
+    doc = io.get_doc_db("cal-2020-se3-kk-75093_0001") # 1torr
+    u_digit_abs = 2.9e-6 #Pa
 
     ana = Analysis(doc, init_dict=doc.get("Calibration").get("Analysis"))
     cuco = init_customer_device(doc)
 
+    ##
+    Uncert(doc).total(ana)
+
     p_cal = ana.pick("Pressure", "cal", "Pa")
+    p_ind = ana.pick("Pressure", "ind_corr", "Pa")
     u_1 = ana.pick("Uncertainty", "p_fill", "1")
     u_2 = ana.pick("Uncertainty", "p_rise", "1")
     u_3 = ana.pick("Uncertainty", "f", "1")
@@ -53,19 +64,23 @@ def main(io, config):
     u_1 = ana.pick("Uncertainty", "offset", "1")
     u_2 = ana.pick("Uncertainty", "repeat", "1")
     u_3 = ana.pick("Uncertainty", "digit", "1")
+    if not u_3:
+        u_3 = u_digit_abs/p_ind
     u_4 = ana.pick("Uncertainty", "device", "1")
-    u_5 = ana.pick("Uncertainty", "total_rel", "1")
+    u_5 = np.sqrt(np.power(u_4,2) +  np.power(u,2))
 
-    df = pd.DataFrame({"$p_\text{cal}$/Pa"     : to_si(p_cal),
-                       "$u_{\text{SE3}}$"      : to_si(u),
-                       "$u_{\text{offset}}$"   : to_si(u_1),
-                       "$u_{\text{repeat}}$"   : to_si(u_2),
-                       "$u_{\text{digit}}$"    : to_si(u_3),
-                       "$u_{\text{CDG}}$"      : to_si(u_4),
-                       "$u_{\text{ges.}}$"     : to_si(u_5),
-                       "$U_{\text{ges.}}$"     : to_si(u_5*2),
-                       "$U_{\text{ges.}}\cdot p_\text{cal}$/Pa"     : to_si(u_5*2*p_cal),
+    df = pd.DataFrame({"$p_\text{cal}$/Pa"                     : to_si(p_cal),
+                       "$(p_\text{ind}-p_\text{ind,r}$/Pa"     : to_si(p_ind),
+                       "$e$"                                   : to_si(p_ind/p_cal-1),
+                       "$u_{\text{SE3}}$"                      : to_si(u),
+                       "$u_{\text{offset}}$"                   : to_si(u_1),
+                       "$u_{\text{repeat}}$"                   : to_si(u_2),
+                       "$u_{\text{digit}}$"                    : to_si(u_3),
+                       "$u_{\text{CDG}}$"                      : to_si(u_4),
+                       "$U_{e}$"                               : to_si(u_5*2*p_ind/p_cal),
                        })
+
+    print(df.to_latex(index=False, escape=False))
 
     with open("{}_{}_{}_{}.tex".format(result_name, cuco.dev_class, cuco.type_head, cuco.producer.upper()), 'w') as tf:
         tf.write(df.to_latex(index=False, escape=False))
