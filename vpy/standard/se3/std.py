@@ -65,7 +65,7 @@ class Se3(Standard):
                     "CDG_100T_1", "CDG_100T_2", "CDG_100T_3",
                     "CDG_1000T_1", "CDG_1000T_2", "CDG_1000T_3",
                     "CDG_5T_1", "CDG_50T_1", "CDG_500T_1",
-                    #"QBS_1",
+                    "QBS_1",
                     ]
 
 
@@ -74,7 +74,7 @@ class Se3(Standard):
                   "100T_1-fill", "100T_2-fill", "100T_3-fill",
                   "1000T_1-fill", "1000T_2-fill", "1000T_3-fill",
                   "5T_1-fill", "50T_1-fill", "500T_1-fill",
-                  #"qbs-fill",
+                  "qbs-fill",
                   ]
 
     compare_types = ["1T_1-compare", "1T_2-compare", "1T_3-compare",
@@ -82,7 +82,7 @@ class Se3(Standard):
                     "100T_1-compare", "100T_2-compare", "100T_3-compare",
                     "1000T_1-compare", "1000T_2-compare", "1000T_3-compare",
                     "5T_1-compare", "50T_1-compare", "500T_1-compare",
-                    #"qbs-compare",
+                    "qbs-compare",
                     ]
 
     compare_offset_types = ["1T_1-compare_offset", "1T_2-compare_offset", "1T_3-compare_offset",
@@ -90,7 +90,7 @@ class Se3(Standard):
                     "100T_1-compare_offset", "100T_2-compare_offset", "100T_3-compare_offset",
                     "1000T_1-compare_offset", "1000T_2-compare_offset", "1000T_3-compare_offset",
                     "5T_1-compare_offset", "50T_1-compare_offset", "500T_1-compare_offset",
-                    #"qbs-compare_offset",
+                    "qbs-compare_offset",
                     ]
 
     state_types = ["1T_1-state", "1T_2-state", "1T_3-state",
@@ -98,7 +98,7 @@ class Se3(Standard):
                    "100T_1-state", "100T_2-state", "100T_3-state",
                    "1000T_1-state", "1000T_2-state", "1000T_3-state",
                    "5T_1-state", "50T_1-state", "500T_1-state",
-                   #"qbs-state",
+                   "qbs-state",
                    ]
 
     offset_types = ["1T_1-offset", "1T_2-offset", "1T_3-offset",
@@ -106,7 +106,7 @@ class Se3(Standard):
                     "100T_1-offset", "100T_2-offset", "100T_3-offset",
                     "1000T_1-offset", "1000T_2-offset", "1000T_3-offset",
                     "5T_1-offset", "50T_1-offset", "500T_1-offset",
-                    #"qbs-offset",
+                    "qbs-offset",
                     ]
 
     analysis_check = {
