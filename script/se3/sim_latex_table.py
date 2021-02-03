@@ -8,18 +8,25 @@ from vpy.analysis import Analysis
 from vpy.standard.se3.uncert import Uncert
 from vpy.pkg_io import Io
 from vpy.helper import init_customer_device
+from vpy.values import Values
 
 def to_si(x):
-    return ["\SI{}{:0.1e}{}{}".format("{",y,"}", "{}") for y in x]
+    return ["\num{}{:0.1e}{}".format("{",y,"}") for y in x]
+
+def to_num(x):
+    return ["\num{}{}{}".format("{",y,"}") for y in x]
+
 
 def main(io, config):
+    val = Values({})
     struct_path = config.get("struct_path")
     cal_file = config.get("cal_file")
     result_name = config.get("result_name")
 
     #doc = io.read_json("{}/{}".format(struct_path, cal_file))
+
     #doc = io.get_doc_db("cal-2020-se3-kk-75021_0001") # 0.1mbar
-    #u_digit_abs = 2.9e-7 #Pa
+    #u_digit_abs = 2.9e-6 #Pa
 
     doc = io.get_doc_db("cal-2020-se3-kk-75093_0001") # 1torr
     u_digit_abs = 2.9e-6 #Pa
@@ -69,15 +76,17 @@ def main(io, config):
     u_4 = ana.pick("Uncertainty", "device", "1")
     u_5 = np.sqrt(np.power(u_4,2) +  np.power(u,2))
 
-    df = pd.DataFrame({"$p_\text{cal}$/Pa"                     : to_si(p_cal),
-                       "$(p_\text{ind}-p_\text{ind,r}$/Pa"     : to_si(p_ind),
-                       "$e$"                                   : to_si(p_ind/p_cal-1),
+    e = p_ind/p_cal-1
+    U_e = u_5*2*p_ind/p_cal
+    df = pd.DataFrame({"$p_\text{cal}$/Pa"                     : to_num(val.round_to_uncertainty_array(p_cal, u_4*p_cal, 2, scientific=True)),
+                       "$(p_\text{ind}-p_\text{ind,r}$/Pa"     : to_num(val.round_to_uncertainty_array(p_ind, u_4*p_ind, 2, scientific=True)),
+                       "$e$"                                   : to_num(val.round_to_uncertainty_array(e, U_e, 2)),
                        "$u_{\text{SE3}}$"                      : to_si(u),
                        "$u_{\text{offset}}$"                   : to_si(u_1),
                        "$u_{\text{repeat}}$"                   : to_si(u_2),
                        "$u_{\text{digit}}$"                    : to_si(u_3),
                        "$u_{\text{CDG}}$"                      : to_si(u_4),
-                       "$U_{e}$"                               : to_si(u_5*2*p_ind/p_cal),
+                       "$U_{e}$"                               : to_si(U_e),
                        })
 
     print(df.to_latex(index=False, escape=False))

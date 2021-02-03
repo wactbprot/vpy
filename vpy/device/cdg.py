@@ -286,11 +286,12 @@ class Cdg(Device):
             t_ms = Time(ana.org).get_str("amt_meas")
 
         t_ms = [int(t) for t in t_ms]
-        ## make elements not in use_idx nan:
+        ## make elements not in use_idx nan or "":
         if reject_index is not None:
             for i in reject_index:
                 ind[i] = np.nan
                 offset[i] = np.nan
+                range_str[i] = ""
 
         days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
         days =  np.array(days)
@@ -307,7 +308,8 @@ class Cdg(Device):
 
             if range_str is not None:
                 for r in np.unique(np.take(range_str, i_d)[0]):
-
+                    if not r:
+                        continue
                     ## range index
                     i_r = np.where(range_str == r)
 
