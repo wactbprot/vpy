@@ -76,14 +76,14 @@ def gen_result_dict(target_fill, u_rel, target_unit, force=None):
     if np.isnan(i):
         return {"error": "all expasion sequences deliver nan"}
     else:
-        return {"Pressure_fill.Value":   target_fill[i],
-                "Pressure_fill.Type":    "target_fill",
-                "Pressure_fill.Unit":    target_unit,
-                "Uncertainty_cal.Value": u_rel[i],
-                "Uncertainty_cal.Type":  "cal_estimated",
-                "Uncertainty_cal.Unit":  "1",
-                "Expansion.Type" :       "name",
-                "Expansion.Value":       f_list[i]}
+        return {"Pressure_fill":{"Value": target_fill[i],
+                                 "Type": "target_fill",
+                                 "Unit": target_unit},
+                "Uncertainty_cal":{"Value": u_rel[i],
+                                   "Type":  "cal_estimated",
+                                   "Unit":  "1"},
+                "Expansion":{"Type" : "name",
+                             "Value": f_list[i]}}
 
 def main(cal):
     args = sys.argv
