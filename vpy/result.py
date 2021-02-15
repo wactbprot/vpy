@@ -85,11 +85,18 @@ class Result(Analysis):
         return self.to_si_expr("" + v + "+-" + u, unit)
 
     def gen_temperature_gas_entry(self, ana, sec, unit="K", k=2):
+        """Temperature of measurement gas. Type B uncertainty: section 5.3.5 MUB
+        http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-2-se3_mub.ipynb
+        """
+
+
         t = ana.pick("Temperature", "gas", unit)
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
         t = np.take(t,av_idx)
         t_mean = np.mean(t)
-        t_unc = np.std(t)*k
+
+        u_b = 0.03 #K
+        t_unc =np.sqrt(np.power(u_b,2)+ np.power(np.std(t),2))*k
 
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 2)
         u = self.Val.round_to_sig_dig(t_unc, 2)
