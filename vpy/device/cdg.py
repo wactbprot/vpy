@@ -41,6 +41,7 @@ class Cdg(Device):
         "11mbar": 1100.0,
         "110mbar": 11000.0,
         "1100mbar": 110000.0,
+        "01mbar": 10.0,
         "1mbar": 100.0,
         "10mbar": 1000.0,
         "100mbar": 10000.0,
@@ -52,6 +53,7 @@ class Cdg(Device):
         "11mbar": 1000.0,
         "110mbar":  10000.0,
         "1100mbar": 100000.0,
+        "01mbar": 10.0,
         "1mbar": 100.0,
         "10mbar": 1000.0,
         "100mbar":  10000.0,
@@ -179,26 +181,25 @@ class Cdg(Device):
                 if type_head:
                     self.type_head = type_head
 
-        if 'Interpol' in dev:
-            # pressure
-            v, u = self.get_value_and_unit('p_ind')
-            conv = self.Const.get_conv(from_unit=u, to_unit=self.unit)
-            self.interpol_p = v * conv
-            # error
-            self.interpol_e = self.get_value(value_type='e', value_unit='1')
+            if 'Interpol' in dev:
+                # pressure
+                v, u = self.get_value_and_unit('p_ind')
+                conv = self.Const.get_conv(from_unit=u, to_unit=self.unit)
+                self.interpol_p = v * conv
+                # error
+                self.interpol_e = self.get_value(value_type='e', value_unit='1')
 
-            interpol_min = np.min(self.interpol_p)
-            interpol_max = np.max(self.interpol_p)
+                interpol_min = np.min(self.interpol_p)
+                interpol_max = np.max(self.interpol_p)
 
-            if self.min_p > interpol_min:
-                self.interpol_min = self.min_p
-            else:
-                self.interpol_min = interpol_min
-            if self.max_p > interpol_max:
-                self.interpol_max =  interpol_max
-            else:
-                self.interpol_max =  self.max_p
-
+                if self.min_p > interpol_min:
+                    self.interpol_min = self.min_p
+                else:
+                    self.interpol_min = interpol_min
+                if self.max_p > interpol_max:
+                    self.interpol_max =  interpol_max
+                else:
+                    self.interpol_max =  self.max_p
         else:
             sys.exit("Can't find device")
 
@@ -268,7 +269,7 @@ class Cdg(Device):
     def error(self, p_cal, p_ind, p_unit):
         return np.divide(p_ind, p_cal) - 1.0, '1'
 
-    def offset_uncert(self, ana, use_idx = None):
+    def offset_uncert(self, ana,  reject_index = None):
         """
         The offset uncertainty is calculated by means of `np.diff(offset)`.
         Drift influences are avoided.
@@ -278,79 +279,69 @@ class Cdg(Device):
         ind = ana.pick("Pressure", "ind_corr", self.unit)
         offset = ana.pick("Pressure", "offset", self.unit)
 
-        ## make elements not in use_idx nan:
-        if  use_idx is not None:
-            o = np.where([i not in use_idx for i in range(0, len(ind))])[0]
-            for i in o:
-                ind[i] = np.nan
-                offset[i] = np.nan
-
-        u = np.full(len(ind), np.nan)
-
         ## time expan.:
         t_ms = Time(ana.org).get_str("amt_fill")
         if t_ms is None:
             ## time direct & frs5:
             t_ms = Time(ana.org).get_str("amt_meas")
 
-        days = [datetime.datetime.fromtimestamp(int(t)/1000.0).day for t in t_ms]
+        t_ms = [int(t) for t in t_ms]
+        ## make elements not in use_idx nan or "":
+        if reject_index is not None:
+            for i in reject_index:
+                ind[i] = np.nan
+                offset[i] = np.nan
+                range_str[i] = ""
 
-        u_rel_day_arr = {}
-        u_abs_day = {}
+        days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
+        days =  np.array(days)
 
+        ##
+        u_rel_arr = np.full(len(t_ms), np.nan)
+        u_abs_arr = np.full(len(t_ms), np.nan)
+        offset_contrib = {"Unit": self.unit}
         for day in np.unique(days):
-            uncert_contrib = {}
-            ddx = np.where(np.equal(days, day))
-            day_offset = np.take(offset, ddx)[0]
-            day_ind = np.take(ind, ddx)[0]
+            if np.isnan(day):
+                continue
+            ## day index
+            i_d = np.where(np.equal(days, day))
 
             if range_str is not None:
-                day_range_str = np.take(range_str, ddx)[0]
-                range_unique = np.unique(day_range_str)
-                for r in range_unique:
-                    i_r = np.where(day_range_str == r)
-                    ## sometimes all day_offset[i_r] are nan
-                    all_nan = np.all(np.isnan(day_offset[i_r]))
-                    if len(i_r) > 0 and not all_nan:
-                        m = np.nanmean(np.abs(np.diff(day_offset[i_r])))
-                        if m == 0.0:
-                            m = self.ask_for_offset_uncert(day_offset[i_r], self.unit, day_range_str=r)
+                for r in np.unique(np.take(range_str, i_d)[0]):
+                    if not r:
+                        continue
+                    ## range index
+                    i_r = np.where(range_str == r)
 
-                        uncert_contrib[r] = m
-                        u_abs_day[day] = uncert_contrib
-                        u[i_r] = m/day_ind[i_r]
-            else:
-                if len(day_offset) < 2:
-                    m = self.ask_for_offset_uncert(day_offset, self.unit)
-                else:
-                    m = np.nanmean(np.abs(np.diff(day_offset)))
+                    ## range ^ day index
+                    k = np.intersect1d(i_d, i_r)
+
+                    if np.shape(k)[0] > 1 and not np.all(np.isnan(offset[k])):
+                        m = np.nanmean(np.abs(np.diff(offset[k])))
+                    else:
+                        m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
 
                     if m == 0.0:
+                        m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
+
+                    offset_contrib[r] = m
+                    u_abs_arr[k] = m
+                    u_rel_arr[k] = m/ind[k]
+            else:
+                if len(offset[i_d]) < 2:
+                    m = self.ask_for_offset_uncert(offset[i_d], self.unit)
+                else:
+                    m = np.nanmean(np.abs(np.diff(offset[i_d])))
+
+                    if m == 0.0 or np.all(np.isnan(offset[i_d])):
                         ## Abschätzung 0.1% vom kleinsten p_ind
-                        m = self.ask_for_offset_uncert(day_offset, self.unit)
+                        m = self.ask_for_offset_uncert(offset[i_d], self.unit)
 
-                    uncert_contrib["all"] = m
-                    u_abs_day[day] = uncert_contrib
-                    u = m/day_ind
-            u_rel_day_arr[day] = u
+                offset_contrib["all"] = m
+                u_abs_arr[i_d] = m
+                u_rel_arr[i_d] = m/ind[i_d]
 
-        u_rel_arr = np.array([])
-        u_abs = {}
-
-        for day in np.unique(days):
-            u_rel_arr = np.concatenate((u_rel_arr, u_rel_day_arr[day]), axis=None)
-            for e in u_abs_day[day]:
-                if not e in u_abs:
-                    u_abs[e] =  np.array([])
-                u_abs[e] = np.append(u_abs[e], u_abs_day[day][e])
-
-
-        for e in u_abs:
-            u_abs[e] = np.mean(u_abs[e])
-
-
-        u_abs["Unit"] = self.unit
-        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib':u_abs}, dest=None)
+        ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib': offset_contrib}, dest=None)
         ana.store("Uncertainty", "offset", u_rel_arr, "1")
 
     def repeat_uncert(self, ana, cmc=True):
@@ -444,8 +435,6 @@ class Cdg(Device):
 class InfCdg(Cdg):
     """Inficon CDGs are usable two decades only
     """
-
     usable_decades = 2
-
     def __init__(self, doc, dev):
         super().__init__(doc, dev)

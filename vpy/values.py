@@ -68,6 +68,7 @@ class Values(Document):
             "K": val,
             "mbar": val/100,
             "Pa": val/1,
+
             "Torr": val/133.322
             }
         return to_target_unit[b]

@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from ..document import Document
 from ..values import Values, Pressure, AuxValues, Range
+from ..constants import Constants
 from ..todo import ToDo
 from scipy.interpolate import interp1d
 
@@ -17,6 +18,7 @@ class Device(Document):
 
         self.ToDo = ToDo(doc)
         self.Vals = Values({})
+        self.Const = Constants(doc)
 
         if "CalibrationObject" in dev:
             dev = dev.get('CalibrationObject')
@@ -389,11 +391,13 @@ class Device(Document):
     def ask_for_offset_uncert(self, offset, unit, range_str="all"):
         """ Asks for u(offset).
         """
-        print("\n\n\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n")
+        print("\n\n\nOffset in {}:\n".format(unit))
+        print(offset)
+        print("\nUncertainty contribution  of offset (range: {range_str})\n can not be derived from measurement:\n\n".format(range_str=range_str))
         u =  float(input("\n\nType in offset uncertainty in {}: ".format(unit)))
-        d =  input("\n\nType in the distribution of the given uncerainty: r[ect] or n[ormal]: ")
+        d =  input("\n\nType in the distribution of the given uncerainty: r[ect] or n[ormal] (default): ")
 
-        if d.startswith("n"):
-            return u
         if d.startswith("r"):
             return u*0.29
+        else:
+            return u

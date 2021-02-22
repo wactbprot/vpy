@@ -69,10 +69,11 @@ def main():
         d["SigmaCorrSlope"] = float(np.abs(sigma_slope/sigma_null))
         d["SigmaStd"] = float(sigma_std)
         ana.store_dict(quant='AuxValues', d=d, dest=None)
-        print(d)
+
         ## cal. offset and offset scatter
         aux_values_pres = Values(doc.get('Calibration').get('Measurement').get("AuxValues").get("Pressure"))
         rd, rd_unit = aux_values_pres.get_value_and_unit(d_type="offset")
+
         d["OffsetMean"] = float(np.nanmean(rd))
         d["OffsetStd"] = float(np.nanstd(rd))
         d["OffsetUnit"] = rd_unit

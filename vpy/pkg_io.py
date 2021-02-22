@@ -25,7 +25,8 @@ class Io(object):
             "plot": {"path": "temppath", "make": True},
             "db": {
                 "url": db_url ,
-                "name": db_name
+                "name": db_name,
+                "work_db":"{}_work".format(db_name)
             },
             "standards": {
                 "se3": {
@@ -57,6 +58,7 @@ class Io(object):
         Parses the command line argumets.
         Traverse database commandline options to ``self.config``
         """
+
         parser = argparse.ArgumentParser()
         # --id
         parser.add_argument("--id", type=str, nargs=1,
@@ -100,6 +102,9 @@ class Io(object):
         # -- target_pressure
         parser.add_argument("--point", type=str, nargs=1,
                             help="select a point from a measurement row")
+        # -- measure now
+        parser.add_argument("-n", action='store_true',
+                            help="measure data set now")
 
         self.args = parser.parse_args()
 
@@ -126,16 +131,23 @@ class Io(object):
             self.auxval = False
 
         if self.args.ids:
-            ids = re.split("[@;,:]",self.args.ids[0])
+            ids = re.split("[@;,:]", self.args.ids[0])
             if len(ids) == 0:
-                sys.exit("no ids")
+                self.ids = False
             else:
                 self.ids = ids
+        else:
+            self.ids = False
 
         if self.args.skip:
             self.skip = True
         else:
             self.skip = False
+
+        if self.args.n:
+            self.n = True
+        else:
+            self.n = False
 
     def read_json(self, fname):
         with open(fname) as json_doc_file:
@@ -259,27 +271,24 @@ class Io(object):
         db = srv[self.config['db']['name']]
         view = self.config['standards'][name]['all_doc_view']
 
-        doc = {
-            "Standard": {},
-            "Constants": {},
-            "CalibrationObject": []
-        }
+        doc = {"Standard": {},
+               "Constants": {},
+               "CalibrationObject": [],}
         cob = {}
         val = {}
 
         for i in db.view(view):
             if i.key == "Standard":
-                doc["Standard"] = i.value["Standard"]
+                doc["Standard"] = i.value.get("Standard")
 
             if i.key == "Constants":
-                doc["Constants"] = i.value["Constants"]
+                doc["Constants"] = i.value.get("Constants")
 
             if i.key == "CalibrationObject":
-                cob[i.value["CalibrationObject"]["Sign"]
-                    ] = i.value["CalibrationObject"]
+                cob[i.value["CalibrationObject"]["Sign"]] = i.value.get("CalibrationObject")
 
-            if i.key.startswith("Result"):
-                val[i.value["Sign"]] = i.value["Result"]
+            if i.key.startswith("Result") and i.value.get("Result"):
+                val[i.value["Sign"]] = i.value.get("Result")
 
         for j in cob:
             if j in val:
@@ -305,11 +314,11 @@ class Io(object):
         :rtype: dict
         """
         srv = couchdb.Server(self.config['db']['url'])
-        db = srv[self.config['db']['name']]
+        db = srv[self.config['db']['work_db']]
         view = self.config['standards'][name]['state_doc_view']
 
         if date:
-            for item in db.view(view, startkey="20170101", endkey=date.replace("-","")):
+            for item in db.view(view, startkey="20210101", endkey=date.replace("-","")):
                 doc = item.value
         else:
             for item in db.view(view):

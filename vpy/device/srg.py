@@ -2,6 +2,7 @@ import sys
 import numpy as np
 from .device import Device
 from ..constants import Constants
+
 class Srg(Device):
     """ SRG
     The fix_total_relative_uncertainty is used for the calculation of the
@@ -14,9 +15,7 @@ class Srg(Device):
 
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
-
         super().__init__(doc, dev)
-
         self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
