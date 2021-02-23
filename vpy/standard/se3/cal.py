@@ -495,8 +495,8 @@ class Cal(Se3):
             sufix = "compare"
             res_type ="cal"
 
-        p_arr = []
-        u_arr = []
+        p_arr = np.array([])
+        u_arr = np.array([])
         for i in range(len(self.FillDevs)):
             GNDevice = self.FillDevs[i]
             if GNDevice.name != self.fill_dev_names[i]:
@@ -516,11 +516,12 @@ class Cal(Se3):
             res.store("Error", "{dev_name}-{sufix}".format(dev_name=GNDevice.name, sufix=sufix), e, '1')
             res.store("Error", "{dev_name}-offset".format(dev_name=GNDevice.name, sufix=sufix), e_off, '1')
 
-            p_arr.append(p_corr)
-            u_arr.append(u_corr)
-
-        p_arr = np.array(p_arr)
-        u_arr = np.array(u_arr)
+            if i == 0:
+                p_arr = np.array([p_corr])
+                u_arr = np.array([u_corr])
+            else:
+                p_arr = np.append(p_arr, [p_corr], axis=0)
+                u_arr = np.append(u_arr, [u_corr], axis=0)
 
         p_std = np.nanstd(p_arr, axis=0)
         n = np.apply_along_axis(self.Pres.cnt_nan, axis=0, arr=u_arr)
