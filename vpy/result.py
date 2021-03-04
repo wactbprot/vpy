@@ -90,6 +90,7 @@ class Result(Analysis):
 
 
         t = ana.pick("Temperature", "gas", unit)
+
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
         t = np.take(t,av_idx)
         t_mean = np.mean(t)
@@ -348,6 +349,14 @@ class Result(Analysis):
         sec = {}
         sec = self.gen_min_max_entry(ana, sec)
         sec = self.gen_uncert_offset_entry(ana, sec)
+
+        if result_type == "cont_expansion":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
+
+        if result_type == "srg_vg":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
 
         if result_type == "expansion":
             sec = self.gen_temperature_gas_entry(ana, sec)

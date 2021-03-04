@@ -419,6 +419,48 @@ class Analysis(Document):
 
         return e_vis, 1/(e_vis +1), u_vis, "1"
 
+    def ask_for_bake_out_temperature(self, T=180):
+        """ Asks for the bakeout temperature.
+        """
+
+        q1 = "\n\n\nBakeout temperature T = {}°C (enter if ok)\n* type T in °C or \n* 0 for no bake out: "
+        text = input(q1.format(T))
+
+        if text == "0":
+            return None, None
+
+        if text != "":
+            return float(text), "C"
+
+        if text == "":
+            return T, "C"
+
+    def ask_for_bake_out_time(self, t=70):
+        """ Asks for the bakeout time.
+        """
+
+        q1 = "\n\n\nBakeout time t = {}h (enter if ok)\n* type t in h or \n* 0 for no bakeout: "
+        text = input(q1.format(t))
+
+        if text == "0":
+            return None, None
+
+        if text != "":
+            return float(text), "h"
+
+        if text == "":
+            return t, "h"
+
+    def ask_for_sputter(self):
+        """ Asks for the .
+        """
+
+        q1 = "\n\n\ndefault sputter params (1h@180°C Ar) (enter if ok) anything else if no sputter\n*: "
+        text = input(q1)
+        if text == "":
+            return 180, "C", 1, "h"
+        else:
+            return None, None, None, None
 
     def flatten(self, l):
         """Flattens a list of lists.
