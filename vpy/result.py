@@ -566,12 +566,14 @@ class Result(Analysis):
         prob = 0.95
 
         cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, error_unit)
+
         off_str = self.make_off_entry(ana, av_idx, pressure_unit, error_unit)
         ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, error_unit)
         error_str = self.make_error_entry(ana, av_idx, pressure_unit, error_unit)
         cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
 
         u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
+
         u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
         u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)

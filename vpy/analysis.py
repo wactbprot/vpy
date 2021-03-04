@@ -229,7 +229,7 @@ class Analysis(Document):
         return ret
 
     def pick_dict(self, quant, dict_type, dest='Values'):
-        """Picks and returns an already calculated value.
+        """Picks and returns an already calculated value dictionary.
 
         A possible call signature is:
 

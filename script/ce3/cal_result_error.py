@@ -16,45 +16,60 @@ from vpy.helper import init_customer_device
 def main():
     io = Io()
     io.eval_args()
-    ret = {'ok':True}
-
+    ret = {"ok":True}
+    result_type = "error"
     for id in io.ids:
         doc = io.get_doc_db(id)
         tdo = ToDo(doc)
-
-        if tdo.type != "error":
+        print(tdo.type)
+        if tdo.type not in ["error", "srg_error"]:
             sys.exit("wrong script")
 
         display = Display(doc)
         cus_dev = init_customer_device(doc)
-        analysis = doc.get('Calibration').get('Analysis')
+        analysis = doc.get("Calibration").get("Analysis")
 
         ## wrong type:
-        del analysis['Values']['Error']
+        del analysis["Values"]["Error"]
 
-        ana = Analysis(doc, init_dict=analysis, analysis_type="error")
+        ana = Analysis(doc, init_dict=analysis, analysis_type=result_type)
+        res = Result(doc, result_type=result_type, skip=io.skip)
 
-        p_cal = ana.pick('Pressure', 'cal', tdo.pressure_unit)
-        p_ind_corr = ana.pick('Pressure', 'ind_corr', tdo.pressure_unit)
-        p_ind = ana.pick('Pressure', 'ind', tdo.pressure_unit)
-        p_ind_offset = ana.pick('Pressure', 'ind_offset', tdo.pressure_unit)
+        ## conversion to ana.pressure_unit if necessary
+        cal_dict = ana.pick_dict("Pressure", "cal")
 
-        average_index = tdo.make_average_index(p_cal, tdo.pressure_unit)
+        if cal_dict.get("Unit") != ana.pressure_unit:
+            p_cal = ana.pick("Pressure", "cal", tdo.pressure_unit)
+            p_ind_corr = ana.pick("Pressure", "ind_corr", tdo.pressure_unit)
+            p_ind = ana.pick("Pressure", "ind", tdo.pressure_unit)
+            p_ind_offset = ana.pick("Pressure", "ind_offset", tdo.pressure_unit)
+            u_std = ana.pick("Uncertainty", "uncertPcal_rel" , "1")
 
-        ## conversion to ana.pressure_unit
-        conv = ana.Const.get_conv(from_unit=tdo.pressure_unit, to_unit=ana.pressure_unit)
+            conv = ana.Const.get_conv(from_unit=tdo.pressure_unit, to_unit=ana.pressure_unit)
 
-        p_cal = p_cal * conv
-        p_ind = p_ind * conv
-        p_ind_corr = p_ind_corr * conv
-        p_ind_offset = p_ind_offset * conv
+            p_cal = p_cal * conv
+            p_ind = p_ind * conv
+            p_ind_corr = p_ind_corr * conv
+            p_ind_offset = p_ind_offset * conv
+
+        else:
+            p_cal = ana.pick("Pressure", "cal", ana.pressure_unit)
+            p_ind_corr = ana.pick("Pressure", "ind_corr", ana.pressure_unit)
+            p_ind = ana.pick("Pressure", "ind", ana.pressure_unit)
+            p_ind_offset = ana.pick("Pressure", "offset", ana.pressure_unit)
+            u_std = ana.pick("Uncertainty", "uncertPcal_rel" , "1")
+
         err = p_ind_corr/ p_cal - 1
-
         ana.store("Pressure", "cal", p_cal, ana.pressure_unit)
         ana.store("Pressure", "ind_corr", p_ind_corr, ana.pressure_unit)
         ana.store("Pressure", "ind", p_ind, ana.pressure_unit)
-        ana.store("Pressure", "ind_offset", p_ind_offset, ana.pressure_unit)
+        ana.store("Pressure", "offset", p_ind_offset, ana.pressure_unit)
         ana.store("Error", "ind", err, "1")
+        ana.store("Uncertainty", "standard", u_std, "1")
+
+        conv = ana.Const.get_conv(from_unit=ana.pressure_unit, to_unit=tdo.pressure_unit)
+        average_index = tdo.make_average_index(p_cal*conv, tdo.pressure_unit, max_dev=0.2)
+        print(average_index)
 
         ## will be filled up with aux values:
         d = {}
@@ -65,7 +80,7 @@ def main():
 
         d["AverageIndex"] = average_index
         d["AverageIndexFlat"] = flat_average_index
-        ana.store_dict(quant='AuxValues', d=d, dest=None)
+        ana.store_dict(quant="AuxValues", d=d, dest=None)
 
         ## rm values
         p_cal = np.take(p_cal, flat_average_index)
@@ -79,46 +94,47 @@ def main():
 
         ## offset contrib
         cus_dev.offset_uncert(ana,  reject_index =  reject_index)
-#
-#        ## default uncert. contrib.  repeat
+
+        ## default uncert. contrib.  repeat
         cus_dev.repeat_uncert(ana)
         cus_dev.digit_uncert(ana)
         cus_dev.device_uncert(ana)
-#
-#        ## the uncertainty of the standard is
-#        # already calculated at analysis step
-#        ana.total_uncert()
-#
-#        ## store red version for plot
-#        u_rep = ana.pick("Uncertainty", "repeat", "1")
-#        u_off = ana.pick("Uncertainty", "offset", "1")
-#        u_tot = ana.pick("Uncertainty", "total_rel", "1")
-#        u_dev = ana.pick("Uncertainty", "device", "1")
-#        u_std = ana.pick("Uncertainty", "standard", "1")
-#
-#        ana.store("Uncertainty", "red_u_rep", np.take(u_rep, flat_average_index), "1", dest="AuxValues")
-#        ana.store("Uncertainty", "red_u_std", np.take(u_std, flat_average_index), "1", dest="AuxValues")
-#        ana.store("Uncertainty", "red_u_dev", np.take(u_dev, flat_average_index), "1", dest="AuxValues")
-#        ana.store("Uncertainty", "red_u_tot", np.take(u_tot, flat_average_index), "1", dest="AuxValues")
-#        ana.store("Uncertainty", "red_u_off", np.take(u_off, flat_average_index), "1", dest="AuxValues")
-#
-#        display.plot_uncert(ana)
-#
-#        # start making data sections
-#        res.make_measurement_data_section(ana, result_type=result_type)
-#
-#        # start build cert table
-#        p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
-#
-#        ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
-#        ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")
-#        ana.store("Uncertainty", "total_mean", u_mv, "1", dest="AuxValues")
-#
-#        display.plot_mean(ana)
-#
-#        doc = ana.build_doc("Analysis", doc)
-#        doc = res.build_doc("Result", doc)
-#        io.save_doc(doc)
+
+        ## the uncertainty of the standard is
+        # already calculated at analysis step
+        ana.total_uncert()
+
+
+        ## store red version for plot
+        u_rep = ana.pick("Uncertainty", "repeat", "1")
+        u_off = ana.pick("Uncertainty", "offset", "1")
+        u_tot = ana.pick("Uncertainty", "total_rel", "1")
+        u_dev = ana.pick("Uncertainty", "device", "1")
+        u_std = ana.pick("Uncertainty", "standard", "1")
+
+        ana.store("Uncertainty", "red_u_rep", np.take(u_rep, flat_average_index), "1", dest="AuxValues")
+        ana.store("Uncertainty", "red_u_std", np.take(u_std, flat_average_index), "1", dest="AuxValues")
+        ana.store("Uncertainty", "red_u_dev", np.take(u_dev, flat_average_index), "1", dest="AuxValues")
+        ana.store("Uncertainty", "red_u_tot", np.take(u_tot, flat_average_index), "1", dest="AuxValues")
+        ana.store("Uncertainty", "red_u_off", np.take(u_off, flat_average_index), "1", dest="AuxValues")
+
+        display.plot_uncert(ana)
+
+        # start making data sections
+        res.make_measurement_data_section(ana, result_type=result_type)
+
+        # start build cert table
+        p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit="1")
+
+        ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
+        ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")
+        ana.store("Uncertainty", "total_mean", u_mv, "1", dest="AuxValues")
+
+        display.plot_mean(ana)
+
+        doc = ana.build_doc("Analysis", doc)
+        doc = res.build_doc("Result", doc)
+        io.save_doc(doc)
 
 if __name__ == "__main__":
     main()

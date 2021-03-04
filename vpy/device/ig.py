@@ -21,7 +21,7 @@ class Ig(Device):
         """
 
         ind = ana.pick("Pressure", "ind_corr", ana.pressure_unit)
-        offset = ana.pick("Pressure", "ind_offset", ana.pressure_unit)
+        offset = ana.pick("Pressure", "offset", ana.pressure_unit)
 
         if reject_index:
             for i in reject_index:
