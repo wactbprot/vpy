@@ -287,11 +287,12 @@ class Cdg(Device):
 
         t_ms = [int(t) for t in t_ms]
         ## make elements not in use_idx nan or "":
-        if reject_index is not None:
+        if reject_index:
             for i in reject_index:
                 ind[i] = np.nan
                 offset[i] = np.nan
-                range_str[i] = ""
+                if range_str:
+                    range_str[i] = ""
 
         days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
         days =  np.array(days)
@@ -398,38 +399,6 @@ class Cdg(Device):
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
 
         ana.store("Uncertainty", "repeat", u, "1")
-
-    def device_uncert(self, ana):
-        offset_uncert = ana.pick("Uncertainty", "offset", "1")
-        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-
-
-        digit_uncert_dict = ana.pick_dict("Uncertainty", "digit")
-        if digit_uncert_dict is not None:
-            if digit_uncert_dict.get("Unit") == "Pa":
-                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-                digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
-                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
-            else:
-                digit_uncert = ana.pick("Uncertainty", "digit", "1")
-                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert, 2))
-        else:
-            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
-
-
-        add_uncert = ana.pick_dict("Uncertainty", "add")
-        if add_uncert is not None:
-            add_unit = add_uncert.get("Unit")
-            if add_unit == "Pa":
-                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-                add_uncert = ana.pick("Uncertainty", "add", "Pa")
-                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
-
-            if add_unit == "1":
-                add_uncert = ana.pick("Uncertainty", "add", "1")
-                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
-
-        ana.store("Uncertainty", "device", u, "1")
 
 
 class InfCdg(Cdg):

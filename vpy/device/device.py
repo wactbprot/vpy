@@ -289,8 +289,7 @@ class Device(Document):
                     u, return_unit = self.convert_to_return_unit( u, u_unit, meas_vec, meas_unit, return_unit)
 
                 if digit is not None:
-                    exp = np.floor(np.log10(np.abs(meas_vec[range_index])))
-                    u[range_index] = [digit * 0.29 * 10**e for e in exp]
+                    u[range_index] = self.cal_abs_digit_uncert(meas_vec[range_index], digit)
                     u, return_unit = self.convert_to_return_unit( u, meas_unit, meas_vec, meas_unit, return_unit)
 
                 uncert_arr.append( u )
@@ -309,6 +308,10 @@ class Device(Document):
             return uncert_total
         else:
             sys.exit("No uncertainty dict available")
+
+    def cal_abs_digit_uncert(self, meas_vec, digit):
+        exp = np.floor(np.log10(np.abs(meas_vec)))
+        return [digit * 0.29 * 10**e for e in exp]
 
     def get_match_index(self, meas_vec, from_val, to_val):
         if type(from_val) == np.ndarray:
@@ -401,3 +404,35 @@ class Device(Document):
             return u*0.29
         else:
             return u
+
+    def device_uncert(self, ana):
+        offset_uncert = ana.pick("Uncertainty", "offset", "1")
+        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
+
+
+        digit_uncert_dict = ana.pick_dict("Uncertainty", "digit")
+        if digit_uncert_dict is not None:
+            if digit_uncert_dict.get("Unit") == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
+                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+            else:
+                digit_uncert = ana.pick("Uncertainty", "digit", "1")
+                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert, 2))
+        else:
+            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
+
+
+        add_uncert = ana.pick_dict("Uncertainty", "add")
+        if add_uncert is not None:
+            add_unit = add_uncert.get("Unit")
+            if add_unit == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                add_uncert = ana.pick("Uncertainty", "add", "Pa")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
+
+            if add_unit == "1":
+                add_uncert = ana.pick("Uncertainty", "add", "1")
+                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
+
+        ana.store("Uncertainty", "device", u, "1")

@@ -4,6 +4,8 @@ import subprocess
 import copy
 import numpy as np
 from .document import Document
+from .constants import Constants
+
 import math
 
 class Analysis(Document):
@@ -14,6 +16,7 @@ class Analysis(Document):
     def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None, pressure_unit = "Pa",  error_unit ="1"):
         self.pressure_unit =  pressure_unit
         self.error_unit = error_unit
+        self.Const = Constants(doc)
 
         if init_dict is None:
             init_dict = {
@@ -26,6 +29,8 @@ class Analysis(Document):
                         "Values": {},
                         }
         if git_hash:
+            if 'AuxValues' not in init_dict:
+                init_dict['AuxValues'] = {}
             init_dict['AuxValues']['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
 
         if analysis_type:

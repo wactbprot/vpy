@@ -9,7 +9,6 @@ from .todo import ToDo
 from .values import Values, Date
 from .constants import Constants
 
-
 class Result(Analysis):
     """Holds a deep copy of ``document``. Container for storing
     Results of analysis.

@@ -1,7 +1,7 @@
 """
 script works for SE3, FRS and DKM measurements
 
-python script/cal_result_error.py --ids 'cal-2020-se3-kk-75012_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/se3/cal_result_error.py --ids 'cal-2020-se3-kk-75012_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
 sys.path.append(".")
