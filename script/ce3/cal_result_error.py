@@ -93,16 +93,16 @@ def main():
                 d["BakeoutTemperature"] = float(T)
                 d["BakeoutTemperatureUnit"] = Tu
                 t, tu = ana.ask_for_bake_out_time()
-                d["BakeoutTime"] = float(T)
+                d["BakeoutTime"] = float(t)
                 d["BakeoutTimeUnit"] = tu
             else:
                 d["Bakeout"] = False
 
-            T, Tu, t, tu = ana.ask_for_sputter()
+            p, pu, t, tu = ana.ask_for_sputter()
             if T is not None:
                 d["Sputter"] = True
-                d["SputterTemperature"] = float(T)
-                d["SputterTemperatureUnit"] = Tu
+                d["SputterPressure"] = float(p)
+                d["SputterPressureUnit"] = pu
                 d["SputterTime"] = float(t)
                 d["SputterTimeUnit"] = tu
             else:

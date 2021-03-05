@@ -452,13 +452,13 @@ class Analysis(Document):
             return t, "h"
 
     def ask_for_sputter(self):
-        """ Asks for the .
+        """ Asks for sputter.
         """
 
-        q1 = "\n\n\ndefault sputter params (1h@180°C Ar) (enter if ok) anything else if no sputter\n*: "
+        q1 = "\n\n\nDefault sputter params (1h@1e-5mbar Ar) (enter if ok)\nanything else: no sputter\n: "
         text = input(q1)
         if text == "":
-            return 180, "C", 1, "h"
+            return 5e-3, "Pa", 1, "h"
         else:
             return None, None, None, None
 

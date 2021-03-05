@@ -42,6 +42,7 @@ class Result(Analysis):
         "Pa":"\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
         }
     unit_trans = {
+        "h":"\\hour",
         "mbar": "\\millibar",
         "Pa": "\\pascal",
         "1/Pa": "\\per\\pascal",
@@ -78,10 +79,10 @@ class Result(Analysis):
         super().__init__(doc, init_dict)
 
     def to_si_expr(self, v, unit):
-        return "\\SI{"+ v + "}{" + self.unit_trans[unit] + "}"
+        return "\\SI{"+ str(v) + "}{" + self.unit_trans[unit] + "}"
 
     def to_si_pm_expr(self, v, u, unit):
-        return self.to_si_expr("" + v + "+-" + u, unit)
+        return self.to_si_expr("" + str(v) + "+-" + str(u), unit)
 
     def gen_temperature_gas_entry(self, ana, sec, unit="K", k=2):
         """Temperature of measurement gas. Type B uncertainty: section 5.3.5 MUB
@@ -196,6 +197,32 @@ class Result(Analysis):
         sec["EstimatedTemperature"] = self.to_si_pm_expr(v, u, unit)
         sec["GasTemperature"] = self.to_si_pm_expr(v, u, unit)
         sec["RoomTemperature"] = self.to_si_pm_expr(v, u, unit)
+
+        return sec
+
+    def gen_bakeout_entry(self, ana, sec, unit="K", k=2):
+        t = ana.doc.get("AuxValues", {}).get("Bakeout")
+        if t:
+            T = ana.doc.get("AuxValues", {}).get("BakeoutTemperature")
+            unit = ana.doc.get("AuxValues", {}).get("BakeoutTemperatureUnit")
+            sec["BakeoutTemperature"] = self.to_si_expr(T, unit)
+
+            t = ana.doc.get("AuxValues", {}).get("BakeoutTime")
+            unit = ana.doc.get("AuxValues", {}).get("BakeoutTimeUnit")
+            sec["BakeoutTime"] = self.to_si_expr(t, unit)
+
+        return sec
+
+    def gen_sputter_entry(self, ana, sec, unit="K", k=2):
+        t = ana.doc.get("AuxValues", {}).get("Sputter")
+        if t:
+            p = ana.doc.get("AuxValues", {}).get("SputterPressure")
+            unit = ana.doc.get("AuxValues", {}).get("SputterPressureUnit")
+            sec["SputterPressure"] = self.to_si_expr(p, unit)
+
+            t = ana.doc.get("AuxValues", {}).get("SputterTime")
+            unit = ana.doc.get("AuxValues", {}).get("SputterTimeUnit")
+            sec["SputterTime"] = self.to_si_expr(t, unit)
 
         return sec
 
@@ -353,6 +380,8 @@ class Result(Analysis):
         if result_type == "cont_expansion":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_bakeout_entry(ana, sec)
+            sec = self.gen_sputter_entry(ana, sec)
 
         if result_type == "srg_vg":
             sec = self.gen_temperature_gas_entry(ana, sec)
