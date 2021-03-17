@@ -293,7 +293,6 @@ class Device(Document):
                     u, return_unit = self.convert_to_return_unit( u, meas_unit, meas_vec, meas_unit, return_unit)
 
                 uncert_arr.append( u )
-
                 if prefix:
                     type_name="{dev}_{u_type}".format(dev=self.name, u_type=u_type)
                 else:
@@ -429,6 +428,7 @@ class Device(Document):
             if add_unit == "Pa":
                 p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
                 add_uncert = ana.pick("Uncertainty", "add", "Pa")
+
                 u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
 
             if add_unit == "1":

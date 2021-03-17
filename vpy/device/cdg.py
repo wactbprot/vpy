@@ -102,6 +102,7 @@ class Cdg(Device):
 
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
+        self.Val = Values(doc)
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
@@ -317,10 +318,10 @@ class Cdg(Device):
                     ## range ^ day index
                     k = np.intersect1d(i_d, i_r)
 
-                    if np.shape(k)[0] > 1 and not np.all(np.isnan(offset[k])):
-                        m = np.nanmean(np.abs(np.diff(offset[k])))
-                    else:
+                    if self.Val.cnt_nan(offset[i_d]) < 2:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
+                    else:
+                        m = np.nanmean(np.abs(np.diff(offset[k])))
 
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
@@ -329,7 +330,7 @@ class Cdg(Device):
                     u_abs_arr[k] = m
                     u_rel_arr[k] = m/ind[k]
             else:
-                if len(offset[i_d]) < 2:
+                if self.Val.cnt_nan(offset[i_d]) < 2:
                     m = self.ask_for_offset_uncert(offset[i_d], self.unit)
                 else:
                     m = np.nanmean(np.abs(np.diff(offset[i_d])))
