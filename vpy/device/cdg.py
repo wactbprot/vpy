@@ -102,6 +102,7 @@ class Cdg(Device):
 
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
+        self.Val = Values(doc)
 
         if 'CalibrationObject' in dev:
             dev = dev.get('CalibrationObject')
@@ -287,11 +288,12 @@ class Cdg(Device):
 
         t_ms = [int(t) for t in t_ms]
         ## make elements not in use_idx nan or "":
-        if reject_index is not None:
+        if reject_index:
             for i in reject_index:
                 ind[i] = np.nan
                 offset[i] = np.nan
-                range_str[i] = ""
+                if range_str:
+                    range_str[i] = ""
 
         days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
         days =  np.array(days)
@@ -316,10 +318,10 @@ class Cdg(Device):
                     ## range ^ day index
                     k = np.intersect1d(i_d, i_r)
 
-                    if np.shape(k)[0] > 1 and not np.all(np.isnan(offset[k])):
-                        m = np.nanmean(np.abs(np.diff(offset[k])))
-                    else:
+                    if self.Val.cnt_nan(offset[i_d]) < 2:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
+                    else:
+                        m = np.nanmean(np.abs(np.diff(offset[k])))
 
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
@@ -328,7 +330,7 @@ class Cdg(Device):
                     u_abs_arr[k] = m
                     u_rel_arr[k] = m/ind[k]
             else:
-                if len(offset[i_d]) < 2:
+                if self.Val.cnt_nan(offset[i_d]) < 2:
                     m = self.ask_for_offset_uncert(offset[i_d], self.unit)
                 else:
                     m = np.nanmean(np.abs(np.diff(offset[i_d])))
@@ -398,38 +400,6 @@ class Cdg(Device):
                                             [0.0008,   0.0003,                0.0002,                   0.0001]).tolist() for p in p_list])
 
         ana.store("Uncertainty", "repeat", u, "1")
-
-    def device_uncert(self, ana):
-        offset_uncert = ana.pick("Uncertainty", "offset", "1")
-        repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-
-
-        digit_uncert_dict = ana.pick_dict("Uncertainty", "digit")
-        if digit_uncert_dict is not None:
-            if digit_uncert_dict.get("Unit") == "Pa":
-                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-                digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
-                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
-            else:
-                digit_uncert = ana.pick("Uncertainty", "digit", "1")
-                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert, 2))
-        else:
-            u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
-
-
-        add_uncert = ana.pick_dict("Uncertainty", "add")
-        if add_uncert is not None:
-            add_unit = add_uncert.get("Unit")
-            if add_unit == "Pa":
-                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
-                add_uncert = ana.pick("Uncertainty", "add", "Pa")
-                u = np.sqrt(np.power(u, 2) + np.power(add_uncert/p_ind_corr, 2))
-
-            if add_unit == "1":
-                add_uncert = ana.pick("Uncertainty", "add", "1")
-                u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
-
-        ana.store("Uncertainty", "device", u, "1")
 
 
 class InfCdg(Cdg):

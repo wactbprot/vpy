@@ -4,6 +4,8 @@ import subprocess
 import copy
 import numpy as np
 from .document import Document
+from .constants import Constants
+
 import math
 
 class Analysis(Document):
@@ -14,6 +16,7 @@ class Analysis(Document):
     def __init__(self, doc, init_dict=None, insert_dict=None, git_hash=True, analysis_type=None, pressure_unit = "Pa",  error_unit ="1"):
         self.pressure_unit =  pressure_unit
         self.error_unit = error_unit
+        self.Const = Constants(doc)
 
         if init_dict is None:
             init_dict = {
@@ -26,6 +29,8 @@ class Analysis(Document):
                         "Values": {},
                         }
         if git_hash:
+            if 'AuxValues' not in init_dict:
+                init_dict['AuxValues'] = {}
             init_dict['AuxValues']['AnalysisGitHash'] = subprocess.check_output(["git", "rev-parse", "HEAD"]).decode('ascii').strip()
 
         if analysis_type:
@@ -224,7 +229,7 @@ class Analysis(Document):
         return ret
 
     def pick_dict(self, quant, dict_type, dest='Values'):
-        """Picks and returns an already calculated value.
+        """Picks and returns an already calculated value dictionary.
 
         A possible call signature is:
 
@@ -414,6 +419,48 @@ class Analysis(Document):
 
         return e_vis, 1/(e_vis +1), u_vis, "1"
 
+    def ask_for_bake_out_temperature(self, T=180):
+        """ Asks for the bakeout temperature.
+        """
+
+        q1 = "\n\n\nBakeout temperature T = {}°C (enter if ok)\n* type T in °C or \n* 0 for no bake out: "
+        text = input(q1.format(T))
+
+        if text == "0":
+            return None, None
+
+        if text != "":
+            return float(text), "C"
+
+        if text == "":
+            return T, "C"
+
+    def ask_for_bake_out_time(self, t=70):
+        """ Asks for the bakeout time.
+        """
+
+        q1 = "\n\n\nBakeout time t = {}h (enter if ok)\n* type t in h or \n* 0 for no bakeout: "
+        text = input(q1.format(t))
+
+        if text == "0":
+            return None, None
+
+        if text != "":
+            return float(text), "h"
+
+        if text == "":
+            return t, "h"
+
+    def ask_for_sputter(self):
+        """ Asks for sputter.
+        """
+
+        q1 = "\n\n\nDefault sputter params (1h@1e-5mbar Ar) (enter if ok)\nanything else: no sputter\n: "
+        text = input(q1)
+        if text == "":
+            return 5e-3, "Pa", 1, "h"
+        else:
+            return None, None, None, None
 
     def flatten(self, l):
         """Flattens a list of lists.

@@ -1,7 +1,7 @@
 """
 script works for SE3, FRS and DKM measurements
 
-python script/cal_result_error.py --ids 'cal-2020-se3-kk-75012_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/se3/cal_result_error.py --ids 'cal-2020-se3-kk-75012_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
 sys.path.append(".")
@@ -49,12 +49,30 @@ def main():
         conv = res.Const.get_conv(from_unit=ana.pressure_unit, to_unit=tdo.pressure_unit)
         average_index = tdo.make_average_index(p_cal*conv, tdo.pressure_unit)
 
+
         ## will be filled up with aux values:
         d = {}
 
         display.check_outlier_err(ana)
         average_index, reject_index  = ana.ask_for_reject(average_index=average_index)
         flat_average_index = ana.flatten(average_index)
+
+        ## offset contrib
+        cus_dev.offset_uncert(ana,  reject_index =  reject_index)
+
+        ## default uncert. contrib.  repeat
+        cus_dev.repeat_uncert(ana)
+
+        ## add. uncert. contrib.
+        if "uncert_dict" in dir(cus_dev):
+            ## e.g. for digitalisation uncert.
+            u_add = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
+                                             meas_unit=ana.pressure_unit,
+                                             return_unit=ana.pressure_unit,
+                                             res=ana,
+                                             skip_source="standard",
+                                             prefix=False)
+        cus_dev.device_uncert(ana)
 
         d["AverageIndex"] = average_index
         d["AverageIndexFlat"] = flat_average_index
@@ -120,22 +138,6 @@ def main():
 
             display.plot_err_diff(ana)
 
-        ## offset contrib
-        cus_dev.offset_uncert(ana,  reject_index =  reject_index)
-
-        ## default uncert. contrib.  repeat
-        cus_dev.repeat_uncert(ana)
-
-        ## add. uncert. contrib.
-        if "uncert_dict" in dir(cus_dev):
-            ## e.g. for digitalisation uncert.
-            u_add = cus_dev.get_total_uncert(meas_vec=p_ind_corr,
-                                             meas_unit=ana.pressure_unit,
-                                             return_unit=ana.pressure_unit,
-                                             res=ana,
-                                             skip_source="standard",
-                                             prefix=False)
-        cus_dev.device_uncert(ana)
 
         ## the uncertainty of the standard is
         # already calculated at analysis step

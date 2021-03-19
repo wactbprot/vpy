@@ -1,6 +1,7 @@
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
 from vpy.device.rsg import Rsg
+from vpy.device.ig import Ig
 from vpy.values import Values
 from vpy.analysis import Analysis
 
@@ -11,12 +12,14 @@ def init_customer_device(doc):
     if customer_object.get("Class") == "CDG":
         cus_dev = Cdg(doc, customer_object)
     if customer_object.get("Class") == "RSG":
-        cus_dev = Rsg(doc, customer_object)   
+        cus_dev = Rsg(doc, customer_object)
+    if customer_object.get("Class") == "IG":
+        cus_dev = Ig(doc, customer_object)
 
     return cus_dev
 
 def result_analysis_init(doc):
-    analysis = doc.get('Calibration').get('Analysis')    
+    analysis = doc.get('Calibration').get('Analysis')
     ## keep standard uncertainty and clean the rest
     u_std = Values(analysis.get("Values").get("Uncertainty")).get_value("standard", "1")
     del analysis['Values']['Uncertainty']
