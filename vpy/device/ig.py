@@ -33,7 +33,11 @@ class Ig(Device):
         u_abs_arr = np.full(len(ind), np.nan)
         offset_contrib = {"Unit": ana.pressure_unit}
 
-        m = np.nanmean(np.abs(np.diff(offset)))
+        ## Das Saugvermögen der KP wird mit steigender N2-Belegung bis zu
+        ## einem p_cal=3e-7mbar größer; der Offset sinkt während der Kalib.
+        ## Es soll deshalb nur die Hälfte des delta offset als Unsicherheit
+        ## angesetzt werden
+        m = np.nanmean(np.abs(np.diff(offset)))/2.0
         if m == 0.0:
             m = self.ask_for_offset_uncert(offset, ana.pressure_unit, range_str="all")
 
