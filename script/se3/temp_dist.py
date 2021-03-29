@@ -139,11 +139,12 @@ def main():
                 s=s+1
 
         ## helper
-        alpha = gen_alpha(n_h, 0)
-        x = gen_x(alpha, rh_vec[i])
-        y = np.full(n_h, y_vec[i])
-        z = gen_z(alpha, rh_vec[i])
-        ax.plot(x, y, z, c= "lightgray")
+        if i != 0 and i != 9:
+            alpha = gen_alpha(n_h, 0)
+            x = gen_x(alpha, rh_vec[i])
+            y = np.full(n_h, y_vec[i])
+            z = gen_z(alpha, rh_vec[i])
+            ax.plot(x, y, z, c= "lightgray")
 
     fig.colorbar(
         ax.scatter(x_arr, y_arr, z_arr,

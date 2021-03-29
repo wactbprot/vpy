@@ -132,7 +132,7 @@ class Result(Analysis):
         av_idx = ana.doc["AuxValues"]["AverageIndexFlat"]
         t = np.take(t,av_idx)
         t_mean = np.mean(t)
-        t_unc = np.std(t)*k
+        t_unc = 0.1 #np.std(t)*k
 
         v = self.Val.round_to_uncertainty(t_mean, t_unc, 1)
         u = self.Val.round_to_sig_dig(t_unc, 1)
