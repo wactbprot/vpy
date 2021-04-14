@@ -61,7 +61,7 @@ class Document(object):
 
         return ret
 
-    def get_value_and_unit(self, d_type):
+    def get_value_and_unit(self, d_type, with_stats=False):
         """Intended use for this method: **extracting values when unit is unknown**.
         Searches ``dict`` by means of method ``get_object()`` and extracts the unit.
         Uses ``get_value()`` to shape values.
@@ -79,11 +79,12 @@ class Document(object):
         if obj is not None:
             if "Unit" in obj:
                 unit = obj['Unit']
-                value = self.get_value(d_type, unit, obj)
 
-        return value, unit
-
-
+                if with_stats:
+                    value_ret, sd_ret, n_ret = self.get_value(d_type, unit, obj, with_stats=with_stats)
+                    return value_ret, sd_ret, n_ret, unit
+                else:
+                    return self.get_value(d_type, unit, obj, with_stats=with_stats), unit
 
     def get_expression(self, t, unit, o=False):
         """Gets an dict by means of ``o=get_object()``,
