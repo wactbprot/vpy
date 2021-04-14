@@ -5,6 +5,10 @@ from .std import Se3
 
 
 class Cal(Se3):
+    ## sd of the gn cdgs must be better than:
+    gn_sd_threshold = 1e-2
+
+    np.warnings.filterwarnings('ignore')
 
     def __init__(self, doc):
         super().__init__(doc)
@@ -452,8 +456,8 @@ class Cal(Se3):
             if GNDevice.name != self.fill_dev_names[i]:
                 sys.exit("Filling pressure devicees in unexpected order")
 
-            # get indicatted pressure and unit
-            p_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i])
+            # get indicated pressure and unit
+            p_ind, sd_ind, n_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i], with_stats=True)
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
 
             # get a offset value for each pressure value:
@@ -467,6 +471,8 @@ class Cal(Se3):
                 p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
 
             p = p_ind_conv - p_off_conv
+
+            p[np.where(sd_ind/p_ind > self.gn_sd_threshold)] = np.nan
 
             if gn_target is not None:
                 e = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)
