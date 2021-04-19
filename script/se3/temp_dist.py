@@ -97,7 +97,6 @@ def main():
         doc = io.get_base_doc("se3")
 
         res = requests.post(conf_dev_hub.get("url"), json=conf_dev_hub.get("dmm_task"))
-        print(res)
         res = res.json()
         doc["Measurement"] = {"Values":{"Temperature":res.get("Result")}}
         cal = Cal(doc)
