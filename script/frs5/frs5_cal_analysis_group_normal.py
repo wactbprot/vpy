@@ -18,7 +18,7 @@ def main():
     ret = {'ok':True}
 
     if '--ids' in args:
-        idx_ids = args.index('--ids') + 1 
+        idx_ids = args.index('--ids') + 1
         try:
             ids = args[idx_ids].split(';')
         except:
@@ -33,14 +33,14 @@ def main():
         base_doc = io.get_base_doc("frs5")
         for id in ids:
             doc = io.get_doc_db(id)
-           
+
             if update:
                 doc = io.update_cal_doc(doc, base_doc)
-            
-            cal = Cal(doc)  
+
+            cal = Cal(doc)
             res = Analysis(doc)
             uncert = Uncert(doc)
-        
+
             cal.temperature(res)
             cal.pressure_res(res)
             cal.pressure_cal(res)
@@ -56,18 +56,22 @@ def main():
                 )
 
             p_cal = res.pick("Pressure", "cal", cal.unit)
-            for dev in devs:            
-                p_offset = cal.Pres.get_value( '{}-offset'.format(dev), cal.unit)    
+            for dev in devs:
+                p_offset = cal.Pres.get_value( '{}-offset'.format(dev), cal.unit)
                 p_ind = cal.Pres.get_value('{}-ind'.format(dev), cal.unit)
                 p_ind_corr = p_ind - p_offset
                 res.store("Pressure", '{}-offset'.format(dev), p_offset, cal.unit)
                 res.store("Pressure",'{}-ind'.format(dev), p_ind, cal.unit)
                 res.store("Pressure",'{}-ind_corr'.format(dev), p_ind_corr, cal.unit)
-                
+
                 res.store('Error', '{}-ind'.format(dev), p_ind_corr/p_cal-1, '1')
                 print(dev)
                 print("----------------------------")
+
                 print(p_ind_corr/p_cal-1)
+            print("----------------------------")
+            print("----------------------------")
+            print(p_cal)
             io.save_doc(res.build_doc())
 
 if __name__ == "__main__":

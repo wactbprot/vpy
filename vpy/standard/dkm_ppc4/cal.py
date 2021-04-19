@@ -19,7 +19,7 @@ class Cal(DkmPpc4):
         :type: class
         """
 
-        
+
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit)
         m = res.pick("Mass", "total", "kg")
         corr = res.pick("Correction", "temperature", "1")
@@ -40,8 +40,9 @@ class Cal(DkmPpc4):
         :type: class
         """
 
-        p_res = self.Pres.get_value("dkmppc4_res", self.unit)
-        res.store("Pressure", "dkmppc4_res", p_res, self.unit)
+        p_res = self.Pres.get_value("dkmppc4_res", "mbar")
+        conv = self.Cons.get_conv(from_unit="mbar",to_unit=self.unit)
+        res.store("Pressure", "dkmppc4_res", p_res*conv, self.unit)
 
     def mass_total(self, res):
         """Transfers the total mass applied to the piston.
