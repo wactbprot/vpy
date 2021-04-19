@@ -1,18 +1,22 @@
 from vpy.device.srg import Srg
 from vpy.device.cdg import Cdg
 from vpy.device.rsg import Rsg
+from vpy.device.qbs import Qbs
 from vpy.device.ig import Ig
 from vpy.values import Values
 from vpy.analysis import Analysis
 
 def init_customer_device(doc):
     customer_object = doc.get('Calibration').get('CustomerObject')
+
     if customer_object.get("Class") == "SRG":
         cus_dev = Srg(doc, customer_object)
     if customer_object.get("Class") == "CDG":
         cus_dev = Cdg(doc, customer_object)
     if customer_object.get("Class") == "RSG":
         cus_dev = Rsg(doc, customer_object)
+    if customer_object.get("Class") == "QBS":
+        cus_dev = Qbs(doc, customer_object)
     if customer_object.get("Class") == "IG":
         cus_dev = Ig(doc, customer_object)
 

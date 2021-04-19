@@ -103,10 +103,12 @@ def main():
 
         t_arr = cal.Temp.get_array("ch_", channels, "_now", "C")
         cor_arr = cal.TDev.get_array("corr_ch_", channels,"", "K")
+
         p = 0
 
     t = t_arr + cor_arr
     t_i = np.array([e[p] for e in t])
+    print(t_i)
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
