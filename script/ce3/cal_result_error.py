@@ -63,6 +63,9 @@ def main():
 
         T_gas = ana.pick("Temperature", "Tuhv", "K")
         T_room = ana.pick("Temperature", "Troom", "K")
+        if T_room is None:
+            T_room = T_gas
+
         u_std = ana.pick("Uncertainty", "uncertPcal_rel" , "1")
 
         err = p_ind_corr/ p_cal - 1
