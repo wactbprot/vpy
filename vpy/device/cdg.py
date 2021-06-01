@@ -292,7 +292,7 @@ class Cdg(Device):
             for i in reject_index:
                 ind[i] = np.nan
                 offset[i] = np.nan
-                if range_str:
+                if range_str is not None:
                     range_str[i] = ""
 
         days = [datetime.datetime.fromtimestamp(t/1000.0).day for t in t_ms]
@@ -317,7 +317,7 @@ class Cdg(Device):
 
                     ## range ^ day index
                     k = np.intersect1d(i_d, i_r)
-
+                    print(k)
                     if self.Val.cnt_nan(offset[i_d]) < 2:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
                     else:
@@ -325,7 +325,8 @@ class Cdg(Device):
 
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
-
+                    print(m)
+                    print(offset[k])
                     offset_contrib[r] = m
                     u_abs_arr[k] = m
                     u_rel_arr[k] = m/ind[k]
