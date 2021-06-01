@@ -3,6 +3,7 @@ from vpy.device.cdg import Cdg
 from vpy.device.rsg import Rsg
 from vpy.device.qbs import Qbs
 from vpy.device.ig import Ig
+from vpy.device.pir import Pir
 from vpy.values import Values
 from vpy.analysis import Analysis
 
@@ -19,6 +20,8 @@ def init_customer_device(doc):
         cus_dev = Qbs(doc, customer_object)
     if customer_object.get("Class") == "IG":
         cus_dev = Ig(doc, customer_object)
+    if customer_object.get("Class") == "PIR":
+        cus_dev = Pir(doc, customer_object)
 
     return cus_dev
 

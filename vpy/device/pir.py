@@ -26,7 +26,7 @@ class Pir(Device):
 
         if pressure_unit == "V":
             if self.conversion_type == "ley_log":
-                return (pressure_value + self.cmr_offset) * self.cmr_factor * self.cmr_base_factor[self.type_head]
+                return (np.power(10, pressure_value * 1.667 - 9.333))
 
             sys.exit("conversion type not implemented")
         else:
