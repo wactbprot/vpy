@@ -405,16 +405,20 @@ class Device(Document):
             return u
 
     def device_uncert(self, ana):
+
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
-
-
+        emis_uncert  = ana.pick("Uncertainty", "emis", "1")
         digit_uncert_dict = ana.pick_dict("Uncertainty", "digit")
+        add_uncert = ana.pick_dict("Uncertainty", "add")
+
         if digit_uncert_dict is not None:
             if digit_uncert_dict.get("Unit") == "Pa":
-                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa" )
                 digit_uncert = ana.pick("Uncertainty", "digit", "Pa")
-                u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert/p_ind_corr, 2))
+                u = np.sqrt(np.power(offset_uncert, 2) +
+                            np.power(repeat_uncert, 2) +
+                            np.power(digit_uncert/p_ind_corr, 2))
             else:
                 digit_uncert = ana.pick("Uncertainty", "digit", "1")
                 u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2) + np.power(digit_uncert, 2))
@@ -422,7 +426,6 @@ class Device(Document):
             u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
 
 
-        add_uncert = ana.pick_dict("Uncertainty", "add")
         if add_uncert is not None:
             add_unit = add_uncert.get("Unit")
             if add_unit == "Pa":
@@ -434,5 +437,8 @@ class Device(Document):
             if add_unit == "1":
                 add_uncert = ana.pick("Uncertainty", "add", "1")
                 u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
+
+        if emis_uncert is not None:
+            u = np.sqrt(np.power(u, 2) + np.power(emis_uncert, 2))
 
         ana.store("Uncertainty", "device", u, "1")

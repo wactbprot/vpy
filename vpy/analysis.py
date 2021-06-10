@@ -622,14 +622,17 @@ class Analysis(Document):
         return np.asarray([np.nanmean(np.take(value, i)) for i in average_index])
 
     def total_uncert(self):
-
-        p_cal = self.pick("Pressure", "cal", self.pressure_unit)
         standard_uncert = self.pick("Uncertainty", "standard", self.error_unit)
-
-        p_ind = self.pick("Pressure", "ind_corr", self.pressure_unit)
         device_uncert = self.pick("Uncertainty", "device", self.error_unit)
+        p_cal = self.pick("Pressure", "cal", self.pressure_unit)
+        print(self.analysis_type)
+        if self.analysis_type == "sens":
+            s = self.pick("Sensitivity", "gauge_sens", "1/{}".format(self.pressure_unit))
+            u_rel = np.sqrt(np.power(device_uncert, 2) + np.power(standard_uncert, 2))
+        else:
+            p_ind = self.pick("Pressure", "ind_corr", self.pressure_unit)
 
-        u_rel = p_ind / p_cal * np.sqrt(np.power(device_uncert, 2) + np.power(standard_uncert, 2))
+            u_rel = p_ind / p_cal * np.sqrt(np.power(device_uncert, 2) + np.power(standard_uncert, 2))
 
         self.store("Uncertainty", "total_rel", np.abs(u_rel) , self.error_unit)
         self.store("Uncertainty", "total_abs", np.abs(u_rel*p_cal) , self.pressure_unit)
