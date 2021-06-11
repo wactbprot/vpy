@@ -46,21 +46,29 @@ def gen_sim_value_struct(val_dict, out_file_name="values_struct.json", path="vpy
     with open("{}/{}".format(path, out_file_name), 'w') as f:
         json.dump(res_dict, f, indent=4, ensure_ascii=False)
 
-def get_fill_and_expansion(cal,target_pressures, target_unit):
+def get_fill_and_expansion(cal, target_pressures, target_unit):
 
     expansion_name_value = []
     target_fill_value = []
 
     for i, target_pressure in enumerate(target_pressures):
+        print("-_______")
+        print(target_pressure)
         p_fill = get_fill_pressures(cal, target_pressure, target_unit)
         u_f = get_expansion_uncert_rel(cal, target_pressure, target_unit)
         u_p_fill = get_fill_pressure_uncert_rel(cal, p_fill, target_unit)
-        u_rel = np.sqrt(np.power(u_p_fill,2) + np.power(u_f, 2))
+        u_rel = np.sqrt(np.power(u_p_fill, 2) + np.power(u_f/3, 2))
+        print(p_fill)
+        print(u_f)
+        print(u_p_fill)
+        #u_rel = u_p_fill
+        print(np.sqrt(np.power(u_p_fill, 2) + np.power(u_f, 2)))
+        #u_rel = u_p_fill
         u_rel = skip_by_pressure(cal, p_fill, u_rel, target_unit)
-        res_dict = gen_result_dict(p_fill, u_rel, target_unit)
 
-        expansion_name_value.append(res_dict["Expansion.Value"])
-        target_fill_value.append(res_dict["Pressure_fill.Value"])
+        res_dict = gen_result_dict(p_fill, u_rel, target_unit)
+        expansion_name_value.append(res_dict.get("Expansion").get("Value"))
+        target_fill_value.append(res_dict.get("Pressure_fill").get("Value"))
 
     return target_fill_value, expansion_name_value
 
