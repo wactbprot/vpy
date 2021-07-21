@@ -16,13 +16,17 @@ class Result(Analysis):
     head_cell = {
         "cal": "{\\(p_\\text{cal}\\)}",
         "ind": "{\\(p_\\text{ind}\\)}",
+        "ic": "{\\(i_\\text{c}\\)}",
         "offset": "{\\(p_\\text{ind,r}\\)}",
+        "ir": "{\\(i_\\text{r}\\)}",
         "ind_corr": "{\\(p_\\text{ind} - p_\\text{ind,r}\\)}",
         "uncert_total_rel": "{\\(U(k=2)\\)}",
         "uncert_total_abs": "{\\(U(k=2)\\)}",
         "uncert_total_rel_cf": "{\\(U(CF)\\)}",
         "uncert_total_rel_e": "{\\(U(e)\\)}",
+        "uncert_total_rel_sens": "{\\(U(S)/S\\)}",
         "error":"{\\(e\\)}",
+        "sens":"{\\(S\\)}",
         "cf": "{\\(CF\\)}",
         "N":"{\\(N\\)}",
         "range":"range",
@@ -30,7 +34,9 @@ class Result(Analysis):
     unit_cell = {
         "1": "",
         "mbar": "{in \\(\\si{\\mbar}\\)}",
+        "A": "{in \\(\\si{\\ampere}\\)}",
         "Pa":"{in \\(\\si{\\pascal}\\)}",
+        "1/Pa":"{in \\(\\si{\\pascal\\tothe{-1}}\\)}",
         "%": "{in \\(\\si{\\percent}\\)}",
         "N":"",
         "range":"",
@@ -40,6 +46,8 @@ class Result(Analysis):
         "1":"\\one",
         "mbar": "\\hecto\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
         "Pa":"\\kilogram\\metre\\tothe{-1}\\second\\tothe{-2}",
+        "1/Pa":"\\kilogram\\tothe{-1}\\metre\\second\\tothe{2}",
+        "A":"\\ampere",
         }
     unit_trans = {
         "h":"\\hour",
@@ -205,11 +213,11 @@ class Result(Analysis):
         if t:
             T = ana.doc.get("AuxValues", {}).get("BakeoutTemperature")
             unit = ana.doc.get("AuxValues", {}).get("BakeoutTemperatureUnit")
-            sec["BakeoutTemperature"] = self.to_si_expr(T, unit)
+            sec["BakeoutTemperature"] = self.to_si_expr(int(T), unit)
 
             t = ana.doc.get("AuxValues", {}).get("BakeoutTime")
             unit = ana.doc.get("AuxValues", {}).get("BakeoutTimeUnit")
-            sec["BakeoutTime"] = self.to_si_expr(t, unit)
+            sec["BakeoutTime"] = self.to_si_expr(int(t), unit)
 
         return sec
 
@@ -222,7 +230,7 @@ class Result(Analysis):
 
             t = ana.doc.get("AuxValues", {}).get("SputterTime")
             unit = ana.doc.get("AuxValues", {}).get("SputterTimeUnit")
-            sec["SputterTime"] = self.to_si_expr(t, unit)
+            sec["SputterTime"] = self.to_si_expr(int(t), unit)
 
         return sec
 
@@ -383,6 +391,12 @@ class Result(Analysis):
             sec = self.gen_bakeout_entry(ana, sec)
             sec = self.gen_sputter_entry(ana, sec)
 
+        if result_type == "sens":
+            sec = self.gen_temperature_gas_entry(ana, sec)
+            sec = self.gen_temperature_room_entry(ana, sec)
+            sec = self.gen_bakeout_entry(ana, sec)
+            sec = self.gen_sputter_entry(ana, sec)
+
         if result_type == "srg_vg":
             sec = self.gen_temperature_gas_entry(ana, sec)
             sec = self.gen_temperature_room_entry(ana, sec)
@@ -438,18 +452,22 @@ class Result(Analysis):
 
         return cal_str
 
-    def make_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
-        ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
+    def make_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2, ind_unit=None):
+        if ind_unit is None:
+            ind_unit = pressure_unit
+        ind = self.get_reduced_pressure_ind(ana, av_idx, ind_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
         ind_str = self.Val.round_to_uncertainty_array(ind, u_total*ind, 2, scientific=True)
 
         return ind_str
 
-    def make_off_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
-        off = self.get_reduced_pressure_off(ana, av_idx, pressure_unit)
-        cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
+    def make_off_entry(self, ana, av_idx, pressure_unit, error_unit, k=2, ind_unit=None):
+        if ind_unit is None:
+            ind_unit = pressure_unit
+        off = self.get_reduced_pressure_off(ana, av_idx, ind_unit)
+        ind = self.get_reduced_pressure_ind(ana, av_idx, ind_unit)
         u_off = self.get_reduced_uncert_off(ana, av_idx, error_unit)
-        off_str = self.Val.round_to_uncertainty_array(off, u_off*cal, 2, scientific=True)
+        off_str = self.Val.round_to_uncertainty_array(off, u_off*ind, 2, scientific=True)
 
         return off_str
 
@@ -459,6 +477,13 @@ class Result(Analysis):
         error_str = self.Val.round_to_uncertainty_array(error, u_total*k, 2)
 
         return error_str
+
+    def make_sens_entry(self, ana, av_idx, sens_unit, error_unit, k=2):
+        s = self.get_reduced_sens(ana, av_idx, sens_unit)
+        u_tot = self.get_reduced_uncert_total(ana, av_idx, error_unit)
+        s_str = self.Val.round_to_uncertainty_array(s, u_tot*s, 2, scientific=False)
+
+        return s_str
 
     def make_cf_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         cf = self.get_reduced_cf(ana, av_idx, error_unit)
@@ -476,8 +501,11 @@ class Result(Analysis):
 
         return  u_std_k2_str
 
-    def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
-        ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
+    def make_uncert_ind_entry(self, ana, av_idx, pressure_unit, error_unit, k=2, ind_unit=None):
+        if ind_unit is None:
+            ind_unit = pressure_unit
+
+        ind = self.get_reduced_pressure_ind(ana, av_idx, ind_unit)
         u_dev = self.get_reduced_uncert_dev(ana, av_idx, error_unit)
 
         u_dev_k2 = u_dev*ind*k #pressure_unit
@@ -485,12 +513,14 @@ class Result(Analysis):
 
         return  u_dev_k2_str
 
-    def make_uncert_off_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
+    def make_uncert_off_entry(self, ana, av_idx, pressure_unit, error_unit, k=2, ind_unit=None):
+        if ind_unit is None:
+            ind_unit = pressure_unit
 
-        cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
+        ind = self.get_reduced_pressure_ind(ana, av_idx, ind_unit)
         u_off = self.get_reduced_uncert_off(ana, av_idx, error_unit)
 
-        u_off_k2_str = self.Val.round_to_sig_dig_array(u_off * cal, 2)
+        u_off_k2_str = self.Val.round_to_sig_dig_array(u_off * ind, 2)
 
         return  u_off_k2_str
 
@@ -503,6 +533,15 @@ class Result(Analysis):
         u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
 
         return  u_e_k2_str
+
+    def make_uncert_sens_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
+
+        u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
+
+        u_s_k2 = u_total*k
+        u_s_k2_str = self.Val.round_to_sig_dig_array(u_s_k2, 2)
+
+        return  u_s_k2_str
 
     def make_uncert_cf_entry(self, ana, av_idx, pressure_unit, error_unit, k=2):
         ind = self.get_reduced_pressure_ind(ana, av_idx, pressure_unit)
@@ -526,7 +565,6 @@ class Result(Analysis):
     def get_reduced_pressure_off(self, ana, av_idx, unit):
         off_dict = ana.pick_dict("Pressure", "offset")
         off_conv = self.Const.get_conv(from_unit=off_dict.get("Unit"), to_unit=unit)
-
         off = np.array(off_dict.get("Value"), dtype=np.float)  * off_conv
         off = ana.reduce_by_average_index(value=off, average_index=av_idx)
 
@@ -545,6 +583,12 @@ class Result(Analysis):
         u_total = ana.reduce_by_average_index(value=u_total, average_index=av_idx)
 
         return u_total
+
+    def get_reduced_sens(self, ana, av_idx, unit):
+        s = ana.pick("Sensitivity", "gauge", unit)
+        s = ana.reduce_by_average_index(value=s, average_index=av_idx)
+
+        return s
 
     def get_reduced_uncert_std(self, ana, av_idx, unit):
         u_std = ana.pick("Uncertainty", "standard", unit)
@@ -594,6 +638,92 @@ class Result(Analysis):
             return [range_str[v[0]] for v in av_idx]
         else:
             return None
+
+    def make_sens_table(self, ana, pressure_unit='Pa', sens_unit='1/Pa', uncert_unit ="1", ind_unit = "A"):
+
+        doc_aux_values = ana.doc.get("AuxValues", {})
+        av_idx = doc_aux_values.get("AverageIndex")
+
+        k = 2
+        prob = 0.95
+
+        cal_str = self.make_cal_entry(ana, av_idx, pressure_unit, uncert_unit)
+        off_str = self.make_off_entry(ana, av_idx, pressure_unit, uncert_unit, ind_unit=ind_unit)
+        ind_str = self.make_ind_entry(ana, av_idx, pressure_unit, uncert_unit, ind_unit=ind_unit)
+
+        s_str = self.make_sens_entry(ana, av_idx, sens_unit, uncert_unit)
+        u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, uncert_unit)
+
+        u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, uncert_unit, ind_unit=ind_unit)
+        u_off_k2_str = self.make_uncert_off_entry(ana, av_idx, pressure_unit, uncert_unit, ind_unit=ind_unit)
+
+        u_sens_k2_str = self.make_uncert_sens_entry(ana, av_idx, sens_unit, uncert_unit)
+
+        self.store_dict(quant="Table", d = {"Type": "cal",
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
+                                            "Quantity": "Pressure",
+                                            "Name": "calibration pressure",
+                                            "Uncertainty": u_cal_k2_str,
+                                            "DCCUnit": self.dcc_unit[pressure_unit],
+                                            "Unit": pressure_unit,
+                                            "Value": cal_str,
+                                            "HeadCell": self.head_cell["cal"],
+                                            "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
+
+        self.store_dict(quant="Table", d = {"Type": "offset",
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
+                                            "Quantity": "Pressure",
+                                            "Name": "indication at base pressure (offset)",
+                                            "Uncertainty": u_off_k2_str,
+                                            "DCCUnit": self.dcc_unit[ind_unit],
+                                            "Unit": ind_unit,
+                                            "Value": off_str,
+                                            "HeadCell": self.head_cell["ir"],
+                                            "UnitCell": self.unit_cell[ind_unit]}, dest=None)
+
+        self.store_dict(quant="Table", d = {"Type": "ind_corr",
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
+                                            "Quantity": "Pressure",
+                                            "Name": "offset corrected indicated pressure",
+                                            "Uncertainty": u_ind_k2_str,
+                                            "DCCUnit": self.dcc_unit[ind_unit],
+                                            "Unit": ind_unit,
+                                            "Value": ind_str,
+                                            "HeadCell": self.head_cell["ic"],
+                                            "UnitCell": self.unit_cell[ind_unit]}, dest=None)
+
+        self.store_dict(quant="Table", d = {"Type": "sens",
+                                            "DCCOut": True,
+                                            "CoverageFactor": k,
+                                            "CoverageProbability":prob,
+                                            "Quantity": "Sensitivity",
+                                            "Name": "Gauge Sensitivity",
+                                            "Uncertainty": u_sens_k2_str,
+                                            "DCCUnit": self.dcc_unit[sens_unit],
+                                            "Unit": sens_unit,
+                                            "Value": s_str,
+                                            "HeadCell": self.head_cell["sens"],
+                                            "UnitCell": self.unit_cell[sens_unit]}, dest=None)
+
+        self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
+                                            "DCCOut": True,
+                                            "Unit": uncert_unit,
+                                            "Value": u_sens_k2_str,
+                                            "HeadCell": self.head_cell["uncert_total_rel_sens"],
+                                            "UnitCell": self.unit_cell[uncert_unit]}, dest=None)
+
+        cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
+        ind = self.get_reduced_pressure_ind(ana, av_idx, ind_unit)
+        s = self.get_reduced_sens(ana, av_idx, sens_unit)
+        u = self.get_reduced_uncert_total(ana, av_idx, uncert_unit)
+
+        return cal, ind, s, u
 
     def make_error_table(self, ana, pressure_unit='mbar', error_unit='%', add_n_column=False):
 

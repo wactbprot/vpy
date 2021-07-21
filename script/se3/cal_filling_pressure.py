@@ -6,6 +6,7 @@ sys.path.append(os.environ["VIRTUAL_ENV"])
 
 from vpy.pkg_io import Io
 from vpy.standard.se3.cal import Cal
+from vpy.standard.se3.uncert import Uncert
 
 ## ---
 ## python script/se3/se3_cal_filling_pressure.py --target_pressure 10 --pressure_unit "Pa"
@@ -113,8 +114,8 @@ def main(cal):
         ## until they are determined again
         ## done
         ## determined see QSE-SE3-20-2
-        ## u_rel = fill_uncert_rel
-        u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
+        u_rel = fill_uncert_rel
+        #u_rel = np.sqrt(np.power(fill_uncert_rel,2) + np.power(f_uncert_rel, 2))
 
         ## skip low and high filling pressures
         u_rel = skip_by_pressure(cal, target_fill, u_rel, target_unit, min_p=80, max_p=133322.0)

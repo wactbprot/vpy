@@ -457,6 +457,7 @@ class Cal(Se3):
                 sys.exit("Filling pressure devicees in unexpected order")
 
             # get indicated pressure and unit
+            print(gn_ind_types[i])
             p_ind, sd_ind, n_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i], with_stats=True)
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
 
@@ -472,7 +473,8 @@ class Cal(Se3):
 
             p = p_ind_conv - p_off_conv
 
-            p[np.where(sd_ind/p_ind > self.gn_sd_threshold)] = np.nan
+            if sd_ind is not None:
+                p[np.where(sd_ind/p_ind > self.gn_sd_threshold)] = np.nan
 
             if gn_target is not None:
                 e = GNDevice.get_error_interpol(p, self.unit, gn_target, self.unit)

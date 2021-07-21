@@ -86,6 +86,14 @@ class Display:
         self.plt.ylabel("e in {}".format(self.e_unit))
         self.xlog_plot(x , y, label=label, show=show)
 
+    def check_outlier_sens(self, ana, label="measurement", show=True):
+        x = self.get_p_cal(ana)
+        y = self.get_sens(ana)
+        self.add_point_no(x, y)
+        self.plt.xlabel("p in {}".format(self.p_unit))
+        self.plt.ylabel("S in {}".format(self.s_unit))
+        self.xlog_plot(x , y, label=label, show=show)
+
     def check_outlier_sigma(self, ana, label="measurement", p_unit="Pa", show=True):
         x = self.get_p_cal(ana)
         y = self.get_sigma(ana)
