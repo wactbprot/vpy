@@ -36,6 +36,9 @@ class Io(object):
                     "device_info": "se3_req/group_normal_info",
                     "device_repeat":"se3_req/repeat"
                 },
+                 "ce3": {
+                    "all_doc_view": "ce3_req/doc"
+                },
                 "se2": {
                     "all_doc_view": "se2_req/doc",
                     "pn_view": "se2_req/pn_by_date"
