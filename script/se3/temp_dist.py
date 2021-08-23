@@ -108,7 +108,6 @@ def main():
 
     t = t_arr + cor_arr
     t_i = np.array([e[p] for e in t])
-    print(t_i)
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
