@@ -457,7 +457,6 @@ class Cal(Se3):
                 sys.exit("Filling pressure devicees in unexpected order")
 
             # get indicated pressure and unit
-            print(gn_ind_types[i])
             p_ind, sd_ind, n_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i], with_stats=True)
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
 

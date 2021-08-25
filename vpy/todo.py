@@ -88,7 +88,7 @@ class ToDo(Document):
         self.average_index = r
         return r
 
-    def shape_pressure(self, min, max , unit):
+    def shape_pressure(self, min_p, max_p, unit):
         """Generates and returns a dict with pressures
         between the given min and max. The unit
         must be the same as self.pressure_unit.
@@ -113,8 +113,18 @@ class ToDo(Document):
 
         if u == unit:
             # zip(*l) is ugly,
-            red_p = [ p[i] for i, v in enumerate(p) if max >= float(v) >= min]
-            red_n = [ n[i] for i, v in enumerate(p) if max >= float(v) >= min]
-            return {"Type":"target", "Value":red_p, "N":red_n, "Unit":unit}
+            red_p = [ p[i] for i, v in enumerate(p) if max_p >= float(v) >= min_p]
+            red_n = [ n[i] for i, v in enumerate(p) if max_p >= float(v) >= min_p]
+
+            rest_p = [ p[i] for i, v in enumerate(p) if max_p < float(v)]
+            rest_n = [ n[i] for i, v in enumerate(p) if max_p < float(v)]
+
+            red_d = {"Type":"target", "Value":red_p, "N":red_n, "Unit":unit}
+
+            if len(rest_p) > 0:
+                return red_d, {"Type":"target", "Value":rest_p, "N":rest_n, "Unit":unit}
+            else:
+                return red_d, None
+
         else:
             sys.exit("units don't match on attempt to shape pressure")
