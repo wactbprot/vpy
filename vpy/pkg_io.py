@@ -51,8 +51,10 @@ class Io(object):
                 }
             },
         "all":{
-            "log_data_view":"log_data/name-date"
-        }
+            "log_data_view":"log_data/name-date",
+            "cob_by_owner":"hlp/cob_owner"
+
+}
         }
         self.make_plot =  self.config["plot"]["make"]
 
@@ -394,6 +396,27 @@ class Io(object):
 
         view = self.config['all']['log_data_view']
         for item in db.view(view, startkey=start_key, endkey=end_key):
+            dat.append(item.value)
+
+        return dat
+
+    def cob_by_owner(self, owner):
+        """Gets and returns an array containing the all
+        `cob`s belonging the given  `owner`.
+
+        :param owner: name of owner
+        :type task_name: str
+
+        :returns: document
+        :rtype: dict
+        """
+        srv = couchdb.Server(self.config['db']['url'])
+        db = srv[self.config['db']['name']]
+        dat = []
+
+
+        view = self.config['all']['cob_by_owner']
+        for item in db.view(view, key=owner):
             dat.append(item.value)
 
         return dat
