@@ -24,7 +24,7 @@ class ToDo(Document):
         if 'Type' in doc:
             self.type = doc.get('Type')
             if self.type == "srg_sigma":
-                self.type = "sigma"        
+                self.type = "sigma"
 
         if 'Values' in doc:
             values = doc.get('Values')
@@ -57,7 +57,7 @@ class ToDo(Document):
             self.log.error("Not a pressure todo")
             return None, None, None
 
-    def make_average_index(self, cal, unit):
+    def make_average_index(self, cal, unit, max_dev=None):
         """Generates and returns a numpy array containing
         the indices of measurement points which belong to a
         certain target pressure. The unit of the calibration
@@ -75,23 +75,25 @@ class ToDo(Document):
 
         target = self.Pres.get_value("target", unit)
         r = []
+        if max_dev is None:
+            max_dev = self.max_dev
 
         for i in range(0, len(target)):
             rr = []
             for j in range(0, len(cal)):
-                if abs(cal[j] / target[i] - 1) < self.max_dev:
+                if abs(cal[j] / target[i] - 1) < max_dev:
                     rr.append(j)
             r.append(rr)
 
         self.average_index = r
         return r
 
-    def shape_pressure(self, min, max , unit):
+    def shape_pressure(self, min_p, max_p, unit):
         """Generates and returns a dict with pressures
         between the given min and max. The unit
         must be the same as self.pressure_unit.
 
-        :param min: minimal pressure 
+        :param min: minimal pressure
         :type cal: float
 
         :param max: maximal pressure
@@ -103,16 +105,26 @@ class ToDo(Document):
         :returns: Type, Value, Unit, N dict
         :rtype: dict
         """
-        
+
         pressure_dict = self.Pres.get_dict(key="Type", value="target")
         p = pressure_dict.get("Value")
         n = pressure_dict.get("N", [1]*len(p))
         u = pressure_dict.get("Unit")
-        
+
         if u == unit:
-            # zip(*l) is ugly, 
-            red_p = [ p[i] for i, v in enumerate(p) if max >= float(v) >= min]
-            red_n = [ n[i] for i, v in enumerate(p) if max >= float(v) >= min]
-            return {"Type":"target", "Value":red_p, "N":red_n, "Unit":unit}
+            # zip(*l) is ugly,
+            red_p = [ p[i] for i, v in enumerate(p) if max_p >= float(v) >= min_p]
+            red_n = [ n[i] for i, v in enumerate(p) if max_p >= float(v) >= min_p]
+
+            rest_p = [ p[i] for i, v in enumerate(p) if max_p < float(v)]
+            rest_n = [ n[i] for i, v in enumerate(p) if max_p < float(v)]
+
+            red_d = {"Type":"target", "Value":red_p, "N":red_n, "Unit":unit}
+
+            if len(rest_p) > 0:
+                return red_d, {"Type":"target", "Value":rest_p, "N":rest_n, "Unit":unit}
+            else:
+                return red_d, None
+
         else:
             sys.exit("units don't match on attempt to shape pressure")

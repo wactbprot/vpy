@@ -37,16 +37,17 @@ r_o = 280
 n_i = 7
 n_o = 12
 
-o_o = np.pi/n_o ## offset mantel
-o_h = 4*np.pi/n_i ## offset stirn hinten
+o_v = 2*np.pi/n_i ## offset stirn vorn
+o_o = 2*np.pi/n_o ## offset mantel
+o_h = 2*np.pi/n_i ## offset stirn hinten
 
-dir_vec =  ["cw",   "cw",   "cw",     "cw",     "cw",   "cw",  "cw",   "cw",   "cw",   "cw",   "ccw",]
-dist_vec = ["a",    "a",    "e",      "o",      "e",    "o",   "e",    "o",    "e",    "a",    "a",  ]
-o_vec =    [0,      0,      o_o,      o_o,      o_o,    o_o,   o_o,    o_o,    o_o,    0,      o_h,  ]
-n_vec =    [1,      n_i,    n_o,      n_o,      n_o,    n_o,   n_o,    n_o,    n_o,    1,      n_i,  ]
-y_vec =    [-y_t/2, -y_t/2, -dy_o*3,  -dy_o*2,  -dy_o,  0,     dy_o,   dy_o*2, dy_o*3, y_t/2,  y_t/2,]
-r_vec =    [0,      r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    0,      r_i,  ]
-rh_vec =   [r_o,    r_i,    r_o,      r_o,      r_o,    r_o,   r_o,    r_o,    r_o,    r_o,    r_i,  ]
+dir_vec =  ["cw",   "cw",   "ccw",    "ccw",    "ccw",  "ccw",  "ccw",   "ccw",   "ccw",   "cw",   "cw",]
+dist_vec = ["a",    "a",    "e",      "o",      "e",    "o",    "e",     "o",     "e",     "a",    "a",  ]
+o_vec =    [0,      o_v,    o_o,      3*o_o,    3*o_o,  5*o_o,  5*o_o,   7*o_o,   7*o_o,   0,      o_h,  ]
+n_vec =    [1,      n_i,    n_o,      n_o,      n_o,    n_o,    n_o,     n_o,     n_o,     1,      n_i,  ]
+y_vec =    [-y_t/2, -y_t/2, -dy_o*3,  -dy_o*2,  -dy_o,  0,      dy_o,    dy_o*2,  dy_o*3,  y_t/2,  y_t/2,]
+r_vec =    [0,      r_i,    r_o,      r_o,      r_o,    r_o,    r_o,     r_o,     r_o,     0,      r_i,  ]
+rh_vec =   [r_o,    r_i,    r_o,      r_o,      r_o,    r_o,    r_o,     r_o,     r_o,     r_o,    r_i,  ]
 
 def gen_x(alpha, r):
     return r * np.sin(alpha)
@@ -94,13 +95,15 @@ def main():
 
     if io.n:
         doc = io.get_base_doc("se3")
-        res = requests.post(conf_dev_hub.get("url"), data=json.dumps(conf_dev_hub.get("dmm_task"))).json()
 
+        res = requests.post(conf_dev_hub.get("url"), json=conf_dev_hub.get("dmm_task"))
+        res = res.json()
         doc["Measurement"] = {"Values":{"Temperature":res.get("Result")}}
         cal = Cal(doc)
 
         t_arr = cal.Temp.get_array("ch_", channels, "_now", "C")
         cor_arr = cal.TDev.get_array("corr_ch_", channels,"", "K")
+
         p = 0
 
     t = t_arr + cor_arr
@@ -136,11 +139,12 @@ def main():
                 s=s+1
 
         ## helper
-        alpha = gen_alpha(n_h, 0)
-        x = gen_x(alpha, rh_vec[i])
-        y = np.full(n_h, y_vec[i])
-        z = gen_z(alpha, rh_vec[i])
-        ax.plot(x, y, z, c= "lightgray")
+        if i != 0 and i != 9:
+            alpha = gen_alpha(n_h, 0)
+            x = gen_x(alpha, rh_vec[i])
+            y = np.full(n_h, y_vec[i])
+            z = gen_z(alpha, rh_vec[i])
+            ax.plot(x, y, z, c= "lightgray")
 
     fig.colorbar(
         ax.scatter(x_arr, y_arr, z_arr,

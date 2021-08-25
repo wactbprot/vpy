@@ -3,6 +3,7 @@ python script/frs5/frs5_cal_analysis.py --ids 'cal-2018-frs5-kk-75001_0001' --db
 """
 import sys
 import os
+import json
 sys.path.append(".")
 
 from vpy.pkg_io import Io
@@ -77,6 +78,8 @@ def main():
             cus_dev.range_trans(res)
 
             io.save_doc(res.build_doc())
+
+    print(json.dumps(ret))
 
 if __name__ == "__main__":
     main()

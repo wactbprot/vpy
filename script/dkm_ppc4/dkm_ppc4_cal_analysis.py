@@ -62,8 +62,8 @@ def main():
             offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
             ind_dict = cal.Pres.get_dict('Type', 'ind' )
 
-            offset = CustomerDevice.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
-            ind = CustomerDevice.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
+            offset = cus_dev.pressure(offset_dict, temperature_dict, unit = cal.unit, gas=gas)
+            ind = cus_dev.pressure(ind_dict, temperature_dict, unit = cal.unit, gas=gas)
 
             ind_corr = ind - offset
 
@@ -75,9 +75,9 @@ def main():
             p_ind_corr = res.pick("Pressure", "ind_corr", cal.unit)
             p_cal = res.pick("Pressure", "cal" , cal.unit)
             res.store('Error', 'ind', p_ind_corr/p_cal-1, '1')
-            CustomerDevice.range_trans(res)
+            cus_dev.range_trans(res)
 
-            print(p_ind/p_cal-1)
+            print(p_ind_corr/p_cal-1)
             io.save_doc(res.build_doc())
 
 if __name__ == "__main__":

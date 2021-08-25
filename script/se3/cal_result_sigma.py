@@ -1,5 +1,5 @@
 """
-python script/se3/cal_result_sigma.py --ids 'cal-2018-se3-kk-75050_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
+python script/ce3/cal_result_sigma.py --ids 'cal-2018-se3-kk-75050_0001' --db 'vl_db_work' --srv 'http://localhost:5984'
 """
 import sys
 sys.path.append(".")
