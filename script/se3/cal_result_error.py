@@ -34,7 +34,7 @@ def main():
         ## generate result instance with analysis res type
         ## set skip flag to ignore result for cert
         result_type = ana.analysis_type
-        std = tdo.get_standard()
+        std = doc.get("Calibration").get("Standard").get("Name")
         if std == "FRS5":
             result_type = "pressure_balance"
         if std == "DKM_PPC4":
