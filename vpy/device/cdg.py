@@ -358,21 +358,23 @@ class Cdg(Device):
 
     def repeat_uncert(self, ana, cmc=True):
         ok = False
+        standard = ana.org.get("Calibration").get("Standard").get("Name")
+
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         if self.producer == "missing":
             sys.exit("No Producer in Device")
 
-        if self.ToDo.get_standard() == "missing":
-            sys.exit("No Standard in ToDo")
+        if standard is None:
+            sys.exit("No Standard (updated?)")
 
-        if self.producer == "inficon" and self.ToDo.get_standard() == "FRS5":
+        if self.producer == "inficon" and standard == "FRS5":
             if self.type_head == "10Torr" or self.type_head == "100Torr":
                 u = np.full(len(p_list), 2.9e-5)
             else:
                 u = np.full(len(p_list), 1.0e-4)
             ok = True
 
-        if not cmc and self.type_head == "01Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+        if not cmc and self.type_head == "01Torr" and self.producer == "mks" and standard == "SE3":
             ## calculation follows:
             ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
 
@@ -388,7 +390,7 @@ class Cdg(Device):
 
             ok = True
 
-        if not cmc and self.type_head == "1Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+        if not cmc and self.type_head == "1Torr" and self.producer == "mks" and standard == "SE3":
             ## calculation follows:
             ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
 
