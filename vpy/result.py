@@ -509,7 +509,7 @@ class Result(Analysis):
         u_std = self.get_reduced_uncert_std(ana, av_idx, error_unit)
 
         u_std_k2 = u_std*cal*k #pressure_unit
-        u_std_k2_str = self.Val.round_to_sig_dig_array(u_std_k2, 2)
+        u_std_k2_str = self.Val.round_to_sig_dig_array(u_std_k2, 2, scientific=True)
 
         return  u_std_k2_str
 
@@ -521,7 +521,7 @@ class Result(Analysis):
         u_dev = self.get_reduced_uncert_dev(ana, av_idx, error_unit)
 
         u_dev_k2 = u_dev*ind*k #pressure_unit
-        u_dev_k2_str = self.Val.round_to_sig_dig_array(u_dev_k2, 2)
+        u_dev_k2_str = self.Val.round_to_sig_dig_array(u_dev_k2, 2,scientific=True)
 
         return  u_dev_k2_str
 
@@ -532,7 +532,7 @@ class Result(Analysis):
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, ind_unit)
         u_off = self.get_reduced_uncert_off(ana, av_idx, error_unit)
 
-        u_off_k2_str = self.Val.round_to_sig_dig_array(u_off * ind, 2)
+        u_off_k2_str = self.Val.round_to_sig_dig_array(u_off * ind, 2,scientific=True)
 
         return  u_off_k2_str
 
@@ -540,9 +540,8 @@ class Result(Analysis):
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, pressure_unit)
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
-
         u_e_k2 = u_total*ind/cal*k
-        u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
+        u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2, scientific=False)
 
         return  u_e_k2_str
 
@@ -777,7 +776,6 @@ class Result(Analysis):
         cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
 
         u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
-
         u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
         u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)
@@ -881,8 +879,10 @@ class Result(Analysis):
 
         self.log.info("Result error table written")
 
+        cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
+
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, pressure_unit)
         error = self.get_reduced_error(ana, av_idx, error_unit)
         u = self.get_reduced_uncert_total(ana, av_idx, error_unit)
 
-        return ind, error, u
+        return cal, ind, error, u
