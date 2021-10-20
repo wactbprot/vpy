@@ -321,7 +321,6 @@ class Cdg(Device):
 
             if range_str is not None:
                 for r in np.unique(np.take(range_str, i_d)[0]):
-                    print(r)
                     if not r:
                         continue
                     ## range index
@@ -330,7 +329,7 @@ class Cdg(Device):
                     ## range ^ day index ^ not nan
                     k = np.intersect1d(i_d, i_r)
 
-                    if self.Val.cnt_nan(offset[i_d]) < 2:
+                    if self.Val.cnt_nan(offset[k]) < 2:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
                     else:
                         m = np.nanmean(np.abs(np.diff(offset[k])))

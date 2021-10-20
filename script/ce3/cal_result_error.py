@@ -160,7 +160,7 @@ def main():
         res.make_measurement_data_section(ana, result_type=result_type)
 
         # start build cert table
-        p_cal_mv, p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit="1")
+        p_cal_mv, p_ind_mv, err_mv, u_mv = res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit="1")
 
         ana.store("Pressure", "cal_mean", p_cal_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")

@@ -540,6 +540,7 @@ class Result(Analysis):
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, pressure_unit)
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
+
         u_e_k2 = u_total*ind/cal*k
         u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2, scientific=False)
 
