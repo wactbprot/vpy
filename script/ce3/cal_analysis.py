@@ -25,6 +25,12 @@ def main():
             doc = io.update_cal_doc(doc, base_doc)
 
         ana = Analysis(doc)
+
+        cus_dev = init_customer_device(doc)
+
+
+        cal.pressure_gn_corr(ana)
+
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))
