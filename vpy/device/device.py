@@ -425,7 +425,6 @@ class Device(Document):
         else:
             u = np.sqrt(np.power(offset_uncert, 2) + np.power(repeat_uncert, 2))
 
-
         if add_uncert is not None:
             add_unit = add_uncert.get("Unit")
             if add_unit == "Pa":

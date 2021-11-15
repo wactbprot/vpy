@@ -14,6 +14,8 @@ def init_customer_device(doc):
         cus_dev = Srg(doc, customer_object)
     if customer_object.get("Class") == "CDG":
         cus_dev = Cdg(doc, customer_object)
+    if customer_object.get("Class") == "CPT":
+        cus_dev = Cdg(doc, customer_object)
     if customer_object.get("Class") == "RSG":
         cus_dev = Rsg(doc, customer_object)
     if customer_object.get("Class") == "QBS":

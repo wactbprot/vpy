@@ -41,6 +41,7 @@ class Ig(Device):
         ## Es soll deshalb nur die Hälfte des delta offset als Unsicherheit
         ## angesetzt werden
         m = np.nanmean(np.abs(np.diff(offset)))/2.0
+
         if m == 0.0:
             m = self.ask_for_offset_uncert(offset, ind_unit, range_str="all")
 

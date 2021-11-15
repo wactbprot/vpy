@@ -132,6 +132,15 @@ class Cdg(Device):
                             if not conversion_type:
                                 self.conversion_type = "factor"
 
+                    if "mensor" in dev_device["Producer"].lower():
+                        self.producer = "mensor"
+                        if type_head in self.type_head_factor:
+                            self.max_p = self.type_head_factor.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
+
+                            if not conversion_type:
+                                self.conversion_type = "factor"
+
                     if "edwards" in dev_device["Producer"].lower():
                         self.producer = "edwards"
                         if type_head in self.type_head_factor:
@@ -218,7 +227,7 @@ class Cdg(Device):
         if p_cal_dict.get("Unit") != p_vis_lim_unit:
             sys.exit("wrong p units")
 
-        x = np.array(x_dict.get("Value"))
+        x = np.array(x_dict.get("Value"), dtype='f')
         x_vis = np.array(x_vis)
         t_gas = np.array(t_gas_dict.get("Value"))
         t_head = np.array(t_head_dict.get("Value"))
@@ -307,6 +316,8 @@ class Cdg(Device):
                 continue
             ## day index
             i_d = np.where(np.equal(days, day))
+            # i_n = np.where(np.logical_not(np.isnan(ind)))
+            # i_d = np.intersect1d(i_d, i_n)
 
             if range_str is not None:
                 for r in np.unique(np.take(range_str, i_d)[0]):
@@ -315,21 +326,21 @@ class Cdg(Device):
                     ## range index
                     i_r = np.where(range_str == r)
 
-                    ## range ^ day index
+                    ## range ^ day index ^ not nan
                     k = np.intersect1d(i_d, i_r)
-                    print(k)
-                    if self.Val.cnt_nan(offset[i_d]) < 2:
+
+                    if self.Val.cnt_nan(offset[k]) < 2:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
                     else:
                         m = np.nanmean(np.abs(np.diff(offset[k])))
 
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
-                    print(m)
-                    print(offset[k])
+
                     offset_contrib[r] = m
                     u_abs_arr[k] = m
                     u_rel_arr[k] = m/ind[k]
+
             else:
                 if self.Val.cnt_nan(offset[i_d]) < 2:
                     m = self.ask_for_offset_uncert(offset[i_d], self.unit)
@@ -349,21 +360,23 @@ class Cdg(Device):
 
     def repeat_uncert(self, ana, cmc=True):
         ok = False
+        standard = ana.org.get("Calibration").get("Standard").get("Name")
+
         p_list = ana.pick("Pressure", "ind_corr", "Pa")
         if self.producer == "missing":
             sys.exit("No Producer in Device")
 
-        if self.ToDo.get_standard() == "missing":
-            sys.exit("No Standard in ToDo")
+        if standard is None:
+            sys.exit("No Standard (updated?)")
 
-        if self.producer == "inficon" and self.ToDo.get_standard() == "FRS5":
+        if self.producer == "inficon" and standard == "FRS5":
             if self.type_head == "10Torr" or self.type_head == "100Torr":
                 u = np.full(len(p_list), 2.9e-5)
             else:
                 u = np.full(len(p_list), 1.0e-4)
             ok = True
 
-        if not cmc and self.type_head == "01Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+        if not cmc and self.type_head == "01Torr" and self.producer == "mks" and standard == "SE3":
             ## calculation follows:
             ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
 
@@ -379,7 +392,7 @@ class Cdg(Device):
 
             ok = True
 
-        if not cmc and self.type_head == "1Torr" and self.producer == "mks" and self.ToDo.get_standard() == "SE3":
+        if not cmc and self.type_head == "1Torr" and self.producer == "mks" and standard == "SE3":
             ## calculation follows:
             ## http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-6-device_repeatability.ipynb
 
