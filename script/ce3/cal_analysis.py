@@ -26,11 +26,11 @@ def main():
         if io.update:
             doc = io.update_cal_doc(doc, base_doc)
 
-        cal = Cal(doc)
+#        cal = Cal(doc)
 
         ana = Analysis(doc)
 
-        cal.pressure_fill(ana)
+#        cal.pressure_fill(ana)
 
 
         io.save_doc(ana.build_doc())

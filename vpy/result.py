@@ -27,8 +27,10 @@ class Result(Analysis):
         "uncert_total_rel_e": "{\\(U(e)\\)}",
         "uncert_total_rel_sens": "{\\(U(S)/S\\)}",
         "error":"{\\(e\\)}",
+        "error_corr":"{\\(e(T_1)\\)}",
         "sens":"{\\(S\\)}",
         "cf": "{\\(CF\\)}",
+        "cf_corr": "{\\(CF(T_1)\\)}",
         "N":"{\\(N\\)}",
         "range":"range",
     }
@@ -767,6 +769,8 @@ class Result(Analysis):
         doc_aux_values = ana.doc.get("AuxValues", {})
         av_idx = doc_aux_values.get("AverageIndex")
 
+        meas_data = self.doc.get("MeasurementData", {})
+
         k = 2
         prob = 0.95
 
@@ -823,7 +827,10 @@ class Result(Analysis):
                                             "Value": ind_str,
                                             "HeadCell": self.head_cell["ind_corr"],
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
-
+        if meas_data.get("TemperatureCorrection"):
+            head_cell_e = self.head_cell["error_corr"]
+        else:
+            head_cell_e = self.head_cell["error"]
         self.store_dict(quant="Table", d = {"Type": "ind",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
@@ -834,9 +841,12 @@ class Result(Analysis):
                                             "DCCUnit": self.dcc_unit[error_unit],
                                             "Unit": error_unit,
                                             "Value": error_str,
-                                            "HeadCell": self.head_cell["error"],
+                                            "HeadCell": head_cell_e,
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
-
+        if meas_data.get("TemperatureCorrection"):
+            head_cell_cf = self.head_cell["cf_corr"]
+        else:
+            head_cell_cf = self.head_cell["cf"]
         self.store_dict(quant="Table", d = {"Type": "ind",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
@@ -847,7 +857,7 @@ class Result(Analysis):
                                             "DCCUnit": self.dcc_unit["1"],
                                             "Unit": error_unit,
                                             "Value": cf_str,
-                                            "HeadCell": self.head_cell["cf"],
+                                            "HeadCell": head_cell_cf,
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
 
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
