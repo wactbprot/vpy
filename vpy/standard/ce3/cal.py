@@ -102,7 +102,7 @@ class Cal(Ce3):
             e_lw[i_cdga] = self.CDGA.get_error_interpol(p_lw[i_cdga], self.unit)
 
         if len(i_cdgb) > 0:
-            e_fill[i_cdgb] = self.CDGB.get_error_interpol(p_fill[i_cdga], self.unit)
+            e_fill[i_cdgb] = self.CDGB.get_error_interpol(p_fill[i_cdgb], self.unit)
             e_lw[i_cdgb] = self.CDGB.get_error_interpol(p_lw[i_cdgb], self.unit)
 
         p_fill = p_fill/(e_fill + 1)
