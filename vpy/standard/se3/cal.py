@@ -454,7 +454,7 @@ class Cal(Se3):
         for i in range(len(self.FillDevs)):
             GNDevice = self.FillDevs[i]
             if GNDevice.name != self.fill_dev_names[i]:
-                sys.exit("Filling pressure devicees in unexpected order")
+                sys.exit("Filling pressure devices in unexpected order")
 
             # get indicated pressure and unit
             p_ind, sd_ind, n_ind, u_ind = self.Pres.get_value_and_unit(gn_ind_types[i], with_stats=True)

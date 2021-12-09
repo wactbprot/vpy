@@ -227,7 +227,7 @@ class Cdg(Device):
         if p_cal_dict.get("Unit") != p_vis_lim_unit:
             sys.exit("wrong p units")
 
-        x = np.array(x_dict.get("Value"))
+        x = np.array(x_dict.get("Value"), dtype='f')
         x_vis = np.array(x_vis)
         t_gas = np.array(t_gas_dict.get("Value"))
         t_head = np.array(t_head_dict.get("Value"))
@@ -316,6 +316,8 @@ class Cdg(Device):
                 continue
             ## day index
             i_d = np.where(np.equal(days, day))
+            # i_n = np.where(np.logical_not(np.isnan(ind)))
+            # i_d = np.intersect1d(i_d, i_n)
 
             if range_str is not None:
                 for r in np.unique(np.take(range_str, i_d)[0]):
@@ -324,21 +326,21 @@ class Cdg(Device):
                     ## range index
                     i_r = np.where(range_str == r)
 
-                    ## range ^ day index
+                    ## range ^ day index ^ not nan
                     k = np.intersect1d(i_d, i_r)
-                    print(k)
-                    if self.Val.cnt_nan(offset[i_d]) < 2:
+
+                    if self.Val.cnt_nan(offset[k]) < 2:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
                     else:
                         m = np.nanmean(np.abs(np.diff(offset[k])))
 
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
-                    print(m)
-                    print(offset[k])
+
                     offset_contrib[r] = m
                     u_abs_arr[k] = m
                     u_rel_arr[k] = m/ind[k]
+
             else:
                 if self.Val.cnt_nan(offset[i_d]) < 2:
                     m = self.ask_for_offset_uncert(offset[i_d], self.unit)

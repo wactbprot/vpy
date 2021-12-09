@@ -34,7 +34,7 @@ def main():
         ## generate result instance with analysis res type
         ## set skip flag to ignore result for cert
         result_type = ana.analysis_type
-        std = tdo.get_standard()
+        std = doc.get("Calibration").get("Standard").get("Name")
         if std == "FRS5":
             result_type = "pressure_balance"
         if std == "DKM_PPC4":
@@ -162,7 +162,7 @@ def main():
         res.make_measurement_data_section(ana, result_type=result_type)
 
         # start build cert table
-        p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
+        p_cal_mv, p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
 
         ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")

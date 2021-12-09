@@ -75,7 +75,7 @@ class Display:
             self.show()
 
     def xlog_plot(self, x, y, label="data", show=True, linestyle= "None", marker="o"):
-        self.plt.xscale('symlog', linthreshx=1e-12)
+        self.plt.xscale('symlog', linthresh=1e-12)
         self.plot(x, y, linestyle=linestyle, marker=marker, label=label, show=show)
 
     def check_outlier_err(self, ana, label="measurement", show=True):
@@ -116,7 +116,7 @@ class Display:
         labels =      ["u_rep","u_off",]
 
         self.plt.subplot(211)
-        self.plt.xscale('symlog', linthreshx=1e-12)
+        self.plt.xscale('symlog', linthresh=1e-12)
         self.plt.stackplot(x,u_tot, labels=["u_total (sq. sum)"], alpha=1)
         self.plt.stackplot(x,u_dev, labels=["u_device (sq. sum) "], alpha=1)
         self.plt.stackplot(x,y, labels=labels, alpha=0.8)
@@ -128,7 +128,7 @@ class Display:
         y = np.vstack([u_std, u_dev,])
         labels = ["u_std","u_dev",]
 
-        self.plt.xscale('symlog', linthreshx=1e-12)
+        self.plt.xscale('symlog', linthresh=1e-12)
         self.plt.stackplot(x, u_tot, labels=["u_total (sq. sum)"], alpha=1)
         self.plt.stackplot(x,y, labels=labels, alpha=0.8)
 
