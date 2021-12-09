@@ -1,8 +1,9 @@
 """
 python script/se3/se3_shape_todo.py --min_pressure 90 --max_pressure 130000 --pressure_unit Pa --ids cal-2019-se3-ik-4556_0001@cal-2019-se3-ik-4625_0001 --db 'vl_db_work'
 """
-
 import sys
+sys.path.append(".")
+
 import json
 import copy
 import numpy as np

@@ -1,9 +1,11 @@
 import sys
+sys.path.append(".")
+
 import os
 import json
 import numpy as np
 import pandas as pd
-sys.path.append(".")
+
 from vpy.analysis import Analysis
 from vpy.standard.se3.uncert import Uncert
 from vpy.pkg_io import Io

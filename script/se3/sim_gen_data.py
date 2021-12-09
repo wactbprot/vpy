@@ -1,8 +1,8 @@
 import sys
+sys.path.append(".")
+
 import os
 import json
-sys.path.append(os.environ["VIRTUAL_ENV"])
-
 import numpy as np
 
 from vpy.pkg_io import Io
