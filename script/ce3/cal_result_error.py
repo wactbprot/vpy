@@ -113,6 +113,8 @@ def main():
             else:
                 d["Sputter"] = False
 
+            d["Degas"] = ana.ask_for_degas()
+
         d["AverageIndex"] = average_index
         d["AverageIndexFlat"] = flat_average_index
         ana.store_dict(quant="AuxValues", d=d, dest=None)

@@ -462,6 +462,17 @@ class Analysis(Document):
         else:
             return None, None, None, None
 
+    def ask_for_degas(self):
+        """ Asks for degas.
+        """
+
+        q1 = "\n\n\nDefault degas precedure? (enter if ok)\nanything else: no degas\n: "
+        text = input(q1)
+        if text == "":
+            return True
+        else:
+            return False
+
     def flatten(self, l):
         """Flattens a list of lists.
 
