@@ -367,7 +367,7 @@ class Device(Document):
         else:
             sys.exit("No uncertainty unit")
 
-    def pressure(self, pressure_dict, temperature_dict, unit= 'Pa', gas= "N2"):
+    def pressure(self, pressure_dict, temperature_dict, range_dict=None, unit= 'Pa', gas= "N2"):
         pressure_unit = pressure_dict.get('Unit')
         pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
 
