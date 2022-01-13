@@ -770,7 +770,6 @@ class Result(Analysis):
         av_idx = doc_aux_values.get("AverageIndex")
 
         meas_data = self.doc.get("MeasurementData", {})
-
         k = 2
         prob = 0.95
 

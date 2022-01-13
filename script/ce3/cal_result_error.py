@@ -104,7 +104,7 @@ def main():
                 d["Bakeout"] = False
 
             p, pu, t, tu = ana.ask_for_sputter()
-            if T is not None:
+            if t is not None:
                 d["Sputter"] = True
                 d["SputterPressure"] = float(p)
                 d["SputterPressureUnit"] = pu
