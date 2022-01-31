@@ -9,8 +9,8 @@ class Srg(Device):
     uncertainty of the corrected slope.
     """
     unit = "Pa"
-    sigma_min_pressure = 0.1
-    sigma_max_pressure = 1.33322
+    sigma_min_pressure = 0.09
+    sigma_max_pressure = 1.5
     total_relative_uncertainty_k2 = 2.6e-3 ## workaround
 
     def __init__(self, doc, dev):

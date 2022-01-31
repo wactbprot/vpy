@@ -27,8 +27,10 @@ class Result(Analysis):
         "uncert_total_rel_e": "{\\(U(e)\\)}",
         "uncert_total_rel_sens": "{\\(U(S)/S\\)}",
         "error":"{\\(e\\)}",
+        "error_corr":"{\\(e(T_1)\\)}",
         "sens":"{\\(S\\)}",
         "cf": "{\\(CF\\)}",
+        "cf_corr": "{\\(CF(T_1)\\)}",
         "N":"{\\(N\\)}",
         "range":"range",
     }
@@ -509,7 +511,7 @@ class Result(Analysis):
         u_std = self.get_reduced_uncert_std(ana, av_idx, error_unit)
 
         u_std_k2 = u_std*cal*k #pressure_unit
-        u_std_k2_str = self.Val.round_to_sig_dig_array(u_std_k2, 2)
+        u_std_k2_str = self.Val.round_to_sig_dig_array(u_std_k2, 2, scientific=True)
 
         return  u_std_k2_str
 
@@ -521,7 +523,7 @@ class Result(Analysis):
         u_dev = self.get_reduced_uncert_dev(ana, av_idx, error_unit)
 
         u_dev_k2 = u_dev*ind*k #pressure_unit
-        u_dev_k2_str = self.Val.round_to_sig_dig_array(u_dev_k2, 2)
+        u_dev_k2_str = self.Val.round_to_sig_dig_array(u_dev_k2, 2,scientific=True)
 
         return  u_dev_k2_str
 
@@ -532,7 +534,7 @@ class Result(Analysis):
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, ind_unit)
         u_off = self.get_reduced_uncert_off(ana, av_idx, error_unit)
 
-        u_off_k2_str = self.Val.round_to_sig_dig_array(u_off * ind, 2)
+        u_off_k2_str = self.Val.round_to_sig_dig_array(u_off * ind, 2,scientific=True)
 
         return  u_off_k2_str
 
@@ -542,7 +544,7 @@ class Result(Analysis):
         u_total = self.get_reduced_uncert_total(ana, av_idx, error_unit)
 
         u_e_k2 = u_total*ind/cal*k
-        u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2)
+        u_e_k2_str = self.Val.round_to_sig_dig_array(u_e_k2, 2, scientific=False)
 
         return  u_e_k2_str
 
@@ -655,7 +657,8 @@ class Result(Analysis):
         range_dict = ana.pick_dict("Range", "ind")
         if range_dict is not None:
             range_str = range_dict.get("Value")
-
+            print(range_str)
+            print(av_idx)
             return [range_str[v[0]] for v in av_idx]
         else:
             return None
@@ -766,6 +769,7 @@ class Result(Analysis):
         doc_aux_values = ana.doc.get("AuxValues", {})
         av_idx = doc_aux_values.get("AverageIndex")
 
+        meas_data = self.doc.get("MeasurementData", {})
         k = 2
         prob = 0.95
 
@@ -777,7 +781,6 @@ class Result(Analysis):
         cf_str = self.make_cf_entry(ana, av_idx, pressure_unit, error_unit)
 
         u_e_k2_str = self.make_uncert_error_entry(ana, av_idx, pressure_unit, error_unit)
-
         u_cf_k2_str = self.make_uncert_cf_entry(ana, av_idx, pressure_unit, error_unit)
         u_cal_k2_str = self.make_uncert_cal_entry(ana, av_idx, pressure_unit, error_unit)
         u_ind_k2_str = self.make_uncert_ind_entry(ana, av_idx, pressure_unit, error_unit)
@@ -823,7 +826,10 @@ class Result(Analysis):
                                             "Value": ind_str,
                                             "HeadCell": self.head_cell["ind_corr"],
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
-
+        if meas_data.get("TemperatureCorrection"):
+            head_cell_e = self.head_cell["error_corr"]
+        else:
+            head_cell_e = self.head_cell["error"]
         self.store_dict(quant="Table", d = {"Type": "ind",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
@@ -834,9 +840,12 @@ class Result(Analysis):
                                             "DCCUnit": self.dcc_unit[error_unit],
                                             "Unit": error_unit,
                                             "Value": error_str,
-                                            "HeadCell": self.head_cell["error"],
+                                            "HeadCell": head_cell_e,
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
-
+        if meas_data.get("TemperatureCorrection"):
+            head_cell_cf = self.head_cell["cf_corr"]
+        else:
+            head_cell_cf = self.head_cell["cf"]
         self.store_dict(quant="Table", d = {"Type": "ind",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
@@ -847,7 +856,7 @@ class Result(Analysis):
                                             "DCCUnit": self.dcc_unit["1"],
                                             "Unit": error_unit,
                                             "Value": cf_str,
-                                            "HeadCell": self.head_cell["cf"],
+                                            "HeadCell": head_cell_cf,
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
 
         self.store_dict(quant="Table", d = {"Type": "uncert_total_rel",
@@ -881,8 +890,10 @@ class Result(Analysis):
 
         self.log.info("Result error table written")
 
+        cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
+
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, pressure_unit)
         error = self.get_reduced_error(ana, av_idx, error_unit)
         u = self.get_reduced_uncert_total(ana, av_idx, error_unit)
 
-        return ind, error, u
+        return cal, ind, error, u

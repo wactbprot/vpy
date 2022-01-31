@@ -1,8 +1,9 @@
 import sys
+sys.path.append(".")
+
 import os
 import json
 import numpy as np
-sys.path.append(os.environ["VIRTUAL_ENV"])
 from vpy.analysis import Analysis
 from vpy.standard.se3.uncert import Uncert
 from vpy.standard.se3.cal import Cal

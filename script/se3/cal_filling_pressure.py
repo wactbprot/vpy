@@ -1,8 +1,9 @@
+import sys
+sys.path.append(".")
+
 import json
 import numpy as np
-import sys
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
 
 from vpy.pkg_io import Io
 from vpy.standard.se3.cal import Cal

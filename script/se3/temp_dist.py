@@ -2,6 +2,8 @@
 python script/se3/temp_dist.py --ids cal-2020-se3-kk-75127_0001 --srv http://a73434:5984 --point 2
 python script/se3/temp_dist.py -n # gets the temp. dist -n(ow)
 """
+import sys
+sys.path.append(".")
 
 import datetime
 import requests

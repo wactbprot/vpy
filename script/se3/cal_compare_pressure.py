@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 from vpy.pkg_io import Io
 import numpy as np
 from vpy.analysis import Analysis

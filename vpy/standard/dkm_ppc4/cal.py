@@ -19,15 +19,20 @@ class Cal(DkmPpc4):
         :type: class
         """
 
-
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit)
-        m = res.pick("Mass", "total", "kg")
         corr = res.pick("Correction", "temperature", "1")
 
-        g = self.get_value("g_dkmppc4", "m/s^2")
-        A = self.get_value("A_0_dkmppc4", "m^2")
-        conv = self.Cons.get_conv("Pa", self.unit)
-        p_cal = g * m / (A * corr) * conv + p_res
+
+        p_raw = res.pick("Pressure", "cal_raw", "Pa")
+        if p_raw is not None:
+            p_cal = p_raw / corr + p_res
+
+        m = res.pick("Mass", "total", "kg")
+        if m is not None:
+            g = self.get_value("g_dkmppc4", "m/s^2")
+            A = self.get_value("A_0_dkmppc4", "m^2")
+            conv = self.Cons.get_conv("Pa", self.unit)
+            p_cal = g * m / (A * corr) * conv + p_res
 
         res.store("Pressure", "cal", p_cal, self.unit)
 
@@ -55,6 +60,18 @@ class Cal(DkmPpc4):
 
         m_tot = self.Mass.get_value("total", "kg")
         res.store("Mass", "total", m_tot, "kg")
+
+    def pressure_cal_uncorr(self, res):
+        """Transfers the total mass applied to the piston.
+
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+
+        p_raw = self.Pres.get_value("target_pressure", "Pa")
+        res.store("Pressure", "cal_raw", p_raw, "Pa")
 
     def temperature(self, res):
         """Transfers the temperature of the balance for the

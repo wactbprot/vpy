@@ -2,6 +2,8 @@
 python se3_cal_uncertainty.py --ids 'cal-2018-se3-ik-4825_0001' --db 'vl_dd' --srv 'http://localhost:5984'
 """
 import sys
+sys.path.append(".")
+
 import json
 import numpy as np
 from vpy.pkg_io import Io
@@ -16,12 +18,12 @@ def main():
     ret = {'ok':True}
 
     if '--ids' in args:
-        idx_ids = args.index('--ids') + 1 
+        idx_ids = args.index('--ids') + 1
         try:
             ids = args[idx_ids].split('@')
         except:
            fail = True
-    
+
     if not fail and len(ids) >0:
         for id in ids:
             doc = io.get_doc_db(id)

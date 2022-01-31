@@ -42,13 +42,15 @@ def main():
         ## conversion to ana.pressure_unit if necessary
         cal_dict = ana.pick_dict("Pressure", "cal")
 
-        if cal_dict.get("Unit") != ana.pressure_unit:
-            p_cal = ana.pick("Pressure", "cal", tdo.pressure_unit)
-            p_ind_corr = ana.pick("Pressure", "ind_corr", tdo.pressure_unit)
-            p_ind = ana.pick("Pressure", "ind", tdo.pressure_unit)
-            p_ind_offset = ana.pick("Pressure", "ind_offset", tdo.pressure_unit)
+        rstat_unit = cal_dict.get("Unit")
 
-            conv = ana.Const.get_conv(from_unit=tdo.pressure_unit, to_unit=ana.pressure_unit)
+        if  rstat_unit != ana.pressure_unit:
+            p_cal = ana.pick("Pressure", "cal", rstat_unit)
+            p_ind_corr = ana.pick("Pressure", "ind_corr", rstat_unit)
+            p_ind = ana.pick("Pressure", "ind", rstat_unit)
+            p_ind_offset = ana.pick("Pressure", "ind_offset", rstat_unit)
+
+            conv = ana.Const.get_conv(from_unit=rstat_unit, to_unit=ana.pressure_unit)
 
             p_cal = p_cal * conv
             p_ind = p_ind * conv
@@ -73,6 +75,7 @@ def main():
         ana.store("Pressure", "ind_corr", p_ind_corr, ana.pressure_unit)
         ana.store("Pressure", "ind", p_ind, ana.pressure_unit)
         ana.store("Pressure", "offset", p_ind_offset, ana.pressure_unit)
+        ana.store("Pressure", "ind_offset", p_ind_offset, ana.pressure_unit)
         ana.store("Error", "ind", err, "1")
         ana.store("Uncertainty", "standard", u_std, "1")
         ana.store("Temperature", "gas", T_gas, "K")
@@ -80,7 +83,6 @@ def main():
 
         conv = ana.Const.get_conv(from_unit=ana.pressure_unit, to_unit=tdo.pressure_unit)
         average_index = tdo.make_average_index(p_cal*conv, tdo.pressure_unit, max_dev=0.2)
-        print(average_index)
 
         ## will be filled up with aux values:
         d = {}
@@ -102,7 +104,7 @@ def main():
                 d["Bakeout"] = False
 
             p, pu, t, tu = ana.ask_for_sputter()
-            if T is not None:
+            if t is not None:
                 d["Sputter"] = True
                 d["SputterPressure"] = float(p)
                 d["SputterPressureUnit"] = pu
@@ -110,6 +112,8 @@ def main():
                 d["SputterTimeUnit"] = tu
             else:
                 d["Sputter"] = False
+
+            d["Degas"] = ana.ask_for_degas()
 
         d["AverageIndex"] = average_index
         d["AverageIndexFlat"] = flat_average_index
@@ -145,6 +149,7 @@ def main():
         u_dev = ana.pick("Uncertainty", "device", "1")
         u_std = ana.pick("Uncertainty", "standard", "1")
 
+
         ana.store("Uncertainty", "red_u_rep", np.take(u_rep, flat_average_index), "1", dest="AuxValues")
         ana.store("Uncertainty", "red_u_std", np.take(u_std, flat_average_index), "1", dest="AuxValues")
         ana.store("Uncertainty", "red_u_dev", np.take(u_dev, flat_average_index), "1", dest="AuxValues")
@@ -157,8 +162,9 @@ def main():
         res.make_measurement_data_section(ana, result_type=result_type)
 
         # start build cert table
-        p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit="1")
+        p_cal_mv, p_ind_mv, err_mv, u_mv = res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit="1")
 
+        ana.store("Pressure", "cal_mean", p_cal_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")
         ana.store("Uncertainty", "total_mean", u_mv, "1", dest="AuxValues")
@@ -167,7 +173,9 @@ def main():
 
         doc = ana.build_doc("Analysis", doc)
         doc = res.build_doc("Result", doc)
+
         io.save_doc(doc)
+
 
 if __name__ == "__main__":
     main()

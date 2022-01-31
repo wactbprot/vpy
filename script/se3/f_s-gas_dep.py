@@ -1,6 +1,5 @@
 import sys
-import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 
 import json
 import numpy as np

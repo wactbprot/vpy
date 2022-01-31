@@ -30,7 +30,7 @@ class Ig(Device):
             for i in reject_index:
                 ind[i] = np.nan
                 offset[i] = np.nan
-        ind = ind - offset
+
         ##
         u_rel_arr = np.full(len(ind), np.nan)
         u_abs_arr = np.full(len(ind), np.nan)
@@ -41,12 +41,12 @@ class Ig(Device):
         ## Es soll deshalb nur die Hälfte des delta offset als Unsicherheit
         ## angesetzt werden
         m = np.nanmean(np.abs(np.diff(offset)))/2.0
+
         if m == 0.0:
             m = self.ask_for_offset_uncert(offset, ind_unit, range_str="all")
 
         offset_contrib["all"] = m
         u_abs_arr = m
-
 
         ana.store_dict(quant='AuxValues', d={'OffsetUncertContrib': offset_contrib}, dest=None)
         ana.store("Uncertainty", "offset",  m/ind, "1")

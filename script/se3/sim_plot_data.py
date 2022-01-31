@@ -1,8 +1,9 @@
 import sys
-import json
-
-import os
 sys.path.append(".")
+
+import json
+import os
+
 from vpy.analysis import Analysis
 from vpy.pkg_io import Io
 from vpy.helper import init_customer_device

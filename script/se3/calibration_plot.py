@@ -1,9 +1,9 @@
 """
-python script/se3/se3_diag_plot.py --ids 'cal-2019-se3-ik-4556_0001'  
+python script/se3/se3_diag_plot.py --ids 'cal-2019-se3-ik-4556_0001'
 """
 import sys
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
+sys.path.append(".")
 
 import json
 import numpy as np
@@ -27,7 +27,7 @@ def main():
     ret = {'ok':True}
 
     if '--ids' in args:
-        idx_ids = args.index('--ids') + 1 
+        idx_ids = args.index('--ids') + 1
         try:
             ids = args[idx_ids].split('@')
         except:

@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 from vpy.analysis import Analysis
 from vpy.sim import Sim
 from vpy.standard.se3.uncert import Uncert

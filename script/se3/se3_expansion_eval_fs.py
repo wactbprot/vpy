@@ -11,8 +11,9 @@ see http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-4-f_s.ipynb
 """
 
 import sys
+sys.path.append(".")
+
 import os
-sys.path.append(os.environ["VIRTUAL_ENV"])
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -46,19 +47,19 @@ def main():
         ## -------------------------
         base_doc_se3 = io.get_base_doc("se3")
         se3_doc = io.update_cal_doc(doc, base_doc_se3)
-        
+
         se3_calc = Se3Calc(se3_doc)
         uncert_se3 = Se3Uncert(se3_doc)
 
         f_names = se3_calc.get_expansion_name()
-        f_name = f_names[0] 
+        f_name = f_names[0]
 
         se3_calc.temperature_before(res)
         se3_calc.temperature_after(res)
         se3_calc.temperature_room(res)
 
         se3_calc.pressure_gn_corr(res)
-        se3_calc.pressure_gn_mean(res) 
+        se3_calc.pressure_gn_mean(res)
         se3_calc.expansion(res)
         se3_calc.time_meas(res)
         se3_calc.real_gas_correction(res)
@@ -68,7 +69,7 @@ def main():
         p_1 = res.pick("Pressure", "cal", "Pa")
         T_0 = res.pick("Temperature", "before", "K")
         T_1 = res.pick("Temperature", "after", "K")
-        
+
         u_p_0 = uncert_se3.contrib_pressure_fill(p_0, unit, skip_type="A")
         u_T_1 = uncert_se3.contrib_temperature_vessel(T_1, "K" , skip_type="A")
         u_T_0 = uncert_se3.contrib_temperature_volume_start(T_0, "K", f_names,  skip_type="A")
@@ -86,20 +87,20 @@ def main():
         ## dh correction for f_s = 0.9999609272217588
         dh = 0.9999609272217588
         res.store("Correction", "delta_heigth" , np.full(len(p_0), dh) ,  "1")
-        
+
         ## -------------------------
         ## frs5
         ## -------------------------
         base_doc_frs5 = io.get_base_doc("frs5")
         frs_doc = io.update_cal_doc(doc, base_doc_frs5)
-        cal_frs = FrsCalc(frs_doc)  
+        cal_frs = FrsCalc(frs_doc)
         uncert = FrsUncert(frs_doc)
-        
+
         cal_frs.temperature(res)
         cal_frs.pressure_res(res)
-        cal_frs.pressure_cal(res)            
+        cal_frs.pressure_cal(res)
         uncert.total_standard(res, no_type_a=True)
-        
+
         p_1 = res.pick("Pressure", "cal", unit)
         u_p_1 = res.pick("Uncertainty", "standard", "1")
 
@@ -108,7 +109,7 @@ def main():
 
         ## -------------------------
         ## p_nd
-        ## ------------------------- 
+        ## -------------------------
         pres = Pressure(doc)
         auxval = AuxValues(doc)
         time = Time(doc)
@@ -138,7 +139,7 @@ def main():
         conv = const.get_conv(from_unit="ms",to_unit="s")
         p_rise = p_rise_rate * t * conv
         u_p_rise = 0.2 # Druckanstieg 20% Unsicher
-        
+
         res.store("Pressure", "rise", p_rise , unit)
         res.store("Uncertainty", "rise", p_rise*u_p_rise/p_1 , "1")
 
@@ -153,7 +154,7 @@ def main():
         for i in range(n):
             # y[i] = p_a[i]/p_b[i]*T_0[i]/T_1[i] ## okish
             if i == 0:
-                
+
                 y[i] = p_a[i]
                 x[i] = p_b[i]*T_0[i]/T_1[i]
             else:
