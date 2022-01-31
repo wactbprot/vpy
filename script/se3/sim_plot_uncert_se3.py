@@ -69,7 +69,7 @@ def main(io, config):
     figure(num=None, figsize=(16, 9), dpi=80, facecolor='w', edgecolor='k')
 
     plt.plot(p_cal, u_std, '-',lw=3, color=col_map[1], label="SE3 (k=1)" )
-#    plt.plot(p_se2, u_se2_k1, ':',lw=3, color=col_map[10], label="SE2 (k=1)" )
+    plt.plot(p_se2, u_se2_k1, ':',lw=3, color=col_map[10], label="SE2 (k=1)" )
     plt.plot(p_cal, u_1,   '-',lw=2, color=col_map[2], label="$p_{fill}$" )
     plt.plot(p_cal, u_2,   '-',lw=2, color=col_map[3], label="$p_{rise}$" )
     plt.plot(p_cal, u_3,   '-',lw=2, color=col_map[4], label="$f_i$" )
