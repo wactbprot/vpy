@@ -826,10 +826,12 @@ class Result(Analysis):
                                             "Value": ind_str,
                                             "HeadCell": self.head_cell["ind_corr"],
                                             "UnitCell": self.unit_cell[pressure_unit]}, dest=None)
-        if meas_data.get("TemperatureCorrection"):
+
+        if meas_data.get("TemperatureCorrection") and meas_data.get("TemperatureCorrection") != "no":
             head_cell_e = self.head_cell["error_corr"]
         else:
             head_cell_e = self.head_cell["error"]
+
         self.store_dict(quant="Table", d = {"Type": "ind",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
@@ -842,10 +844,11 @@ class Result(Analysis):
                                             "Value": error_str,
                                             "HeadCell": head_cell_e,
                                             "UnitCell": self.unit_cell[error_unit]}, dest=None)
-        if meas_data.get("TemperatureCorrection"):
+        if meas_data.get("TemperatureCorrection") and meas_data.get("TemperatureCorrection") != "no":
             head_cell_cf = self.head_cell["cf_corr"]
         else:
             head_cell_cf = self.head_cell["cf"]
+
         self.store_dict(quant="Table", d = {"Type": "ind",
                                             "DCCOut": True,
                                             "CoverageFactor": k,
