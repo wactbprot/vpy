@@ -4,7 +4,7 @@ measurement.
 
 run:
 
-$[vpy]> python script/se3/se3_expansion_eval_fs.py --id "cal-2019-se3|frs5-vg-1001_0001"
+$[vpy]> python script/se3/se3_expansion_eval_fs_acc.py --id "cal-2019-se3|frs5-vg-1001_0001"
 
 see http://a73435.berlin.ptb.de:82/lab/tree/QS/QSE-SE3-20-4-f_s.ipynb
 
@@ -34,6 +34,7 @@ def main():
     io = Io()
     io.eval_args()
     doc = io.load_doc()
+
     unit = "Pa"
     if doc:
 
@@ -114,16 +115,15 @@ def main():
         auxval = AuxValues(doc)
         time = Time(doc)
 
-        p_nd_offset_before = auxval.get_value("nd_offset_before", "mbar")
-        p_nd_offset_after = auxval.get_value("nd_offset_after", "mbar")
+        p_nd_offset_before = auxval.get_value("nd_offset_before", unit)
+        p_nd_offset_after = auxval.get_value("nd_offset_after", unit)
         if p_nd_offset_after:
             p_nd_offset = (p_nd_offset_before + p_nd_offset_after )/2
         else:
             p_nd_offset = p_nd_offset_before
 
-        p_nd_ind = pres.get_value("nd_ind", "mbar")
-        conv = const.get_conv(from_unit="mbar", to_unit=unit)
-        p_nd = (p_nd_ind - p_nd_offset)*conv
+        p_nd_ind = pres.get_value("nd_ind", unit)
+        p_nd = p_nd_ind - p_nd_offset
 
         CustomerDevice = Cdg( doc, io.get_doc_db("cob-cdg-nd_se3"))
         u_p_nd = CustomerDevice.get_total_uncert(p_nd_ind, unit, unit, skip_type="A")
@@ -135,17 +135,19 @@ def main():
         # Unsicherheit Ausgasung:
         ## -------------------------
         p_rise_rate = 3e-8 #Pa/s gemessen: 2019-01-18 08:40:27 (s. state docs)
+        p_rise_rate = 1.2e-7 #Pa/s gemessen: 2022-02-25 10:45:19 (s. state docs)
         t = time.get_rmt("amt_meas", "ms")
-        conv = const.get_conv(from_unit="ms",to_unit="s")
-        p_rise = p_rise_rate * t * conv
+
+        p_rise = p_rise_rate * t * 1/1000
         u_p_rise = 0.2 # Druckanstieg 20% Unsicher
 
         res.store("Pressure", "rise", p_rise , unit)
         res.store("Uncertainty", "rise", p_rise*u_p_rise/p_1 , "1")
-
+        print(p_rise*u_p_rise/p_1)
         ## -------------------------
         # f:
         ## -------------------------
+        print(p_nd)
         p_a = p_1 - p_nd + p_rise
         p_b = p_0 * rg * dh
         n = len(p_a)
@@ -163,8 +165,9 @@ def main():
                 x[i] = p_b[i] * T_1[i]/T_0[i] - p_a[i-1] * T_1[i]/T_1[i-1]
 
         f = y/x
+        print(f)
         f = np.delete(f, f.argmin())
-        f = np.delete(f, f.argmax())
+        #f = np.delete(f, f.argmax())
 
         print(np.mean(f))
         print(np.std(f)/np.mean(f))

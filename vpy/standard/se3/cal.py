@@ -461,13 +461,14 @@ class Cal(Se3):
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
 
             # get a offset value for each pressure value:
-            p_off, u_off = self.Pres.get_value_and_unit(gn_offset_types[i])
+            l_off = self.Pres.get_value_and_unit(gn_offset_types[i])
 
             # get one offet value for all pressure values:
-            if p_off is None:
+            if l_off is None:
                 p_off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", gn_offset_types[i], self.unit)
                 p_off_conv = p_off ## already in self.unit
             else:
+                p_off, u_off = l_off
                 p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
 
             p = p_ind_conv - p_off_conv
