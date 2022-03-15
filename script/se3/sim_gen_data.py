@@ -52,7 +52,6 @@ def get_fill_and_expansion(cal, target_pressures, target_unit):
     target_fill_value = []
 
     for i, target_pressure in enumerate(target_pressures):
-        print("-_______")
         print(target_pressure)
         p_fill = get_fill_pressures(cal, target_pressure, target_unit)
         u_f = get_expansion_uncert_rel(cal, target_pressure, target_unit)

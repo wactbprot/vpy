@@ -49,13 +49,11 @@ class Uncert(DkmPpc4):
 
         p_res = res.pick("Pressure", "dkmppc4_res", self.unit) * conv2Pa
         p_cal = res.pick("Pressure", "cal", self.unit)
- 
-        u_expr = self.get_expression("u_p_res", "Pa")
-        f = sym.lambdify(sym.Symbol('p_res'), u_expr , "numpy")
 
-        u = f(p_res) * conv / p_cal
+        u = self.get_value("u_p_res", "1")
+        u_rel = u * p_res/p_cal
 
-        res.store("Uncertainty", "u_res", u, "1")
+        res.store("Uncertainty", "u_res", u_rel, "1")
         self.log.debug("relative uncert residual pressure : {}".format(u))
 
     def longterm(self, res):
@@ -83,9 +81,10 @@ class Uncert(DkmPpc4):
         conv2Pa = self.Cons.get_conv(self.unit, "Pa")
 
         p_cal = res.pick("Pressure", "cal", self.unit)* conv2Pa
-        u_expr = self.get_expression("u_p_cal", "Pa")
-        f = sym.lambdify(sym.Symbol('p_cal'), u_expr , "numpy")
-        u = f(p_cal) / p_cal # Pa/Pa
+        u_a = self.get_value("u_p_cal_a", "Pa")
+        u_b = self.get_value("u_p_cal_b", "1")
+
+        u = u_a/p_cal + u_b
 
         res.store("Uncertainty", "u_cal", u, "1")
         self.log.debug("relative uncert of calibration: {}".format(u))
