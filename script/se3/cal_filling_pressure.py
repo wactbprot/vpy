@@ -33,17 +33,24 @@ def get_fill_pressures(cal, target_pressure, target_unit):
     else:
         sys.exit("units dont match")
 
-def get_fill_pressure_uncert_rel(cal, target_fill, target_unit):
+def get_fill_pressure_uncert_rel(cal, target_fill, target_unit, c=2):
+    """Function gives a raw estimation when `u_rel` is multiplied by
+    `c`.  The factor `c` takes the fact into account that the uncertainty
+    of `p_fill` consist of:
+    * the uncertainty of the p_fill measurement
+    * the correction of the error of indication
+    * the uncertainty of the calibration pressure
+
+    See latest MUB for details."""
     if cal.unit == target_unit:
-        N = len(cal.fill_dev_names)
+        N =len(cal.fill_dev_names)
         u = []
-        # loop over all filling pressure CDGs and get the total uncertainty
         for i in range(N):
             Dev = cal.FillDevs[i]
             u_i = Dev.get_total_uncert(target_fill, target_unit, target_unit)
             u.append(u_i)
 
-        return cal.Pres.invers_array_sum(u/target_fill)
+        return cal.Pres.invers_array_square_sum(u)/target_fill * c
     else:
         sys.exit("units dont match")
 
@@ -74,7 +81,6 @@ def gen_result_dict(target_fill, u_rel, target_unit, force=None):
         i = f_list.index(force)
     else:
         i = get_min_idx(u_rel)
-
     if np.isnan(i):
         return {"error": "all expasion sequences deliver nan"}
     else:

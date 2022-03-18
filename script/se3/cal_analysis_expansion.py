@@ -19,7 +19,7 @@ def main():
     io.eval_args()
     ret = {'ok':True}
 
-    cmc = True
+    cmc = False
     base_doc = io.get_base_doc("se3")
     for id in io.ids:
         id = id.replace("\"", "")
@@ -69,15 +69,6 @@ def main():
             # cal uncertainty of standard
             uncert.cmc(ana)
         else:
-            uncert.define_model()
-            uncert.gen_val_dict(ana)
-            uncert.gen_val_array(ana)
-            uncert.volume_start(ana)
-            uncert.volume_5(ana)
-            uncert.pressure_fill(ana)
-            uncert.temperature_after(ana)
-            uncert.temperature_before(ana)
-            uncert.expansion(ana)
             uncert.total(ana)
 
         ## calculate customer indication

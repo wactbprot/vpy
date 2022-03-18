@@ -24,7 +24,7 @@ class Se3(Standard):
     """
     name = "SE3"
     unit = "Pa"
-    temp_dev_name = "SE3_Temperature_Keithley"
+    temp_dev_name = "SE3_NEW_Temperature_Keithley" #"SE3_Temperature_Keithley"
     small_temp_types = ["ch_3001_before", "ch_3002_before", "ch_3003_before", ]
 
     medium_temp_types = ["ch_3004_before", "ch_3005_before", "ch_3006_before",

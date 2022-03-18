@@ -167,7 +167,8 @@ def main():
         f = y/x
         print(f)
         f = np.delete(f, f.argmin())
-        #f = np.delete(f, f.argmax())
+        f = np.delete(f, f.argmin())
+        f = np.delete(f, f.argmax())
 
         print(np.mean(f))
         print(np.std(f)/np.mean(f))
