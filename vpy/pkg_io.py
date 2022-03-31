@@ -15,11 +15,6 @@ class Io(object):
         """Change the configuration the python way by a
         direct access to io.config....
         """
-        usr = os.environ.get('CAL_USR')
-        pwd = os.environ.get('CAL_PWD')
-
-        if usr and pwd:
-            db_url = db_url.replace('http://','http://{usr}:{pwd}@'.format(usr=usr, pwd=pwd))
 
         self.config = {
             "plot": {"path": "temppath", "make": True},
@@ -52,10 +47,17 @@ class Io(object):
             },
         "all":{
             "log_data_view":"log_data/name-date",
-            "cob_by_owner":"hlp/cob_owner"
-
-}
+            "cob_by_owner":"hlp/cob_owner"}
         }
+        usr = os.environ.get('CAL_USR')
+        pwd = os.environ.get('CAL_PWD')
+
+        if usr and pwd:
+            self.config["db"]["usr"] = usr
+            self.config["db"]["pwd"] = pwd
+
+            self.config["db"]["url"] = db_url.replace('http://','http://{usr}:{pwd}@'.format(usr=usr, pwd=pwd))
+
         self.make_plot =  self.config["plot"]["make"]
 
     def eval_args(self):
@@ -123,7 +125,12 @@ class Io(object):
             self.config["db"]["name"] = self.args.db[0]
 
         if self.args.srv:
-            self.config["db"]["url"] = self.args.srv[0]
+            if self.config["db"]["usr"] and self.config["db"]["pwd"]:
+
+                self.config["db"]["url"] = self.args.srv[0].replace('http://','http://{usr}:{pwd}@'.format(usr=self.config["db"]["usr"],
+                                                                                                           pwd=self.config["db"]["pwd"]))
+            else:
+                self.config["db"]["url"] = self.args.srv[0]
 
         if self.args.u:
             self.update = True
