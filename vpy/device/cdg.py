@@ -159,6 +159,15 @@ class Cdg(Device):
                             if not conversion_type:
                                 self.conversion_type = "factor"
 
+                    if "agilent" in dev_device["Producer"].lower():
+                        self.producer = "agilent"
+                        if type_head in self.type_head_factor:
+                            self.max_p = self.type_head_factor.get(type_head)
+                            self.min_p = self.max_p / 10.0**self.usable_decades
+
+                            if not conversion_type:
+                                self.conversion_type = "factor"
+
                     if "leybold" in dev_device["Producer"].lower():
                         self.producer = "leybold"
                         if type_head in self.type_head_factor:
