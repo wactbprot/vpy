@@ -19,7 +19,7 @@ def main():
     io.eval_args()
     ret = {'ok':True}
 
-    cmc = False
+    cmc = True
     base_doc = io.get_base_doc("se3")
     for id in io.ids:
         id = id.replace("\"", "")

@@ -409,8 +409,13 @@ class Device(Document):
         offset_uncert = ana.pick("Uncertainty", "offset", "1")
         repeat_uncert = ana.pick("Uncertainty", "repeat", "1")
         emis_uncert  = ana.pick("Uncertainty", "emis", "1")
+
         digit_uncert_dict = ana.pick_dict("Uncertainty", "digit")
+
         add_uncert = ana.pick_dict("Uncertainty", "add")
+
+        add_rel_uncert = ana.pick_dict("Uncertainty", "add_rel")
+        add_abs_uncert = ana.pick_dict("Uncertainty", "add_abs")
 
         if digit_uncert_dict is not None:
             if digit_uncert_dict.get("Unit") == "Pa":
@@ -436,6 +441,23 @@ class Device(Document):
             if add_unit == "1":
                 add_uncert = ana.pick("Uncertainty", "add", "1")
                 u = np.sqrt(np.power(u, 2) + np.power(add_uncert, 2))
+
+        if add_rel_uncert is not None:
+            # rel uncert is already processed so that the unit should be Pa
+            add_unit = add_rel_uncert.get("Unit")
+            if add_unit == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                add_rel_uncert = ana.pick("Uncertainty", "add_rel", "Pa")
+
+                u = np.sqrt(np.power(u, 2) + np.power(add_rel_uncert/p_ind_corr, 2))
+
+        if add_abs_uncert is not None:
+            add_unit = add_abs_uncert.get("Unit")
+            if add_unit == "Pa":
+                p_ind_corr = ana.pick("Pressure", "ind_corr", "Pa")
+                add_abs_uncert = ana.pick("Uncertainty", "add_abs", "Pa")
+
+                u = np.sqrt(np.power(u, 2) + np.power(add_abs_uncert/p_ind_corr, 2))
 
         if emis_uncert is not None:
             u = np.sqrt(np.power(u, 2) + np.power(emis_uncert, 2))
