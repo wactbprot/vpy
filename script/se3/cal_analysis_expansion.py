@@ -17,7 +17,7 @@ from vpy.helper import init_customer_device
 def main():
     io = Io()
     io.eval_args()
-    ret = {'ok':True}
+    ret = {'ok': True}
 
     cmc = True
     base_doc = io.get_base_doc("se3")

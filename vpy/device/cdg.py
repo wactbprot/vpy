@@ -338,10 +338,12 @@ class Cdg(Device):
                     ## range ^ day index ^ not nan
                     k = np.intersect1d(i_d, i_r)
 
-                    if self.Val.cnt_nan(offset[k]) < 2:
+                    d = np.abs(np.diff(offset[k]))
+
+                    if np.all(np.isnan(d)):
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
                     else:
-                        m = np.nanmean(np.abs(np.diff(offset[k])))
+                        m = np.nanmean(d)
 
                     if m == 0.0:
                         m = self.ask_for_offset_uncert(offset[k], self.unit, range_str=r)
@@ -351,10 +353,12 @@ class Cdg(Device):
                     u_rel_arr[k] = m/ind[k]
 
             else:
-                if self.Val.cnt_nan(offset[i_d]) < 2:
+                d = np.abs(np.diff(offset[i_d]))
+
+                if np.all(np.isnan(d)):
                     m = self.ask_for_offset_uncert(offset[i_d], self.unit)
                 else:
-                    m = np.nanmean(np.abs(np.diff(offset[i_d])))
+                    m = np.nanmean(d)
 
                     if m == 0.0 or np.all(np.isnan(offset[i_d])):
                         ## Abschätzung 0.1% vom kleinsten p_ind

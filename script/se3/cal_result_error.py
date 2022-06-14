@@ -19,7 +19,7 @@ def main():
     io.eval_args()
     ret = {'ok':True}
 
-    cmc = False
+    cmc = True#False
     for id in io.ids:
         doc = io.get_doc_db(id)
         tdo = ToDo(doc)
