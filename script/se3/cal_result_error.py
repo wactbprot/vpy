@@ -162,7 +162,7 @@ def main():
         res.make_measurement_data_section(ana, result_type=result_type)
 
         # start build cert table
-        p_cal_mv, p_ind_mv, err_mv, u_mv =res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
+        p_cal_mv, p_ind_mv, err_mv, u_mv = res.make_error_table(ana, pressure_unit=ana.pressure_unit, error_unit='1')
 
         ana.store("Pressure", "ind_mean", p_ind_mv, ana.pressure_unit , dest="AuxValues")
         ana.store("Error", "ind_mean", err_mv, "1", dest="AuxValues")
@@ -170,8 +170,11 @@ def main():
 
         display.plot_mean(ana)
 
+        res.check_error_column(ana)
+        
         doc = ana.build_doc("Analysis", doc)
         doc = res.build_doc("Result", doc)
+
         io.save_doc(doc)
 
 if __name__ == "__main__":

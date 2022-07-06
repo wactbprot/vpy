@@ -66,6 +66,8 @@ class Result(Analysis):
                2:0.95,
                3:1,}
 
+    max_error_col_dev = 1e-3
+    
     def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
 
         init_dict = {"Skip":skip,
@@ -657,8 +659,7 @@ class Result(Analysis):
         range_dict = ana.pick_dict("Range", "ind")
         if range_dict is not None:
             range_str = range_dict.get("Value")
-            print(range_str)
-            print(av_idx)
+
             return [range_str[v[0]] for v in av_idx]
         else:
             return None
@@ -891,8 +892,6 @@ class Result(Analysis):
                                                 "HeadCell": self.head_cell["range"],
                                                 "UnitCell": self.unit_cell["range"]}, dest=None)
 
-        self.log.info("Result error table written")
-
         cal = self.get_reduced_pressure_cal(ana, av_idx, pressure_unit)
 
         ind = self.get_reduced_pressure_ind_corr(ana, av_idx, pressure_unit)
@@ -900,3 +899,39 @@ class Result(Analysis):
         u = self.get_reduced_uncert_total(ana, av_idx, error_unit)
 
         return cal, ind, error, u
+
+    def read_table_value(self, col):
+        return np.array([float(x) for x in col.get("Value")])
+    
+    def check_error_column(self, ana):
+        table = self.doc.get("Table")
+        for col in table:
+
+            if col.get("Type") == "ind_corr" and col.get("Quantity") == "Pressure":
+                p_ind_corr = self.read_table_value(col)
+
+            if col.get("Type") == "cal" and col.get("Quantity") == "Pressure":
+                p_cal = self.read_table_value(col)
+
+            if col.get("Type") == "ind" and col.get("Quantity") == "Error":
+                e = self.read_table_value(col)
+
+            if col.get("Type") == "ind" and col.get("Quantity") == "Correction":
+                cf = self.read_table_value(col)
+
+        delta_e = (p_ind_corr/p_cal - 1) - e
+        less_maxdev = np.abs(delta_e) < self.max_error_col_dev
+
+
+        if np.all(less_maxdev):
+            print("Error column consistency with p_cal and p_ind_corr < {}".format(self.max_error_col_dev))
+        else:
+            
+            doc_aux_values = ana.doc.get("AuxValues", {})
+            av_idx = doc_aux_values.get("AverageIndex")
+
+            for i in range(len(p_cal)):
+                if not less_maxdev[i]:
+                    print("error column deviation for {} detected (av_idx: {})".format(p_cal[i], av_idx[i]))
+
+            sys.exit("Error column inconsistent")
