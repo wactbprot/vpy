@@ -171,6 +171,8 @@ def main():
 
         display.plot_mean(ana)
 
+        res.check_error_column(ana)
+
         doc = ana.build_doc("Analysis", doc)
         doc = res.build_doc("Result", doc)
 
