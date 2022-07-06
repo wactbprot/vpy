@@ -66,7 +66,7 @@ class Result(Analysis):
                2:0.95,
                3:1,}
 
-    max_error_col_dev = 1e-3
+    max_error_col_dev = 1e-4
     
     def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
 
@@ -922,7 +922,7 @@ class Result(Analysis):
         delta_e = (p_ind_corr/p_cal - 1) - e
         less_maxdev = np.abs(delta_e) < self.max_error_col_dev
 
-
+        print(delta_e)
         if np.all(less_maxdev):
             print("Error column consistency with p_cal and p_ind_corr < {}".format(self.max_error_col_dev))
         else:
