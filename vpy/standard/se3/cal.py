@@ -617,29 +617,42 @@ class Cal(Se3):
         i_s = np.where(f_name == "f_s")
         i_m = np.where(f_name == "f_m")
         i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
 
         if np.shape(i_s)[1] > 0:
-            self.log.info("Points {}  belong to f_s".format(i_s))
             t_m, t_s, N = self.temperature(list(range(3001, 3004)))
             t_mean[i_s] = t_m[i_s]
             t_stdv[i_s] = t_s[i_s]
             t_N[i_s] = N
 
         if np.shape(i_m)[1] > 0:
-            self.log.info("Points {}  belong to f_m".format(i_m))
             t_m, t_s, N = self.temperature(list(range(3004, 3014)))
             t_mean[i_m] = t_m[i_m]
             t_stdv[i_m] = t_s[i_m]
             t_N[i_m] = N
 
         if np.shape(i_l)[1] > 0:
-            self.log.info("Points {}  belong to f_l".format(i_l))
             t_m, t_s, N = self.temperature(list(range(3014, 3031)))
             t_mean[i_l] = t_m[i_l]
             t_stdv[i_l] = t_s[i_l]
             t_N[i_l] = N
 
         res.store("Temperature", "before", t_mean, "K", t_stdv, t_N)
+
+        if np.shape(i_ms)[1] > 0:
+            t_m, t_s, N = self.temperature(list(range(3004, 3014)))
+            t_mean[i_ms] = t_m[i_ms]
+            t_stdv[i_ms] = t_s[i_ms]
+            t_N[i_ms] = N
+
+            res.store("Temperature", "before", t_mean, "K", t_stdv, t_N)
+
+            t_m, t_s, N = self.temperature(list(range(3001, 3004)))
+            t_mean[i_ms] = t_m[i_ms]
+            t_stdv[i_ms] = t_s[i_ms]
+            t_N[i_ms] = N
+
+            res.store("Temperature", "before_second", t_mean, "K", t_stdv, t_N)
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
@@ -652,9 +665,18 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
+        f_name = self.get_expansion_name()
+        i_ms = np.where(f_name == "f_ms")
 
-        t_mean, t_stdv, t_N = self.temperature(
-            list(range(1001, 1031)) + list(range(2001, 2029)), "_after")
+        ch_list = list(range(1001, 1031)) + list(range(2001, 2029))
+
+        if np.shape(i_ms)[1] > 0:
+            t_mean, t_stdv, t_N = self.temperature(ch_list, "_after_first")
+
+            res.store("Temperature", "after_first", t_mean, "K", t_stdv, t_N)
+
+        t_mean, t_stdv, t_N = self.temperature(ch_list, "_after")
+
         res.store("Temperature", "after", t_mean, "K", t_stdv, t_N)
 
     def temperature_room(self, res):
