@@ -922,7 +922,7 @@ class Result(Analysis):
         delta_e = (p_ind_corr/p_cal - 1) - e
         less_maxdev = np.abs(delta_e) < self.max_error_col_dev
 
-        print(delta_e)
+
         if np.all(less_maxdev):
             print("Error column consistency with p_cal and p_ind_corr < {}".format(self.max_error_col_dev))
         else:
