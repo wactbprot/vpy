@@ -368,7 +368,7 @@ class Cal(Se3):
         # todo: check if cal with outgasing works, max outgasing for now:
 
         pressure_conv = self.Cons.get_conv(from_unit="mbar", to_unit=self.unit)
-        rise =  outgas_v * pressure_conv * dt #* outgas_correction
+        rise =  outgas_v * pressure_conv *0 # dt #* outgas_correction
 
         res.store('Pressure', 'rise', rise , self.unit)
 
