@@ -255,10 +255,13 @@ class Cal(Se3):
 
         if np.shape(i_ms)[1] > 0:
             vol[i_ms] = self.get_value("V_s", "cm^3")
+
         if np.shape(i_s)[1] > 0:
             vol[i_s] = self.get_value("V_s", "cm^3")
+
         if np.shape(i_m)[1] > 0:
             vol[i_m] = self.get_value("V_m", "cm^3")
+
         if np.shape(i_l)[1] > 0:
             vol[i_l] = self.get_value("V_l", "cm^3")
 
@@ -553,6 +556,7 @@ class Cal(Se3):
         i_s = np.where(f_name == "f_s")
         i_m = np.where(f_name == "f_m")
         i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
 
         if np.shape(i_s)[1] > 0:
             h_i[i_s] = self.get_value("h_s", "m")
@@ -562,6 +566,9 @@ class Cal(Se3):
 
         if np.shape(i_l)[1] > 0:
             h_i[i_l] = self.get_value("h_l", "m")
+
+        if np.shape(i_ms)[1] > 0:
+            h_i[i_ms] = self.get_value("h_m", "m")
 
         p = p * self.Cons.get_conv(from_unit=p_unit, to_unit="Pa")
 
@@ -731,7 +738,7 @@ class Cal(Se3):
 
     def expansion(self, res):
         """Builds a vector containing the expansion factors
-        and stores it.
+        and stores it. Respects double expansion.
 
         :param: Class with methode
                 store(quantity, type, value, unit, [stdev], [N])) and
@@ -740,26 +747,37 @@ class Cal(Se3):
         """
 
         f = np.full(self.no_of_meas_points, np.nan)
+        f_prime = np.full(self.no_of_meas_points, np.nan)
+
         f_name = self.get_expansion_name()
-        i_s = np.where(f_name == "f_s")
-        i_m = np.where(f_name == "f_m")
-        i_l = np.where(f_name == "f_l")
-
-        if np.shape(i_s)[1] > 0:
-            f[i_s] = self.get_value("f_s", "1")
-
-        if np.shape(i_m)[1] > 0:
-            f[i_m] = self.get_value("f_m", "1")
-
-        if np.shape(i_l)[1] > 0:
-            f[i_l] = self.get_value("f_l", "1")
-
-        res.store("Expansion", "uncorr", f, "1")
 
         V_add = res.pick("Volume", "add", "cm^3")
         V_start = res.pick("Volume", "start", "cm^3")
 
-        f_prime = 1.0/(1.0 / f + V_add / V_start)
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
+
+        if np.shape(i_s)[1] > 0:
+            f[i_s] = self.get_value("f_s", "1")
+            f_prime[i_s] = 1.0/(1.0 / f[i_s] + V_add[i_s] / V_start[i_s])
+
+        if np.shape(i_m)[1] > 0:
+            f[i_m] = self.get_value("f_m", "1")
+            f_prime[i_m] = 1.0/(1.0 / f[i_m] + V_add[i_m] / V_start[i_m])
+
+        if np.shape(i_l)[1] > 0:
+            f[i_l] = self.get_value("f_l", "1")
+            f_prime[i_l] = 1.0/(1.0 / f[i_l] + V_add[i_l] / V_start[i_l])
+
+        if np.shape(i_ms)[1] > 0:
+            fmV1 = self.get_value("f_mV1", "1")
+            fs = self.get_value("f_s", "1")
+            f[i_ms] =  fmV1 * fs
+            f_prime[i_ms] = fmV1 * 1.0/(1.0 / fs + V_add[i_ms] / V_start[i_ms])
+
+        res.store("Expansion", "uncorr", f, "1")
         res.store("Expansion", "corr", f_prime, "1")
 
     def pressure_cal(self, res):
