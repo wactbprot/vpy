@@ -288,6 +288,38 @@ class Cdg(Device):
     def error(self, p_cal, p_ind, p_unit):
         return np.divide(p_ind, p_cal) - 1.0, '1'
 
+    ## was in se3/cal.py del?
+    ##  offset_from_sample(self, res):
+    ##  range_offset_trans = {
+    ##     "X1":"offset_x1",
+    ##     "X0.1":"offset_x0.1",
+    ##     "X0.01":"offset_x0.01"
+    ##  }
+    ##
+    ##  range_str_arr = self.Range.get_str("ind")
+    ##  if range_str_arr is not None:
+    ##      offs = np.full(self.no_of_meas_points, np.nan)
+    ##      sd_offs = np.full(self.no_of_meas_points, np.nan)
+    ##      n_offs = np.full(self.no_of_meas_points, np.nan)
+    ##      range_unique = np.unique(range_str_arr)
+    ##      for r in range_unique:
+    ##          i_r = np.where(range_str_arr == r)
+    ##          if np.shape(i_r)[1] > 0:
+    ##              offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
+    ##              offs[i_r] = np.nanmean(offset_sample_value)
+    ##              n_offs[i_r] = np.count_nonzero(~np.isnan(offset_sample_value))
+    ##              sd_offs[i_r]= np.nanstd(offset_sample_value)
+    ##
+    ##  else:
+    ##      offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
+    ##      offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
+    ##      sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
+    ##      n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))
+    ##
+    ##  res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)
+
+
+
     def offset_uncert(self, ana,  reject_index = None):
         """
         The offset uncertainty is calculated by means of `np.diff(offset)`.

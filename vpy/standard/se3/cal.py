@@ -179,7 +179,7 @@ class Cal(Se3):
             pick(quantity, type, unit)
         :type: class
         """
-        self.log.debug("transfer state pressure")
+
         for state_type in self.state_types:
             p = self.Pres.get_value(state_type, self.unit)
             res.store("Pressure", state_type, p, self.unit)
@@ -511,7 +511,6 @@ class Cal(Se3):
 
         p_fill = res.pick("Pressure", "fill", self.unit)
 
-
         gas = self.get_gas()
 
         dp = self.pressure_delta_height(p=p_fill, p_unit=self.unit, f_name=f_name, gas=gas)
@@ -725,38 +724,7 @@ class Cal(Se3):
         :type: class
         """
         gas_temp = res.pick('Temperature', 'compare', 'K')
-        res.store("Temperature", "gas",gas_temp , "K")
-
-
-    def offset_from_sample(self, res):
-        range_offset_trans = {
-           "X1":"offset_x1",
-           "X0.1":"offset_x0.1",
-           "X0.01":"offset_x0.01"
-        }
-
-        range_str_arr = self.Range.get_str("ind")
-        if range_str_arr is not None:
-            offs = np.full(self.no_of_meas_points, np.nan)
-            sd_offs = np.full(self.no_of_meas_points, np.nan)
-            n_offs = np.full(self.no_of_meas_points, np.nan)
-            range_unique = np.unique(range_str_arr)
-            for r in range_unique:
-                i_r = np.where(range_str_arr == r)
-                if np.shape(i_r)[1] > 0:
-                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
-                    offs[i_r] = np.nanmean(offset_sample_value)
-                    n_offs[i_r] = np.count_nonzero(~np.isnan(offset_sample_value))
-                    sd_offs[i_r]= np.nanstd(offset_sample_value)
-
-        else:
-            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
-            offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
-            sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
-            n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))
-
-        res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)
-
+        res.store("Temperature", "gas", gas_temp, "K")
 
     def expansion(self, res):
         """Builds a vector containing the expansion factors
@@ -814,39 +782,28 @@ class Cal(Se3):
         ## removed implicit pfill etc. calculation
 
         p_fill = res.pick("Pressure", "fill", self.unit)
-        self.log.debug("filling pressure is: {}".format(p_fill))
 
         f = res.pick("Expansion", "uncorr", "1")
-        self.log.debug("expansion factor is: {}".format(f))
 
         f_prime = res.pick("Expansion", "corr", "1")
-        self.log.debug("corrected expansion ratio is: {}".format(f_prime))
 
         T_before = res.pick("Temperature", "before", "K")
-        self.log.debug("Temperature before is: {}".format(T_before))
 
         T_after = res.pick("Temperature", "after", "K")
-        self.log.debug("Temperature after is: {}".format(T_after))
-
-        p_rise = res.pick("Pressure", "rise", self.unit)
-        self.log.debug("Pressure rise is: {}".format(p_rise))
 
         T_corr = T_after / T_before
-        res.store("Correction", "temperature", T_corr, '1')
 
         K_real_gas = res.pick("Correction", "rg", "1")
-        self.log.debug("real gas correction is: {}".format(K_real_gas))
 
         K_delta_heigth = res.pick("Correction", "delta_heigth", "1")
-        self.log.debug("Heigth correction is: {}".format(K_delta_heigth))
 
         K_f_pressure =  res.pick("Correction", "f_p_dependency", "1")
-        self.log.debug("valve closing pressure dep.: {}".format(K_f_pressure))
+
+        p_rise = res.pick("Pressure", "rise", self.unit)
 
         ## calibration pressure:
         p_cal = f_prime * p_fill * K_real_gas * T_corr * K_delta_heigth * K_f_pressure + p_rise
-        self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
-        print(p_cal)
+
         res.store("Pressure", "cal", p_cal, self.unit)
 
     def all(self, ana):
