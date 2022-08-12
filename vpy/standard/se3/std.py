@@ -326,34 +326,6 @@ class Se3(Standard):
 
         return f_name
 
-
-    def expansion(self, res):
-        """Builds a vector containing the expansion factors
-        and stores it.
-
-        :param: Class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-
-        f = np.full(self.no_of_meas_points, np.nan)
-        f_name = self.get_expansion_name()
-        i_s = np.where(f_name == "f_s")
-        i_m = np.where(f_name == "f_m")
-        i_l = np.where(f_name == "f_l")
-
-        if np.shape(i_s)[1] > 0:
-            f[i_s] = self.get_value("f_s", "1")
-
-        if np.shape(i_m)[1] > 0:
-            f[i_m] = self.get_value("f_m", "1")
-
-        if np.shape(i_l)[1] > 0:
-            f[i_l] = self.get_value("f_l", "1")
-
-        res.store("Expansion", "uncorr", f, "1")
-
     def time_meas(self, res):
         """Builds a vector containing the measurement time.
 

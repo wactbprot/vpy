@@ -66,8 +66,8 @@ class Result(Analysis):
                2:0.95,
                3:1,}
 
-    max_error_col_dev = 1e-4
-    
+    max_error_col_dev = 1e-3
+
     def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
 
         init_dict = {"Skip":skip,
@@ -902,7 +902,7 @@ class Result(Analysis):
 
     def read_table_value(self, col):
         return np.array([float(x) for x in col.get("Value")])
-    
+
     def check_error_column(self, ana):
         table = self.doc.get("Table")
         for col in table:
@@ -926,7 +926,7 @@ class Result(Analysis):
         if np.all(less_maxdev):
             print("Error column consistency with p_cal and p_ind_corr < {}".format(self.max_error_col_dev))
         else:
-            
+
             doc_aux_values = ana.doc.get("AuxValues", {})
             av_idx = doc_aux_values.get("AverageIndex")
 
