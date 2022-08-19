@@ -368,7 +368,7 @@ class Cal(Se3):
         # todo: check if cal with outgasing works, max outgasing for now:
 
         pressure_conv = self.Cons.get_conv(from_unit="mbar", to_unit=self.unit)
-        rise =  outgas_v * pressure_conv *0 # dt #* outgas_correction
+        rise =  outgas_v * pressure_conv * dt #* outgas_correction
 
         res.store('Pressure', 'rise', rise , self.unit)
 
@@ -781,24 +781,30 @@ class Cal(Se3):
         """
         ## removed implicit pfill etc. calculation
 
-        p_fill = res.pick("Pressure", "fill", self.unit)
-
         f = res.pick("Expansion", "uncorr", "1")
-
         f_prime = res.pick("Expansion", "corr", "1")
 
         T_before = res.pick("Temperature", "before", "K")
-
         T_after = res.pick("Temperature", "after", "K")
 
-        T_corr = T_after / T_before
+        T_before_second = res.pick("Temperature", "before_second", "K")
+        T_after_first = res.pick("Temperature", "after_first", "K")
+
+        if T_before_second is not None and T_after_first is not None:
+            T_corr_first = T_after_first / T_before
+            T_corr_second = T_after / T_before_second
+
+            T_corr = T_corr_first * T_corr_second
+
+        else:
+            T_corr = T_after / T_before
 
         K_real_gas = res.pick("Correction", "rg", "1")
-
         K_delta_heigth = res.pick("Correction", "delta_heigth", "1")
-
         K_f_pressure =  res.pick("Correction", "f_p_dependency", "1")
 
+
+        p_fill = res.pick("Pressure", "fill", self.unit)
         p_rise = res.pick("Pressure", "rise", self.unit)
 
         ## calibration pressure:

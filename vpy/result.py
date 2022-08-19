@@ -66,7 +66,7 @@ class Result(Analysis):
                2:0.95,
                3:1,}
 
-    max_error_col_dev = 1e-3
+    max_error_col_dev = 1e-1
 
     def __init__(self, doc, result_type="expansion", skip=False, with_values_section=False):
 
