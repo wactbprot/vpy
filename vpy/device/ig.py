@@ -55,8 +55,12 @@ class Ig(Device):
         if ind_unit is None:
             ind_unit = ana.pressure_unit
 
+        u = ana.pick("Uncertainty", "uncertExpSd", "1")
+        if u is None:
+            u = self.rel_repeat_uncert
+
         p_ind = ana.pick("Pressure", "ind_corr", ind_unit)
-        u_rel = np.full(len(p_ind), self.rel_repeat_uncert)
+        u_rel = np.full(len(p_ind), u)
 
         ana.store("Uncertainty", "repeat", u_rel, "1")
 

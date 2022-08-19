@@ -10,6 +10,9 @@ from vpy.helper import init_customer_device
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
 
+from datetime import date
+today = date.today()
+d = today.strftime("%Y-%m-%d")
 
 def main(io, config):
     struct_path = config.get("struct_path")
@@ -87,8 +90,9 @@ def main(io, config):
     plt.xlabel('$p_{cal}$ in Pa')
     plt.ylabel('$u(p)/p$')
     plt.grid(True)
+    plt.title("SE3 Uncertainty\n(status as of {})".format(d))
     plt.legend()
-    plt.savefig("{}.pdf".format(result_name),transparent=True, bbox_inches='tight')
+    plt.savefig("{}-{}.pdf".format(result_name, d),transparent=True, bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":

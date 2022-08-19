@@ -17,7 +17,7 @@ from vpy.helper import init_customer_device
 def main():
     io = Io()
     io.eval_args()
-    ret = {'ok':True}
+    ret = {'ok': True}
 
     cmc = True
     base_doc = io.get_base_doc("se3")
@@ -69,15 +69,6 @@ def main():
             # cal uncertainty of standard
             uncert.cmc(ana)
         else:
-            uncert.define_model()
-            uncert.gen_val_dict(ana)
-            uncert.gen_val_array(ana)
-            uncert.volume_start(ana)
-            uncert.volume_5(ana)
-            uncert.pressure_fill(ana)
-            uncert.temperature_after(ana)
-            uncert.temperature_before(ana)
-            uncert.expansion(ana)
             uncert.total(ana)
 
         ## calculate customer indication

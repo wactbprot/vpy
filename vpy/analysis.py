@@ -636,7 +636,7 @@ class Analysis(Document):
         standard_uncert = self.pick("Uncertainty", "standard", self.error_unit)
         device_uncert = self.pick("Uncertainty", "device", self.error_unit)
         p_cal = self.pick("Pressure", "cal", self.pressure_unit)
-        print(self.analysis_type)
+
         if self.analysis_type == "sens":
             s = self.pick("Sensitivity", "gauge_sens", "1/{}".format(self.pressure_unit))
             u_rel = np.sqrt(np.power(device_uncert, 2) + np.power(standard_uncert, 2))

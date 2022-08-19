@@ -179,7 +179,7 @@ class Cal(Se3):
             pick(quantity, type, unit)
         :type: class
         """
-        self.log.debug("transfer state pressure")
+
         for state_type in self.state_types:
             p = self.Pres.get_value(state_type, self.unit)
             res.store("Pressure", state_type, p, self.unit)
@@ -251,11 +251,17 @@ class Cal(Se3):
         i_s = np.where(f_name == "f_s")
         i_m = np.where(f_name == "f_m")
         i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
+
+        if np.shape(i_ms)[1] > 0:
+            vol[i_ms] = self.get_value("V_s", "cm^3")
 
         if np.shape(i_s)[1] > 0:
             vol[i_s] = self.get_value("V_s", "cm^3")
+
         if np.shape(i_m)[1] > 0:
             vol[i_m] = self.get_value("V_m", "cm^3")
+
         if np.shape(i_l)[1] > 0:
             vol[i_l] = self.get_value("V_l", "cm^3")
 
@@ -381,59 +387,6 @@ class Cal(Se3):
         e_rise = p_rise/p_cal
         res.store('Error', 'rise', e_rise, '1')
 
-    def pressure_cal(self, res):
-        """Calculates the calibration pressure nand stores the
-        result under the path *Pressure, cal, mbar*
-
-        :param: instance of a class with methode
-                store(quantity, type, value, unit, [stdev], [N])) and
-                pick(quantity, type, unit)
-        :type: class
-        """
-        ## removed implicit pfill etc. calculation
-
-        p_fill = res.pick("Pressure", "fill", self.unit)
-        self.log.debug("filling pressure is: {}".format(p_fill))
-
-        f = res.pick("Expansion", "uncorr", "1")
-        self.log.debug("expansion factor is: {}".format(f))
-
-        T_before = res.pick("Temperature", "before", "K")
-        self.log.debug("Temperature before is: {}".format(T_before))
-
-        T_after = res.pick("Temperature", "after", "K")
-        self.log.debug("Temperature after is: {}".format(T_after))
-
-        V_add = res.pick("Volume", "add", "cm^3")
-        self.log.debug("Volume add is: {}".format(V_add))
-
-        V_start = res.pick("Volume", "start", "cm^3")
-        self.log.debug("Volume start is: {}".format(V_start))
-
-        p_rise = res.pick("Pressure", "rise", self.unit)
-        self.log.debug("Pressure rise is: {}".format(p_rise))
-
-        T_corr = T_after / T_before
-        res.store("Correction", "temperature", T_corr, '1')
-
-        f_prime = 1.0/(1.0 / f + V_add / V_start)
-        res.store("Expansion", "corr", f_prime, "1")
-
-        K_real_gas = res.pick("Correction", "rg", "1")
-        self.log.debug("real gas correction is: {}".format(K_real_gas))
-
-        K_delta_heigth = res.pick("Correction", "delta_heigth", "1")
-        self.log.debug("Heigth correction is: {}".format(K_delta_heigth))
-
-        K_f_pressure =  res.pick("Correction", "f_p_dependency", "1")
-        self.log.debug("valve closing pressure dep.: {}".format(K_f_pressure))
-
-        ## calibration pressure:
-        p_cal = f_prime * p_fill * K_real_gas * T_corr * K_delta_heigth * K_f_pressure + p_rise
-        self.log.debug("calibration pressure in {} is: {}".format(self.unit, p_cal))
-
-        res.store("Pressure", "cal", p_cal, self.unit)
-
     def pressure_gn_corr(self, res):
         """Calculates the corrected pressures of the group normal (gn)
         """
@@ -461,13 +414,14 @@ class Cal(Se3):
             p_ind_conv = p_ind * self.Cons.get_conv(from_unit=u_ind, to_unit=self.unit)
 
             # get a offset value for each pressure value:
-            p_off, u_off = self.Pres.get_value_and_unit(gn_offset_types[i])
+            l_off = self.Pres.get_value_and_unit(gn_offset_types[i])
 
             # get one offet value for all pressure values:
-            if p_off is None:
+            if l_off is None:
                 p_off = self.Aux.get_val_by_time(meas_time, "offset_mt", "ms", gn_offset_types[i], self.unit)
                 p_off_conv = p_off ## already in self.unit
             else:
+                p_off, u_off = l_off
                 p_off_conv = p_off * self.Cons.get_conv(from_unit=u_off, to_unit=self.unit)
 
             p = p_ind_conv - p_off_conv
@@ -557,7 +511,6 @@ class Cal(Se3):
 
         p_fill = res.pick("Pressure", "fill", self.unit)
 
-
         gas = self.get_gas()
 
         dp = self.pressure_delta_height(p=p_fill, p_unit=self.unit, f_name=f_name, gas=gas)
@@ -602,6 +555,7 @@ class Cal(Se3):
         i_s = np.where(f_name == "f_s")
         i_m = np.where(f_name == "f_m")
         i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
 
         if np.shape(i_s)[1] > 0:
             h_i[i_s] = self.get_value("h_s", "m")
@@ -611,6 +565,9 @@ class Cal(Se3):
 
         if np.shape(i_l)[1] > 0:
             h_i[i_l] = self.get_value("h_l", "m")
+
+        if np.shape(i_ms)[1] > 0:
+            h_i[i_ms] = self.get_value("h_m", "m")
 
         p = p * self.Cons.get_conv(from_unit=p_unit, to_unit="Pa")
 
@@ -659,29 +616,42 @@ class Cal(Se3):
         i_s = np.where(f_name == "f_s")
         i_m = np.where(f_name == "f_m")
         i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
 
         if np.shape(i_s)[1] > 0:
-            self.log.info("Points {}  belong to f_s".format(i_s))
             t_m, t_s, N = self.temperature(list(range(3001, 3004)))
             t_mean[i_s] = t_m[i_s]
             t_stdv[i_s] = t_s[i_s]
             t_N[i_s] = N
 
         if np.shape(i_m)[1] > 0:
-            self.log.info("Points {}  belong to f_m".format(i_m))
             t_m, t_s, N = self.temperature(list(range(3004, 3014)))
             t_mean[i_m] = t_m[i_m]
             t_stdv[i_m] = t_s[i_m]
             t_N[i_m] = N
 
         if np.shape(i_l)[1] > 0:
-            self.log.info("Points {}  belong to f_l".format(i_l))
             t_m, t_s, N = self.temperature(list(range(3014, 3031)))
             t_mean[i_l] = t_m[i_l]
             t_stdv[i_l] = t_s[i_l]
             t_N[i_l] = N
 
         res.store("Temperature", "before", t_mean, "K", t_stdv, t_N)
+
+        if np.shape(i_ms)[1] > 0:
+            t_m, t_s, N = self.temperature(list(range(3004, 3014)))
+            t_mean[i_ms] = t_m[i_ms]
+            t_stdv[i_ms] = t_s[i_ms]
+            t_N[i_ms] = N
+
+            res.store("Temperature", "before", t_mean, "K", t_stdv, t_N)
+
+            t_m, t_s, N = self.temperature(list(range(3001, 3004)))
+            t_mean[i_ms] = t_m[i_ms]
+            t_stdv[i_ms] = t_s[i_ms]
+            t_N[i_ms] = N
+
+            res.store("Temperature", "before_second", t_mean, "K", t_stdv, t_N)
 
     def temperature_after(self, res):
         """Calculates the temperature of the end volume.
@@ -694,9 +664,18 @@ class Cal(Se3):
                 pick(quantity, type, unit)
         :type: class
         """
+        f_name = self.get_expansion_name()
+        i_ms = np.where(f_name == "f_ms")
 
-        t_mean, t_stdv, t_N = self.temperature(
-            list(range(1001, 1031)) + list(range(2001, 2029)), "_after")
+        ch_list = list(range(1001, 1031)) + list(range(2001, 2029))
+
+        if np.shape(i_ms)[1] > 0:
+            t_mean, t_stdv, t_N = self.temperature(ch_list, "_after_first")
+
+            res.store("Temperature", "after_first", t_mean, "K", t_stdv, t_N)
+
+        t_mean, t_stdv, t_N = self.temperature(ch_list, "_after")
+
         res.store("Temperature", "after", t_mean, "K", t_stdv, t_N)
 
     def temperature_room(self, res):
@@ -745,37 +724,93 @@ class Cal(Se3):
         :type: class
         """
         gas_temp = res.pick('Temperature', 'compare', 'K')
-        res.store("Temperature", "gas",gas_temp , "K")
+        res.store("Temperature", "gas", gas_temp, "K")
 
+    def expansion(self, res):
+        """Builds a vector containing the expansion factors
+        and stores it. Respects double expansion.
 
-    def offset_from_sample(self, res):
-        range_offset_trans = {
-           "X1":"offset_x1",
-           "X0.1":"offset_x0.1",
-           "X0.01":"offset_x0.01"
-        }
+        :param: Class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
 
-        range_str_arr = self.Range.get_str("ind")
-        if range_str_arr is not None:
-            offs = np.full(self.no_of_meas_points, np.nan)
-            sd_offs = np.full(self.no_of_meas_points, np.nan)
-            n_offs = np.full(self.no_of_meas_points, np.nan)
-            range_unique = np.unique(range_str_arr)
-            for r in range_unique:
-                i_r = np.where(range_str_arr == r)
-                if np.shape(i_r)[1] > 0:
-                    offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type=range_offset_trans[r])
-                    offs[i_r] = np.nanmean(offset_sample_value)
-                    n_offs[i_r] = np.count_nonzero(~np.isnan(offset_sample_value))
-                    sd_offs[i_r]= np.nanstd(offset_sample_value)
+        f = np.full(self.no_of_meas_points, np.nan)
+        f_prime = np.full(self.no_of_meas_points, np.nan)
+
+        f_name = self.get_expansion_name()
+
+        V_add = res.pick("Volume", "add", "cm^3")
+        V_start = res.pick("Volume", "start", "cm^3")
+
+        i_s = np.where(f_name == "f_s")
+        i_m = np.where(f_name == "f_m")
+        i_l = np.where(f_name == "f_l")
+        i_ms = np.where(f_name == "f_ms")
+
+        if np.shape(i_s)[1] > 0:
+            f[i_s] = self.get_value("f_s", "1")
+            f_prime[i_s] = 1.0/(1.0 / f[i_s] + V_add[i_s] / V_start[i_s])
+
+        if np.shape(i_m)[1] > 0:
+            f[i_m] = self.get_value("f_m", "1")
+            f_prime[i_m] = 1.0/(1.0 / f[i_m] + V_add[i_m] / V_start[i_m])
+
+        if np.shape(i_l)[1] > 0:
+            f[i_l] = self.get_value("f_l", "1")
+            f_prime[i_l] = 1.0/(1.0 / f[i_l] + V_add[i_l] / V_start[i_l])
+
+        if np.shape(i_ms)[1] > 0:
+            fmV1 = self.get_value("f_mV1", "1")
+            fs = self.get_value("f_s", "1")
+            f[i_ms] =  fmV1 * fs
+            f_prime[i_ms] = fmV1 * 1.0/(1.0 / fs + V_add[i_ms] / V_start[i_ms])
+
+        res.store("Expansion", "uncorr", f, "1")
+        res.store("Expansion", "corr", f_prime, "1")
+
+    def pressure_cal(self, res):
+        """Calculates the calibration pressure nand stores the
+        result under the path *Pressure, cal, mbar*
+
+        :param: instance of a class with methode
+                store(quantity, type, value, unit, [stdev], [N])) and
+                pick(quantity, type, unit)
+        :type: class
+        """
+        ## removed implicit pfill etc. calculation
+
+        f = res.pick("Expansion", "uncorr", "1")
+        f_prime = res.pick("Expansion", "corr", "1")
+
+        T_before = res.pick("Temperature", "before", "K")
+        T_after = res.pick("Temperature", "after", "K")
+
+        T_before_second = res.pick("Temperature", "before_second", "K")
+        T_after_first = res.pick("Temperature", "after_first", "K")
+
+        if T_before_second is not None and T_after_first is not None:
+            T_corr_first = T_after_first / T_before
+            T_corr_second = T_after / T_before_second
+
+            T_corr = T_corr_first * T_corr_second
 
         else:
-            offset_sample_value, sample_unit = self.Aux.get_value_and_unit(type="offset")
-            offs = np.full(self.no_of_meas_points, np.nanmean(offset_sample_value))
-            sd_offs = np.full(self.no_of_meas_points, np.nanstd(offset_sample_value))
-            n_offs = np.full(self.no_of_meas_points, np.count_nonzero(~np.isnan(offset_sample_value)))
+            T_corr = T_after / T_before
 
-        res.store("Pressure", "offset_sample", offs , sample_unit, sd_offs , n_offs)
+        K_real_gas = res.pick("Correction", "rg", "1")
+        K_delta_heigth = res.pick("Correction", "delta_heigth", "1")
+        K_f_pressure =  res.pick("Correction", "f_p_dependency", "1")
+
+
+        p_fill = res.pick("Pressure", "fill", self.unit)
+        p_rise = res.pick("Pressure", "rise", self.unit)
+
+        ## calibration pressure:
+        p_cal = f_prime * p_fill * K_real_gas * T_corr * K_delta_heigth * K_f_pressure + p_rise
+
+        res.store("Pressure", "cal", p_cal, self.unit)
 
     def all(self, ana):
         self.pressure_gn_corr(ana)

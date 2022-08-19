@@ -96,7 +96,7 @@ class Srg(Device):
             temp_corr = self.temperature_correction(temperature_dict)
             self.log.debug(temp_corr)
 
-            pressure = pressure_value * dcr_conv  *temp_corr
+            pressure = pressure_value * dcr_conv  * temp_corr
         else:
             pressure = pressure_value * self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
 
