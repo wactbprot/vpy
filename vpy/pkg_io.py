@@ -310,7 +310,7 @@ class Io(object):
 
         return doc
 
-    def get_state_doc(self, name, date=None):
+    def get_state_doc(self, name, enddate=None, startdate="2022-01-01"):
         """Gets and returns the state document
          containing the additional volume outgasing rate ect.
          who is closest and before the date. if no dfate is given
@@ -329,8 +329,8 @@ class Io(object):
         db = srv[self.config['db']['work_db']]
         view = self.config['standards'][name]['state_doc_view']
 
-        if date:
-            for item in db.view(view, startkey="20210101", endkey=date.replace("-","")):
+        if enddate:
+            for item in db.view(view, startkey=startdate.replace("-",""), endkey=enddate.replace("-","")):
                 doc = item.value
         else:
             for item in db.view(view):
