@@ -291,7 +291,7 @@ class Error(Values):
 
 class Slope(Values):
     def __init__(self, doc, quant="Measurement"):
-        super().__init__(doc, 'Sigma', quant)
+        super().__init__(doc, 'Slope', quant)
 
 class Sigma(Values):
     def __init__(self, doc, quant="Measurement"):
