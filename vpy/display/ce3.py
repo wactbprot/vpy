@@ -38,14 +38,23 @@ class CE3(Display):
     def plot_mean(self, ana, show=True):
         self.plt.cla()
         x = self.get_red_p_cal(ana)
-        #y = self.get_red_sens(ana)
-        y = self.get_red_error(ana)
         self.plt.xlabel("p in {}".format(self.p_unit))
-        self.plt.ylabel("e in {}".format(self.e_unit))
+
+        if ana.analysis_type == "sens":
+            y = self.get_red_sens(ana)
+            self.plt.ylabel("S in {}".format(self.s_unit))
+        else:
+            y = self.get_red_error(ana)
+            self.plt.ylabel("e in {}".format(self.e_unit))
+
+
         self.xlog_plot(x , y, label="red. measurement", show=False)
         x = self.get_p_cal_mean(ana)
-        #y = self.get_sens_mean(ana)
-        y = self.get_error_mean(ana)
+
+        if ana.analysis_type == "sens":
+            y = self.get_sens_mean(ana)
+        else:
+            y = self.get_error_mean(ana)
         u = self.get_u_mean(ana)
 
         self.plt.errorbar(x, y, yerr=u, label="certificate")
