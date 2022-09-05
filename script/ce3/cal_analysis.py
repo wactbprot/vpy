@@ -30,7 +30,11 @@ def main():
         ana = Analysis(doc)
 
         cal.pressure_fill(ana)
-
+        cal.pressure_dp(ana)
+        cal.drift(ana)
+        cal.conductance(ana)
+        cal.conductance_name(ana)
+        cal.conductance_extrap(ana)
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))

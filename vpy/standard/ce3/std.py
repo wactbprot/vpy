@@ -5,7 +5,7 @@ from ...device.srg import Srg
 from ...device.cdg import InfCdg, Cdg
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Time, AuxValues
+from ...values import Temperature, Pressure, Time, Drift, AuxValues
 
 
 class Ce3(Standard):
@@ -19,10 +19,13 @@ class Ce3(Standard):
         self.Temp = Temperature(doc)
         self.Pres = Pressure(doc)
         self.Time = Time(doc)
+        self.Drift = Drift(doc)
         self.Aux = AuxValues(doc)
 
         amt = self.Time.get_value("start_sz_mt", "ms")
         self.no_of_meas_points = len(amt)
+        self.opk = self.Aux.doc.get("OperationKind")
+        self.gas = self.Aux.doc.get("Gas")
 
         ## CDGA ... 10Torr
         self.cdga_lim_x001 = 0.1
