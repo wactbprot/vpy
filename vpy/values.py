@@ -257,6 +257,10 @@ class Length(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Length', quant)
 
+class Current(Values):
+    def __init__(self, doc, quant="Measurement"):
+        super().__init__(doc, 'Current', quant)
+
 class Temperature(Values):
     def __init__(self, doc, quant="Measurement"):
         super().__init__(doc, 'Temperature', quant)

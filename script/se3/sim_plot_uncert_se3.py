@@ -72,7 +72,7 @@ def main(io, config):
     figure(num=None, figsize=(16, 9), dpi=80, facecolor='w', edgecolor='k')
 
     plt.plot(p_cal, u_std, '-',lw=3, color=col_map[1], label="SE3 (k=1)" )
-    plt.plot(p_se2, u_se2_k1, ':',lw=3, color=col_map[10], label="SE2 (k=1)" )
+    # plt.plot(p_se2, u_se2_k1, ':',lw=3, color=col_map[10], label="SE2 (k=1)" )
     plt.plot(p_cal, u_1,   '-',lw=2, color=col_map[2], label="$p_{fill}$" )
     plt.plot(p_cal, u_2,   '-',lw=2, color=col_map[3], label="$p_{rise}$" )
     plt.plot(p_cal, u_3,   '-',lw=2, color=col_map[4], label="$f_i$" )
@@ -84,13 +84,13 @@ def main(io, config):
 
     #plt.title("Uncertainty contributions SE3")
 
-    plt.xscale('symlog', linthreshx=1e-12)
-    #plt.yscale('symlog', linthreshy=1e-12)
-    #plt.ylim((1e-7, 1.2e-3))
+    plt.xscale('log')
+    plt.yscale('log')
+    plt.ylim(1e-6, 1e-3)
     plt.xlabel('$p_{cal}$ in Pa')
     plt.ylabel('$u(p)/p$')
     plt.grid(True)
-    plt.title("SE3 Uncertainty\n(status as of {})".format(d))
+    #plt.title("SE3 Uncertainty\n(status as of {})".format(d))
     plt.legend()
     plt.savefig("{}-{}.pdf".format(result_name, d),transparent=True, bbox_inches='tight')
     plt.show()

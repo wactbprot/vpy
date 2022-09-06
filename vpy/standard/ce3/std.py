@@ -6,7 +6,7 @@ from ...device.cdg import InfCdg, Cdg
 from ...device.dmm import Dmm
 from ...constants import Constants
 from ...calibration_devices import CalibrationObject
-from ...values import Temperature, Pressure, Length, Time, Drift, AuxValues
+from ...values import Temperature, Pressure, Length, Current, Time, Drift, AuxValues
 
 
 class Ce3(Standard):
@@ -22,6 +22,7 @@ class Ce3(Standard):
         self.Time = Time(doc)
         self.Drift = Drift(doc)
         self.Len = Length(doc)
+        self.Curr = Current(doc)
         self.Aux = AuxValues(doc)
 
         amt = self.Time.get_value("start_sz_mt", "ms")

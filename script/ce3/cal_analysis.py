@@ -26,6 +26,7 @@ def main():
         if io.update:
             doc = io.update_cal_doc(doc, base_doc)
 
+        cus_dev = init_customer_device(doc)
         cal = Cal(doc)
         ana = Analysis(doc)
 
@@ -42,6 +43,40 @@ def main():
         cal.temperature_room(ana)
         cal.flow(ana)
         cal.mean_free_path(ana)
+        cal.pressure_cal(ana)
+
+        ## calculate customer indication
+        offset_dict = cal.Pres.get_dict('Type', 'ind_offset' )
+        ind_dict = cal.Pres.get_dict('Type', 'ind' )
+
+
+        if cal.ToDo.type == "error":
+            unit = cal.unit
+        if cal.ToDo.type == "sens":
+            unit = "A"
+
+        offset = cus_dev.pressure(offset_dict, unit=unit)
+        ind = cus_dev.pressure(ind_dict, unit=unit)
+
+        ana.store("Pressure", "offset", offset, unit)
+        ana.store("Pressure", "ind", ind, unit)
+        ana.store("Pressure", "ind_corr", ind - offset, unit)
+
+        p_cal = ana.pick("Pressure", "cal" , cal.unit)
+        p_ind = ana.pick("Pressure", "ind_corr", unit)
+
+        if cal.ToDo.type == "error":
+            ana.store('Error', 'ind', p_ind/p_cal - 1, '1')
+
+        if cal.ToDo.type == "sens":
+            i_anode = cal.Curr.get_value("ind_anode", "A")
+            i_faraday = cal.Curr.get_value("ind_faraday", "A")
+            i_emis = cus_dev.get_value("ie", "mA") * cal.Cons.get_conv("mA", "A")
+            if i_anode is not None and i_faraday is not None:
+                i_emis = i_anode + i_faraday
+
+            S = p_ind/(i_emis * p_cal)
+            ana.store('Sensitivity', 'ind', S, '1')
 
         io.save_doc(ana.build_doc())
 

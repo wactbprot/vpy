@@ -11,6 +11,12 @@ class Ig(Device):
         self.Const = Constants(doc)
         super().__init__(doc, dev)
 
+    def pressure(self, pressure_dict, unit='Pa'):
+        pressure_unit = pressure_dict.get('Unit')
+        pressure_value = np.array(pressure_dict.get('Value'), dtype=np.float)
+
+        return pressure_value * self.Const.get_conv(pressure_unit, unit)
+
     def get_name(self):
         return self.doc['Name']
 
