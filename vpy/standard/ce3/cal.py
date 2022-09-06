@@ -14,6 +14,29 @@ class Cal(Ce3):
     def __init__(self, doc):
         super().__init__(doc)
 
+    def pressure_cal(self, ana):
+        pass
+
+    def mean_free_path(self, ana):
+        kb = self.Cons.get_value("Kb","J/K")
+        u = self.Cons.get_value("u","kg")
+        Mr = self.Cons.get_value("molWeight_{}".format(self.gas), "kg/mol")*1000
+        visc = self.Cons.get_value("visc_{}".format(self.gas), "Pa s")
+
+        if self.opk == "opK1":
+            T = ana.pick("Temperature", "uhv", "K")
+            C_nom = self.get_value("nomC1", "m^3/s")
+        else:
+            sys.exit("not implemented")
+
+        q_pV = ana.pick("Flow", "pV", "mbarl/s")
+        p = q_pV/C_nom * self.Cons.get_conv(from_unit="mbarl/s", to_unit="Pam^3/s")
+
+        ## [s] = m
+        s = np.sqrt(np.pi) * visc/(2 * p) * np.sqrt(2 * kb * T / (Mr*u))
+
+        ana.store("Length", "meanFreePath", s, "m")
+
     def extrap_fit(self, x, a, b, c, d):
         return a + b * x + c * np.log(x) + d * np.exp(-x)
 
@@ -72,6 +95,96 @@ class Cal(Ce3):
         C = self.get_value("fbv_C", "mm^2")
 
         return A * np.power(h, 3) / 3 + A * B * np.power(h, 2) + h * (A * np.power(B, 2) + C)
+
+    def flow(self, ana):
+        R = self.Cons.get_value("R","Pa m^3/mol/K") * self.Cons.get_conv(from_unit="Pam^3/mol/K", to_unit="mbarl/mol/K")
+        p_fill = ana.pick("Pressure", "fill", "mbar")
+        t_uhv = ana.pick("Temperature", "uhv", "K")
+        t_xhv = ana.pick("Temperature", "xhv", "K")
+        t_fm = ana.pick("Temperature", "fm", "K")
+        C_fm = ana.pick("Conductance", "fm", "l/s")
+
+        if self.opk == "opK1":
+            ## KP1 in Betrieb, XHV-TMP-Ventil offen
+            ## Messung an uhv- Seite
+            A = self.get_value("qSplitCorrUhvOpk1A", "1")
+            B = self.get_value("qSplitCorrUhvOpk1B", "1/(mbar l/s)")
+            C = self.get_value("qSplitCorrUhvOpk1C", "1/(mbar l/s)^2")
+
+
+        q_mol = C_fm * p_fill / (R * t_fm)
+        ## q.pV.fd wird nur zur Bestimmung des
+        ## Flussteilungsfaktors bestimmt
+        q_pV_fd =  q_mol * (t_xhv + t_uhv)/2 * R
+        ## Faktor Flussaufteilung
+        fd_corr = A + B * q_pV_fd + C * np.power(q_pV_fd, 2)
+        ## q.pV in mbarl/s
+        q_pV_corr = q_mol * t_uhv * R * fd_corr
+
+        ana.store("Flow", "mol", q_mol, "mol/s")
+        ana.store("Flow", "pV", q_pV_corr, "mbarl/s")
+
+    def temperature_room(self, ana):
+        C_2_K = self.Cons.get_conv(from_unit="C", to_unit="K")
+        k_110 = self.TDev.get_value("agilentCorrCh110", "K")
+        t_110 = self.Temp.get_value("agilentCh110_after_lw", "C")
+
+        ana.store("Temperature", "room", t_110 + k_110 + C_2_K , "K")
+
+    def temperature_xhv(self, ana):
+        C_2_K = self.Cons.get_conv(from_unit="C", to_unit="K")
+        k_108 = self.TDev.get_value("agilentCorrCh108", "K")
+        t_108b = self.Temp.get_value("agilentCh108_before_lw", "C")
+        t_108a = self.Temp.get_value("agilentCh108_after_lw", "C")
+        k_109 = self.TDev.get_value("agilentCorrCh109", "K")
+        t_109b = self.Temp.get_value("agilentCh109_before_lw", "C")
+        t_109a = self.Temp.get_value("agilentCh109_after_lw", "C")
+
+        t = (t_108a + k_108 + t_108b + k_108 +
+             t_109a + k_109 + t_109b + k_109) / 4 + C_2_K
+
+        ana.store("Temperature", "xhv", t, "K")
+
+    def temperature_uhv(self, ana):
+        C_2_K = self.Cons.get_conv(from_unit="C", to_unit="K")
+        k_104 = self.TDev.get_value("agilentCorrCh104", "K")
+        t_104b = self.Temp.get_value("agilentCh104_before_lw", "C")
+        t_104a = self.Temp.get_value("agilentCh104_after_lw", "C")
+
+        k_105 = self.TDev.get_value("agilentCorrCh105", "K")
+        t_105b = self.Temp.get_value("agilentCh105_before_lw", "C")
+        t_105a = self.Temp.get_value("agilentCh105_after_lw", "C")
+
+        k_106 = self.TDev.get_value("agilentCorrCh106", "K")
+        t_106b = self.Temp.get_value("agilentCh106_before_lw", "C")
+        t_106a = self.Temp.get_value("agilentCh106_after_lw", "C")
+
+        k_107 = self.TDev.get_value("agilentCorrCh107", "K")
+        t_107b = self.Temp.get_value("agilentCh107_before_lw", "C")
+        t_107a = self.Temp.get_value("agilentCh107_after_lw", "C")
+
+        t = (t_104a + k_104 + t_104b + k_104 +
+             t_105a + k_105 + t_105b + k_105 +
+             t_106a + k_106 + t_106b + k_106 +
+             t_107a + k_107 + t_107b + k_107) / 8 + C_2_K
+
+        ana.store("Temperature", "uhv", t, "K")
+
+    def temperature_pbox(self, ana):
+        C_2_K = self.Cons.get_conv(from_unit="C", to_unit="K")
+        k_103 = self.TDev.get_value("agilentCorrCh103", "K")
+        t_103 = self.Temp.get_value("agilentCh103_after_lw", "C")
+
+        ana.store("Temperature", "pbox", t_103 + k_103 + C_2_K , "K")
+
+    def temperature_fm(self, ana):
+        C_2_K = self.Cons.get_conv(from_unit="C", to_unit="K")
+        k_101 = self.TDev.get_value("agilentCorrCh101", "K")
+        t_101 = self.Temp.get_value("agilentCh101_after_lw", "C")
+        k_102 = self.TDev.get_value("agilentCorrCh102", "K")
+        t_102 = self.Temp.get_value("agilentCh102_after_lw", "C")
+
+        ana.store("Temperature", "fm", (t_101 + k_101 + t_102 + k_102) / 2 + C_2_K , "K")
 
     def drift(self, ana):
         slope_drift_before = self.Drift.get_value("drift_before_slope_x", "mbar/ms")
@@ -187,7 +300,7 @@ class Cal(Ce3):
 
         diff_nom = C_extrap/C_before - 1
 
-        ana.store("Conductance", "cfm3", C_extrap, "l/s")
+        ana.store("Conductance", "fm", C_extrap, "l/s")
         ana.store("Conductance", "diff_nom", diff_nom, "1")
 
     def pressure_dp(self, ana):

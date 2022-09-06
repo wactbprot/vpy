@@ -35,6 +35,14 @@ def main():
         cal.conductance(ana)
         cal.conductance_name(ana)
         cal.conductance_extrap(ana)
+        cal.temperature_pbox(ana)
+        cal.temperature_fm(ana)
+        cal.temperature_uhv(ana)
+        cal.temperature_xhv(ana)
+        cal.temperature_room(ana)
+        cal.flow(ana)
+        cal.mean_free_path(ana)
+
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))
