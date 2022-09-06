@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import copy
 import sympy as sym
@@ -7,9 +8,49 @@ from ...values import Values as Val
 class Cal(Ce3):
     np.warnings.filterwarnings('ignore')
     R_sz_min = 0.9 ## Grenze Korrelation SZ
+    name_C1 = "C1" ## gr. LW
+    name_C2 = "C2" ## kl. LW
 
     def __init__(self, doc):
         super().__init__(doc)
+
+    def extrap_fit(self, x, a, b, c, d):
+        return a + b * x + c * np.log(x) + d * np.exp(-x)
+
+    def extrap_fit_C1(self, x):
+        ##     fn.2162 <- function(sl, prefix, sufix, x){
+        ## fname <- deparse(match.call()[[1]])
+        ##         a  <- getConstVal(sl, paste0(prefix, "A", sufix))
+        ##         b  <- getConstVal(sl, paste0(prefix, "B", sufix))
+        ##         c  <- getConstVal(sl, paste0(prefix, "C", sufix))
+        ##         d  <- getConstVal(sl, paste0(prefix, "D", sufix))
+        ## if(length(a) > 0 &
+        ##    length(b) > 0 &
+        ##    length(c) > 0 &
+        ##    length(d) > 0){
+        ##
+        ##     return(raw.2162(x, a, b, c, d))
+        ##    }else{
+        ##        stop(paste("no params found in function:",fname))
+        ##    }
+        ## }
+        ## raw.2162(x, a, b, c, d))
+        ##
+        ## return(a + b * x + c * log(x) + d *exp(-x))
+        A = self.get_value("grLw_N2_A", "l/s")
+        B = self.get_value("grLw_N2_B", "1")
+        C = self.get_value("grLw_N2_C", "1")
+        D = self.get_value("grLw_N2_D", "1")
+
+        return self.extrap_fit(x, A, B, C, D)
+
+    def extrap_fit_C2(self, x):
+        A = self.get_value("klLw_N2_A", "l/s")
+        B = self.get_value("klLw_N2_B", "1")
+        C = self.get_value("klLw_N2_C", "1")
+        D = self.get_value("klLw_N2_D", "1")
+
+        return self.extrap_fit(x, A, B, C, D)
 
     def V_fit(self, h):
 
@@ -68,10 +109,32 @@ class Cal(Ce3):
         return dV, sd
 
     def conductance_name(self, ana):
-        use_L1 = self.get_dict("Type", "useLw1") # gr. LW
-        use_L2 = self.get_dict("Type", "useLw2") # kl. LW
-        print(np.float(use_L1.get("From")))
-        print(np.float(use_L2.get("From")))
+        C_name = np.full(self.no_of_meas_points, "Cx")
+
+        use_C1 = self.get_dict("Type", "useLw1") # gr. LW
+        use_C2 = self.get_dict("Type", "useLw2") # kl. LW
+
+        unit_C1 = use_C1.get("RangeUnit")
+        unit_C2 = use_C2.get("RangeUnit")
+        if unit_C1 == unit_C2:
+            unit_C = unit_C1
+        else:
+            sys.exit("range units don't match")
+
+        from_C1 = np.float(use_C1.get("From"))
+        from_C2 = np.float(use_C2.get("From"))
+
+        to_C1 = np.float(use_C1.get("To"))
+        to_C2 = np.float(use_C2.get("To"))
+
+        C = ana.pick("Conductance", "cnom", unit_C)
+        for i, c in enumerate(C):
+            if from_C1 < c < to_C1:
+                C_name[i] = self.name_C1
+            if from_C2 < c < to_C2:
+                C_name[i] = self.name_C2
+
+        ana.store("Conductance", "name", C_name, "")
 
 
     def conductance(self, ana):
@@ -105,11 +168,27 @@ class Cal(Ce3):
 
     def conductance_extrap(self, ana):
 
+        C_extrap = np.full(self.no_of_meas_points, np.nan)
+        C_name = np.array(ana.pick_dict("Conductance", "name").get("Value"))
+
+        i_C1 = np.where(C_name == self.name_C1)
+        i_C2 = np.where(C_name == self.name_C2)
+
         if self.opk == "opK1" or opk == "opK2" or opk == "opK3":
             p_before = ana.pick("Pressure", "lw", "mbar")
             p_after  = ana.pick("Pressure", "fill", "mbar")
-            c_before = ana.pick("Conductance", "cnom", "l/s")
+            C_before = ana.pick("Conductance", "cnom", "l/s")
 
+        if np.shape(i_C1)[1] > 0:
+            C_extrap[i_C1] = C_before[i_C1] * self.extrap_fit_C1(p_after[i_C1]) / self.extrap_fit_C1(p_before[i_C1])
+
+        if np.shape(i_C2)[1] > 0:
+            C_extrap[i_C2] = C_before[i_C2] * self.extrap_fit_C2(p_after[i_C2]) / self.extrap_fit_C2(p_before[i_C2])
+
+        diff_nom = C_extrap/C_before - 1
+
+        ana.store("Conductance", "cfm3", C_extrap, "l/s")
+        ana.store("Conductance", "diff_nom", diff_nom, "1")
 
     def pressure_dp(self, ana):
         dp_before = self.Pres.get_value("dp_before", self.unit)
@@ -216,6 +295,6 @@ class Cal(Ce3):
         ana.store("Pressure", "fill_offset",  p_fill_offset, self.unit)
         ana.store("Error", "fill",  e_fill, "1")
 
-        ana.store("Pressure", "lw",  p_fill, self.unit)
-        ana.store("Pressure", "lw_offset",  p_fill_offset, self.unit)
-        ana.store("Error", "lw",  e_fill, "1")
+        ana.store("Pressure", "lw",  p_lw, self.unit)
+        ana.store("Pressure", "lw_offset",  p_lw_offset, self.unit)
+        ana.store("Error", "lw",  e_lw, "1")
