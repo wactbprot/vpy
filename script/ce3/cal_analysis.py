@@ -9,7 +9,9 @@ import numpy as np
 from vpy.pkg_io import Io
 from vpy.analysis import Analysis
 from vpy.standard.ce3.cal import Cal
-from vpy.standard.ce3.std import Ce3
+
+from vpy.standard.ce3.uncert import Uncert
+
 from vpy.helper import init_customer_device
 
 def main():
@@ -28,6 +30,7 @@ def main():
 
         cus_dev = init_customer_device(doc)
         cal = Cal(doc)
+        uncert = Uncert(doc)
         ana = Analysis(doc)
 
         cal.pressure_fill(ana)
@@ -76,8 +79,14 @@ def main():
                 i_emis = i_anode + i_faraday
 
             S = p_ind/(i_emis * p_cal)
+
             ana.store('Sensitivity', 'ind', S, '1')
 
+        ## Uncertanty
+        uncert.pressure_fill(ana)
+        uncert.pressure_therm_transp(ana)
+        uncert.delta_V(ana)
+        uncert.delta_V_delta_t(ana)
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))

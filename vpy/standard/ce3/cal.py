@@ -8,8 +8,6 @@ from ...values import Values as Val
 class Cal(Ce3):
     np.warnings.filterwarnings('ignore')
     R_sz_min = 0.9 ## Grenze Korrelation SZ
-    name_C1 = "C1" ## gr. LW
-    name_C2 = "C2" ## kl. LW
     unit = "mbar"
 
     def __init__(self, doc):

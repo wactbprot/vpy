@@ -13,6 +13,8 @@ class Ce3(Standard):
     """Calculation methods of FM3 and CE3."""
     name = "CE3"
     unit = "mbar"
+    name_C1 = "C1" ## gr. LW
+    name_C2 = "C2" ## kl. LW
 
     def __init__(self, doc):
         super().__init__(doc, self.name)
