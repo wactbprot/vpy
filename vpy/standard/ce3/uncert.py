@@ -145,3 +145,85 @@ class Uncert(Ce3):
 
         else:
             sys.exit("not implemented")
+
+    def pressure_res(self, ana):
+        p_fill = ana.pick("Pressure", "fill", self.pressure_unit)
+        u = np.full(self.no_of_meas_points, self.get_value("fm3Pres_u1",self.pressure_unit )/p_fill)
+
+        ana.store("Uncertainty", "res", u, "1")
+
+    def flow_pV(self, ana):
+        u1 = ana.pick("Uncertainty", "fill", "1")
+        u2 = ana.pick("Uncertainty", "therm_transp", "1")
+        u3 = ana.pick("Uncertainty", "delta_V", "1")
+        u4 = ana.pick("Uncertainty", "delta_t", "1")
+        u5 = ana.pick("Uncertainty", "delta_V_delta_t", "1")
+        u6 = ana.pick("Uncertainty", "res", "1")
+
+        u = np.sqrt(np.power(u1, 2) +
+                    np.power(u2, 2) +
+                    np.power(u3, 2) +
+                    np.power(u4, 2) +
+                    np.power(u5, 2) +
+                    np.power(u6, 2))
+        u = np.full(self.no_of_meas_points, u)
+
+        ana.store("Uncertainty", "pV", u, "1")
+
+    def conductance(self, ana):
+        p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
+
+        if self.opk == "opK1":
+            ua = self.get_value("ce3C1_u1_a", "1")
+            ub = self.get_value("ce3C1_u1_b", "1/mbar")
+            u = np.sqrt(np.power(ua, 2) +
+                        np.power(ub * p_cal, 2))
+        else:
+            sys.exit("not implemented")
+
+        u = np.full(self.no_of_meas_points, u)
+
+        ana.store("Uncertainty", "Cx", u, "1")
+
+    def flow_split(self, ana):
+
+        if self.opk == "opK1":
+            u = self.get_value("ce3qsplit_u1_a", "1")
+        else:
+            sys.exit("not implemented")
+
+        u = np.full(self.no_of_meas_points, u)
+
+        ana.store("Uncertainty", "split", u, "1")
+
+    def temperature_fm(self, ana):
+        t_fm = ana.pick("Temperature", "fm", self.temperature_unit)
+        u_dev = self.TDev.get_total_uncert(t_fm, self.temperature_unit, self.temperature_unit)/t_fm
+        u1 = self.get_value("fm3Tfm_u1", "K")/t_fm
+        u2 = self.get_value("fm3Tfm_u2", "K")/t_fm
+        u3 = self.get_value("fm3Tfm_u3", "K")/t_fm
+
+        u = np.sqrt(np.power(u_dev, 2) +
+                    np.power(u1, 2) +
+                    np.power(u2, 2) +
+                    np.power(u3, 2))
+
+        ana.store("Uncertainty", "fm", u, "1")
+
+
+    def temperature_uhv(self, ana):
+        t_uhv = ana.pick("Temperature", "uhv", self.temperature_unit)
+        u_dev = self.TDev.get_total_uncert(t_uhv, self.temperature_unit, self.temperature_unit)/t_uhv
+        u1 = self.get_value("ce3Tch_u1", "K")/t_uhv
+        u2 = self.get_value("ce3Tch_u2", "K")/t_uhv
+
+        u = np.sqrt(np.power(u_dev, 2) +
+                    np.power(u1, 2) +
+                    np.power(u2, 2))
+
+        ana.store("Uncertainty", "uhv", u, "1")
+
+    def pressure_corr(self, ana):
+        u = np.full(self.no_of_meas_points, self.get_value("ce3F_u1", "1"))
+        print(u)
+        ana.store("Uncertainty", "corr", u, "1")

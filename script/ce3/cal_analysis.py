@@ -82,12 +82,22 @@ def main():
 
             ana.store('Sensitivity', 'ind', S, '1')
 
-        ## Uncertanty
+        ## uncertanty
+        ## fm3
         uncert.pressure_fill(ana)
         uncert.pressure_therm_transp(ana)
         uncert.delta_V(ana)
         uncert.delta_V_delta_t(ana)
         uncert.delta_t(ana)
+        uncert.pressure_res(ana)
+        ## fm3 total
+        uncert.flow_pV(ana)
+        ## ce3
+        uncert.conductance(ana)
+        uncert.flow_split(ana)
+        uncert.temperature_fm(ana)
+        uncert.temperature_uhv(ana)
+        uncert.pressure_corr(ana)
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))
