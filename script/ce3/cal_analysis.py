@@ -87,6 +87,7 @@ def main():
         uncert.pressure_therm_transp(ana)
         uncert.delta_V(ana)
         uncert.delta_V_delta_t(ana)
+        uncert.delta_t(ana)
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))

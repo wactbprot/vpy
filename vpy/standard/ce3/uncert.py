@@ -100,19 +100,48 @@ class Uncert(Ce3):
                 ib = self.range_index(Ub, p_fill, self.pressure_unit)
 
                 if len(ia) > 0 and len(ib) > 0 and len(ia) == len(ib):
+                    i = np.intersect1d(ia, i_C2)
+
                     ua = np.float(Ua.get("Value"))
                     ub = np.float(Ub.get("Value"))
-                    u[ia] = ua * np.log(1/p_fill[ia]) * ub
+                    u[i] = ua + ub * np.log(1/p_fill[i])
                 else:
                     sys.exit("length problem at uncert function delta_V_delta_t")
 
-            Uc = self.get_dict("Type", "fm3DeltaVDeltatLw2_u1_c")
-            ic = self.range_index(Uc, p_fill, self.pressure_unit)
-            if len(ic) > 0:
-                uc = np.float(Uc.get("Value"))
-                u[ic] = uc
-            else:
-                sys.exit("length problem at uncert function delta_V_delta_t")
-            print(u)
+                Uc = self.get_dict("Type", "fm3DeltaVDeltatLw2_u1_c")
+                ic = self.range_index(Uc, p_fill, self.pressure_unit)
+                i = np.intersect1d(ic, i_C2)
+                if len(i) > 0:
+                    uc = np.float(Uc.get("Value"))
+                    u[i] = uc
+                else:
+                    sys.exit("length problem at uncert function delta_V_delta_t")
+
+            ana.store("Uncertainty", "delta_V_delta_t", u, "1")
+        else:
+            sys.exit("not implemented")
+
+    def delta_t(self, ana):
+        p_fill = ana.pick("Pressure", "fill", self.pressure_unit)
+        C_name = np.array(ana.pick_dict("Conductance", "name").get("Value"))
+        u = np.full(self.no_of_meas_points, np.nan)
+        i_C1 = np.where(C_name == self.name_C1)
+        i_C2 = np.where(C_name == self.name_C2)
+
+        if self.opk == "opK1":
+            u1 = self.get_value("fm3Deltat_u1", "1")
+            if len(i_C1) > 0:
+
+                u2 = self.get_value("fm3Deltat_u2", "1")
+
+                u3a = self.get_value("fm3DeltatLw1_u3_a", "1")
+                u3b = self.get_value("fm3DeltatLw1_u3_b", "1")
+                u[i_C1] = np.sqrt(np.power(u3a + u3b * np.log(p_fill[i_C1]), 2) + np.power(u1, 2) + np.power(u2, 2))
+            if len(i_C2) > 0:
+                u3 = self.get_value("fm3DeltatLw2_u3", "1")
+                u[i_C2] = np.sqrt(np.power(u1, 2) + np.power(u2, 2) + np.power(u3, 2))
+
+            ana.store("Uncertainty", "delta_t", u, "1")
+
         else:
             sys.exit("not implemented")
