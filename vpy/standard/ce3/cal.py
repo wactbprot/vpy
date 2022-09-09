@@ -13,7 +13,7 @@ class Cal(Ce3):
         super().__init__(doc)
 
     def pressure_cal(self, ana):
-        t_ref = self.Cons.get_value("referenceTemperature", self.tepmerature_unit)
+        t_ref = self.Cons.get_value("referenceTemperature", self.temperature_unit)
         R = self.Cons.get_value("R", "Pa m^3/mol/K")
         M = self.Cons.get_value("molWeight_{}".format(self.gas), "kg/mol")
         K4 = self.get_value("K4{}".format(self.port), self.rel_unit)
@@ -27,7 +27,7 @@ class Cal(Ce3):
             K2 = (1. + aK2 * (2. * r1 / mean_free_path))
 
             K3 = self.get_value("K3Uhv", self.rel_unit)
-            t = ana.pick("Temperature", "uhv", self.tepmerature_unit)
+            t = ana.pick("Temperature", "uhv", self.temperature_unit)
 
             A = np.power(r1, 2) * np.pi ## in m^2
             ## c in m/s
@@ -50,7 +50,7 @@ class Cal(Ce3):
         visc = self.Cons.get_value("visc_{}".format(self.gas), "Pa s")
 
         if self.opk == "opK1":
-            T = ana.pick("Temperature", "uhv", self.tepmerature_unit)
+            T = ana.pick("Temperature", "uhv", self.temperature_unit)
             C_nom = self.get_value("nomC1", "m^3/s")
         else:
             sys.exit("not implemented")
@@ -125,9 +125,9 @@ class Cal(Ce3):
     def flow(self, ana):
         R = self.Cons.get_value("R","Pa m^3/mol/K") * self.Cons.get_conv("Pam^3/mol/K", "mbarl/mol/K")
         p_fill = ana.pick("Pressure", "fill", self.pressure_unit)
-        t_uhv = ana.pick("Temperature", "uhv", self.tepmerature_unit)
-        t_xhv = ana.pick("Temperature", "xhv", self.tepmerature_unit)
-        t_fm = ana.pick("Temperature", "fm", self.tepmerature_unit)
+        t_uhv = ana.pick("Temperature", "uhv", self.temperature_unit)
+        t_xhv = ana.pick("Temperature", "xhv", self.temperature_unit)
+        t_fm = ana.pick("Temperature", "fm", self.temperature_unit)
         C_fm = ana.pick("Conductance", "fm", "l/s")
 
         if self.opk == "opK1":
@@ -151,41 +151,41 @@ class Cal(Ce3):
         ana.store("Flow", "pV", q_pV_corr, "mbarl/s")
 
     def temperature_room(self, ana):
-        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
-        k_110 = self.TDev.get_value("agilentCorrCh110", self.tepmerature_unit)
+        C_2_K = self.Cons.get_conv("C", self.temperature_unit)
+        k_110 = self.TDev.get_value("agilentCorrCh110", self.temperature_unit)
         t_110 = self.Temp.get_value("agilentCh110_after_lw", "C")
 
-        ana.store("Temperature", "room", t_110 + k_110 + C_2_K , self.tepmerature_unit)
+        ana.store("Temperature", "room", t_110 + k_110 + C_2_K , self.temperature_unit)
 
     def temperature_xhv(self, ana):
-        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
-        k_108 = self.TDev.get_value("agilentCorrCh108", self.tepmerature_unit)
+        C_2_K = self.Cons.get_conv("C", self.temperature_unit)
+        k_108 = self.TDev.get_value("agilentCorrCh108", self.temperature_unit)
         t_108b = self.Temp.get_value("agilentCh108_before_lw", "C")
         t_108a = self.Temp.get_value("agilentCh108_after_lw", "C")
-        k_109 = self.TDev.get_value("agilentCorrCh109", self.tepmerature_unit)
+        k_109 = self.TDev.get_value("agilentCorrCh109", self.temperature_unit)
         t_109b = self.Temp.get_value("agilentCh109_before_lw", "C")
         t_109a = self.Temp.get_value("agilentCh109_after_lw", "C")
 
         t = (t_108a + k_108 + t_108b + k_108 +
              t_109a + k_109 + t_109b + k_109) / 4 + C_2_K
 
-        ana.store("Temperature", "xhv", t, self.tepmerature_unit)
+        ana.store("Temperature", "xhv", t, self.temperature_unit)
 
     def temperature_uhv(self, ana):
-        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
-        k_104 = self.TDev.get_value("agilentCorrCh104", self.tepmerature_unit)
+        C_2_K = self.Cons.get_conv("C", self.temperature_unit)
+        k_104 = self.TDev.get_value("agilentCorrCh104", self.temperature_unit)
         t_104b = self.Temp.get_value("agilentCh104_before_lw", "C")
         t_104a = self.Temp.get_value("agilentCh104_after_lw", "C")
 
-        k_105 = self.TDev.get_value("agilentCorrCh105", self.tepmerature_unit)
+        k_105 = self.TDev.get_value("agilentCorrCh105", self.temperature_unit)
         t_105b = self.Temp.get_value("agilentCh105_before_lw", "C")
         t_105a = self.Temp.get_value("agilentCh105_after_lw", "C")
 
-        k_106 = self.TDev.get_value("agilentCorrCh106", self.tepmerature_unit)
+        k_106 = self.TDev.get_value("agilentCorrCh106", self.temperature_unit)
         t_106b = self.Temp.get_value("agilentCh106_before_lw", "C")
         t_106a = self.Temp.get_value("agilentCh106_after_lw", "C")
 
-        k_107 = self.TDev.get_value("agilentCorrCh107", self.tepmerature_unit)
+        k_107 = self.TDev.get_value("agilentCorrCh107", self.temperature_unit)
         t_107b = self.Temp.get_value("agilentCh107_before_lw", "C")
         t_107a = self.Temp.get_value("agilentCh107_after_lw", "C")
 
@@ -194,23 +194,23 @@ class Cal(Ce3):
              t_106a + k_106 + t_106b + k_106 +
              t_107a + k_107 + t_107b + k_107) / 8 + C_2_K
 
-        ana.store("Temperature", "uhv", t, self.tepmerature_unit)
+        ana.store("Temperature", "uhv", t, self.temperature_unit)
 
     def temperature_pbox(self, ana):
-        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
-        k_103 = self.TDev.get_value("agilentCorrCh103", self.tepmerature_unit)
+        C_2_K = self.Cons.get_conv("C", self.temperature_unit)
+        k_103 = self.TDev.get_value("agilentCorrCh103", self.temperature_unit)
         t_103 = self.Temp.get_value("agilentCh103_after_lw", "C")
 
-        ana.store("Temperature", "pbox", t_103 + k_103 + C_2_K , self.tepmerature_unit)
+        ana.store("Temperature", "pbox", t_103 + k_103 + C_2_K , self.temperature_unit)
 
     def temperature_fm(self, ana):
-        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
-        k_101 = self.TDev.get_value("agilentCorrCh101", self.tepmerature_unit)
+        C_2_K = self.Cons.get_conv("C", self.temperature_unit)
+        k_101 = self.TDev.get_value("agilentCorrCh101", self.temperature_unit)
         t_101 = self.Temp.get_value("agilentCh101_after_lw", "C")
-        k_102 = self.TDev.get_value("agilentCorrCh102", self.tepmerature_unit)
+        k_102 = self.TDev.get_value("agilentCorrCh102", self.temperature_unit)
         t_102 = self.Temp.get_value("agilentCh102_after_lw", "C")
 
-        ana.store("Temperature", "fm", (t_101 + k_101 + t_102 + k_102) / 2 + C_2_K , self.tepmerature_unit)
+        ana.store("Temperature", "fm", (t_101 + k_101 + t_102 + k_102) / 2 + C_2_K , self.temperature_unit)
 
     def drift(self, ana):
         slope_drift_before = self.Drift.get_value("drift_before_slope_x", "mbar/ms")

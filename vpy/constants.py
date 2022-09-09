@@ -61,7 +61,7 @@ class Constants(Document):
         else:
             super().__init__(self.fall_back_const)
 
-        def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
+    def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
 
         .. math::

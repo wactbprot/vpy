@@ -54,7 +54,7 @@ def main():
 
 
         if cal.ToDo.type == "error":
-            unit = cal.unit
+            unit = cal.pressure_unit
         if cal.ToDo.type == "sens":
             unit = "A"
 
@@ -65,7 +65,7 @@ def main():
         ana.store("Pressure", "ind", ind, unit)
         ana.store("Pressure", "ind_corr", ind - offset, unit)
 
-        p_cal = ana.pick("Pressure", "cal" , cal.unit)
+        p_cal = ana.pick("Pressure", "cal" , unit)
         p_ind = ana.pick("Pressure", "ind_corr", unit)
 
         if cal.ToDo.type == "error":
