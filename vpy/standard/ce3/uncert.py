@@ -3,9 +3,6 @@ import numpy as np
 from .std import Ce3
 
 class Uncert(Ce3):
-    pressure_unit = "mbar"
-    temperature_unit = "K"
-    rel_unit = "1"
 
     def __init__(self, doc):
         super().__init__(doc)

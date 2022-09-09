@@ -8,17 +8,16 @@ from ...values import Values as Val
 class Cal(Ce3):
     np.warnings.filterwarnings('ignore')
     R_sz_min = 0.9 ## Grenze Korrelation SZ
-    unit = "mbar"
 
     def __init__(self, doc):
         super().__init__(doc)
 
     def pressure_cal(self, ana):
-        t_ref = self.Cons.get_value("referenceTemperature", "K")
+        t_ref = self.Cons.get_value("referenceTemperature", self.tepmerature_unit)
         R = self.Cons.get_value("R", "Pa m^3/mol/K")
         M = self.Cons.get_value("molWeight_{}".format(self.gas), "kg/mol")
-        K4 = self.get_value("K4{}".format(self.port), "1")
-        aK2 = self.get_value("aK2", "1")
+        K4 = self.get_value("K4{}".format(self.port), self.rel_unit)
+        aK2 = self.get_value("aK2", self.rel_unit)
 
         mean_free_path = ana.pick("Length", "meanFreePath", "m")
         q_pV =  ana.pick("Flow", "pV", "mbarl/s")
@@ -27,8 +26,8 @@ class Cal(Ce3):
             r1 = self.get_value("r1", "m")
             K2 = (1. + aK2 * (2. * r1 / mean_free_path))
 
-            K3 = self.get_value("K3Uhv", "1")
-            t = ana.pick("Temperature", "uhv", "K")
+            K3 = self.get_value("K3Uhv", self.rel_unit)
+            t = ana.pick("Temperature", "uhv", self.tepmerature_unit)
 
             A = np.power(r1, 2) * np.pi ## in m^2
             ## c in m/s
@@ -36,9 +35,9 @@ class Cal(Ce3):
             ## leitwerte in m^3/s
             C = c/4 * A * K2 * K3
             ##  [qpV] = mbar l/s [C1] = m^3/s
-            p_cal =  q_pV/C * K4 * self.Cons.get_conv("Pa", self.unit) * self.Cons.get_conv("mbarl/s", "Pam^3/s")
+            p_cal =  q_pV/C * K4 * self.Cons.get_conv("Pa", self.pressure_unit) * self.Cons.get_conv("mbarl/s", "Pam^3/s")
 
-            ana.store("Pressure", "cal", p_cal, self.unit)
+            ana.store("Pressure", "cal", p_cal, self.pressure_unit)
 
         else:
             sys.exit("not implemented")
@@ -51,7 +50,7 @@ class Cal(Ce3):
         visc = self.Cons.get_value("visc_{}".format(self.gas), "Pa s")
 
         if self.opk == "opK1":
-            T = ana.pick("Temperature", "uhv", "K")
+            T = ana.pick("Temperature", "uhv", self.tepmerature_unit)
             C_nom = self.get_value("nomC1", "m^3/s")
         else:
             sys.exit("not implemented")
@@ -88,17 +87,17 @@ class Cal(Ce3):
         ##
         ## return(a + b * x + c * log(x) + d *exp(-x))
         A = self.get_value("grLw_N2_A", "l/s")
-        B = self.get_value("grLw_N2_B", "1")
-        C = self.get_value("grLw_N2_C", "1")
-        D = self.get_value("grLw_N2_D", "1")
+        B = self.get_value("grLw_N2_B", self.rel_unit)
+        C = self.get_value("grLw_N2_C", self.rel_unit)
+        D = self.get_value("grLw_N2_D", self.rel_unit)
 
         return self.extrap_fit(x, A, B, C, D)
 
     def extrap_fit_C2(self, x):
         A = self.get_value("klLw_N2_A", "l/s")
-        B = self.get_value("klLw_N2_B", "1")
-        C = self.get_value("klLw_N2_C", "1")
-        D = self.get_value("klLw_N2_D", "1")
+        B = self.get_value("klLw_N2_B", self.rel_unit)
+        C = self.get_value("klLw_N2_C", self.rel_unit)
+        D = self.get_value("klLw_N2_D", self.rel_unit)
 
         return self.extrap_fit(x, A, B, C, D)
 
@@ -117,7 +116,7 @@ class Cal(Ce3):
         ## 	        stop(paste("no params found in function:", fname))
         ## 	    }
         ## 	}
-        A = self.get_value("fbv_A", "1")
+        A = self.get_value("fbv_A", self.rel_unit)
         B = self.get_value("fbv_B", "mm")
         C = self.get_value("fbv_C", "mm^2")
 
@@ -125,16 +124,16 @@ class Cal(Ce3):
 
     def flow(self, ana):
         R = self.Cons.get_value("R","Pa m^3/mol/K") * self.Cons.get_conv("Pam^3/mol/K", "mbarl/mol/K")
-        p_fill = ana.pick("Pressure", "fill", self.unit)
-        t_uhv = ana.pick("Temperature", "uhv", "K")
-        t_xhv = ana.pick("Temperature", "xhv", "K")
-        t_fm = ana.pick("Temperature", "fm", "K")
+        p_fill = ana.pick("Pressure", "fill", self.pressure_unit)
+        t_uhv = ana.pick("Temperature", "uhv", self.tepmerature_unit)
+        t_xhv = ana.pick("Temperature", "xhv", self.tepmerature_unit)
+        t_fm = ana.pick("Temperature", "fm", self.tepmerature_unit)
         C_fm = ana.pick("Conductance", "fm", "l/s")
 
         if self.opk == "opK1":
             ## KP1 in Betrieb, XHV-TMP-Ventil offen
             ## Messung an uhv- Seite
-            A = self.get_value("qSplitCorrUhvOpk1A", "1")
+            A = self.get_value("qSplitCorrUhvOpk1A", self.rel_unit)
             B = self.get_value("qSplitCorrUhvOpk1B", "1/(mbar l/s)")
             C = self.get_value("qSplitCorrUhvOpk1C", "1/(mbar l/s)^2")
 
@@ -152,41 +151,41 @@ class Cal(Ce3):
         ana.store("Flow", "pV", q_pV_corr, "mbarl/s")
 
     def temperature_room(self, ana):
-        C_2_K = self.Cons.get_conv("C", "K")
-        k_110 = self.TDev.get_value("agilentCorrCh110", "K")
+        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
+        k_110 = self.TDev.get_value("agilentCorrCh110", self.tepmerature_unit)
         t_110 = self.Temp.get_value("agilentCh110_after_lw", "C")
 
-        ana.store("Temperature", "room", t_110 + k_110 + C_2_K , "K")
+        ana.store("Temperature", "room", t_110 + k_110 + C_2_K , self.tepmerature_unit)
 
     def temperature_xhv(self, ana):
-        C_2_K = self.Cons.get_conv("C", "K")
-        k_108 = self.TDev.get_value("agilentCorrCh108", "K")
+        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
+        k_108 = self.TDev.get_value("agilentCorrCh108", self.tepmerature_unit)
         t_108b = self.Temp.get_value("agilentCh108_before_lw", "C")
         t_108a = self.Temp.get_value("agilentCh108_after_lw", "C")
-        k_109 = self.TDev.get_value("agilentCorrCh109", "K")
+        k_109 = self.TDev.get_value("agilentCorrCh109", self.tepmerature_unit)
         t_109b = self.Temp.get_value("agilentCh109_before_lw", "C")
         t_109a = self.Temp.get_value("agilentCh109_after_lw", "C")
 
         t = (t_108a + k_108 + t_108b + k_108 +
              t_109a + k_109 + t_109b + k_109) / 4 + C_2_K
 
-        ana.store("Temperature", "xhv", t, "K")
+        ana.store("Temperature", "xhv", t, self.tepmerature_unit)
 
     def temperature_uhv(self, ana):
-        C_2_K = self.Cons.get_conv("C", "K")
-        k_104 = self.TDev.get_value("agilentCorrCh104", "K")
+        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
+        k_104 = self.TDev.get_value("agilentCorrCh104", self.tepmerature_unit)
         t_104b = self.Temp.get_value("agilentCh104_before_lw", "C")
         t_104a = self.Temp.get_value("agilentCh104_after_lw", "C")
 
-        k_105 = self.TDev.get_value("agilentCorrCh105", "K")
+        k_105 = self.TDev.get_value("agilentCorrCh105", self.tepmerature_unit)
         t_105b = self.Temp.get_value("agilentCh105_before_lw", "C")
         t_105a = self.Temp.get_value("agilentCh105_after_lw", "C")
 
-        k_106 = self.TDev.get_value("agilentCorrCh106", "K")
+        k_106 = self.TDev.get_value("agilentCorrCh106", self.tepmerature_unit)
         t_106b = self.Temp.get_value("agilentCh106_before_lw", "C")
         t_106a = self.Temp.get_value("agilentCh106_after_lw", "C")
 
-        k_107 = self.TDev.get_value("agilentCorrCh107", "K")
+        k_107 = self.TDev.get_value("agilentCorrCh107", self.tepmerature_unit)
         t_107b = self.Temp.get_value("agilentCh107_before_lw", "C")
         t_107a = self.Temp.get_value("agilentCh107_after_lw", "C")
 
@@ -195,23 +194,23 @@ class Cal(Ce3):
              t_106a + k_106 + t_106b + k_106 +
              t_107a + k_107 + t_107b + k_107) / 8 + C_2_K
 
-        ana.store("Temperature", "uhv", t, "K")
+        ana.store("Temperature", "uhv", t, self.tepmerature_unit)
 
     def temperature_pbox(self, ana):
-        C_2_K = self.Cons.get_conv("C", "K")
-        k_103 = self.TDev.get_value("agilentCorrCh103", "K")
+        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
+        k_103 = self.TDev.get_value("agilentCorrCh103", self.tepmerature_unit)
         t_103 = self.Temp.get_value("agilentCh103_after_lw", "C")
 
-        ana.store("Temperature", "pbox", t_103 + k_103 + C_2_K , "K")
+        ana.store("Temperature", "pbox", t_103 + k_103 + C_2_K , self.tepmerature_unit)
 
     def temperature_fm(self, ana):
-        C_2_K = self.Cons.get_conv("C", "K")
-        k_101 = self.TDev.get_value("agilentCorrCh101", "K")
+        C_2_K = self.Cons.get_conv("C", self.tepmerature_unit)
+        k_101 = self.TDev.get_value("agilentCorrCh101", self.tepmerature_unit)
         t_101 = self.Temp.get_value("agilentCh101_after_lw", "C")
-        k_102 = self.TDev.get_value("agilentCorrCh102", "K")
+        k_102 = self.TDev.get_value("agilentCorrCh102", self.tepmerature_unit)
         t_102 = self.Temp.get_value("agilentCh102_after_lw", "C")
 
-        ana.store("Temperature", "fm", (t_101 + k_101 + t_102 + k_102) / 2 + C_2_K , "K")
+        ana.store("Temperature", "fm", (t_101 + k_101 + t_102 + k_102) / 2 + C_2_K , self.tepmerature_unit)
 
     def drift(self, ana):
         slope_drift_before = self.Drift.get_value("drift_before_slope_x", "mbar/ms")
@@ -224,7 +223,7 @@ class Cal(Ce3):
         ## delta t
         slope_x =  SZ.get_value("slope_x", "mbar/ms")
         t_mean = SZ.get_value("mean_t", "ms")
-        p_mean = SZ.get_value("mean_p", self.unit)
+        p_mean = SZ.get_value("mean_p", self.pressure_unit)
         t_mean = t_mean - np.min(t_mean)
 
         ci = p_mean - slope_x * t_mean
@@ -289,7 +288,7 @@ class Cal(Ce3):
         for i, ts in enumerate(t_start):
             SZ = Val(self.Aux.doc.get("C_{}".format(ts)))
 
-            # R = SZ.get_value("R", "1")
+            # R = SZ.get_value("R", self.rel_unit)
 
             delta_t, sd_delta_t = self.delta_t(SZ)
             delta_V, sd_delta_V = self.delta_V(SZ)
@@ -303,8 +302,8 @@ class Cal(Ce3):
 
         ana.store("Conductance", "cnom", C_corr, "l/s")
         ana.store("Conductance", "cnom_uncorr", C, "l/s")
-        ana.store("Conductance", "drift_corr",  drift_corr, "1")
-        ana.store("Conductance", "sd_cnom", sd_C, "1")
+        ana.store("Conductance", "drift_corr",  drift_corr, self.rel_unit)
+        ana.store("Conductance", "sd_cnom", sd_C, self.rel_unit)
 
     def conductance_extrap(self, ana):
 
@@ -315,8 +314,8 @@ class Cal(Ce3):
         i_C2 = np.where(C_name == self.name_C2)
 
         if self.opk == "opK1" or opk == "opK2" or opk == "opK3":
-            p_before = ana.pick("Pressure", "lw", self.unit)
-            p_after  = ana.pick("Pressure", "fill", self.unit)
+            p_before = ana.pick("Pressure", "lw", self.pressure_unit)
+            p_after  = ana.pick("Pressure", "fill", self.pressure_unit)
             C_before = ana.pick("Conductance", "cnom", "l/s")
 
         if np.shape(i_C1)[1] > 0:
@@ -328,13 +327,13 @@ class Cal(Ce3):
         diff_nom = C_extrap/C_before - 1
 
         ana.store("Conductance", "fm", C_extrap, "l/s")
-        ana.store("Conductance", "diff_nom", diff_nom, "1")
+        ana.store("Conductance", "diff_nom", diff_nom, self.rel_unit)
 
     def pressure_dp(self, ana):
-        dp_before = self.Pres.get_value("dp_before", self.unit)
-        dp_after = self.Pres.get_value("dp_after", self.unit)
+        dp_before = self.Pres.get_value("dp_before", self.pressure_unit)
+        dp_after = self.Pres.get_value("dp_after", self.pressure_unit)
 
-        ana.store("Pressure", "db", dp_after - dp_before, self.unit)
+        ana.store("Pressure", "db", dp_after - dp_before, self.pressure_unit)
 
 
     def pressure_fill(self, ana):
@@ -346,8 +345,8 @@ class Cal(Ce3):
         e_lw = np.full(self.no_of_meas_points, np.nan)
         p_lw_offset = np.full(self.no_of_meas_points, np.nan)
 
-        p_before = self.Pres.get_value("before_lw_fill", self.unit)
-        p_after = self.Pres.get_value("after_lw_fill", self.unit)
+        p_before = self.Pres.get_value("before_lw_fill", self.pressure_unit)
+        p_after = self.Pres.get_value("after_lw_fill", self.pressure_unit)
 
         i_cdga_x001 = np.where(np.less_equal(p_before, self.cdga_lim_x001))
         i_cdga_x01  = np.where(np.logical_and(np.less_equal(p_before, self.cdga_lim_x01),
@@ -364,7 +363,7 @@ class Cal(Ce3):
                                               np.greater(p_before, self.cdgb_lim_x01)))
 
         if np.shape(i_cdga_x1)[1] > 0:
-            p_offset = self.Aux.get_value("cdga_x1_offset", self.unit)[-1]
+            p_offset = self.Aux.get_value("cdga_x1_offset", self.pressure_unit)[-1]
 
             p_fill[i_cdga_x1] = np.take(p_after, i_cdga_x1) - p_offset
             p_fill_offset[i_cdga_x1] = p_offset
@@ -373,7 +372,7 @@ class Cal(Ce3):
             p_lw_offset[i_cdga_x1] = p_offset
 
         if np.shape(i_cdga_x01)[1] > 0:
-            p_offset = self.Aux.get_value("cdga_x0.1_offset", self.unit)[-1]
+            p_offset = self.Aux.get_value("cdga_x0.1_offset", self.pressure_unit)[-1]
 
             p_fill[i_cdga_x01] = np.take(p_after, i_cdga_x01) - p_offset
             p_fill_offset[i_cdga_x01] = p_offset
@@ -382,7 +381,7 @@ class Cal(Ce3):
             p_lw_offset[i_cdga_x01] = p_offset
 
         if np.shape(i_cdga_x001)[1] > 0:
-            p_offset = self.Aux.get_value("cdga_x0.01_offset", self.unit)[-1]
+            p_offset = self.Aux.get_value("cdga_x0.01_offset", self.pressure_unit)[-1]
 
             p_fill[i_cdga_x001] = np.take(p_after, i_cdga_x001) - p_offset
             p_fill_offset[i_cdga_x001] = p_offset
@@ -391,7 +390,7 @@ class Cal(Ce3):
             p_lw_offset[i_cdga_x001] = p_offset
 
         if np.shape(i_cdgb_x1)[1] > 0:
-            p_offset = self.Aux.get_value("cdgb_x1_offset", self.unit)[-1]
+            p_offset = self.Aux.get_value("cdgb_x1_offset", self.pressure_unit)[-1]
 
             p_fill[i_cdgb_x1] = np.take(p_after, i_cdgb_x1) - p_offset
             p_fill_offset[i_cdgb_x1] = p_offset
@@ -400,7 +399,7 @@ class Cal(Ce3):
             p_lw_offset[i_cdgb_x1] = p_offset
 
         if np.shape(i_cdgb_x01)[1] > 0:
-            p_offset = self.Aux.get_value("cdgb_x0.1_offset", self.unit)[-1]
+            p_offset = self.Aux.get_value("cdgb_x0.1_offset", self.pressure_unit)[-1]
 
             p_fill[i_cdgb_x01] = np.take(p_after, i_cdgb_x01) - p_offset
             p_fill_offset[i_cdgb_x01] = p_offset
@@ -409,7 +408,7 @@ class Cal(Ce3):
             p_lw_offset[i_cdgb_x01] = p_offset
 
         if np.shape(i_cdgb_x001)[1] > 0:
-            p_offset = self.Aux.get_value("cdgb_x0.01_offset", self.unit)[-1]
+            p_offset = self.Aux.get_value("cdgb_x0.01_offset", self.pressure_unit)[-1]
 
             p_fill[i_cdgb_x001] = np.take(p_after, i_cdgb_x001) - p_offset
             p_fill_offset[i_cdgb_x001] = p_offset
@@ -421,20 +420,20 @@ class Cal(Ce3):
         i_cdgb = np.union1d(np.union1d(i_cdgb_x001, i_cdgb_x01), i_cdgb_x1)
 
         if len(i_cdga) > 0:
-            e_fill[i_cdga] = self.CDGA.get_error_interpol(p_fill[i_cdga], self.unit)
-            e_lw[i_cdga] = self.CDGA.get_error_interpol(p_lw[i_cdga], self.unit)
+            e_fill[i_cdga] = self.CDGA.get_error_interpol(p_fill[i_cdga], self.pressure_unit)
+            e_lw[i_cdga] = self.CDGA.get_error_interpol(p_lw[i_cdga], self.pressure_unit)
 
         if len(i_cdgb) > 0:
-            e_fill[i_cdgb] = self.CDGB.get_error_interpol(p_fill[i_cdgb], self.unit)
-            e_lw[i_cdgb] = self.CDGB.get_error_interpol(p_lw[i_cdgb], self.unit)
+            e_fill[i_cdgb] = self.CDGB.get_error_interpol(p_fill[i_cdgb], self.pressure_unit)
+            e_lw[i_cdgb] = self.CDGB.get_error_interpol(p_lw[i_cdgb], self.pressure_unit)
 
         p_fill = p_fill/(e_fill + 1)
         p_lw = p_lw/(e_lw + 1)
 
-        ana.store("Pressure", "fill",  p_fill, self.unit)
-        ana.store("Pressure", "fill_offset",  p_fill_offset, self.unit)
-        ana.store("Error", "fill",  e_fill, "1")
+        ana.store("Pressure", "fill",  p_fill, self.pressure_unit)
+        ana.store("Pressure", "fill_offset",  p_fill_offset, self.pressure_unit)
+        ana.store("Error", "fill",  e_fill, self.rel_unit)
 
-        ana.store("Pressure", "lw",  p_lw, self.unit)
-        ana.store("Pressure", "lw_offset",  p_lw_offset, self.unit)
-        ana.store("Error", "lw",  e_lw, "1")
+        ana.store("Pressure", "lw",  p_lw, self.pressure_unit)
+        ana.store("Pressure", "lw_offset",  p_lw_offset, self.pressure_unit)
+        ana.store("Error", "lw",  e_lw, self.rel_unit)

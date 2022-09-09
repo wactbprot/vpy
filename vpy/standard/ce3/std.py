@@ -12,9 +12,13 @@ from ...values import Temperature, Pressure, Length, Current, Time, Drift, AuxVa
 class Ce3(Standard):
     """Calculation methods of FM3 and CE3."""
     name = "CE3"
-    unit = "mbar"
+
     name_C1 = "C1" ## gr. LW
     name_C2 = "C2" ## kl. LW
+
+    pressure_unit = "mbar"
+    temperature_unit = "K"
+    rel_unit = "1"
 
     def __init__(self, doc):
         super().__init__(doc, self.name)
@@ -27,8 +31,7 @@ class Ce3(Standard):
         self.Curr = Current(doc)
         self.Aux = AuxValues(doc)
 
-        amt = self.Time.get_value("start_sz_mt", "ms")
-        self.no_of_meas_points = len(amt)
+        self.no_of_meas_points = len(self.Time.get_value("start_sz_mt", "ms"))
         self.opk = self.Aux.doc.get("OperationKind")
         self.gas = self.Aux.doc.get("Gas")
         self.port = self.Aux.doc.get("CalPort")
