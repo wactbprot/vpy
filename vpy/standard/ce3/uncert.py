@@ -10,6 +10,14 @@ class Uncert(Ce3):
     def __init__(self, doc):
         super().__init__(doc)
 
+    def range_index(self, D, x, u):
+
+        conv = self.Cons.get_conv(D.get("RangeUnit"), u)
+        i_to = np.where(x < np.float(D.get("To")) * conv)
+        i_from = np.where(x > np.float(D.get("From")) * conv)
+
+        return np.intersect1d(i_to, i_from)
+
     def pressure_fill(self, ana):
         u = np.full(self.no_of_meas_points, np.nan)
         p_fill = ana.pick("Pressure", "fill", self.pressure_unit)
@@ -23,15 +31,7 @@ class Uncert(Ce3):
             else:
                 u[i] = u_cdga[i]
 
-        ana.store("Uncertainty", "fill", u/p_fill, "1")
-
-    def range_index(self, D, x, u):
-
-        conv = self.Cons.get_conv(D.get("RangeUnit"), u)
-        i_to = np.where(x < np.float(D.get("To")) * conv)
-        i_from = np.where(x > np.float(D.get("From")) * conv)
-
-        return np.intersect1d(i_to, i_from)
+        ana.store("Uncertainty", "pressure_fill", u/p_fill, self.rel_unit)
 
     def pressure_therm_transp(self, ana):
 
@@ -49,9 +49,9 @@ class Uncert(Ce3):
 
         F1 = np.abs(1. - np.sqrt(t_fm/t_pbox))
         F2 = np.float(U.get("Value"))
-        u[i] = np.abs(F1[i] * F2 * (1. + 2 * np.log(0.1/p_fill[i])))
+        u[i] = np.abs(F1[i] * F2 * (1. + 2. * np.log(0.1/p_fill[i])))
 
-        ana.store("Uncertainty", "therm_transp", u/p_fill, "1")
+        ana.store("Uncertainty", "pressure_therm_transp", u/p_fill, self.rel_unit)
         ## ## Gleichung s. [[QSE-FM3-98_10#Unsicherheiten_durch_Abweichen_des
         ## ## _tats.C3.A4chlichen_Drucks_vom_gemessen_Druck]]
 
@@ -60,12 +60,12 @@ class Uncert(Ce3):
         if self.opk == "opK1":
             delta_G = self.get_value("deltaG", "g")
             ua = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_a", "g"))/delta_G
-            ub = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_b", "1"))
+            ub = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_b", self.rel_unit))
             uc = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_c", "g"))/delta_G
-            ud = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_d", "1"))
-            ue = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_e", "1"))
-            uf = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_f", "1"))
-            ug = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_g", "1"))
+            ud = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_d", self.rel_unit))
+            ue = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_e", self.rel_unit))
+            uf = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_f", self.rel_unit))
+            ug = np.full(self.no_of_meas_points, self.get_value("fm3DeltaV_u2_g", self.rel_unit))
 
             u = np.sqrt(np.power(ua, 2) +
                         np.power(ub, 2) +
@@ -74,7 +74,8 @@ class Uncert(Ce3):
                         np.power(ue, 2) +
                         np.power(uf, 2) +
                         np.power(ug, 2))
-            ana.store("Uncertainty", "delta_V", u, "1")
+
+            ana.store("Uncertainty", "delta_V", u, self.rel_unit)
         else:
             sys.exit("not implemented")
 
@@ -88,7 +89,7 @@ class Uncert(Ce3):
         if self.opk == "opK1":
 
             if len(i_C1) > 0:
-                u1 = self.get_value("fm3DeltaVDeltatLw1_u1", "1")
+                u1 = self.get_value("fm3DeltaVDeltatLw1_u1", self.rel_unit)
                 u[i_C1] = u1
 
             if len(i_C2) > 0:
@@ -117,7 +118,8 @@ class Uncert(Ce3):
                 else:
                     sys.exit("length problem at uncert function delta_V_delta_t")
 
-            ana.store("Uncertainty", "delta_V_delta_t", u, "1")
+            ana.store("Uncertainty", "delta_V_delta_t", u, self.rel_unit)
+
         else:
             sys.exit("not implemented")
 
@@ -129,19 +131,19 @@ class Uncert(Ce3):
         i_C2 = np.where(C_name == self.name_C2)
 
         if self.opk == "opK1":
-            u1 = self.get_value("fm3Deltat_u1", "1")
+            u1 = self.get_value("fm3Deltat_u1", self.rel_unit)
             if len(i_C1) > 0:
 
-                u2 = self.get_value("fm3Deltat_u2", "1")
+                u2 = self.get_value("fm3Deltat_u2", self.rel_unit)
 
-                u3a = self.get_value("fm3DeltatLw1_u3_a", "1")
-                u3b = self.get_value("fm3DeltatLw1_u3_b", "1")
+                u3a = self.get_value("fm3DeltatLw1_u3_a", self.rel_unit)
+                u3b = self.get_value("fm3DeltatLw1_u3_b", self.rel_unit)
                 u[i_C1] = np.sqrt(np.power(u3a + u3b * np.log(p_fill[i_C1]), 2) + np.power(u1, 2) + np.power(u2, 2))
             if len(i_C2) > 0:
-                u3 = self.get_value("fm3DeltatLw2_u3", "1")
+                u3 = self.get_value("fm3DeltatLw2_u3", self.rel_unit)
                 u[i_C2] = np.sqrt(np.power(u1, 2) + np.power(u2, 2) + np.power(u3, 2))
 
-            ana.store("Uncertainty", "delta_t", u, "1")
+            ana.store("Uncertainty", "delta_t", u, self.rel_unit)
 
         else:
             sys.exit("not implemented")
@@ -150,15 +152,15 @@ class Uncert(Ce3):
         p_fill = ana.pick("Pressure", "fill", self.pressure_unit)
         u = np.full(self.no_of_meas_points, self.get_value("fm3Pres_u1",self.pressure_unit )/p_fill)
 
-        ana.store("Uncertainty", "res", u, "1")
+        ana.store("Uncertainty", "pressure_res", u, self.rel_unit)
 
     def flow_pV(self, ana):
-        u1 = ana.pick("Uncertainty", "fill", "1")
-        u2 = ana.pick("Uncertainty", "therm_transp", "1")
-        u3 = ana.pick("Uncertainty", "delta_V", "1")
-        u4 = ana.pick("Uncertainty", "delta_t", "1")
-        u5 = ana.pick("Uncertainty", "delta_V_delta_t", "1")
-        u6 = ana.pick("Uncertainty", "res", "1")
+        u1 = ana.pick("Uncertainty", "pressure_fill", self.rel_unit)
+        u2 = ana.pick("Uncertainty", "pressure_therm_transp", self.rel_unit)
+        u3 = ana.pick("Uncertainty", "delta_V", self.rel_unit)
+        u4 = ana.pick("Uncertainty", "delta_t", self.rel_unit)
+        u5 = ana.pick("Uncertainty", "delta_V_delta_t", self.rel_unit)
+        u6 = ana.pick("Uncertainty", "pressure_res", self.rel_unit)
 
         u = np.sqrt(np.power(u1, 2) +
                     np.power(u2, 2) +
@@ -168,13 +170,13 @@ class Uncert(Ce3):
                     np.power(u6, 2))
         u = np.full(self.no_of_meas_points, u)
 
-        ana.store("Uncertainty", "pV", u, "1")
+        ana.store("Uncertainty", "flow_pV", u, self.rel_unit)
 
     def conductance(self, ana):
         p_cal = ana.pick("Pressure", "cal", self.pressure_unit)
 
         if self.opk == "opK1":
-            ua = self.get_value("ce3C1_u1_a", "1")
+            ua = self.get_value("ce3C1_u1_a", self.rel_unit)
             ub = self.get_value("ce3C1_u1_b", "1/mbar")
             u = np.sqrt(np.power(ua, 2) +
                         np.power(ub * p_cal, 2))
@@ -183,18 +185,17 @@ class Uncert(Ce3):
 
         u = np.full(self.no_of_meas_points, u)
 
-        ana.store("Uncertainty", "Cx", u, "1")
+        ana.store("Uncertainty", "conductance_Cx", u, self.rel_unit)
 
     def flow_split(self, ana):
-
         if self.opk == "opK1":
-            u = self.get_value("ce3qsplit_u1_a", "1")
+            u = self.get_value("ce3qsplit_u1_a", self.rel_unit)
         else:
             sys.exit("not implemented")
 
         u = np.full(self.no_of_meas_points, u)
 
-        ana.store("Uncertainty", "split", u, "1")
+        ana.store("Uncertainty", "flow_split", u, self.rel_unit)
 
     def temperature_fm(self, ana):
         t_fm = ana.pick("Temperature", "fm", self.temperature_unit)
@@ -208,7 +209,7 @@ class Uncert(Ce3):
                     np.power(u2, 2) +
                     np.power(u3, 2))
 
-        ana.store("Uncertainty", "fm", u, "1")
+        ana.store("Uncertainty", "temperature_fm", u, self.rel_unit)
 
 
     def temperature_uhv(self, ana):
@@ -221,9 +222,27 @@ class Uncert(Ce3):
                     np.power(u1, 2) +
                     np.power(u2, 2))
 
-        ana.store("Uncertainty", "uhv", u, "1")
+        ana.store("Uncertainty", "temperature_uhv", u, self.rel_unit)
 
     def pressure_corr(self, ana):
-        u = np.full(self.no_of_meas_points, self.get_value("ce3F_u1", "1"))
-        print(u)
-        ana.store("Uncertainty", "corr", u, "1")
+        u = np.full(self.no_of_meas_points, self.get_value("ce3F_u1", self.rel_unit))
+
+        ana.store("Uncertainty", "pressure_corr", u, self.rel_unit)
+
+    def total(self, ana):
+        u1 = ana.pick("Uncertainty", "flow_pV", self.rel_unit)
+        u2 = ana.pick("Uncertainty", "flow_split", self.rel_unit)
+        u3 = ana.pick("Uncertainty", "pressure_corr", self.rel_unit)
+        u4 = ana.pick("Uncertainty", "temperature_fm", self.rel_unit)
+        u5 = ana.pick("Uncertainty", "temperature_uhv", self.rel_unit)
+        u6 = ana.pick("Uncertainty", "conductance_Cx", self.rel_unit)
+
+        u = np.sqrt(np.power(u1, 2) +
+                    np.power(u2, 2) +
+                    np.power(u3, 2) +
+                    np.power(u4, 2) +
+                    np.power(u5, 2) +
+                    np.power(u6, 2))
+        u = np.full(self.no_of_meas_points, u)
+
+        ana.store("Uncertainty", "standard", u, self.rel_unit)

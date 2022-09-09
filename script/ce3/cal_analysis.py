@@ -98,6 +98,7 @@ def main():
         uncert.temperature_fm(ana)
         uncert.temperature_uhv(ana)
         uncert.pressure_corr(ana)
+        uncert.total(ana)
         io.save_doc(ana.build_doc())
 
     print(json.dumps(ret))
