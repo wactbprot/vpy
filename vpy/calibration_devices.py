@@ -30,7 +30,6 @@ class CalibrationObject(Document):
             return self.cob_by_name[name]
         else:
             errmsg = "Device with name {} not found".format(name)
-            self.log.error(errmsg)
             sys.exit(errmsg)
 
 

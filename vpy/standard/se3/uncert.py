@@ -34,7 +34,6 @@ class Uncert(Se3):
             u = u_V_5
         else:
             msg = "wrong unit in uncert_volume_5"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.volume_add_sens_volume_5(V_5, p_0, p_1, p_r) * u
@@ -46,7 +45,6 @@ class Uncert(Se3):
             u = u_p_0
         else:
             msg = "wrong unit in uncert_pressure_0"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.volume_add_sens_pressure_0(V_5, p_0, p_1, p_r) * u
@@ -58,7 +56,6 @@ class Uncert(Se3):
             u = u_p_1
         else:
             msg = "wrong unit in uncert_pressure_1"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.volume_add_sens_pressure_1(V_5, p_0, p_1, p_r) * u
@@ -70,7 +67,6 @@ class Uncert(Se3):
             u = u_p_r
         else:
             msg = "wrong unit in uncert_pressure_r"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.volume_add_sens_pressure_r(V_5, p_0, p_1, p_r) * u
@@ -333,7 +329,6 @@ class Uncert(Se3):
             u = u_p_fill
         else:
             msg = "wrong unit in uncert.pressure_fill"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.sens_pressure_fill(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
@@ -345,7 +340,6 @@ class Uncert(Se3):
             u = u_p_rise
         else:
             msg = "wrong unit in uncert.pressure_rise"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.sens_pressure_rise(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
@@ -365,7 +359,6 @@ class Uncert(Se3):
             u = u_V_add
         else:
             msg = "wrong unit in uncert.volume_add"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.sens_volume_add(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
@@ -377,7 +370,6 @@ class Uncert(Se3):
             u = u_V_start
         else:
             msg = "wrong unit in uncert.volume_start"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.sens_volume_start(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
@@ -390,7 +382,6 @@ class Uncert(Se3):
             u = u_T_after
         else:
             msg = "wrong unit in uncert.temperature_after"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.sens_temperature_after(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u
@@ -402,7 +393,6 @@ class Uncert(Se3):
             u = u_T_before
         else:
             msg = "wrong unit in uncert.temperature_after"
-            self.log.error(msg)
             sys.exit(msg)
 
         return self.sens_temperature_before(p_fill, p_rise, f, V_add, V_start, T_after, T_before, F) * u

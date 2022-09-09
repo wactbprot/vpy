@@ -33,7 +33,6 @@ class DkmPpc4(Standard):
         self.Aux = AuxDkmPpc4(doc)
         self.no_of_meas_points = len(self.Time.get_value("amt_meas", "ms"))
         self.TDev = Dmm(doc, self.Cobj.get_by_name("DKM_PPC4_DMM"))
-        self.log.debug("init func: {}".format(__name__))
 
     def get_gas(self):
         """Returns the name of the calibration gas.

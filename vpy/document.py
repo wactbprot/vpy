@@ -1,6 +1,5 @@
 import sys
 import copy
-from .pkg_log import Log
 import numpy as np
 import sympy as sym
 
@@ -13,7 +12,6 @@ class Document(object):
         :type doc: dict
         """
         self.doc = copy.deepcopy(doc)
-        self.log = Log().logger(__name__)
 
     def get_all(self):
         """Returns the entire document

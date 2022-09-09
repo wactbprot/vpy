@@ -86,7 +86,6 @@ class Analysis(Document):
             if quant not in self.doc[dest]:
                 self.doc[dest][quant] = [o]
                 append = False
-                self.log.info("set values of type {}".format(val_type))
 
             # search type and replace if existing
             for i, d in enumerate(self.doc[dest][quant]):
@@ -94,18 +93,16 @@ class Analysis(Document):
                     self.doc[dest][quant][i] = o
                     append = False
                     break
-                    self.log.info("replace values of type {}".format(val_type))
 
             # append if not exist
             if append:
                 self.doc[dest][quant].append(o)
-                self.log.info("append values of type {} in {}".format(val_type, quant))
+
         else:
             # new
             if quant not in self.doc:
                 self.doc[quant] = [o]
                 append = False
-                self.log.info("set values of type {}".format(val_type))
 
             # replace
             for i, d in enumerate(self.doc[quant]):
@@ -113,11 +110,11 @@ class Analysis(Document):
                     self.doc[quant][i] = o
                     append = False
                     break
-                    self.log.info("replace values of type {}".format(val_type))
+
             # append
             if append:
                 self.doc[quant].append(o)
-                self.log.info("append values of type {}".format(val_type))
+
 
     def store_dict(self, quant, d, dest='Values', plain=False):
         """ Appends a dict to document under the given destination.
@@ -205,7 +202,6 @@ class Analysis(Document):
 
         else:
             msg = "given value is not a dictionary"
-            self.log.error(msg)
             sys.exit(msg)
 
     def get_type_array(self, quant, dest='Values', starts_with=None):
@@ -222,10 +218,8 @@ class Analysis(Document):
                         ret.append(t)
             else:
                 msg = "{quant} not in {dest}".format(quant=quant, dest=dest)
-                self.log.warn(msg)
         else:
             msg = "{dest} not in self.doc".format(dest=dest)
-            self.log.warn(msg)
         return ret
 
     def pick_dict(self, quant, dict_type, dest='Values'):
@@ -262,7 +256,6 @@ class Analysis(Document):
 
         if ret is None:
             msg = "dict with type {} not found".format(dict_type)
-            self.log.warn(msg)
         else:
             return ret
 
@@ -293,14 +286,11 @@ class Analysis(Document):
                             value_ret = self.get_value(dict_type, dict_unit, o=d)
             else:
                 msg = "{} not in Values".format(quant)
-                self.log.warn(msg)
         else:
             msg = "{} not in self.doc".format(dest)
-            self.log.warn(msg)
 
         if value_ret is None:
             msg = "dict with type {} not found".format(dict_type)
-            self.log.warn(msg)
 
         if with_stats:
             return value_ret, sd_ret, n_ret
@@ -311,7 +301,6 @@ class Analysis(Document):
         """ converts array, nd.array etc. to json writable lists.
 
         """
-        self.log.debug("try to make {a} writable".format(a=a))
         if "tolist" in dir(a):
             if isinstance(a, np.float64):
                 a = [a]
@@ -349,9 +338,7 @@ class Analysis(Document):
                 reject = []
             print("New list is: " + str(reject))
 
-        self.log.debug("average index before manual remove:{}".format(average_index))
         average_index = [[j for j in i if not j in reject] for i in average_index]
-        self.log.debug("average index after manual remove:{}".format(average_index))
 
         return average_index, reject
 
@@ -498,9 +485,6 @@ class Analysis(Document):
         rn = ana.pick_dict("Range", "range")
         idx = self.flatten(average_index)
 
-        print("->here<-")
-        print(rn)
-
         r1 = {}
         if rn != None:
             rn = rn.get("Value")
@@ -555,12 +539,9 @@ class Analysis(Document):
             found_threshold = True
 
         if found_threshold:
-            self.log.debug("average index before coarse error filtering:{}".format(average_index))
             average_index = [[j for j in i if abs(error_value[j]) < threshold] for i in average_index]
-            self.log.debug("average index before coarse error filtering:{}".format(average_index))
         else:
             msg = "No treshold found; see Error(ind) Unit"
-            self.log.error(msg)
             sys.exit(msg)
 
         return average_index
@@ -585,8 +566,6 @@ class Analysis(Document):
         """
         error_dict = self.pick_dict(quant='Error', dict_type='ind')
         error = error_dict.get('Value')
-        self.log.debug("average index before fine error filtering: {}".format(average_index))
-
         k = 0
         while True:
             r = []
@@ -617,13 +596,10 @@ class Analysis(Document):
                         rr.append(average_index[i][j])
                 r.append(rr)
 
-            self.log.debug("s: {}".format(s))
-
             k = k + 1
             if average_index == r:
                 break
             average_index = r
-            self.log.debug("average index after fine error filtering: {}".format(average_index))
 
         return average_index, ref_mean, ref_std, k
 

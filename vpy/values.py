@@ -407,7 +407,6 @@ class AuxValues(Document):
         if "Gas" in self.doc:
             return self.doc['Gas']
         else:
-            self.log.warn("No gas entry found in AuxValues try ToDo.Gas")
             return None
 
 
@@ -454,14 +453,10 @@ class AuxValues(Document):
                         ret[i] = value[j]
                         j = j + 1
                 i = i + 1
-
-            self.log.debug("offset values expanded, will return")
-
             return ret
         else:
             err = """length of offset time vec does
             not match the length of values"""
-            self.log.error(err)
             sys.exit(err)
 
     def get_val_by_time(self, meastime, auxtime, timeunit, auxval, valunit):
@@ -493,7 +488,6 @@ class AuxSe3(AuxValues):
                 if isinstance(o['Value'], list):
                     return o['Value'][-1]
         else:
-            self.log.info("Name of Expansion not available in AuxValues")
             return None
 
     def get_volume(self, t):
@@ -532,7 +526,6 @@ class AuxSe2(AuxValues):
                 if isinstance(o['Value'], list):
                     return o['Value'][-1]
         else:
-            self.log.info("Name of Expansion not available in AuxValues")
             return None
 
 class AuxFrs5(AuxValues):

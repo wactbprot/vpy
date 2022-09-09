@@ -31,7 +31,7 @@ class Constants(Document):
                     "Unit": "Pa/mbar",
                     "Comment": "conversion mbar to Pa"
                     }
-                ]   
+                ]
         }
     """Initialisation of Constant class.
 
@@ -54,16 +54,14 @@ class Constants(Document):
             doc = doc['State']
 
         if 'Constants' in doc:
-            const = doc['Constants'] 
+            const = doc['Constants']
 
         if const:
             super().__init__(const)
         else:
             super().__init__(self.fall_back_const)
-            self.log.warning("only fallback const available")
 
-       
-    def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
+        def get_gas_density(self, gas,  p, punit, T, Tunit, dunit):
         """Calculates the gas density with:
 
         .. math::
@@ -93,7 +91,6 @@ class Constants(Document):
 
         if dunit == "kg/m^3":
             dens = M/T/R*p
-            self.log.debug("calculated gas density : {}".format(dens))
             return dens
 
     def get_mol_weight(self, gas, unit):
@@ -114,12 +111,10 @@ class Constants(Document):
                 return self.get_value( "molWeight_{}".format(gas), unit)
             else:
                 errmsg ="no gas given"
-                self.log.error(errmsg)
                 sys.exit(errmsg)
 
         else:
             errmsg ="no unit given"
-            self.log.error(errmsg)
             sys.exit(errmsg)
 
 
@@ -140,18 +135,13 @@ class Constants(Document):
         """
 
         if from_unit == to_unit:
-            self.log.debug("units are the same return 1")
             conv = np.array([1])
         else:
             cstr = "{}_2_{}".format(from_unit, to_unit)
             ustr = "{}/{}".format(to_unit, from_unit)
             conv = self.get_value(cstr, ustr)
 
-            if conv is not None:
-                self.log.debug("search for: {} in {} found: {}".format(cstr, ustr, conv))
-            else:
-                errmsg = "no conversion factor from {} to {}".format(from_unit, to_unit)
-                self.log.error(errmsg)
-                sys.exit(errmsg)
+            if conv is None:
+                sys.exit("no conversion factor from {} to {}".format(from_unit, to_unit))
 
         return np.full(N, conv)

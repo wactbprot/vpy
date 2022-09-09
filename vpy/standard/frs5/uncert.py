@@ -8,8 +8,6 @@ class Uncert(Frs5):
     def __init__(self, doc):
         super().__init__(doc)
 
-        self.log.debug("init func: {}".format(__name__))
-
     def define_model(self):
         """ Defines symbols and model for FRS5.
         The order of symbols must match the order in ``gen_val_arr``:
@@ -141,9 +139,6 @@ class Uncert(Frs5):
             'p_res':   res.pick("Pressure", "frs5_res", self.unit) * conv_p,
         }
 
-        self.log.info("value dict genetated")
-        self.log.debug(self.val_dict)
-
     def gen_val_array(self, res):
         """Generates a array of values
         with the same order as define_models symbols order:
@@ -187,8 +182,6 @@ class Uncert(Frs5):
             self.val_dict['T'],
             self.val_dict['p_res'],
         ]
-        self.log.info("value array derived from dict_arr")
-        self.log.debug(self.val_arr)
 
     def total_standard(self, res, no_type_a=False):
         """Calculates the total uncertainty.
@@ -218,7 +211,7 @@ class Uncert(Frs5):
 
         if no_type_a:
             ## 1/2 offset scatter and 1/2 of ub is type a
-            u_total = (
+            u_total = np.sqrt(
                 res.pick("Uncertainty", "u_ab", "1")**2
                 + res.pick("Uncertainty", "u_r", "1")**2
                 + res.pick("Uncertainty", "u_r_zc", "1")**2
@@ -231,10 +224,9 @@ class Uncert(Frs5):
                 + res.pick("Uncertainty", "u_A", "1")**2
                 + res.pick("Uncertainty", "u_T", "1")**2
                 + res.pick("Uncertainty", "u_rho_gas", "1")**2
-                + res.pick("Uncertainty", "u_rho_frs", "1")**2
-            )**0.5
+                + res.pick("Uncertainty", "u_rho_frs", "1")**2)
         else:
-            u_total = (
+            u_total = np.sqrt(
                 res.pick("Uncertainty", "u_ab", "1")**2
                 + res.pick("Uncertainty", "u_r", "1")**2
                 + res.pick("Uncertainty", "u_r_zc", "1")**2
@@ -247,13 +239,10 @@ class Uncert(Frs5):
                 + res.pick("Uncertainty", "u_A", "1")**2
                 + res.pick("Uncertainty", "u_T", "1")**2
                 + res.pick("Uncertainty", "u_rho_gas", "1")**2
-                + res.pick("Uncertainty", "u_rho_frs", "1")**2
-            )**0.5
-            
+                + res.pick("Uncertainty", "u_rho_frs", "1")**2)
+
         p = res.pick("Pressure", "cal", self.unit)
         res.store("Uncertainty", "standard", u_total, "1")
-        self.log.debug("uncert total: {}".format(u_total))
-
 
     def uncert_r(self, res):
         """Calculates the uncertainty of the r (reading)
@@ -273,7 +262,6 @@ class Uncert(Frs5):
         val   = f(*self.val_arr)*conv
 
         res.store("Uncertainty", "u_r", np.absolute(val/p), "1")
-        self.log.debug("uncert r: {}".format(val/p))
 
     def uncert_r_zc(self, res):
         """Calculates the uncertainty of the r_zc
@@ -293,7 +281,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert r_zc: {}".format(val/p))
         res.store("Uncertainty", "u_r_zc", np.absolute(val/p), "1")
 
     def uncert_r_zc0(self, res):
@@ -313,7 +300,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert r_zc0: {}".format(val/p))
         res.store("Uncertainty", "u_r_zc0", np.absolute(val/p), "1")
 
     def uncert_ub(self, res):
@@ -333,7 +319,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert ub: {}".format(val/p))
         res.store("Uncertainty", "u_ub", np.absolute(val/p), "1")
 
 
@@ -354,7 +339,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert m_cal: {}".format(val/p))
         res.store("Uncertainty", "u_m_cal", np.absolute(val/p), "1")
 
     def uncert_r_cal(self, res):
@@ -374,7 +358,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert r_cal: {}".format(val/p))
         res.store("Uncertainty", "u_r_cal", np.absolute(val/p), "1")
 
     def uncert_r_cal0(self, res):
@@ -394,7 +377,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert r_cal0: {}".format(val/p))
         res.store("Uncertainty", "u_r_cal0", np.absolute(val/p), "1")
 
     def uncert_g(self, res):
@@ -415,7 +397,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr * v_expr, "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert g: {}".format(val/p))
         res.store("Uncertainty", "u_g", np.absolute(val/p), "1")
 
     def uncert_A(self, res):
@@ -436,7 +417,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr, "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert A: {}".format(val/p))
         res.store("Uncertainty", "u_A", np.absolute(val/p), "1")
 
     def uncert_T(self, res):
@@ -457,7 +437,6 @@ class Uncert(Frs5):
         f     = sym.lambdify(self.symb, s_expr * u_expr, "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert T: {}".format(val/p))
         res.store("Uncertainty", "u_T", np.absolute(val/p), "1")
 
     def uncert_rho_gas(self, res):
@@ -492,7 +471,6 @@ class Uncert(Frs5):
         f_s     = sym.lambdify(self.symb, s_expr, "numpy")
         val     = f_s(*self.val_arr)*f_u(M,R,T,p)*pconv
 
-        self.log.debug("uncert rho_gas: {}".format(val/p))
         res.store("Uncertainty", "u_rho_gas", np.absolute(val/p), "1")
 
     def uncert_rho_frs(self, res):
@@ -530,7 +508,6 @@ class Uncert(Frs5):
         #f       = sym.lambdify(self.symb, s_expr * u_expr, "numpy")
         #val     = f(*self.val_arr)*pconv
         val = np.full(self.no_of_meas_points, 0.0)
-        self.log.debug("uncert rho_frs: {}".format(val/p))
         res.store("Uncertainty", "u_rho_frs", np.absolute(val/p), "1")
 
     def uncert_ab(self, res):
@@ -547,12 +524,7 @@ class Uncert(Frs5):
         s_expr = sym.diff(self.model, sym.Symbol('r'))
         u_expr = self.get_expression("u_ab", "1/K")
 
-
-
         f     = sym.lambdify(self.symb, s_expr * u_expr , "numpy")
         val   = f(*self.val_arr)*conv
 
-        self.log.debug("uncert ab: {}".format(val/p))
         res.store("Uncertainty", "u_ab", np.absolute(val/p), "1")
-
-

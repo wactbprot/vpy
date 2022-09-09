@@ -8,8 +8,6 @@ class Uncert(DkmPpc4):
     def __init__(self, doc):
         super().__init__(doc)
 
-        self.log.debug("init func: {}".format(__name__))
-
     def total(self, res):
         """Calculates the total uncertainty.
 
@@ -34,7 +32,6 @@ class Uncert(DkmPpc4):
               )**0.5
 
         res.store("Uncertainty", "standard", u, "1")
-        self.log.debug("uncert total: {}".format(u))
 
     def pressure_res(self, res):
         """Calculates the uncertainty contribution of the residual pressure.
@@ -54,7 +51,6 @@ class Uncert(DkmPpc4):
         u_rel = u * p_res/p_cal
 
         res.store("Uncertainty", "u_res", u_rel, "1")
-        self.log.debug("relative uncert residual pressure : {}".format(u))
 
     def longterm(self, res):
         """Calculates the uncert. contrib of the longterm stability
@@ -68,7 +64,6 @@ class Uncert(DkmPpc4):
         u = self.get_value_full("u_lt", "1", self.no_of_meas_points)
 
         res.store("Uncertainty", "u_lt", u, "1")
-        self.log.debug("relative uncert longterm stab.: {}".format(u))
 
     def pressure_cal(self, res):
         """Calculates the uncertainty contribution of the calibration of the device.
@@ -87,4 +82,3 @@ class Uncert(DkmPpc4):
         u = u_a/p_cal + u_b
 
         res.store("Uncertainty", "u_cal", u, "1")
-        self.log.debug("relative uncert of calibration: {}".format(u))

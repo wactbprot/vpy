@@ -54,7 +54,6 @@ class ToDo(Document):
             else:
                  return np.nan, np.nan, self.pressure_unit
         else:
-            self.log.error("Not a pressure todo")
             return None, None, None
 
     def make_average_index(self, cal, unit, max_dev=None):

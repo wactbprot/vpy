@@ -35,7 +35,7 @@ class Frs5(Standard):
     """
     name = "FRS5"
     unit = "Pa"
-    
+
     def __init__(self, doc):
         super().__init__(doc, self.name)
         # measurement values
@@ -44,12 +44,11 @@ class Frs5(Standard):
         self.Range = Range(doc)
         self.Time = Time(doc)
         self.Aux = AuxFrs5(doc)
-        
+
         # residual pressure device
         amt = self.Time.get_value("amt_meas", "ms")
         self.no_of_meas_points = len(amt)
         self.ResDev = Srg(doc, self.Cobj.get_by_name("FRS5_4019"))
-        self.log.debug("init func: {}".format(__name__))
 
     def get_gas(self):
         """Returns the name of the calibration gas stored in *AuxValues*
@@ -60,5 +59,4 @@ class Frs5(Standard):
 
         """
 
-        self.log.warn("Default gas N2 used")
         return "N2"

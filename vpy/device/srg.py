@@ -16,7 +16,6 @@ class Srg(Device):
     def __init__(self, doc, dev):
         self.Const = Constants(doc)
         super().__init__(doc, dev)
-        self.log.debug("init func: {}".format(__name__))
 
     def get_name(self):
         return self.doc.get("Name")
@@ -91,11 +90,7 @@ class Srg(Device):
 
         if pressure_unit == "DCR":
             dcr_conv = self.dcr_conversion(unit, gas)
-            self.log.debug(dcr_conv)
-
             temp_corr = self.temperature_correction(temperature_dict)
-            self.log.debug(temp_corr)
-
             pressure = pressure_value * dcr_conv  * temp_corr
         else:
             pressure = pressure_value * self.Const.get_conv(from_unit=pressure_unit, to_unit=unit)
